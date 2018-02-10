@@ -10,7 +10,7 @@
 
 Unlike previous tools, this one is manually built by @thecoder75 and published.
 
-For the latest downloads, check the [release](releases/) section.
+[![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg)](https://github.com/thecoder75/liveme-tools/releases)
 
 *Please note there are no plans to release a macOS version at this time!*
 
