@@ -82,10 +82,28 @@
 }
 
 #home .panel {
-    padding: 10px 10px 10px 20px;
+    padding: 5px 10px 5px 5px;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
+#home .panel .section {
+    display: block;
+    border: solid;
+    border: solid 2px rgba(255,255,255,0.1);
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
 
+#home .panel .section i.icon {
+    vertical-align: middle;
+}
+#home .panel .section p {
+    font-size: 11pt;
+    padding: 0 5px;
+}
 /*
     Settings
 */

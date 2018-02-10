@@ -13,6 +13,7 @@ const   { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard
         DataManager = remote.getGlobal('DataManager'),
         formatDuration = require('format-duration'),
         prettydate = require('pretty-date'),
+        request = require('request'),
         backup = require('backup');
 
 var     current_user = {}, current_page = 1, current_index = 0, tempvar = null, has_more = false, current_search = '', scroll_busy = false;
@@ -305,13 +306,45 @@ function restoreData() {
 function initHome() {
 
     $('#home div.panel').html('');
+
+    // Check for updates
+    request({
+        url: 'https://raw.githubusercontent.com/thecoder75/liveme-pro-tools/master/package.json',
+        method: 'get'
+    }, function(err,httpResponse,body) {
+        
+        var package = JSON.parse(body), cv = remote.app.getVersion(), upgrade = cv < package.version;
+
+        console.log(upgrade);
+        console.log(package.version);
+
+        if (upgrade) {
+            $('#home div.panel').append(`
+                <div class="section">
+                    <h3><i class="icon icon-github"></i> Update Available</h3>
+                    <p>
+                        You are running ${cv} and ${package.version} has been released.
+                    </p>
+                    <button onClick="openURL('https://github.com/thecoder75/liveme-pro-tools/releases/')">Download</button>
+                </div>
+            `);
+        }
+
+        $('#home div.panel').append(`
+                <div class="section">
+                    <h4>Welcome</h4>
+                    <p>
+                        Welcome to the new LiveMe Pro Tools!
+                    </p>
+                </div>
+        `);
+
+    });  
+
+
+
     $('footer h1').html('Bookmarks are now being scanned for new replays...');
     showProgressBar();
-
-
-
-
-
 
     var bookmarks = DataManager.getAllBookmarks();
     tempvar = {
@@ -365,7 +398,9 @@ function _homethread() {
 
 function _checkBookmark(i) {
 
-    LiveMe.getUserReplays(tempvar.list[tempvar.index].uid, 1, 2).then(replays => {
+    if (tempvar.list[i] == undefined) return;
+
+    LiveMe.getUserReplays(tempvar.list[i].uid, 1, 2).then(replays => {
 
         if (replays == undefined) return;
         if (replays.length < 1) return;
