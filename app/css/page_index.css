@@ -1,0 +1,434 @@
+/*
+    Home/Main Window Stylings
+*/
+
+
+
+#home {
+    display: block;
+
+    position: absolute;
+    z-index: 1;
+    top: 40px;
+    left: 4px;
+    right: 4px;
+    bottom: 24px;
+
+    background-color: rgb(32,32,32);
+}
+
+#home .panel {
+    display: block;
+    width: 400px;
+    position: absolute;
+    z-index: 5;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+}
+#home #bookmarklist {
+    position: absolute;
+    z-index: 5;
+    left: 0;
+    top: 0;
+    right: 0;
+
+    display: block;
+    width: 600px;
+    height: calc(100vh - 64px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#home .bookmark {
+    display: none;
+    height: 64px;
+    margin: 10px 10px 0;
+    background-color: rgb(48,48,48);
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.5);
+    position: relative;
+    cursor:  pointer;
+}
+
+#home .bookmark img.avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 64px;
+    height: 64px;
+}
+
+#home .bookmark h1 {
+    position:  absolute;
+    top: 4px;
+    left: 72px;
+
+    font-size: 14pt; 
+    font-weight: 300;
+    line-height: 24px;
+}
+#home .bookmark h2 {
+    position:  absolute;
+    top: 8px;
+    right: 20px;
+
+    font-size: 14pt; 
+    font-weight: 600;
+    line-height: 16px;
+
+    color: rgb(240,240,0);
+}
+
+#home .panel {
+    padding: 10px 10px 10px 20px;
+}
+
+
+/*
+    Settings
+*/
+#settings {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(0,0,0);
+    padding: 0;
+}
+
+#settings input[type=text] {
+    padding: 0 4px;
+    background: transparent;
+    border-color: rgba(255,255,255,0.3);
+}
+
+#settings a.close-settings {
+    position: absolute;
+    top: 4px;
+    right: 24px;
+    display: block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    cursor:  pointer;
+}
+#settings a.close-settings:hover { background-color: rgba(255,255,255,0.1); }
+#settings a.close-settings i.icon { font-size: 24px; line-height: 32px; vertical-align: middle; }
+
+#settings div.area {
+    display: block;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 0 0 40px;
+}
+
+#settings div.area div.section {
+    display: block;
+    width: 600px;
+    border: solid 1px rgba(255,255,255,0.1);
+    border-radius: 5px;
+    padding: 10px;
+    margin: 20px auto;
+    position: relative;
+}
+
+#settings div.area div.section ul {
+    margin: 10px 0;
+}
+
+#settings div.area div.section ul li a {
+    color: rgb(248,248,248);
+}
+
+#settings h4#appname {
+    font-size: 32pt;
+    font-weight: 300;
+}
+
+#settings h6#version {
+    position: absolute;
+    top: 20px;
+    right: 50px;
+    font-size: 12pt;
+    color: rgb(96,96,96);
+}
+
+#settings ul, #settings p {
+    padding: 4px 40px;
+}
+
+
+/*
+
+*/
+.app-menu {
+    cursor:  pointer;
+    
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    font-size: 16px;
+    display: block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+
+    text-align: center;
+}
+
+
+
+/*
+    Details View
+*/
+.details > div.avatar {
+    display: inline-block;
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+.details > div.avatar img.avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 120px;
+    height: 120px;
+}
+.details > div.avatar a.save {
+    display: block;
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    opacity: 0.25;
+    text-decoration: none;
+    color: rgba(255,255,255,0.82);
+    background-color: rgba(0,0,0,0.5);
+    font-size: 16px;
+    padding: 6px;
+    border-radius: 14px;
+}
+.details > div.avatar > a.save:hover { 
+    opacity: 0.7; 
+}
+
+.details > div.info {
+    display: inline-block;
+    width: calc(100% - 136px);
+    height: 120px;
+    padding: 0 10px;
+    position: relative;
+    vertical-align: top;
+}
+.details > div.info a {
+    text-decoration: none;
+    color: rgb(224,220,192);
+    font-size: 10pt;
+}
+.details > div.info > div.buttons {
+    position: absolute;
+    display: block;
+    bottom: 8px;
+    right: 0;
+}
+.details > div.info div.buttons a.button {
+    display: inline-block;
+    margin-left: 8px;
+    color: rgb(224,224,224);
+    opacity: 0.6;
+}
+.details > div.info a.button:hover { opacity: 1.0; }
+
+.details > div.info h1 a, .details > div.info h2 a { 
+    background-color: transparent;
+    float: right;
+    padding: 0;
+    line-height: 24px;
+    height: 24px;
+}
+.details > div.info h1 a { height: 40px; width: 40px; line-height: 40px; }
+.details > div.info h1 a i.icon {  font-size: 24px; vertical-align: middle; }
+.details > div.info h2 a i.icon {  font-size: 12px; line-height: 12px; vertical-align: middle; }
+.details > div.info a.followers, .details > div.info a.following { padding: 0 16px; }
+
+.details > div.info h1, .details > div.info h2 {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.details > div.info h1 { 
+    border-radius: 20px;
+    font-size: 18pt; 
+    line-height: 40px;
+    margin: 24px 112px 24px 0; 
+    padding: 0 4px 0 12px;
+}
+.details > div.info h2 { 
+    position: absolute;
+    bottom: 4px;
+    display: inline-block;
+    font-size: 12pt; 
+    line-height: 24px; 
+    border-radius: 12px; 
+    padding: 0 12px 0 12px;
+    margin: 4px 16px 4px 0;
+    text-align: right;
+}
+.details > div.info h2.id { padding-right: 4px; left: 12px;}
+.details > div.info h2.shortid { padding-right: 4px; left: 248px;}
+.details > div.info h2.level { left: 448px;}
+
+.details > div.info h2 span, .details > div.info h2 span {
+    font-size: 10pt;
+    font-weight: 600;
+    display: inline-block;
+    float: left;
+}
+
+.details > div.info h2.id { width: 212px; }
+.details > div.info h2.shortid { width: 176px; }
+.details > div.info h2.level { width: 96px; }
+.details > div.info h2.stars, .details > div.info h2.stars  { width: 96px; }
+
+.details > div.info h4 { 
+    position: absolute;
+    top: -12px;
+    right: 0;
+    font-size: 64pt;
+    font-weight: 600; 
+    letter-spacing: -0.05em;
+    color: rgba(255,255,255,0.2);  
+}
+
+
+
+/*
+    Header Search
+*/
+.search {
+    display: inline-block;
+    height: 24px;
+    border-radius: 12px;
+    background-color: rgb(64,64,64);
+    vertical-align: middle;
+    -webkit-app-region: no-drag;
+}
+
+.search i.icon.icon-search {
+    vertical-align: top;
+    font-size: 12px;
+    display: inline-block;
+    padding: 0 0 0 8px;
+    height: 24px;
+    line-height: 24px;
+}
+
+.search .select select {
+    color: rgb(128,128,128);
+    border: none;
+}
+
+.search .select select option {
+    border: none;
+}
+
+.search input[type=text] {
+    display: inline-block;
+    border: none;
+    width: 320px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 4px;
+    margin: 0;
+    color: rgb(192,192,192);
+    background-color: transparent;
+    vertical-align: top;
+    outline: none;
+}
+.search button {
+    border: none;
+    background-color: transparent;
+    color: rgb(160,160,160);
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 20px;
+    padding: 4px 0 0;
+    cursor: pointer;
+    vertical-align: top;
+}
+
+
+
+/*
+    User Search Entry
+*/
+.user-search:hover { background-color: rgba(255,255,255,0); }
+.user-search td { height: 96px; }
+.user-search td.details {
+    position: relative;
+}
+
+.user-search td.details a.button.replays, .user-search td.details a.button.followings, .user-search td.details a.button.followers {
+    position: absolute;
+    bottom: 4px;
+    width: 128px;
+}
+.user-search td.details a.button.replays    { right: 320px; }
+.user-search td.details a.button.followings { right: 176px; }
+.user-search td.details a.button.followers  { right: 32px; }
+
+.user-search td.details h4 { 
+    font-size: 18pt; 
+    line-height: 32pt;
+    font-weight: 300;
+}
+
+.user-search h5  {
+    position: absolute;
+    font-size: 12pt;
+    line-height: 16pt;
+    margin: 0;
+    padding: 0;
+}
+
+.user-search h5 a.button {
+    position: relative;
+    top: -1px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 12px;
+    background: transparent;
+}
+.user-search h5 span {
+    display: inline-block;
+    min-width: 24px;
+    text-align: right;
+}
+.user-search h5.userid  { left: 8px;   bottom: 48px; }
+.user-search h5.shortid { left: 240px; bottom: 48px; }
+.user-search h5.level   { left: 8px;   bottom: 16px; }
+.user-search h5.country { left: 96px;  bottom: 16px; }
+
+
+.user-search div.bookmarked, .user-search div.viewed {
+    position: absolute;
+    top: 4px;    
+}
+.user-search div.bookmarked i.icon, .user-search div.viewed i.icon { font-size: 20px; line-height: 20px; }
+
+.user-search div.viewed { right: 12px; }
+.user-search div.bookmarked { right: 40px; }
+
+.user-search img { margin-top: 8px; }
+.user-search.male img { border: solid 8px rgba(0,120,252,0.8); }
+.user-search.female img { border: solid 8px rgba(240,160,150,0.8); }

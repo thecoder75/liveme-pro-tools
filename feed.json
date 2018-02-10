@@ -1,0 +1,14 @@
+{
+    "type":"News Feed",
+    "updated":0,
+    "stories":[
+        {
+            "title":"Easy Searching Now",
+            "content":""
+        },
+        {
+            "title":"Better Tracking",
+            "content":""
+        },
+    ]
+}

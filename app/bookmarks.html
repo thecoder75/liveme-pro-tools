@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/style.css" media="all">
+        <link rel="stylesheet" href="css/page_bookmarks.css" media="all">
+        <script>
+            if (typeof module === 'object') {window.module = module; module = undefined; }
+        </script>
+        <title>LiveMe Pro Tools</title>
+        <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="js/bookmarkswindow.js"></script>
+    </head>
+    <body>
+        <header class="two-lines">
+            <h1>Bookmarks</h1>
+            <a class="close-button" onClick="closeWindow()">&#x2715;</a>
+            <div class="buttons-row">
+                <a class="button" onClick="redrawList()"><i class="icon icon-loop2"></i></a>
+            </div>
+        </header>
+        <main class="has-footer has-two-line-header">
+            <table>
+                <tbody id="bookmark-list">
+                </tbody>
+            </table>
+        </main>
+        <footer>
+            <h1></h1>
+        </footer>
+    </body>
+</html>

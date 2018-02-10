@@ -1,0 +1,65 @@
+/*
+    Header
+*/
+header {
+    display: block;
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    line-height: 40px;
+    background-color: rgb(48,48,48);
+    padding: 0 40px;
+    -webkit-app-region: drag;
+}
+header.small { height: 24px; line-height: 24px; padding: 0 24px; }
+
+header a { -webkit-app-region: no-drag; }
+
+header div.group {
+    display: inline-block;
+}
+header div.group a { margin-left: 8px; }
+
+header a.close-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    text-decoration:  none;
+    color: rgba(255,255,255,0.8);
+    font-size: 16px;
+    cursor:  pointer;
+}
+header.small a.close-button, header.two-lines a.close-button { width: 24px; height: 24px; line-height: 24px; }
+header a.close-button:hover { background-color: rgba(255,255,255,0.1); }
+header h1 {
+    line-height: 40px;
+    font-size: 12pt;
+    font-weight: 400;
+    position: absolute;
+    left: 16px;
+    right: 48px;
+    top: 0;
+}
+header.small h1 { line-height: 24px; left: 24px; right: 24px; font-size: 10pt; }
+
+header.two-lines {
+    height: 64px;
+}
+
+header.two-lines h1 { line-height: 24px; }
+header.two-lines div.buttons-row {
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    right: 16px;
+    display: block;
+    height: 40px;
+    line-height: 40px;
+}

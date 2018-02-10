@@ -1,0 +1,55 @@
+main {
+    overflow:  hidden;
+}
+
+.stage {
+    display: block;
+    padding: 20px 30px;
+    font-size: 11pt;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(40,40,40);
+
+    opacity: 0.0;
+}
+
+.stage a.button, .stage button {
+    min-width: 80px;
+}
+
+.stage .buttons {
+    position: absolute;
+    z-index: 5;
+    bottom: 16px;
+    left: 24px;
+    right: 24px;
+    text-align: right;
+}
+
+#wait {
+    position:  absolute;
+    z-index: 900;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.6);
+    display: none;
+}
+
+#wait .message {
+    display: block;
+    width: 440px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    font-size: 10pt;
+    font-weight: 600;
+    text-align: center;
+    color: rgb(192,192,192);
+}

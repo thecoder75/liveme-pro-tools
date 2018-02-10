@@ -1,0 +1,47 @@
+/*
+    Tables
+*/
+table {
+    display: block;
+    width: 100%;
+    margin: 0;
+    border-spacing: 0;
+}
+
+table thead tr th {
+    font-weight: 400;
+    font-size: 10pt;
+    letter-spacing: 0.03em;
+    color: rgb(128,128,128);
+    background-color: rgb(64,64,64);
+    text-align: center;
+}
+table tbody tr {
+    vertical-align: top;
+}
+table tbody tr:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+table tbody tr:hover td {
+    color: rgb(255,255,255);
+}
+table tbody tr:hover td a.button{
+    color: rgb(255,255,255);
+    background-color: rgb(64,64,64);
+}
+table tbody tr td {
+    font-size: 10pt;
+    font-weight: 400;
+    text-overflow: ellipsis;
+    line-height: 32px;
+    padding: 0 8px;
+    color: rgb(180,180,180);
+}
+table.results tbody tr td {
+    border-bottom: solid 1px rgb(64,64,64);
+}
+
+table.results tbody tr td.highlight { background-color: rgba(0,128,240,0.1); }
+table.results tbody tr td.matched { background-color: rgba(240,240,0,0.05); }
+table.results tbody tr.unlisted { display: none; }
+

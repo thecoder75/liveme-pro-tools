@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Player</title>
+
+        <script>
+            if (typeof module === 'object') {window.module = module; module = undefined;} 
+        </script>
+
+        <script src="js/jquery-3.2.1.min.js"></script>
+        <script src="js/hls.js"></script>
+
+        <script>
+            const { ipcRenderer, remote } = require('electron'), LiveMe = remote.getGlobal('LiveMe');
+            var videoid = '', userid = '';
+
+            $(function(){
+
+                var t=window.location.href.split('?');
+                $('header h1').html(t[1]);
+
+                LiveMe.getVideoInfo(t[1])
+                    .then(vid => {
+                        videoid = vid.vid;
+                        userid = vid.userid;
+
+                        var video = document.getElementById('video');
+                        var hls = new Hls();
+                        hls.loadSource(vid.hlsvideosource);
+                        hls.attachMedia(video);
+                        hls.on(Hls.Events.MANIFEST_PARSED,function() {
+                            video.play();
+                        });
+                    });
+            });
+            function closeWindow() { window.close(); }
+            function downloadVideo() { ipcRenderer.send('download-replay', { videoid: videoid }); }
+            function showUser() { ipcRenderer.send('show-user', { userid: userid }); }
+        </script>
+
+        <link rel="stylesheet" href="css/player.css">
+
+        <style>
+            main a {
+                position: absolute;
+                z-index: 1000;
+                top: 8px;
+
+                display: block;
+                width: 32px;
+                height: 32px;
+
+                line-height: 32px;
+                font-size: 16px;
+                text-align:  center;
+
+                border-radius: 16px;
+                background-color: rgba(0,0,0,0.6);
+                color: rgb(255,255,255);
+                opacity: 0.1;
+
+                cursor:  pointer;
+            }
+            main a.download { right: 12px; }
+            main a.info { right: 64px; }
+            main a:hover { opacity: 0.9; }
+            main a i.icon { vertical-align: middle; }
+        </style>
+    </head>
+    <body>
+        <header class="small">
+            <h1></h1>
+            <a class="close-button" onClick="closeWindow()">&#x2715;</a>
+        </header>
+        <main class="has-small-header" style="display: block; overflow: hidden;">
+            <video id="video" controls></video>
+            
+            <a class="download" onClick="downloadVideo()"><i class="icon icon-download"></i></a>
+            <a class=" info" onClick="showUser()"><i class="icon icon-info"></i></a>
+
+        </main>
+   </body>
+</html>

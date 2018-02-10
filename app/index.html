@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+    <head>
+        <script>
+            if (typeof module === 'object') {window.module = module; module = undefined; }
+        </script>
+
+        <title>LiveMe Pro Tools</title>
+
+        <link rel="stylesheet" href="css/style.css" media="all">
+        <link rel="stylesheet" href="css/page_index.css" media="all">
+
+        <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </head>
+    <body>
+        <header>
+            <a class="app-menu" onClick="showMainMenu()">&#9776;</a>
+
+            <div class="search">
+                <i class="icon icon-search"></i>
+                <div class="select">
+                    <select id="search-type" onChange="onTypeChange()">
+                        <option value="video-id">Video ID is</option>
+                        <option value="video-url">Video URL is</option>
+                        <option selected value="user-id">User ID is</option>
+                        <option value="short-id">User Short ID is</option>
+                        <option value="username-like">Username like</option>
+                    </select>
+                </div>
+                <input type="text" id="search-query" placeholder="Search" onKeyPress="enterOnSearch(event)" value="" >
+                <button onClick="preSearch()"><i class="icon icon-circle-right"></i></button>
+            </div>
+
+            <div class="group">
+                &nbsp;&nbsp;
+                <a class="button icon-only" title="Go Home" onClick="goHome()"><i class="icon icon-home3"></i></a>
+                <a class="button icon-only" title="View Bookmarks" onClick="openBookmarks()"><i class="icon icon-bookmarks"></i></a>
+            </div>
+
+            <a class="close-button" onClick="closeWindow()">&#x2715;</a>
+        </header>
+
+        <div id="home">
+            <div id="bookmarklist"></div>
+            <div class="panel"></div>
+        </div>
+
+
+        <main id="view-userinfo-replays" class="has-footer has-details">
+
+            <div id="user-details" class="details">
+                <div class="avatar">
+                    <img class="avatar" src=""  onerror="this.src='images/nouser.png'">
+                    <!--<a class="save" href="#"><i class="icon icon-download"></i></a>-->
+                </div>
+                <div class="info">
+                    <h1>
+                        <a href="#" class="button icon-only bookmark" onClick="AddToBookmarks()" title="Add to Bookmarks">&#x2606;</a>
+                        <span></span>
+                    </h1>
+                    <h2 class="id"></h2>
+                    <h2 class="shortid"></h2>
+                    <h2 class="level"></h2>
+                    <h4></h4>
+                    <div class="buttons">
+                        <a href="#" class="button following" onClick="showFollowing()">-</a>
+                        <a href="#" class="button followers" onClick="showFollowers()">-</a>
+                    </div>
+                </div>
+            </div>
+
+            <table id="list" class="results">
+                <thead>
+                    <tr>
+                        <th width="410">Title</th>
+                        <th width="120">Date</th>
+                        <th width="50" align="right">Length</th>
+                        <th width="70" align="right">Views</th>
+                        <th width="70" align="right">Likes</th>
+                        <th width="70" align="right">Shares</th>
+                        <th width="210">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </main>
+
+        <div id="popup-message"></div>
+
+        <div id="settings">
+            <a class="close-settings" onClick="hideSettings()">&#x2715;</a>
+            <div class="area">
+                <div class="section">
+                    <ul>
+                        <li style="padding-bottom: 5px;"><h4>Video Player</h4></li>
+                        <li style="padding-bottom: 20px;">
+                            Internal player is used by default unless you specify one in the field below.<br>
+                            <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
+                            <small>You <b>MUST</b> also add <i>%url%</i> to the command to denote where to place the URL to the replay. (Ex: mpv %url%)</small>
+                        </li>
+                        <li style="padding-bottom: 5px;"><h4>Downloads</h4></li>
+                        <li style="padding-bottom: 20px;">
+                            <ul style="margin: 16px 0 0; padding: 0;">
+                                <li>
+                                    LiveMe Pro Tools now uses JDownloader2 for all downloading.  You will need to add and enable <a href="#" onClick="openURL('https://github.com/nemec/JDHttpAPI')">this</a> plugin in JDownloader2 for downloading to work now.<br>
+                                </li>
+                                <li style="margin: 8px 0;">
+                                    IP of jDownloader Computer:
+                                    <input type="text" id="jdownloader-ip" placeholder="localhost" value="127.0.0.1" disabled style="width: 90px; float: right; text-align: right;">
+                                </li>
+                                <li style="margin: 8px 0;">
+                                    Port Number:
+                                    <input type="text" id="jdownloader-ip" placeholder="8729" value="8729" disabled style="width: 50px; float: right; text-align: right;">
+                                </li>
+                                <li style="margin: 8px 0;">
+                                    Password:
+                                    <input type="text" id="jdownloader-ip" placeholder="blank" value="" disabled style="width: 90px; float: right; text-align: right;">
+                                </li>
+                                <li>
+                                    <small>LiveMe Pro Tools uses the defaults of the plugin running on the local computer.</small>
+                                </li>
+                            </ul>
+                        </li>
+                        <li style="padding-bottom: 5px;"><h4>Fans and Followings</h4></li>
+                        <li style="padding-bottom: 20px;">
+                            <input type="checkbox" id="viewmode-followings"> Hide followings with no replays.<br>
+                            <input type="checkbox" id="viewmode-followers"> Hide followers with no replays.<br>
+                        </li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <ul>
+                        <li style="padding-bottom: 5px;"><h4>Tracking</h4></li>
+                        <li>
+                            LiveMe Pro Tools tracks all viewed profiles, replays and downloads.  This feature cannot be disabled.
+                        </li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <ul>
+                        <li>
+                            <h4 id="appname">LiveMe Pro Tools <h6 id="version">Version 20180000</h6></h4>
+                        </li>
+                        <li style="padding-top: 20px;">
+                            <h6>Contributors:</h6>
+                            <ul style="font-weight: 300; font-size: 10pt; line-height: 12pt">
+                                <li>TheCoder</li>
+                            </ul>                            
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="status">
+            
+        </div>
+        <overlay>&nbsp;</overlay>
+
+        <footer>
+            <div id="footer-progressbar">
+                <div></div>
+            </div>
+            <h1>&nbsp;</h1>
+        </footer>
+    </body>
+</html>

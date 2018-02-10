@@ -1,0 +1,80 @@
+{
+  "name": "liveme-pro-tools",
+  "version": "1.0.2018020901",
+  "description": "Tools for Live.me video network",
+  "homepage": "https://github.com/thecoder75/liveme-pro-tools/",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thecoder75/liveme-pro-tools"
+  },
+  "scripts": {
+    "postinstall": "",
+    "start": "./node_modules/.bin/electron . --enable-logging",
+    "dev": "NODE_ENV='development' npm run start",
+    "release-win": "build -w --publish always",
+    "release-linux": "build -l --publish always",
+    "release": "build -l --publish always && build -w --publish always"
+  },
+  "author": "TheCoder75",
+  "license": "GPL-3.0",
+  "build": {
+    "appId": "com.thecoderstoolbox.livemeprotools",
+    "productName": "LiveMe Pro Tools",
+    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "asar": true,
+    "compression": "maximum",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "build/appicon.ico"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "category": "Network",
+      "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
+      "maintainer": "thecoder1975@gmail.com"
+    },
+    "deb": {
+      "compression": "bzip2"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "vPrefixedTagName": true,
+        "releaseType": "draft"
+      }
+    ]
+  },
+  "dependencies": {
+    "async": "^2.6.0",
+    "axios": "^0.17.1",
+    "backup": "^1.1.0",
+    "electron-is-dev": "^0.3.0",
+    "electron-settings": "^3.1.4",
+    "format-duration": "^1.0.0",
+    "liveme-api": "^1.2.6",
+    "miniget": "^1.1.0",
+    "pretty-date": "^0.2.0",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {
+    "electron": "^1.8.2",
+    "electron-builder": "^19.56.0"
+  }
+}

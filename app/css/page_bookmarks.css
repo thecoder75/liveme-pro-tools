@@ -1,0 +1,52 @@
+#bookmark-list tr:hover { background-color: rgba(0,0,0,0); }
+
+#bookmark-list td {
+    font-size: 10pt;
+    position: relative;
+    padding: 8px 0;
+    height: 112px;
+    border-bottom: solid 8px rgb(24,24,24);
+}
+
+
+#bookmark-list h1, #bookmark-list h2, #bookmark-list h3, #bookmark-list h4 {
+    position: absolute;
+    left: 8px;
+
+}
+#bookmark-list h1 { font-size: 18pt; line-height: 40px; top: 0px; }
+#bookmark-list h3 { font-size: 9.5pt; line-height: 16px; top: 40px; }
+#bookmark-list h4 { font-size: 9.5pt; line-height: 16px; top: 56px; }
+
+#bookmark-list h3 span, #bookmark-list h4 span {
+    display: inline-block;
+    width: 90px;
+}
+#bookmark-list div.buttons {
+    position: absolute;
+    bottom: 2px;
+    left: 8px;
+    font-weight:  400;
+}
+
+#bookmark-list td div.buttons a.button { margin-right: 3px; width: 92px; }
+
+#bookmark-list td.new {
+    background-color: rgba(0,240,80,0.2);
+}
+#bookmark-list td .flag { display: none; }
+
+#bookmark-list td.new .flag {
+    display: block;
+    width: 80px;
+    height: 24px;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    font-size: 12pt;
+    font-weight: 600;
+    line-height: 24px;
+    text-align: center;
+}

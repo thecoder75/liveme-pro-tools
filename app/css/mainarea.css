@@ -1,0 +1,31 @@
+/*
+    Main Content Area
+*/
+main {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    top: 40px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    background-color: rgb(32,32,32);
+}
+main.has-footer {
+    bottom: 24px;
+}
+main.has-details {
+    padding-top: 120px;
+}
+main.has-details > div.details {
+    display: block;
+    position: absolute;
+    top: 0;
+    height: 120px;
+    width: 100%;
+    padding: 0;
+}
+main.has-small-header { top: 24px; }
+main.has-two-line-header { top: 64px; }

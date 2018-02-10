@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/style.css" media="all">
+        <link rel="stylesheet" href="css/page_wizard.css" media="all">
+        <script>
+            if (typeof module === 'object') {window.module = module; module = undefined; }
+        </script>
+        <title>LiveMe Pro Tools</title>
+        <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="js/wizardwindow.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>First Run Wizard</h1>
+        </header>
+        <main>
+            <div id="wait">
+                <div class="message"></div>
+            </div>
+
+            <div id="stage1" class="stage">
+                <h4>First Run Wizard</h4>
+                <p>
+                    You will be asked some questions during this wizard to help set up things and to help in
+                    getting your data from the older supported apps.
+                </p>
+                <div class="buttons">
+                    <button onClick="goStage2()">Next &gt;</button>
+                </div>
+            </div>
+
+            <div id="stage2" class="stage">
+                <h4>Following Lists</h4>
+                <p>
+                    You now have the ability to hide any accounts being listed in the followings windows if
+                    they don't have any replays at all.
+                </p>
+                <p>
+                    Would you like to enable this feature?
+                </p>
+                <div class="buttons">
+                    <button onClick="goStage3(1)">Yes</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button onClick="goStage3(0)">No</button>
+                </div>
+            </div>
+
+            <div id="stage3" class="stage">
+                <h4>Import from LiveMe Tools</h4>
+                <p>
+                    Would you like to import the Favorites and Downloads history from LiveMe Tools?
+                </p>
+                <div class="buttons">
+                    <button onClick="goStage4(1)">Yes</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button onClick="goStage4(0)">No</button>
+                </div>
+            </div>
+
+            <div id="stage4" class="stage">
+                <h4>Import from LiveMe Toolkit</h4>
+                <p>
+                    Would you like to import the Favorites, Downloads, and Viewed Profiles history from LiveMe Toolkit?
+                </p>
+                <div class="buttons">
+                    <button onClick="goStage5(1)">Yes</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button onClick="goStage5(0)">No</button>
+                </div>
+            </div>
+
+            <div id="stage5" class="stage">
+                <h4>Wizard Complete</h4>
+                <p>
+                    Remember, you can change many more options in the Settings page by clicking the menu button in the upper-left corner.
+                </p>
+                <p>
+                    Don't forget to watch the main screen for updates and other useful tips and tricks.
+                </p>
+                <div class="buttons">
+                    <button onClick="goStage6()">Finish</button>
+                </div>
+            </div>
+
+        </main>
+    </body>
+</html>

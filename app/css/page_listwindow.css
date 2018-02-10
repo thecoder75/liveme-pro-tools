@@ -1,0 +1,133 @@
+/*
+    Friends/Followings Window Stylings
+*/
+.fflist {
+}
+
+.fflist td {
+    font-size: 10.5pt;
+    position: relative;
+    padding: 8px 0;
+    height: 96px;
+    border-bottom: solid 8px #000;
+}
+
+.fflist td h1 {
+    position: absolute;
+    z-index: 5;
+    top: 4px;
+    left: 8px;
+    font-size: 12pt;
+    font-weight: 400;
+    line-height: 24px;
+    padding: 0;
+    margin: 0;
+}
+
+.fflist td div.seen {
+    position: absolute;
+    z-index: 10;
+    top: 4px;
+    right: 8px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 16px;
+}
+.fflist td div.bookmarked {
+    position: absolute;
+    top: 4px;
+    right: 32px;
+    display: block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 16px;
+}
+.fflist td div.countrylevel {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    letter-spacing: -0.02em;
+    line-height: 12pt;
+    font-size: 9.5pt;
+    font-weight:  400;
+    padding: 0 8px;
+}
+
+.fflist td div.countrylevel div.cell {
+    display: inline-block;
+}
+.fflist td div.countrylevel div.cell a {
+    cursor: pointer;
+}
+.fflist td div.countrylevel div.cell span {
+    float: right;
+}
+
+.fflist td div.countrylevel b {
+    font-size: 8pt;
+}
+.fflist td div.buttons {
+    position: absolute;
+    bottom: 0;
+    left: 16px;
+    font-size: 10pt;
+    font-weight:  400;
+}
+.fflist td div.buttons a.button { margin-right: 3px; width: 92px; }
+
+
+
+.search {
+    position: absolute;
+    top: 30px;
+    left: 48px;
+    right: 48px;
+
+    display: block;
+    height: 24px;
+    border-radius: 12px;
+    background-color: rgb(64,64,64);
+
+    padding: 0;
+    vertical-align: middle;
+
+    -webkit-app-region: no-drag;
+}
+.search i.icon.icon-search {
+    vertical-align: top;
+    font-size: 12px;
+    display: inline-block;
+    padding: 0 0 0 8px;
+    height: 24px;
+    line-height: 24px;
+    width: 24px;
+}
+.search input[type=text] {
+    display: inline-block;
+    border: none;
+    width: 248px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 4px;
+    margin: 0;
+    color: rgb(192,192,192);
+    background-color: transparent;
+    vertical-align: top;
+    outline: none;
+}
+.search button {
+    border: none;
+    background-color: transparent;
+    color: rgb(160,160,160);
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 20px;
+    padding: 4px 0 0;
+    cursor: pointer;
+    vertical-align: top;
+}
