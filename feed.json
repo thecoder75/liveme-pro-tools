@@ -3,12 +3,12 @@
     "updated":0,
     "stories":[
         {
-            "title":"Easy Searching Now",
-            "content":""
+            "title":"It's New!",
+            "body":"<p>Welcome to the all new LiveMe Pro Tools!</p>"
         },
         {
-            "title":"Better Tracking",
-            "content":""
+            "title":"News Feed",
+            "body":"<p>This news feed section will update periodically with bulletins and tips.  Be sure to keep checking it.</p>"
         }
     ]
 }
