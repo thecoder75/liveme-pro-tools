@@ -680,7 +680,7 @@ function _addReplayEntry(replay, wasSearched) {
                         <td width="210" class="${highlight}" style="padding: 0 16px; text-align: right;">
                             <a class="button mini icon-small" onClick="copyToClipboard('${replay.vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
                             &nbsp;&nbsp;
-                            <a class="button mini icon-small" onClick="copyToClipboard('${replay.hslvideosource}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
+                            <a class="button mini icon-small" onClick="copyToClipboard('${replay.hlsvideosource}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <a class="button icon-only" onClick="playVideo('${replay.vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
                             <a class="button icon-only" onClick="downloadVideo('${replay.vid}')" title="Download Replay"><i class="icon icon-download"></i></a>
