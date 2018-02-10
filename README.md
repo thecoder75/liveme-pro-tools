@@ -8,7 +8,11 @@
 
 ### Prebuilt Binaries
 
+Unlike previous tools, this one is manually built by @thecoder75 and published.
+
 For the latest downloads, check the [release](releases/) section.
+
+*Please note there are no plans to release a macOS version at this time!*
 
 ## Built With
 * [Electron](http://electron.atom.io)
