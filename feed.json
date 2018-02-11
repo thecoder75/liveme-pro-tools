@@ -1,7 +1,11 @@
 [
     {
-        "title":"It's New!",
-        "body":"<p>Welcome to the all new LiveMe Pro Tools!</p>"
+        "title":"New Filtering",
+        "body":"<p>Did you know starting in v1.20 you can now filter your Following and Fans list by country now?</p>"
+    },
+    {
+        "title":"Missing Replays",
+        "body":"<p>Even though it may say there's replays available, sometimes they are marked hidden and therefore are not visible.</p>"
     },
     {
         "title":"News Feed",
