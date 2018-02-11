@@ -393,7 +393,7 @@ function _homethread() {
         if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
         if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
 
-    }, 100);
+    }, 200);
 }
 
 function _checkBookmark(i) {
@@ -417,6 +417,14 @@ function _checkBookmark(i) {
             var bookmark = DataManager.getSingleBookmark(userid);
             bookmark.newest_replay = Math.floor(replays[0].vtime);
             DataManager.updateBookmark(bookmark);
+
+            LiveMe.getUserInfo(userid).then(user => {
+                if (user == undefined) return;
+
+                var bookmark = DataManager.getSingleBookmark(userid);
+                bookmark.count.replays = user.count_info.video_count;
+                DataManager.updateBookmark(bookmark);
+            }); 
         }
 
     });
