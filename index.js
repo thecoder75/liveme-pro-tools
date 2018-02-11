@@ -165,7 +165,6 @@ function createWindow() {
 
 
     if (isFreshInstall) {
-        console.log('Fresh install.');
         DataManager.disableWrites();
         wizardWindow.loadURL(`file://${__dirname}/app/wizard.html`);
         wizardWindow.show();
@@ -370,6 +369,31 @@ ipcMain.on('open-followers-window', (event, arg) => {
     win.on('ready-to-show', () => {
         win.show();
     }).loadURL(`file://${__dirname}/app/listwindow.html?0&` + arg.userid);
+});
+
+ipcMain.on('read-comments', (event, arg) => {
+
+    var win = new BrowserWindow({
+        width: 400,
+        height: 660,
+        resizable: false,
+        darkTheme: false,
+        autoHideMenuBar: true,
+        skipTaskbar: false,
+        backgroundColor: '#000000',     // We utilize the macOS Vibrancy mode
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        fullscreen: false,
+        maximizable: false,
+        closable: true,
+        frame: false,
+        show: false
+    });
+    win.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()));
+
+    win.on('ready-to-show', () => {
+        win.showInactive();
+    }).loadURL(`file://${__dirname}/app/comments.html?` + arg.userid);
 });
 
 ipcMain.on('open-bookmarks', (event, arg) => {

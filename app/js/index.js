@@ -279,11 +279,9 @@ function preSearch(q) {
 function AddToBookmarks() {
 
     if (DataManager.isBookmarked(current_user) == true) {
-        console.log('Removing bookmark');
         DataManager.removeBookmark(current_user);
         $('a.bookmark').attr('title', 'Add to Bookmarks').html('<i class="icon icon-star-empty"></i>');
     } else {
-        console.log('Adding bookmark');
         DataManager.addBookmark(current_user);
         $('a.bookmark').attr('title', 'Remove from Bookmarks').html('<i class="icon icon-star-full bright yellow"></i>');
     }
@@ -414,20 +412,14 @@ function _checkBookmark(i) {
             $('#bookmark-' + userid + ' h2').html('NEW');
             $('#bookmark-' + userid).show().removeClass('nonew');
 
-            console.log(userid);
-
             var bookmark = DataManager.getSingleBookmark(userid);
             bookmark.newest_replay = Math.floor(replays[0].vtime);
             DataManager.updateBookmark(bookmark);
 
             LiveMe.getUserInfo(userid).then(user => {
                 if (user == undefined) return;
-
-                console.log(JSON.stringify(user, null, 2));
-
                 var b = DataManager.getSingleBookmark(user.user_info.uid);
-                console.log(JSON.stringify(b, null, 2));
-                b.count.replays = user.count_info.video_count;
+                b.counts.replays = user.count_info.video_count;
                 DataManager.updateBookmark(b);
             }); 
         }
@@ -531,7 +523,6 @@ function performVideoLookup(q) {
                 performUserLookup(video.userid);
             }
         }).catch( err => {
-            console.log(JSON.stringify(err, null, 2));
             $('#status').html('Video not found or was deleted from the servers.');
             $('overlay').hide();
             $('main').hide();
@@ -608,7 +599,9 @@ function performUserLookup(uid) {
 
             getUsersReplays();
             showProgressBar();
-        });
+        }).catch(error => {
+            $('#status').html('Account no longer available.');
+        })
 
 }
 
