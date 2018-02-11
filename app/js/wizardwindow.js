@@ -49,7 +49,11 @@ function goStage4(i) {
 
         fs.readFile(path.join(remote.app.getPath('appData'), 'LiveMeTools', 'favorites.json'), 'utf8', function (err,data) {
             if (err) {
-                // 
+                $('#stage3').animate({ opacity: 0.0 }, 400);
+                if (lmtk_exists)
+                    $('#stage4').animate({ opacity: 1.0 }, 400);   
+                else
+                    $('#stage5').animate({ opacity: 1.0 }, 400);   
             } else {
                 var list = JSON.parse(data);
                 for (var i = 0; i < list.length; i++) {
@@ -119,7 +123,10 @@ function goStage5(i) {
 
         fs.readFile(path.join(remote.app.getPath('appData'), 'liveme-toolkit', 'favorites.json'), 'utf8', function (err,data) {
             if (err) {
-                // 
+                $('#wait').hide();
+
+                $('#stage4').animate({ opacity: 0.0 }, 400);
+                $('#stage5').animate({ opacity: 1.0 }, 400);   
             } else {
                 var list = JSON.parse(data);
                 for (var i = 0; i < list.length; i++) {
