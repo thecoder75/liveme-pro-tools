@@ -1,11 +1,12 @@
 # Change Log
 
-### v1.15.20180211
+### v1.20.20180211
 Added:
 - Added Country filter to Following/Fan list view
 
 Fixed:
 - Unable to get Followings or Fans to work when looking at username search results
+- Fixed hangup issue when importing large amounts of bookmarks during first run
 
 ### v1.14.20180210
 Added:

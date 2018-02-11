@@ -377,7 +377,7 @@ function initHome() {
 
     setTimeout(function(){
         _homethread();
-    }, 50);
+    }, 250);
 
 
 }
@@ -391,7 +391,7 @@ function _homethread() {
             hideProgressBar();
             $('div.nonew').remove();
         } else {
-            setTimeout(function() { _homethread(); }, 200);
+            setTimeout(function() { _homethread(); }, 250);
         }
 
         setProgressBarValue((tempvar.index / tempvar.max) * 100);
@@ -400,42 +400,56 @@ function _homethread() {
         if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
         if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
         if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
-        if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
 
-    }, 200);
+    }, 250);
 }
 
 function _checkBookmark(i) {
 
     if (tempvar.list[i] == undefined) return;
 
-    LiveMe.getUserReplays(tempvar.list[i].uid, 1, 2).then(replays => {
 
-        if (replays == undefined) return;
-        if (replays.length < 1) return;
+    LiveMe.getUserInfo(tempvar.list[i].uid).then(user => {
 
-        var count = 0, userid = replays[0].userid, d = $('#bookmark-'+userid).attr('data-viewed');
-        for (i = 0; i < replays.length; i++) {
-            if (replays[i].vtime - d > 0) count++;
+        if (user == undefined) return;
+
+        var b = DataManager.getSingleBookmark(user.user_info.uid);
+        b.counts.replays = user.count_info.video_count;
+        b.counts.friends = user.count_info.friends_count;
+        b.counts.followers = user.count_info.follower_count;
+        b.counts.followings = user.count_info.following_count;
+        b.signature = user.user_info.usign;
+        b.sex = user.user_info.sex;
+        b.face = user.user_info.face;
+        b.nickname = user.user_info.uname;
+        b.shortid = user.user_info.short_id;
+        DataManager.updateBookmark(b);
+
+        if (b.counts.replays > 0) {
+            LiveMe.getUserReplays(user.user_id.uid, 1, 2).then(replays => {
+
+                if (replays == undefined) return;
+                if (replays.length < 1) return;
+
+                var count = 0, userid = replays[0].userid, d = $('#bookmark-'+userid).attr('data-viewed');
+                for (i = 0; i < replays.length; i++) {
+                    if (replays[i].vtime - d > 0) count++;
+                }
+
+                if (count > 0) {
+                    $('#bookmark-' + userid + ' h2').html('NEW');
+                    $('#bookmark-' + userid).show().removeClass('nonew');
+
+                    var bookmark = DataManager.getSingleBookmark(userid);
+                    bookmark.newest_replay = Math.floor(replays[0].vtime);
+                    DataManager.updateBookmark(bookmark);
+
+                }
+
+            });
         }
 
-        if (count > 0) {
-            $('#bookmark-' + userid + ' h2').html('NEW');
-            $('#bookmark-' + userid).show().removeClass('nonew');
-
-            var bookmark = DataManager.getSingleBookmark(userid);
-            bookmark.newest_replay = Math.floor(replays[0].vtime);
-            DataManager.updateBookmark(bookmark);
-
-            LiveMe.getUserInfo(userid).then(user => {
-                if (user == undefined) return;
-                var b = DataManager.getSingleBookmark(user.user_info.uid);
-                b.counts.replays = user.count_info.video_count;
-                DataManager.updateBookmark(b);
-            }); 
-        }
-
-    });
+    });        
 
 }
 
