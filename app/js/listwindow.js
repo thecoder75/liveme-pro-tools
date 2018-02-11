@@ -162,9 +162,11 @@ function doFollowings() {
 
         // $('footer h1').html($('table.fflist tbody tr').length + ' of ' + max_count + ' accounts loaded' + (filters.seen == false || filters.countryCode.length > 1 ? ' and filtered' : '') + '.');
 
-        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 1))) {
-            current_page++;
-            doFollowings();
+        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 10))) {
+            setTimeout(function(){
+                current_page++;
+                doFollowings();
+            }, 200)
         }
     });
 
@@ -207,9 +209,11 @@ function doFans() {
         }
 
 
-        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 1))) {
-            current_page++;
-            doFans();
+        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 10))) {
+            setTimeout(function(){
+                current_page++;
+                doFans();
+            }, 200)
         }
     });
 }

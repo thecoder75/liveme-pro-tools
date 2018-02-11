@@ -1,6 +1,10 @@
 # Change Log
 
-### v1.20.20180211
+### v1.21.20180211
+Fixed:
+- Sometimes Following/Fans windows would only show or list a few accounts even though there was a lot available.
+
+### v1.20.20180210
 Added:
 - Added Country filter to Following/Fan list view
 - Added ability to reset the app back to fresh install state.

@@ -10,7 +10,7 @@ A powerful tool for Live.me video network making it easy to:
 - Track accounts
 - Browse Followers and Followings
 - Watch and download replays
-- and much more!
+- and much more
 
 ## Getting Started
 
