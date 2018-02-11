@@ -632,7 +632,7 @@ function getUsersReplays() {
                 }
             } 
 
-            $('table tr').not('.user-'+current_user.uid).remove();
+            $('table tbody tr').not('.user-'+current_user.uid).remove();
 
             $('footer h1').html($('#list tbody tr').length + ' visible of ' + current_user.counts.replays + ' total replays loaded.');
             setProgressBarValue(($('#list tbody tr').length / current_user.counts.replays) * 100);
