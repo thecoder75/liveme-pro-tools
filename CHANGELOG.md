@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.22.20180211
+Fixed:
+- The imfamous hangup issue during importing in the wizard
+
 ### v1.21.20180211
 Fixed:
 - Sometimes Following/Fans windows would only show or list a few accounts even though there was a lot available.
