@@ -315,9 +315,6 @@ function initHome() {
         
         var package = JSON.parse(body), cv = remote.app.getVersion(), upgrade = cv < package.version;
 
-        console.log(upgrade);
-        console.log(package.version);
-
         if (upgrade) {
             $('#home div.panel').append(`
                 <div class="section">
@@ -414,6 +411,8 @@ function _checkBookmark(i) {
             $('#bookmark-' + userid + ' h2').html('NEW');
             $('#bookmark-' + userid).show().removeClass('nonew');
 
+            console.log(userid);
+
             var bookmark = DataManager.getSingleBookmark(userid);
             bookmark.newest_replay = Math.floor(replays[0].vtime);
             DataManager.updateBookmark(bookmark);
@@ -421,9 +420,12 @@ function _checkBookmark(i) {
             LiveMe.getUserInfo(userid).then(user => {
                 if (user == undefined) return;
 
-                var bookmark = DataManager.getSingleBookmark(userid);
-                bookmark.count.replays = user.count_info.video_count;
-                DataManager.updateBookmark(bookmark);
+                console.log(JSON.stringify(user, null, 2));
+
+                var b = DataManager.getSingleBookmark(user.user_info.uid);
+                console.log(JSON.stringify(b, null, 2));
+                b.count.replays = user.count_info.video_count;
+                DataManager.updateBookmark(b);
             }); 
         }
 
@@ -630,6 +632,8 @@ function getUsersReplays() {
                 }
             } 
 
+            $('table tr').not('.user-'+current_user.uid).remove();
+
             $('footer h1').html($('#list tbody tr').length + ' visible of ' + current_user.counts.replays + ' total replays loaded.');
             setProgressBarValue(($('#list tbody tr').length / current_user.counts.replays) * 100);
             has_more = replays.length == MAX_PER_PAGE;
@@ -674,11 +678,12 @@ function _addReplayEntry(replay, wasSearched) {
     var downloadDate = DataManager.wasDownloaded(replay.vid), watchDate = DataManager.wasWatched(replay.vid);
     var downloaded = downloadDate == false ? '<i class="icon icon-floppy-disk dim"></i>' : '<i class="icon icon-floppy-disk bright blue" title="Downloaded '+prettydate.format(downloadDate)+'"></i>';
     var watched = watchDate == false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched '+prettydate.format(watchDate)+'"></i>';
+    var seen = watchDate == false ? '' : 'watched';
 
-    let isLive = replay.hlsvideosource.endsWith('flv') || replay.hlsvideosource.indexOf('liveplay') > 0 ? '[LIVE]' : '';
+    var isLive = replay.hlsvideosource.endsWith('flv') || replay.hlsvideosource.indexOf('liveplay') > 0 ? '[LIVE]' : '';
 
     var h = `
-                    <tr data-id="${replay.vid}" class="${searched}">
+                    <tr data-id="${replay.vid}" class="${searched} ${seen} user-${replay.userid}">
                         <td width="410" class="${highlight}">${watched}&nbsp;&nbsp;${downloaded}&nbsp;&nbsp;&nbsp;${unlisted}${isLive}${replay.title}</td>
                         <td width="120" class="${highlight}" align="center">${ds}</td>
                         <td width="50" class="${highlight}" align="right">${length}</td>

@@ -39,9 +39,9 @@ function createWindow() {
             hide_zeroreplay_followings: true
         });
         appSettings.set('position', {
-            mainWindow: { left: -1, top: -1 },
-            playerWindow: { left: -1, top: -1 },
-            bookmarksWindow: { left: -1, top: -1 }
+            mainWindow: [ -1, -1],
+            playerWindow: [ -1, -1],
+            bookmarksWindow: [ -1, -1]
         });
         appSettings.set('size', {
             mainWindow: [ 1024, 600],
@@ -50,6 +50,15 @@ function createWindow() {
         });
 
 	}
+
+    var test = appSettings.get('position');
+    if (test.mainWindow[1] == undefined) {
+        appSettings.set('position', {
+            mainWindow: [ -1, -1],
+            playerWindow: [ -1, -1],
+            bookmarksWindow: [ -1, -1]
+        });
+    }
 
     /*
         Create our window definitions
@@ -60,6 +69,8 @@ function createWindow() {
         icon: __dirname + '/appicon.ico',
         width: winsize.mainWindow[0],
         height: winsize.mainWindow[1],
+        x: winposition.mainWindow[0] != -1 ? winposition.mainWindow[0] : null,
+        y: winposition.mainWindow[1] != -1 ? winposition.mainWindow[1] : null,        
         minWidth: 1024,
         maxWidth: 1024,
         minHeight: 480,
@@ -268,6 +279,8 @@ ipcMain.on('watch-replay', (event, arg) => {
                         icon: __dirname + '/appicon.ico',
                         width: winsize[0],
                         height: winsize[1],
+                        x: winposition[0] != -1 ? winposition[0] : null,
+                        y: winposition[1] != -1 ? winposition[1] : null,        
                         minWidth: 380,
                         minHeight: 708,
                         darkTheme: true,
