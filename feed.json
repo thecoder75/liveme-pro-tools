@@ -5,6 +5,6 @@
     },
     {
         "title":"News Feed",
-        "body":"<p>This news feed section will update periodically with bulletins and tips.  Be sure to keep checking it.</p>"
+        "body":"<p>This news feed section will update periodically with bulletins and tips.  Be sure to keep checking it.</p><p>If you find any bugs please open an Issue Ticket so the contributors can address it right away.</p>"
     }
 ]

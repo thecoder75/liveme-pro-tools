@@ -327,19 +327,27 @@ function initHome() {
                 </div>
             `);
         }
-
-        $('#home div.panel').append(`
-                <div class="section">
-                    <h4>Welcome</h4>
-                    <p>
-                        Welcome to the new LiveMe Pro Tools!
-                    </p>
-                </div>
-        `);
-
     });  
 
+    setTimeout(function(){
+        request({
+            url: 'https://raw.githubusercontent.com/thecoder75/liveme-pro-tools/master/feed.json',
+            method: 'get'
+        }, function(err,httpResponse,body) {
+            var feed = JSON.parse(body);
 
+            for (i = 0; i < feed.length; i++) {
+                $('#home div.panel').append(`
+                <div class="section">
+                    <h4>${feed[i].title}</h4>
+                    ${feed[i].body}
+                </div>
+                `);
+            }
+
+        });  
+
+    }, 1000);
 
     $('footer h1').html('Bookmarks are now being scanned for new replays...');
     showProgressBar();
