@@ -1,24 +1,26 @@
 # LiveMe Pro Tools
-
-![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg)
-
 ## *The successor to LiveMe Tools!*
 
-** Currently this project is near completion! **
+![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg)
 
 ## Getting Started
 
 ### Prebuilt Binaries
 
-Unlike previous tools, this one is manually built by @thecoder75 and published.
-
 For the latest downloads, check the [release](releases/) section.
+
+Currently supported OS:
+- Microsoft Windows 7 or higher (32-bit or 64-bit)
+- Ubuntu-based Linux and Debian Distributions (32-bit or 64-bit)
 
 *Please note there are no plans to release a macOS version at this time!*
 
 ## Built With
 * [Electron](http://electron.atom.io)
 * [NodeJS](http://nodejs.org)
+
+## Contributing
+If you find any bugs or would like to help add features or additional functions, please create pull request for review by the contributors.
 
 ## Contributors
 * [thecoder75](https://github.com/thecoder75)
