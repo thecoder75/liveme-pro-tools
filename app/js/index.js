@@ -227,12 +227,15 @@ function showUser(u) {
 function openBookmarks() { ipcRenderer.send('open-bookmarks'); }
 function showFollowing() { ipcRenderer.send('open-followings-window', { userid: current_user.uid }); }
 function showFollowers() { ipcRenderer.send('open-followers-window', { userid: current_user.uid }); }
+
 function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }); }
 /* MAY BE ADDED IN FUTURE RELEASE function viewMessages(vid) { ipcRenderer.send('view-messages', { videoid: vid }); } */
 function downloadVideo(vid) { 
     ipcRenderer.send('download-replay', { videoid: vid }); 
 }
 function openURL(u) { shell.openExternal(u); }
+function readComments(u) { ipcRenderer.send('read-comments', { userid: u }); }
+
 function goHome() { 
     $('footer').hide(); 
     $('main').hide(); 
@@ -505,8 +508,6 @@ function doSearch() {
             $('#list thead').html('');
             performUsernameSearch();
             break;
-
-
     }
 }
 
@@ -696,6 +697,7 @@ function _addReplayEntry(replay, wasSearched) {
                             <a class="button mini icon-small" onClick="copyToClipboard('${replay.hlsvideosource}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <a class="button icon-only" onClick="playVideo('${replay.vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
+                            <a class="button icon-only" onClick="readComments('${replay.vid}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
                             <a class="button icon-only" onClick="downloadVideo('${replay.vid}')" title="Download Replay"><i class="icon icon-download"></i></a>
                         </td>
                     </tr>
