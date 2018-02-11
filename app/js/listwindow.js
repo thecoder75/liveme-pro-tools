@@ -6,7 +6,50 @@ const   { ipcRenderer, remote, clipboard } = require('electron'),
         appSettings = require('electron-settings'),
         DataManager = remote.getGlobal('DataManager');
 
-var     winType = 0, userid = '', userinfo, max_count = 0, current_page = 1, scroll_busy = false, MAX_PAGE_SIZE = 10;
+var     winType = 0, userid = '', userinfo, max_count = 0, total_count = 0, current_page = 1, scroll_busy = false, filters = { countryCode: '', seen: true }, MAX_PAGE_SIZE = 8;
+var     cclist = [
+            [ "All Countries", "-" ], [ "Afghanistan", "AF" ], [ "Albania", "AL" ], [ "Algeria", "DZ" ], [ "American Samoa", "AS" ], [ "Andorra", "AD" ], 
+            [ "Angola", "AO" ], [ "Anguilla", "AI" ], [ "Antarctica", "AQ" ], [ "Antigua and Barbuda", "AG" ], [ "Argentina", "AR" ], [ "Armenia", "AM" ], 
+            [ "Aruba", "AW" ], [ "Australia", "AU" ], [ "Austria", "AT" ], [ "Azerbaijan", "AZ" ], [ "Bahamas", "BS" ], [ "Bahrain", "BH" ], 
+            [ "Bangladesh", "BD" ], [ "Barbados", "BB" ], [ "Belarus", "BY" ], [ "Belgium", "BE" ], [ "Belize", "BZ" ], [ "Benin", "BJ" ], 
+            [ "Bermuda", "BM" ], [ "Bhutan", "BT" ], [ "Bolivia", "BO" ], [ "Bosnia-Herzegovina", "BA" ], [ "Botswana", "BW" ], [ "Bouvet Island", "BV" ], 
+            [ "Brazil", "BR" ], [ "British Indian Ocean Territory", "IO" ], [ "Brunei Darussalam", "BN" ], [ "Bulgaria", "BG" ], [ "Burkina Faso", "BF" ], [ "Burundi", "BI" ], 
+            [ "Cambodia", "KH" ], [ "Cameroon", "CM" ], [ "Canada", "CA" ], [ "Cape Verde", "CV" ], [ "Cayman Islands", "KY" ], [ "Central African Republic", "CF" ], 
+            [ "Chad", "TD" ], [ "Chile", "CL" ], [ "China", "CN" ], [ "Christmas Island", "CX" ], [ "Cocos (Keeling) Islands", "CC" ], [ "Colombia", "CO" ], 
+            [ "Comoros", "KM" ], [ "Congo", "CG" ], [ "Congo, Dem. Republic", "CD" ], [ "Cook Islands", "CK" ], [ "Costa Rica", "CR" ], [ "Croatia", "HR" ], 
+            [ "Cuba", "CU" ], [ "Cyprus", "CY" ], [ "Czech Rep.", "CZ" ], [ "Denmark", "DK" ], [ "Djibouti", "DJ" ], [ "Dominica", "DM" ], 
+            [ "Dominican Republic", "DO" ], [ "Ecuador", "EC" ], [ "Egypt", "EG" ], [ "El Salvador", "SV" ], [ "Equatorial Guinea", "GQ" ], [ "Eritrea", "ER" ], 
+            [ "Estonia", "EE" ], [ "Ethiopia", "ET" ], [ "European Union", "EU.INT" ], [ "Falkland Islands (Malvinas)", "FK" ], [ "Faroe Islands", "FO" ], [ "Fiji", "FJ" ], 
+            [ "Finland", "FI" ], [ "France", "FR" ], [ "French Guiana", "GF" ], [ "French Southern Territories", "TF" ], [ "Gabon", "GA" ], [ "Gambia", "GM" ], 
+            [ "Georgia", "GE" ], [ "Germany", "DE" ], [ "Ghana", "GH" ], [ "Gibraltar", "GI" ], [ "Great Britain", "GB" ], [ "Greece", "GR" ], 
+            [ "Greenland", "GL" ], [ "Grenada", "GD" ], [ "Guadeloupe (French)", "GP" ], [ "Guam (USA)", "GU" ], [ "Guatemala", "GT" ], [ "Guernsey", "GG" ], 
+            [ "Guinea", "GN" ], [ "Guinea Bissau", "GW" ], [ "Guyana", "GY" ], [ "Haiti", "HT" ], [ "Heard Island and McDonald Islands", "HM" ], [ "Honduras", "HN" ], 
+            [ "Hong Kong", "HK" ], [ "Hungary", "HU" ], [ "Iceland", "IS" ], [ "India", "IN" ], [ "Indonesia", "ID" ], [ "International", "INT" ], 
+            [ "Iran", "IR" ], [ "Iraq", "IQ" ], [ "Ireland", "IE" ], [ "Isle of Man", "IM" ], [ "Israel", "IL" ], [ "Italy", "IT" ], 
+            [ "Ivory Coast", "CI" ], [ "Jamaica", "JM" ], [ "Japan", "JP" ], [ "Jersey", "JE" ], [ "Jordan", "JO" ], [ "Kazakhstan", "KZ" ], 
+            [ "Kenya", "KE" ], [ "Kiribati", "KI" ], [ "Korea-North", "KP" ], [ "Korea-South", "KR" ], [ "Kuwait", "KW" ], [ "Kyrgyzstan", "KG" ], 
+            [ "Laos", "LA" ], [ "Latvia", "LV" ], [ "Lebanon", "LB" ], [ "Lesotho", "LS" ], [ "Liberia", "LR" ], [ "Libya", "LY" ], 
+            [ "Liechtenstein", "LI" ], [ "Lithuania", "LT" ], [ "Luxembourg", "LU" ], [ "Macau", "MO" ], [ "Macedonia", "MK" ], [ "Madagascar", "MG" ], 
+            [ "Malawi", "MW" ], [ "Malaysia", "MY" ], [ "Maldives", "MV" ], [ "Mali", "ML" ], [ "Malta", "MT" ], [ "Marshall Islands", "MH" ], 
+            [ "Martinique (French)", "MQ" ], [ "Mauritania", "MR" ], [ "Mauritius", "MU" ], [ "Mayotte", "YT" ], [ "Mexico", "MX" ], [ "Micronesia", "FM" ], 
+            [ "Moldova", "MD" ], [ "Monaco", "MC" ], [ "Mongolia", "MN" ], [ "Montenegro", "ME" ], [ "Montserrat", "MS" ], [ "Morocco", "MA" ], 
+            [ "Mozambique", "MZ" ], [ "Myanmar", "MM" ], [ "Namibia", "NA" ], [ "Nauru", "NR" ], [ "Nepal", "NP" ], [ "Netherlands", "NL" ], 
+            [ "Netherlands Antilles", "AN" ], [ "New Caledonia (French)", "NC" ], [ "New Zealand", "NZ" ], [ "Nicaragua", "NI" ], [ "Niger", "NE" ], [ "Nigeria", "NG" ], 
+            [ "Niue", "NU" ], [ "Norfolk Island", "NF" ], [ "Northern Mariana Islands", "MP" ], [ "Norway", "NO" ], [ "Oman", "OM" ], [ "Pakistan", "PK" ], 
+            [ "Palau", "PW" ], [ "Panama", "PA" ], [ "Papua New Guinea", "PG" ], [ "Paraguay", "PY" ], [ "Peru", "PE" ], [ "Philippines", "PH" ], 
+            [ "Pitcairn Island", "PN" ], [ "Poland", "PL" ], [ "Polynesia (French)", "PF" ], [ "Portugal", "PT" ], [ "Puerto Rico", "PR" ], [ "Qatar", "QA" ], 
+            [ "Reunion (French)", "RE" ], [ "Romania", "RO" ], [ "Russia", "RU" ], [ "Rwanda", "RW" ], [ "Saint Helena", "SH" ], [ "Saint Kitts and Nevis Anguilla", "KN" ], 
+            [ "Saint Lucia", "LC" ], [ "Saint Pierre and Miquelon", "PM" ], [ "Saint Vincent and Grenadines", "VC" ], [ "Samoa", "WS" ], [ "San Marino", "SM" ], [ "Sao Tome and Principe", "ST" ], 
+            [ "Saudi Arabia", "SA" ], [ "Senegal", "SN" ], [ "Serbia", "RS" ], [ "Seychelles", "SC" ], [ "Sierra Leone", "SL" ], [ "Singapore", "SG" ], 
+            [ "Slovakia", "SK" ], [ "Slovenia", "SI" ], [ "Solomon Islands", "SB" ], [ "Somalia", "SO" ], [ "South Africa", "ZA" ], [ "South Georgia and South Sandwich Islands", "GS" ], 
+            [ "South Sudan", "SS" ], [ "Spain", "ES" ], [ "Sri Lanka", "LK" ], [ "Sudan", "SD" ], [ "Suriname", "SR" ], [ "Svalbard and Jan Mayen Islands", "SJ" ], 
+            [ "Swaziland", "SZ" ], [ "Sweden", "SE" ], [ "Switzerland", "CH" ], [ "Syria", "SY" ], [ "Taiwan", "TW" ], [ "Tajikistan", "TJ" ], 
+            [ "Tanzania", "TZ" ], [ "Thailand", "TH" ], [ "Togo", "TG" ], [ "Tokelau", "TK" ], [ "Tonga", "TO" ], [ "Trinidad and Tobago", "TT" ], 
+            [ "Tunisia", "TN" ], [ "Turkey", "TR" ], [ "Turkmenistan", "TM" ], [ "Turks and Caicos Islands", "TC" ], [ "Tuvalu", "TV" ], [ "U.K.", "UK" ], 
+            [ "USA", "US" ], [ "USA Minor Outlying Islands", "UM" ], [ "Uganda", "UG" ], [ "Ukraine", "UA" ], [ "United Arab Emirates", "AE" ], [ "Uruguay", "UY" ], 
+            [ "Uzbekistan", "UZ" ], [ "Vanuatu", "VU" ], [ "Vatican", "VA" ], [ "Venezuela", "VE" ], [ "Vietnam", "VN" ], [ "Virgin Islands (British)", "VG" ], 
+            [ "Virgin Islands (USA)", "VI" ], [ "Wallis and Futuna Islands", "WF" ], [ "Western Sahara", "EH" ], [ "Yemen", "YE" ], [ "Zambia", "ZM" ], [ "Zimbabwe", "ZW" ]
+        ];
 
 $(function(){
     var u = window.location.href, q = u.split('?')[1].split('&');
@@ -20,18 +63,18 @@ $(function(){
         $('header h1').html(user.user_info.uname + (winType == 0 ? ' Fans' : ' Followings')); 
     });
 
+    setTimeout(function(){ startLoad(); }, 100);
     setTimeout(function(){ $('main').show(); }, 250);
-    current_page = 1;
-    switch (winType) {
-        case 1:   // Followers/Fans
-            doFollowings();
-            break;
 
-        case 0:   // Followings
-            doFans();
-            break;
+    filters.countryCode = '';
+    filters.seen = true;
 
-    }
+    setTimeout(function(){
+        $('#countryCode').empty();
+        for (i = 0; i < cclist.length; i++) {
+            $('#countryCode').append(`<option value="${cclist[i][1]}">${cclist[i][0]}</option>`)
+        }
+    }, 5);
 
     $('main').scroll(function() {
         if (($(this).scrollTop() + $(this).height()) > ($('table').height() - 128)) {
@@ -52,39 +95,74 @@ $(function(){
 
 });
 
+function startLoad() {
+
+    $('table.fflist tbody').html('');
+    
+    current_page = 1;
+    total_count = 0;
+
+    switch (winType) {
+        case 1:   // Followers/Fans
+            doFollowings();
+            break;
+
+        case 0:   // Followings
+            doFans();
+            break;
+
+    }
+
+}
+
+function filterCountry() {
+    var cc = $('#countryCode').val();
+    filters.countryCode = $('#countryCode').val();
+    startLoad();
+}
+
 function copyToClipboard(i) { clipboard.writeText(i); }
 function closeWindow() { window.close(); }
 
-/*
-    Since dynamic loading is used, search will only work on what is already downloaded
-    so it won't work for most people now.
-
-function enterOnSearch(e) { if (e.keyCode == 13) beginSearch(); } 
-function beginSearch() {
-    var q = $('#search-query').val();
-
-    var f = $('tr:contains(\''+q+'\')');
-    console.log(f);
-    if (f != null) {
-        $('main').animate({
-            scrollTop: f.offset().top - f.height()
-        }, 400);
-    }
-}
-*/
-
 function doFollowings() {
+
+    $('footer h2').html('<i class="icon icon-arrow-down bright green"></i>');
     LiveMe.getFollowing(userid, current_page, MAX_PAGE_SIZE).then(results => {
+
+        $('footer h2').html('<i class="icon icon-arrow-down dim"></i>');
+
+        total_count += results.length;
+
         for(var i = 0; i < results.length; i++) {
-            addEntry(results[i]);
+            if ((filters.seen == true) && (filters.countryCode.length < 2)) {
+                addEntry(results[i]);
+            } if ((filters.countryCode.length > 1) && (results[i].countryCode == filters.countryCode)) {
+                if (filters.seen == true) {
+                    addEntry(results[i]);
+                } else if ((filters.seen == false) && (Datamanager.wasProfileViewed(results[i].uid) != false)) {
+                    addEntry(results[i]);
+                }
+            } else if (filters.countryCode.length < 2) {
+                if ((filters.seen == false) && (Datamanager.wasProfileViewed(results[i].uid) == false)) {
+                    addEntry(results[i]);
+                }
+            }
         }
         
         setTimeout(function(){ scroll_busy = false; }, 250);        
 
         has_more = results.length >= MAX_PAGE_SIZE;
-        $('footer h1').html($('table.fflist tbody tr').length + ' of ' + max_count + ' accounts loaded, scroll for more.');
 
-        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 2))) {
+        var c = $('table.fflist tbody tr').length;
+        if (filters.seen == false || filters.countryCode.length > 1) {
+            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts.`);
+        } else {
+            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
+        }
+
+        // $('footer h1').html($('table.fflist tbody tr').length + ' of ' + max_count + ' accounts loaded' + (filters.seen == false || filters.countryCode.length > 1 ? ' and filtered' : '') + '.');
+
+        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 1))) {
             current_page++;
             doFollowings();
         }
@@ -94,17 +172,42 @@ function doFollowings() {
 }
 
 function doFans() {
+
+    $('footer h2').html('<i class="icon icon-arrow-down bright green"></i>');
     LiveMe.getFans(userid, current_page, MAX_PAGE_SIZE).then(results => {
+
+        $('footer h2').html('<i class="icon icon-arrow-down dim"></i>');
+
+        total_count += results.length;
+        
         for(var i = 0; i < results.length; i++) {
-            addEntry(results[i]);
+            if ((filters.seen == true) && (filters.countryCode.length < 2)) {
+                addEntry(results[i]);
+            } if ((filters.countryCode.length > 1) && (results[i].countryCode == filters.countryCode)) {
+                if (filters.seen == true) {
+                    addEntry(results[i]);
+                } else if ((filters.seen == false) && (Datamanager.wasProfileViewed(results[i].uid) != false)) {
+                    addEntry(results[i]);
+                }
+            } else if (filters.countryCode.length < 2) {
+                if ((filters.seen == false) && (Datamanager.wasProfileViewed(results[i].uid) == false)) {
+                    addEntry(results[i]);
+                }
+            }
         }
 
         setTimeout(function(){ scroll_busy = false; }, 250);        
 
         has_more = results.length >= MAX_PAGE_SIZE;
-        $('footer h1').html($('table.fflist tbody tr').length + ' of ' + max_count + ' accounts loaded, scroll for more.');
+        var c = $('table.fflist tbody tr').length;
+        if (filters.seen == false || filters.countryCode.length > 1) {
+            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts.`);
+        } else {
+            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
+        }
 
-        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 2))) {
+
+        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 1))) {
             current_page++;
             doFans();
         }
@@ -115,7 +218,7 @@ function addEntry(entry) {
     var prettydate = require('pretty-date');
     var sex = entry.sex < 0 ? '' : (entry.sex == 0 ? 'female' : 'male'), 
         seenRaw = DataManager.wasProfileViewed(entry.uid),
-        seenDate = seenRaw != false ? prettydate.format(seenRaw) : 'never',
+        seenDate = seenRaw != false ? prettydate.format(seenRaw) : '',
         seen = seenRaw != false ? 'bright blue' : 'dim',
         bookmarked = DataManager.isBookmarked(entry) ? 'star-full bright yellow' : 'star-empty dim';
 
@@ -129,6 +232,17 @@ function addEntry(entry) {
                             <div class="bookmarked"><i class="icon icon-${bookmarked}"></i></div>
                             <h1>${entry.nickname}</h1>
                             <div id="user-${entry.uid}" class="countrylevel" data-seen="Last seen ${seenDate}">
+                                ${entry.countryCode}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<b>Level:</b> ${entry.level}
+                                <div class="cell" style="width: 160px; text-align: right;">
+                                    ${seenDate}
+                                </div>
+                                <br>
+                                <div class="cell" style="width: 125px;">
+                                    Short ID: <a onClick="copyToClipboard('${entry.short_id}')" title="Click to copy to clipboard.">${entry.short_id}</a>
+                                </div>
+                                <div class="cell" style="width: 160px; text-align: right;">
+                                    ID: <a onClick="copyToClipboard('${entry.uid}')" title="Click to copy to clipboard.">${entry.uid}</a>
+                                </div>
                             </div>
                             <div id="user-${entry.uid}-buttons" class="buttons">
                                 <a class="button mini view" onClick="showUser('${entry.uid}')">View Account</a>
@@ -148,22 +262,6 @@ function addEntry(entry) {
             $('#entry-' + user.user_info.uid).hide();
         } else {
             var ds = $('#user-' + user.user_info.uid).attr('data-seen'), seen = ds.indexOf('never') > -1 ? '' : ds;
-            $('#user-' + user.user_info.uid).html(`
-                                    <div class="cell" style="width: 125px;">
-                                        ${user.user_info.countryCode}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<b>Level:</b> ${user.user_info.level}
-                                    </div>
-                                    <div class="cell" style="width: 160px; text-align: right;">
-                                        ${seen}
-                                    </div>
-                                    <br>
-                                    <div class="cell" style="width: 125px;">
-                                        Short ID: <a onClick="copyToClipboard('${user.user_info.short_id}')" title="Click to copy to clipboard.">${user.user_info.short_id}</a>
-                                    </div>
-                                    <div class="cell" style="width: 160px; text-align: right;">
-                                        ID: <a onClick="copyToClipboard('${user.user_info.uid}')" title="Click to copy to clipboard.">${user.user_info.uid}</a>
-                                    </div>
-
-            `);
 
             $('#entry-' + user.user_info.uid).addClass('entry-' + user.user_info.short_id);
             $('#user-' + user.user_info.uid + '-buttons a.view').html(user.count_info.replay_count + ' Replays');

@@ -53,3 +53,16 @@ main {
     text-align: center;
     color: rgb(192,192,192);
 }
+
+#progressbar {
+    display: inline-block;
+    height: 8px;
+    width: 300px;
+    background-color: rgb(0,0,0);
+}
+
+#progressbar > div {
+    background-color: rgba(0,160,240,0.9);
+    width: 0%; 
+    height: 8px;   
+}

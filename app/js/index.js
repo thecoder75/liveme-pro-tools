@@ -225,8 +225,8 @@ function showUser(u) {
 }
 
 function openBookmarks() { ipcRenderer.send('open-bookmarks'); }
-function showFollowing() { ipcRenderer.send('open-followings-window', { userid: current_user.uid }); }
-function showFollowers() { ipcRenderer.send('open-followers-window', { userid: current_user.uid }); }
+function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
+function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
 
 function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }); }
 /* MAY BE ADDED IN FUTURE RELEASE function viewMessages(vid) { ipcRenderer.send('view-messages', { videoid: vid }); } */
@@ -758,6 +758,9 @@ function performUsernameSearch() {
 
                 LiveMe.getUserInfo(results[i].user_id)
                     .then(user => {
+                        if (user == undefined) return;
+                        if (user == null) return;
+
                         $('#user-'+user.user_info.uid+' td.details a.replays').html(`${user.count_info.video_count} Replays`);
                         $('#user-'+user.user_info.uid+' td.details a.followings').html(`Following ${user.count_info.following_count}`);
                         $('#user-'+user.user_info.uid+' td.details a.followers').html(`${user.count_info.follower_count} Fans`);

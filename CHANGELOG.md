@@ -1,5 +1,12 @@
 # Change Log
 
+### v1.15.20180211
+Added:
+- Added Country filter to Following/Fan list view
+
+Fixed:
+- Unable to get Followings or Fans to work when looking at username search results
+
 ### v1.14.20180210
 Added:
 - Added Comment History (Chat History/Message History) to replays

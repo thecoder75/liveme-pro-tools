@@ -13,16 +13,22 @@ footer {
     background-color: rgb(48,48,48);
     padding: 0;
 }
-footer h1 {
+footer h1, footer h2 {
     font-size: 9.5pt;
     font-weight: 400;
     text-align: right;
     letter-spacing: 0.04em;
     position: absolute;
     bottom: 0;
-    right: 32px;
     z-index: 10;
 }
+footer h1 { right: 32px; }
+footer h2 { left: 8px; }
+footer h1 i.icon, footer h2 i.icon {
+    vertical-align: middle;
+    font-size: 12px;
+}
+
 footer #footer-progressbar {
     display: none;
     height: 6px;

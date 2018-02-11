@@ -7,7 +7,7 @@ const   { electron, BrowserWindow, remote, ipcRenderer, shell } = require('elect
         LiveMe = remote.getGlobal('LiveMe'),
         DataManager = remote.getGlobal('DataManager');
 
-var     current_stage = 1, lmt_exists = false, lmtk_exists = false, wait = false;
+var     current_stage = 1, lmt_exists = false, lmtk_exists = false, wait = false, tempvar = { index: 0, max: 0, list: [] };
 
 $(function(){
 
@@ -57,29 +57,28 @@ function goStage4(i) {
                 var list = JSON.parse(data);
                 for (var i = 0; i < list.length; i++) {
 
-                    LiveMe.getUserInfo(list[i].uid).then(user => {
+                    let t1 = Math.floor((new Date()).getTime() / 1000) - 86400;
+                    let t2 = Math.floor((new Date()).getTime() / 1000) - 604800;
 
-                        let t = Math.floor((new Date()).getTime() / 1000);
-                        let u = {
-                            uid: user.user_info.uid,
-                            shortid: user.user_info.short_id,
-                            signature: user.user_info.usign,
-                            sex: user.user_info.sex,
-                            face: user.user_info.face,
-                            nickname: user.user_info.uname,
-                            counts: {
-                                replays: user.count_info.video_count,
-                                friends: user.count_info.friends_count,
-                                followers: user.count_info.follower_count,
-                                followings: user.count_info.following_count,
-                            },
-                            last_viewed: t,
-                            newest_replay: t - 1
-                        };
+                    let u = {
+                        uid: list[i].uid,
+                        shortid: list[i].short_id,
+                        signature: list[i].usign,
+                        sex: list[i].sex,
+                        face: list[i].face,
+                        nickname: list[i].uname,
+                        counts: {
+                            replays: 0,
+                            friends: 0,
+                            followers: 0,
+                            followings: 0,
+                        },
+                        last_viewed: t1,
+                        newest_replay: t2
+                    };
 
-                        DataManager.addBookmark(u);
+                    DataManager.addBookmark(u);
 
-                    });
                 }
 
                 $('#wait .message').html('Importing Download History...');
@@ -128,6 +127,29 @@ function goStage5(i) {
                 var list = JSON.parse(data);
                 for (var i = 0; i < list.length; i++) {
 
+                    let t1 = Math.floor((new Date()).getTime() / 1000) - 86400;
+                    let t2 = Math.floor((new Date()).getTime() / 1000) - 604800;
+
+                    let u = {
+                        uid: list[i].uid,
+                        shortid: list[i].short_id,
+                        signature: list[i].usign,
+                        sex: list[i].sex,
+                        face: list[i].face,
+                        nickname: list[i].uname,
+                        counts: {
+                            replays: 0,
+                            friends: 0,
+                            followers: 0,
+                            followings: 0,
+                        },
+                        last_viewed: t1,
+                        newest_replay: t2
+                    };
+
+                    DataManager.addBookmark(u);
+
+                    /*
                     LiveMe.getUserInfo(list[i][0]).then(user => {
 
                         let t = Math.floor((new Date()).getTime() / 1000);
@@ -149,6 +171,7 @@ function goStage5(i) {
                         };
                         DataManager.addBookmark(u);
                     });
+                    */
                 }
 
                 $('#wait .message').html('Importing History...');
@@ -193,11 +216,71 @@ function goStage5(i) {
 
 function goStage6() {
 
-    DataManager.enableWrites();
-    DataManager.saveToDisk();
-    ipcRenderer.send('show-main'); 
-    
-    window.close();
+    $('#stage5').animate({ opacity: 0.0 }, 400);
+    $('#stage6').animate({ opacity: 1.0 }, 400);           
+
+    tempvar.list = DataManager.getAllBookmarks();
+    tempvar.index = 0;
+    tempvar.max = tempvar.list.length;
+
+    setTimeout(function(){
+        processBookmarksThread();
+    }, 800);
 
 }
 
+
+
+
+
+function processBookmarksThread() {
+
+    setTimeout(function(){
+
+        if (tempvar.index == tempvar.max) {
+            DataManager.enableWrites();
+            DataManager.saveToDisk();
+            ipcRenderer.send('show-main'); 
+            
+            window.close();
+        } else {
+            setTimeout(function() { processBookmarksThread(); }, 200);
+        }
+
+        $('#progressbar div').css({ width: ((tempvar.index / tempvar.max) * 100) + '%' });
+
+        if (tempvar.index < tempvar.max) { tempvar.index++; _updateBookmark(tempvar.index); }
+        if (tempvar.index < tempvar.max) { tempvar.index++; _updateBookmark(tempvar.index); }
+        if (tempvar.index < tempvar.max) { tempvar.index++; _updateBookmark(tempvar.index); }
+        if (tempvar.index < tempvar.max) { tempvar.index++; _updateBookmark(tempvar.index); }
+        if (tempvar.index < tempvar.max) { tempvar.index++; _updateBookmark(tempvar.index); }
+
+    }, 200);
+}
+
+function _updateBookmark(i) {
+
+    if (tempvar.list[i] == undefined) return;
+
+    LiveMe.getUserInfo(tempvar.list[i].uid).then(user => {
+
+        if (user == undefined) return;
+
+        var b = DataManager.getSingleBookmark(user.user_info.uid);
+
+        b.counts.replays = user.count_info.video_count;
+        b.counts.friends = user.count_info.friends_count;
+        b.counts.followers = user.count_info.follower_count;
+        b.counts.followings = user.count_info.following_count;
+
+        b.signature = user.user_info.usign;
+        b.sex = user.user_info.sex;
+        b.face = user.user_info.face;
+        b.nickname = user.user_info.uname;
+        b.shortid = user.user_info.short_id;
+
+        DataManager.updateBookmark(b);
+
+    });
+
+}
