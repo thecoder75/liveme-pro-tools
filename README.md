@@ -7,7 +7,7 @@
 
 ### Prebuilt Binaries
 
-For the latest downloads, check the [release](releases/) section.
+For the latest downloads, check the [release](https://github.com/thecoder75/liveme-pro-tools/releases) section.
 
 Currently supported OS:
 - Microsoft Windows 7 or higher (32-bit or 64-bit)
