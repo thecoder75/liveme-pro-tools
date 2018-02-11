@@ -10,7 +10,7 @@ const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron'
 		fs = require('fs'),
         path = require('path'),
         request = require('request'),
-        backup = require('backup'),
+        tarfs = require('tar-fs'),
         DataManager = new(require('./datamanager').DataManager)(),
         LiveMe = require('liveme-api'),
         isDev = require('electron-is-dev');
@@ -447,19 +447,49 @@ ipcMain.on('open-bookmarks', (event, arg) => {
 
 
 ipcMain.on('restore-backup', (event, arg) => {
-    let d = dialog.showSaveDialog(
+    let d = dialog.showOpenDialog(
         {
-            filters: [ { name: "Backup File", extensions: [".backup"] } ],
-            defaultPath: 'liveme-pro-tools.backup'
+            properties: [
+                'openFile',
+            ],
+            buttonLabel : 'Restore',
+            filters : [
+                { name : 'TAR files', extensions: [ 'tar' ]}   
+            ]
         },
         (filePath) => {
 
             if (filePath != null) {
-                backup.restore(filePath, remote.app.getPath('appData'), remote.app.getName())
+
+                console.log(filePath[0]);
+
+                var config_path = path.join(app.getPath('appData'), app.getName());
+                fs.createReadStream(filePath[0]).pipe(tarfs.extract(config_path));
+                
+                setTimeout(function(){
+                    app.relaunch();
+                    app.quit();        
+                }, 2000);
+
             }
         }
     );
 });
+
+
+ipcMain.on('create-backup', (event, arg) => {
+
+    var config_path = path.join(app.getPath('appData'), app.getName()), backup_file = path.join(app.getPath('home'), 'Downloads', 'liveme-pro-tools-backup.tar');
+
+    tarfs.pack(
+        config_path,
+        {
+            entries: [ 'bookmarks.json', 'downloaded.json', 'profiles.json', 'watched.json' ]
+        }
+    ).pipe(fs.createWriteStream(backup_file));
+
+});
+
 
 
 

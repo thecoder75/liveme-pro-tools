@@ -21,6 +21,10 @@ function showUser(u) { ipcRenderer.send('show-user', { userid: u }); }
 function redrawList() {
     var list = DataManager.getAllBookmarks();
 
+    if (list.length == 0) { 
+        return;
+    }
+
     $('#bookmark-list').html('');
     $('footer h1').html('Reloading list...');
 

@@ -18,9 +18,6 @@ $(function(){
         lmtk_exists = true;
     }
 
-    console.log('LMT: ' + (lmt_exists ? 'true' : 'false'));
-    console.log('LMTK: ' + (lmtk_exists ? 'true' : 'false'));
-
     $('main').show();
     $('#stage1').animate({ opacity: 1.0 }, 400);
 });
@@ -149,29 +146,6 @@ function goStage5(i) {
 
                     DataManager.addBookmark(u);
 
-                    /*
-                    LiveMe.getUserInfo(list[i][0]).then(user => {
-
-                        let t = Math.floor((new Date()).getTime() / 1000);
-                        let u = {
-                            uid: user.user_info.uid,
-                            shortid: user.user_info.short_id,
-                            signature: user.user_info.usign,
-                            sex: user.user_info.sex,
-                            face: user.user_info.face,
-                            nickname: user.user_info.uname,
-                            counts: {
-                                replays: user.count_info.video_count,
-                                friends: user.count_info.friends_count,
-                                followers: user.count_info.follower_count,
-                                followings: user.count_info.following_count,
-                            },
-                            last_viewed: t,
-                            newest_replay: t - 1
-                        };
-                        DataManager.addBookmark(u);
-                    });
-                    */
                 }
 
                 $('#wait .message').html('Importing History...');

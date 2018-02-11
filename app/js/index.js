@@ -13,8 +13,7 @@ const   { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard
         DataManager = remote.getGlobal('DataManager'),
         formatDuration = require('format-duration'),
         prettydate = require('pretty-date'),
-        request = require('request'),
-        backup = require('backup');
+        request = require('request');
 
 var     current_user = {}, current_page = 1, current_index = 0, tempvar = null, has_more = false, current_search = '', scroll_busy = false;
 
@@ -289,10 +288,7 @@ function AddToBookmarks() {
 
 function backupData() {
 
-    backup.backup(
-        path.join(remote.app.getPath('appData'), remote.app.getName()),
-        path.join(remote.app.getPath('home'), 'Downloads') + '/liveme-pro-tools.backup'
-    );
+    ipcRenderer.send('create-backup');
 
     var p = $('#popup-message'), m = 'Backup file stored in your downloads.';
     p.html(m).animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() - 20 }, 400);
@@ -815,5 +811,27 @@ function saveSettings() {
     appSettings.set('general.hide_zeroreplay_fans', ($('#viewmode-followers').is(':checked') ? true : false) )
     appSettings.set('general.hide_zeroreplay_followings', ($('#viewmode-followings').is(':checked') ? true : false) )
 
-    appSettings.set('general.palyerpath', $('#playerpath').val());    
+    appSettings.set('general.playerpath', $('#playerpath').val());    
+}
+
+function resetSettings() {
+    appSettings.set('general', {
+        fresh_install: true,
+        playerpath: '',
+        hide_zeroreplay_fans: false,
+        hide_zeroreplay_followings: true
+    });
+    appSettings.set('position', {
+        mainWindow: [ -1, -1],
+        playerWindow: [ -1, -1],
+        bookmarksWindow: [ -1, -1]
+    });
+    appSettings.set('size', {
+        mainWindow: [ 1024, 600],
+        playerWindow: [ 370, 680 ],
+        bookmarksWindow: [ 400, 720 ]
+    });
+
+    DataManager.wipeAllData();
+
 }

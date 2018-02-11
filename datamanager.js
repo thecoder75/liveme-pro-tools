@@ -18,6 +18,18 @@ class DataManager {
     disableWrites() { can_write = false; }
     enableWrites() { can_write = true; }
 
+    wipeAllData() {
+        bookmarks = [];
+        profiles = [];
+        downloaded = [];
+        watched = [];
+        
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks), function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });        
+    }
+
     loadFromDisk() {
         fs.readFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), 'utf8', function (err,data) {
             if (err) {

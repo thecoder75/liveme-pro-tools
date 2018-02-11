@@ -3,10 +3,12 @@
 ### v1.20.20180211
 Added:
 - Added Country filter to Following/Fan list view
+- Added ability to reset the app back to fresh install state.
 
 Fixed:
 - Unable to get Followings or Fans to work when looking at username search results
 - Fixed hangup issue when importing large amounts of bookmarks during first run
+- Fixed restore file selector
 
 ### v1.14.20180210
 Added:
