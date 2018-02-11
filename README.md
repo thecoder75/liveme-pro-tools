@@ -3,6 +3,15 @@
 
 ![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg)
 
+## What Is This?
+
+A powerful tool for Live.me video network making it easy to:
+- Search and browse accounts
+- Track accounts
+- Browse Followers and Followings
+- Watch and download replays
+- and much more!
+
 ## Getting Started
 
 ### Prebuilt Binaries
