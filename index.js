@@ -461,16 +461,16 @@ ipcMain.on('restore-backup', (event, arg) => {
 
             if (filePath != null) {
 
-                console.log(filePath[0]);
+                mainWindow.webContents.send('shutdown');
 
-                var config_path = path.join(app.getPath('appData'), app.getName());
+                DataManager.disableWrites();
+                var config_path = path.join(app.getPath('appData'), app.getName(), '/');
                 fs.createReadStream(filePath[0]).pipe(tarfs.extract(config_path));
-                
                 setTimeout(function(){
                     app.relaunch();
-                    app.quit();        
-                }, 2000);
-
+                    app.quit();
+                }, 1000);
+                
             }
         }
     );

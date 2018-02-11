@@ -107,6 +107,10 @@ function setupIPCListeners() {
 
     });
 
+    ipcRenderer.on('go-home' , function(event, arg) {
+        goHome();
+    });
+
     ipcRenderer.on('shutdown' , function(event, arg) {
         $('overlay').show();
         $('#status').html('Storing data and shutting down...');

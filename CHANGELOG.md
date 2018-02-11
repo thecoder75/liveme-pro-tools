@@ -9,6 +9,7 @@ Fixed:
 - Unable to get Followings or Fans to work when looking at username search results
 - Fixed hangup issue when importing large amounts of bookmarks during first run
 - Fixed restore file selector
+- Fixed backup and restore subfunctions
 
 ### v1.14.20180210
 Added:
