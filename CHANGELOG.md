@@ -5,6 +5,9 @@ Added:
 - Added Comment History (Chat History/Message History) to replays
 - Added news feed to home screen
 
+Fixed:
+- Fixed upgrade notice bug.
+
 ### v1.8.20180210
 Fixed:
 - Correct window positions not being remembered properly

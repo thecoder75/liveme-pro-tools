@@ -314,14 +314,17 @@ function initHome() {
         method: 'get'
     }, function(err,httpResponse,body) {
         
-        var package = JSON.parse(body), cv = remote.app.getVersion(), upgrade = cv < package.version;
+        var ghversion = JSON.parse(body).version, lversion = remote.app.getVersion(),
+            g = ghversion.split('.'), ghv = g[0]+''+g[1],
+            l = lversion.split('.'), lv = l[0]+''+l[1],
+            upgrade = (g[0] - l[0]) + (g[1] - l[1]);
 
-        if (upgrade) {
+        if (upgrade > 0) {
             $('#home div.panel').append(`
                 <div class="section">
                     <h3><i class="icon icon-github"></i> Update Available</h3>
                     <p>
-                        You are running ${cv} and ${package.version} has been released.
+                        An updated release of LiveMe Pro Tools is available.
                     </p>
                     <button onClick="openURL('https://github.com/thecoder75/liveme-pro-tools/releases/')">Download</button>
                 </div>
