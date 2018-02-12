@@ -14,6 +14,13 @@ input[type=text],input[type=password] {
 input[type=text]:focus,input[type=password]:focus {
     color: rgb(252,252,252);
 }
+
+input[type=text]:disabled,input[type=password]:disabled {
+    border-color: rgba(96,96,96,0.4);
+    color: rgba(192,192,192,0.4);
+    background-color: rgba(32,32,32,0.4);
+}
+
 input[type=button], button {
     outline: none;
 }

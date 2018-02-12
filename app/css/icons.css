@@ -15,8 +15,10 @@ i.icon.dim { opacity: 0.1; }
 i.icon.bright { opacity: 0.8; }
 i.icon.red { color: rgb(240,32,32); }
 i.icon.green { color: rgb(0,240,96); }
-i.icon.blue { color: rgb(0,96,240); }
+i.icon.blue { color: rgb(0,64,224); }
+i.icon.ltblue { color: rgb(32,96,252); }
 i.icon.yellow { color: rgb(240,240,0); }
+i.icon.pink { color: rgb(240,12,120); }
 
 
 

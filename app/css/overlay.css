@@ -59,3 +59,26 @@ overlay {
     color: rgb(192,192,192);
 }
 
+
+
+#hover {
+    display: block;
+    min-width: 160px;
+    max-width: 500px;
+
+    padding: 3px 5px;
+    font-size: 9pt;
+    font-weight: 600;
+    
+
+    background-color: rgb(64,64,64);
+    color: rgb(224,224,224);
+    box-shadow: rgba(0,0,0,0.5);
+
+    border-radius: 8px;
+    opacity: 0;
+
+    position: absolute;
+    z-index: 2000;
+    left: 0;
+}

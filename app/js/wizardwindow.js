@@ -23,14 +23,9 @@ $(function(){
 });
 
 function goStage2() {
+
     $('#stage1').animate({ opacity: 0.0 }, 400);
-    $('#stage2').animate({ opacity: 1.0 }, 400);   
-}
-
-function goStage3(i) {
-    appSettings.set('general.hide_zeroreplay_followings', i);
-    $('#stage2').animate({ opacity: 0.0 }, 400);
-
+    
     if (lmt_exists)
         $('#stage3').animate({ opacity: 1.0 }, 400);   
     else if (lmtk_exists)
