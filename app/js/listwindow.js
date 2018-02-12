@@ -12,6 +12,7 @@ var     winType = 0,
         max_count = 0, 
         total_count = 0, 
         current_page = 1,
+        threads = 0,
         scroll_busy = false, 
         filters = { countryCode: '', seen: true, active: false }, 
         MAX_PAGE_SIZE = 10;
@@ -72,33 +73,17 @@ $(function(){
         $('header h1').html(user.user_info.uname + (winType == 0 ? ' Fans' : ' Followings')); 
     });
 
-    setTimeout(function(){ startLoad(); }, 100);
-    setTimeout(function(){ $('main').show(); }, 250);
+    setTimeout(function(){ startLoad(); }, 200);
+
+    setImmediate(function(){ $('main').show(); });
 
     filters.countryCode = '';
     filters.seen = true;
 
-    setTimeout(function(){
+    setImmediate(function(){
         $('#countryCode').empty();
         for (i = 0; i < cclist.length; i++) {
             $('#countryCode').append(`<option value="${cclist[i][1]}">${cclist[i][0]}</option>`)
-        }
-    }, 5);
-
-    $('main').scroll(function() {
-        if (($(this).scrollTop() + $(this).height()) > ($('table').height() - 128)) {
-
-            if (has_more == false) return;
-            if (scroll_busy == true) return;
-
-            scroll_busy = true;
-            current_page++;
-
-            if (winType == 1) {
-                doFollowings();
-            } else {
-                doFans();
-            }
         }
     });
 
@@ -108,8 +93,35 @@ function startLoad() {
 
     $('table.fflist tbody').html('');
     
+    scroll_busy = true;
     current_page = 1;
     total_count = 0;
+    threads = 0;
+
+    switch (winType) {
+        case 1:   // Followers/Fans
+            doFollowings();
+            break;
+
+        case 0:   // Followings
+            doFans();
+            break;
+
+    }
+}
+
+function loadMore() {
+
+    if (threads > 0) {
+        setTimeout(function(){
+            loadMore();
+        }, 100);
+        return;
+    }
+
+    scroll_busy = true;
+    threads = 0;
+    current_page++;
 
     switch (winType) {
         case 1:   // Followers/Fans
@@ -155,38 +167,37 @@ function doFollowings() {
 
         for(var i = 0; i < results.length; i++) {
             if ((filters.seen == true) && (filters.countryCode.length < 2)) {
+                threads++;
                 addEntry(results[i]);
             } if ((filters.countryCode.length > 1) && (results[i].countryCode == filters.countryCode)) {
                 if (filters.seen == true) {
+                    threads++;
                     addEntry(results[i]);
                 } else if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) != false)) {
+                    threads++;
                     addEntry(results[i]);
                 }
             } else if (filters.countryCode.length < 2) {
                 if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) == false)) {
+                    threads++;
                     addEntry(results[i]);
                 }
             }
         }
         
-        setTimeout(function(){ scroll_busy = false; }, 250);        
-
         has_more = results.length >= MAX_PAGE_SIZE;
 
         var c = $('table.fflist tbody tr').length;
         if (filters.seen == false || filters.countryCode.length > 1) {
-            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts, scroll to load more.`);
+            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts.`);
         } else {
-            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts, scroll to load more.`);
+            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
         }
 
-        // $('footer h1').html($('table.fflist tbody tr').length + ' of ' + max_count + ' accounts loaded' + (filters.seen == false || filters.countryCode.length > 1 ? ' and filtered' : '') + '.');
-
-        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 3))) {
-            setTimeout(function(){
-                current_page++;
-                doFollowings();
-            }, filters.active ? 150 : 250)
+        if (has_more && ($('table.fflist tbody tr').length < max_count)) {
+            setTimeout(function(){                
+                loadMore();
+            }, 100);
         }
     });
 
@@ -204,52 +215,53 @@ function doFans() {
         
         for(var i = 0; i < results.length; i++) {
             if ((filters.seen == true) && (filters.countryCode.length < 2)) {
+                threads++;
                 addEntry(results[i]);
             } if ((filters.countryCode.length > 1) && (results[i].countryCode == filters.countryCode)) {
                 if (filters.seen == true) {
+                    threads++;
                     addEntry(results[i]);
                 } else if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) != false)) {
+                    threads++;
                     addEntry(results[i]);
                 }
             } else if (filters.countryCode.length < 2) {
                 if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) == false)) {
+                    threads++;
                     addEntry(results[i]);
                 }
             }
         }
 
-        setTimeout(function(){ scroll_busy = false; }, 250);        
-
         has_more = results.length >= MAX_PAGE_SIZE;
+
         var c = $('table.fflist tbody tr').length;
         if (filters.seen == false || filters.countryCode.length > 1) {
-            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts, scroll to load more.`);
+            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts.`);
         } else {
-            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts, scroll to load more.`);
+            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
         }
 
-
-        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 3))) {
-            setTimeout(function(){
-                current_page++;
-                doFans();
-            }, filters.active ? 150 : 250)
+        if (has_more && ($('table.fflist tbody tr').length < max_count)) {
+            setTimeout(function(){                
+                loadMore();
+            }, 100);
         }
     });
 }
 
 function addEntry(entry) {
     var prettydate = require('pretty-date');
-    var sex = entry.sex < 0 ? '' : (entry.sex == 0 ? 'female' : 'male'), 
+    var sex = entry.sex < 0 ? '' : (entry.sex == 0 ? 'is-female' : 'is-male'), 
         seenRaw = DataManager.wasProfileViewed(entry.uid),
         seenDate = seenRaw != false ? prettydate.format(seenRaw) : '',
         seen = seenRaw != false ? 'bright blue' : 'dim',
         bookmarked = DataManager.isBookmarked(entry) ? 'star-full bright yellow' : 'star-empty dim';
 
     $("table.fflist tbody").append(`
-                    <tr id="entry-${entry.uid}" class="entry-${entry.uid}">
+                    <tr id="entry-${entry.uid}" class="entry-${entry.uid} ${sex}">
                         <td width="64">
-                            <img src="${entry.face}" style="height: 64px; width: 64px;" onError="$(this).hide()" align="bottom">
+                            <img src="${entry.face}" style="height: 64px; width: 64px;" onError="$(this).hide()" align="bottom" class="avatar">
                         </td>
                         <td width="90%">
                             <div class="seen" title="Last seen ${seenDate}"><i class="icon icon-eye ${seen}"></i></div>
@@ -290,6 +302,7 @@ function addEntry(entry) {
             $('#user-' + user.user_info.uid + '-buttons a.fans').html(user.count_info.follower_count + ' Fans');
             $('#user-' + user.user_info.uid + '-buttons a.following').html('Following ' + user.count_info.following_count);
         }
+        threads--;
     });
 
     /*
