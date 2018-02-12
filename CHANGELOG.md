@@ -3,6 +3,7 @@
 ### v1.28.20180212
 Added:
 - Ability to select between using jDownloader2 or YouTube-DL for downloads now
+- Updated Followings/Fans windows to now do a continuous data load with handlers to avoid poor responsiveness
 
 ### v1.25.20180211
 Added:
