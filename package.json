@@ -1,6 +1,6 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.25.20180211",
+  "version": "1.28.20180211",
   "description": "Tools for Live.me video network",
   "homepage": "https://github.com/thecoder75/liveme-pro-tools/",
   "main": "index.js",
@@ -27,7 +27,7 @@
     "win": {
       "target": [
         {
-          "target": "nsis",
+          "target": "msi",
           "arch": [
             "x64",
             "ia32"
