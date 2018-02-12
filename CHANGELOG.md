@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.28.20180212
+Added:
+- Ability to select between using jDownloader2 or YouTube-DL for downloads now
+
 ### v1.25.20180211
 Added:
 - Ability to show/hide already seen accounts in the Followings/Fans windows
