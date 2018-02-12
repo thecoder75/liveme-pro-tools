@@ -426,7 +426,7 @@ function _checkBookmark(i) {
         DataManager.updateBookmark(b);
 
         if (b.counts.replays > 0) {
-            LiveMe.getUserReplays(user.user_id.uid, 1, 2).then(replays => {
+            LiveMe.getUserReplays(tempvar.list[i].uid, 1, 2).then(replays => {
 
                 if (replays == undefined) return;
                 if (replays.length < 1) return;
@@ -804,18 +804,19 @@ function initSettingsPanel() {
     $('#viewmode-followings').prop('checked', appSettings.get('general.hide_zeroreplay_followings'));
 
     $('#playerpath').val(appSettings.get('general.playerpath'));
-
-
+    $('#download-handler').val(appSettings.get('downloads.handler'));
 
     var v = remote.app.getVersion().split('.')[2];
     $('#settings h6#version').html('Version ' + v);
 }
 
-function saveSettings() {
+function saveSettings() {       
+
     appSettings.set('general.hide_zeroreplay_fans', ($('#viewmode-followers').is(':checked') ? true : false) )
     appSettings.set('general.hide_zeroreplay_followings', ($('#viewmode-followings').is(':checked') ? true : false) )
 
     appSettings.set('general.playerpath', $('#playerpath').val());    
+    appSettings.set('downloads.handler', $('#download-handler').val());    
 }
 
 function resetSettings() {

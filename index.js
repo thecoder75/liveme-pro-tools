@@ -5,7 +5,7 @@
 const   appName = 'LiveMe Pro Tools';
 
 const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron'),
-        { exec } = require('child_process');
+        { exec, execFile } = require('child_process');
         os = require('os'),
 		fs = require('fs'),
         path = require('path'),
@@ -48,8 +48,16 @@ function createWindow() {
             playerWindow: [ 370, 680 ],
             bookmarksWindow: [ 400, 720 ]
         });
-
+        appSettings.set('downloads', {
+            handler: 1
+        });
 	}
+
+    if (!appSettings.get('downloads.handler')) {
+        appSettings.set('downloads', {
+            handler: 1
+        });
+    }
 
     var test = appSettings.get('position');
     if (test.mainWindow[1] == undefined) {
@@ -220,38 +228,40 @@ function downloadFile() {
 
     if (download_list.length == 0) return;
 
-    LiveMe.getVideoInfo(download_list[0])
-        .then(video => {
+    var handler = appSettings.get('downloads.handler');
 
-            let isLive = video.hlsvideosource.endsWith('flv') || video.hlsvideosource.indexOf('liveplay') > 0 ? true : false;
-            if (isLive) {
-                mainWindow.webContents.send('popup-message', {
-                    text: 'Video is live and cannot be downloaded.'
-                });
-            } else {
-                request({
-                    url: 'http://localhost:8297/addLink',
-                    method: 'post',
-                    json: true,
-                    timeout: 3000,
-                    body: { 
-                        url: video.hlsvideosource, 
-                        packageName: video.vid, 
-                        forcePackageName: false 
-                    }
-                }, function(err,httpResponse,body) {
-                    if (err) {
-                        mainWindow.webContents.send('popup-message', {
-                            text: 'No response from jDownloader, trying again...'
-                        });
-                        setTimeout(function(){ downloadFile(); }, 2000);
-                    } else if (httpResponse.statusCode == 200) {
-                        DataManager.addDownloaded(download_list[0]);
-                        download_list.shift();
-                    }
-                });  
-            }
-        });
+    LiveMe.getVideoInfo(download_list[0]).then(video => {
+        let isLive = video.hlsvideosource.endsWith('flv') || video.hlsvideosource.indexOf('liveplay') > 0 ? true : false;
+        if (isLive) {
+            mainWindow.webContents.send('popup-message', {
+                text: 'Video is live and cannot be downloaded.'
+            });
+        } else {
+            request({
+                url: 'http://localhost:8297/addLink',
+                method: 'post',
+                json: true,
+                timeout: 3000,
+                body: { 
+                    url: video.hlsvideosource, 
+                    packageName: video.vid, 
+                    forcePackageName: false 
+                }
+            }, function(err,httpResponse,body) {
+                if (err) {
+                    mainWindow.webContents.send('popup-message', {
+                        text: 'No response from jDownloader, trying again...'
+                    });
+                    setTimeout(function(){ downloadFile(); }, 2000);
+                } else if (httpResponse.statusCode == 200) {
+                    DataManager.addDownloaded(download_list[0]);
+                    download_list.shift();
+                }
+            });  
+        }
+    });
+
+
 }
 
 

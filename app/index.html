@@ -100,31 +100,33 @@
                             <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
                             <small>You <b>MUST</b> also add <i>%url%</i> to the command to denote where to place the URL to the replay. (Ex: mpv %url%)</small>
                         </li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <ul>
                         <li style="padding-bottom: 5px;"><h4>Downloads</h4></li>
-                        <li style="padding-bottom: 20px;">
+                        <li>
                             <ul style="margin: 16px 0 0; padding: 0;">
-                                <li>
-                                    LiveMe Pro Tools now uses JDownloader2 for all downloading.  You will need to add and enable <a href="#" onClick="openURL('https://github.com/nemec/JDHttpAPI')">this</a> plugin in JDownloader2 for downloading to work now.<br>
+                                <li style="line-height: 16px;">
+                                    Select the download handler you would like to use:
+                                    <div class="select" style="display: inline-block; margin-left: 8px; vertical-align: middle;">
+                                        <select id="download-handler" onChange="saveSettings()">
+                                            <option selected value="1">jDownloader2</option>
+                                        </select>
+                                    </div>
                                 </li>
-                                <li style="margin: 8px 0;">
-                                    IP of jDownloader Computer:
-                                    <input type="text" id="jdownloader-ip" placeholder="localhost" value="127.0.0.1" disabled style="width: 90px; float: right; text-align: right;">
-                                </li>
-                                <li style="margin: 8px 0;">
-                                    Port Number:
-                                    <input type="text" id="jdownloader-ip" placeholder="8729" value="8729" disabled style="width: 50px; float: right; text-align: right;">
-                                </li>
-                                <li style="margin: 8px 0;">
-                                    Password:
-                                    <input type="text" id="jdownloader-ip" placeholder="blank" value="" disabled style="width: 90px; float: right; text-align: right;">
-                                </li>
-                                <li>
-                                    <small>LiveMe Pro Tools uses the defaults of the plugin running on the local computer.</small>
+                                <li style="padding: 20px 0; font-size: 9pt;">
+                                    You will need to add and enable the <a href="#" onClick="openURL('https://github.com/nemec/JDHttpAPI')">JDHttpAPI plugin</a> in jDownloader2
+                                    for downloading to work.  This program uses the default configuration of that plugin.<br>
                                 </li>
                             </ul>
                         </li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <ul>
                         <li style="padding-bottom: 5px;"><h4>Fans and Followings</h4></li>
-                        <li style="padding-bottom: 20px;">
+                        <li style="line-height: 24px;">
                             <input type="checkbox" id="viewmode-followings"> Hide followings with no replays.<br>
                             <input type="checkbox" id="viewmode-followers"> Hide followers with no replays.<br>
                         </li>
