@@ -6,7 +6,16 @@ const   { ipcRenderer, remote, clipboard } = require('electron'),
         appSettings = require('electron-settings'),
         DataManager = remote.getGlobal('DataManager');
 
-var     winType = 0, userid = '', userinfo, max_count = 0, total_count = 0, current_page = 1, scroll_busy = false, filters = { countryCode: '', seen: true }, MAX_PAGE_SIZE = 8;
+var     winType = 0, 
+        userid = '', 
+        userinfo, 
+        max_count = 0, 
+        total_count = 0, 
+        current_page = 1,
+        scroll_busy = false, 
+        filters = { countryCode: '', seen: true, active: false }, 
+        MAX_PAGE_SIZE = 10;
+
 var     cclist = [
             [ "All Countries", "-" ], [ "Afghanistan", "AF" ], [ "Albania", "AL" ], [ "Algeria", "DZ" ], [ "American Samoa", "AS" ], [ "Andorra", "AD" ], 
             [ "Angola", "AO" ], [ "Anguilla", "AI" ], [ "Antarctica", "AQ" ], [ "Antigua and Barbuda", "AG" ], [ "Argentina", "AR" ], [ "Armenia", "AM" ], 
@@ -116,8 +125,18 @@ function startLoad() {
 }
 
 function filterCountry() {
-    var cc = $('#countryCode').val();
+    filters.active = $('#countryCode').val();
     filters.countryCode = $('#countryCode').val();
+    startLoad();
+}
+function toggleSeen() {
+    if (filters.seen == true) {
+        filters.seen = false;
+        $('i.icon-eye').addClass('icon-eye-blocked').removeClass('icon-eye');
+    } else {
+        filters.seen = false;
+        $('i.icon-eye-blocked').addClass('icon-eye').removeClass('icon-eye-blocked');
+    }
     startLoad();
 }
 
@@ -139,11 +158,11 @@ function doFollowings() {
             } if ((filters.countryCode.length > 1) && (results[i].countryCode == filters.countryCode)) {
                 if (filters.seen == true) {
                     addEntry(results[i]);
-                } else if ((filters.seen == false) && (Datamanager.wasProfileViewed(results[i].uid) != false)) {
+                } else if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) != false)) {
                     addEntry(results[i]);
                 }
             } else if (filters.countryCode.length < 2) {
-                if ((filters.seen == false) && (Datamanager.wasProfileViewed(results[i].uid) == false)) {
+                if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) == false)) {
                     addEntry(results[i]);
                 }
             }
@@ -162,11 +181,11 @@ function doFollowings() {
 
         // $('footer h1').html($('table.fflist tbody tr').length + ' of ' + max_count + ' accounts loaded' + (filters.seen == false || filters.countryCode.length > 1 ? ' and filtered' : '') + '.');
 
-        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 10))) {
+        if (has_more && ($('table.fflist tbody tr').length < max_count)) {
             setTimeout(function(){
                 current_page++;
                 doFollowings();
-            }, 200)
+            }, filters.active ? 200 : 100)
         }
     });
 
@@ -188,11 +207,11 @@ function doFans() {
             } if ((filters.countryCode.length > 1) && (results[i].countryCode == filters.countryCode)) {
                 if (filters.seen == true) {
                     addEntry(results[i]);
-                } else if ((filters.seen == false) && (Datamanager.wasProfileViewed(results[i].uid) != false)) {
+                } else if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) != false)) {
                     addEntry(results[i]);
                 }
             } else if (filters.countryCode.length < 2) {
-                if ((filters.seen == false) && (Datamanager.wasProfileViewed(results[i].uid) == false)) {
+                if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) == false)) {
                     addEntry(results[i]);
                 }
             }
@@ -209,11 +228,11 @@ function doFans() {
         }
 
 
-        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 10))) {
+        if (has_more && ($('table.fflist tbody tr').length < max_count)) {
             setTimeout(function(){
                 current_page++;
                 doFans();
-            }, 200)
+            }, filters.active ? 200 : 100)
         }
     });
 }
@@ -265,8 +284,6 @@ function addEntry(entry) {
         } else if ((user.count_info.replay_count < 1) && (appSettings.get('general.hide_zeroreplay_fans') == true) && (winType == 0)) {
             $('#entry-' + user.user_info.uid).hide();
         } else {
-            var ds = $('#user-' + user.user_info.uid).attr('data-seen'), seen = ds.indexOf('never') > -1 ? '' : ds;
-
             $('#entry-' + user.user_info.uid).addClass('entry-' + user.user_info.short_id);
             $('#user-' + user.user_info.uid + '-buttons a.view').html(user.count_info.replay_count + ' Replays');
             $('#user-' + user.user_info.uid + '-buttons a.fans').html(user.count_info.follower_count + ' Fans');

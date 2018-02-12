@@ -324,7 +324,7 @@ ipcMain.on('show-user', (event, arg) => {
 ipcMain.on('open-followings-window', (event, arg) => {
 
     var win = new BrowserWindow({
-        width: 400,
+        width: 420,
         height: 720,
         resizable: false,
         darkTheme: false,
@@ -349,7 +349,7 @@ ipcMain.on('open-followings-window', (event, arg) => {
 ipcMain.on('open-followers-window', (event, arg) => {
 
     var win = new BrowserWindow({
-        width: 400,
+        width: 420,
         height: 720,
         resizable: false,
         darkTheme: false,
