@@ -4,6 +4,10 @@
 .fflist {
 }
 
+.fflist tr.is-male img.avatar { border: solid 4px rgb(80,96,240); }
+.fflist tr.is-female img.avatar { border: solid 4px rgb(255,160,160); }
+
+
 .fflist td {
     font-size: 10.5pt;
     position: relative;
@@ -23,6 +27,7 @@
     padding: 0;
     margin: 0;
 }
+
 
 .fflist td div.seen {
     position: absolute;
