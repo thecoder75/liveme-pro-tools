@@ -25,6 +25,11 @@ input[type=button], button {
     outline: none;
 }
 
+input[type=radio],input[type=checkbox] {
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
 .select {
     display: inline-block;
     overflow: hidden;
