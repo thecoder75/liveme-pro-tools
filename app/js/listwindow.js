@@ -137,6 +137,7 @@ function toggleSeen() {
         filters.seen = false;
         $('i.icon-eye-blocked').addClass('icon-eye').removeClass('icon-eye-blocked');
     }
+    filters.active = !filters.seen;
     startLoad();
 }
 
@@ -174,18 +175,18 @@ function doFollowings() {
 
         var c = $('table.fflist tbody tr').length;
         if (filters.seen == false || filters.countryCode.length > 1) {
-            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts.`);
+            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts, scroll to load more.`);
         } else {
-            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
+            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts, scroll to load more.`);
         }
 
         // $('footer h1').html($('table.fflist tbody tr').length + ' of ' + max_count + ' accounts loaded' + (filters.seen == false || filters.countryCode.length > 1 ? ' and filtered' : '') + '.');
 
-        if (has_more && ($('table.fflist tbody tr').length < max_count)) {
+        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 3))) {
             setTimeout(function(){
                 current_page++;
                 doFollowings();
-            }, filters.active ? 200 : 100)
+            }, filters.active ? 150 : 250)
         }
     });
 
@@ -222,17 +223,17 @@ function doFans() {
         has_more = results.length >= MAX_PAGE_SIZE;
         var c = $('table.fflist tbody tr').length;
         if (filters.seen == false || filters.countryCode.length > 1) {
-            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts.`);
+            $('footer h1').html(`Showing ${c} filtered from ${total_count} of ${max_count} accounts, scroll to load more.`);
         } else {
-            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
+            $('footer h1').html(`Showing ${total_count} of ${max_count} accounts, scroll to load more.`);
         }
 
 
-        if (has_more && ($('table.fflist tbody tr').length < max_count)) {
+        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 3))) {
             setTimeout(function(){
                 current_page++;
                 doFans();
-            }, filters.active ? 200 : 100)
+            }, filters.active ? 150 : 250)
         }
     });
 }
