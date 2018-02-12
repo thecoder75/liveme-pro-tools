@@ -1,5 +1,12 @@
 # Change Log
 
+### v1.25.20180211
+Added:
+- Ability to show/hide already seen accounts in the Followings/Fans windows
+
+Fixed:
+- Fixed grammer in the Following/Fans windows to indicate scroll for more.
+
 ### v1.22.20180211
 Fixed:
 - The imfamous hangup issue during importing in the wizard
