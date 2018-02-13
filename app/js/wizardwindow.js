@@ -16,6 +16,11 @@ var     current_stage = 1,
 
 $(function(){
 
+    /*
+        LiveMe Tools       -->      LiveMe Tools/favorites.json
+        LiveMe Toolkit     -->      liveme-toolkit/bookmarks.json
+
+    */
     if (fs.existsSync(path.join(remote.app.getPath('appData'), 'LiveMeTools', 'favorites.json'))) {
         lmt_exists = true;
     }
