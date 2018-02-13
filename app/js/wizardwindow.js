@@ -7,11 +7,16 @@ const   { electron, BrowserWindow, remote, ipcRenderer, shell } = require('elect
         LiveMe = remote.getGlobal('LiveMe'),
         DataManager = remote.getGlobal('DataManager');
 
-var     current_stage = 1, lmt_exists = false, lmtk_exists = false, wait = false, tempvar = { index: 0, max: 0, list: [] };
+var     current_stage = 1, 
+        lmt_exists = false, 
+        lmtk_exists = false, 
+        wait = false, 
+        tempvar = { index: 0, max: 0, list: [] }, 
+        TRANSITION_TIME = 200;
 
 $(function(){
 
-    if (fs.existsSync(path.join(remote.app.getPath('appData'), 'LiveMeTools', 'bookmarks.json'))) {
+    if (fs.existsSync(path.join(remote.app.getPath('appData'), 'LiveMeTools', 'favorites.json'))) {
         lmt_exists = true;
     }
     if (fs.existsSync(path.join(remote.app.getPath('appData'), 'liveme-toolkit', 'bookmarks.json'))) {
@@ -19,19 +24,19 @@ $(function(){
     }
 
     $('main').show();
-    $('#stage1').animate({ opacity: 1.0 }, 400);
+    $('#stage1').animate({ opacity: 1.0 }, TRANSITION_TIME);
 });
 
 function goStage2() {
 
-    $('#stage1').animate({ opacity: 0.0 }, 400);
+    $('#stage1').animate({ opacity: 0.0 }, TRANSITION_TIME);
     
     if (lmt_exists)
-        $('#stage3').animate({ opacity: 1.0 }, 400);   
+        $('#stage3').animate({ opacity: 1.0 }, TRANSITION_TIME);   
     else if (lmtk_exists)
-        $('#stage4').animate({ opacity: 1.0 }, 400);   
+        $('#stage4').animate({ opacity: 1.0 }, TRANSITION_TIME);   
     else
-        $('#stage5').animate({ opacity: 1.0 }, 400);   
+        $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
     
 }
 
@@ -44,11 +49,11 @@ function goStage4(i) {
 
         fs.readFile(path.join(remote.app.getPath('appData'), 'LiveMeTools', 'favorites.json'), 'utf8', function (err,data) {
             if (err) {
-                $('#stage3').animate({ opacity: 0.0 }, 400);
+                $('#stage3').animate({ opacity: 0.0 }, TRANSITION_TIME);
                 if (lmtk_exists)
-                    $('#stage4').animate({ opacity: 1.0 }, 400);   
+                    $('#stage4').animate({ opacity: 1.0 }, TRANSITION_TIME);   
                 else
-                    $('#stage5').animate({ opacity: 1.0 }, 400);   
+                    $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
             } else {
                 var list = JSON.parse(data);
                 for (var i = 0; i < list.length; i++) {
@@ -83,11 +88,11 @@ function goStage4(i) {
                     if (err) {
                         $('#wait').hide();
 
-                        $('#stage3').animate({ opacity: 0.0 }, 400);
+                        $('#stage3').animate({ opacity: 0.0 }, TRANSITION_TIME);
                         if (lmtk_exists)
-                            $('#stage4').animate({ opacity: 1.0 }, 400);   
+                            $('#stage4').animate({ opacity: 1.0 }, TRANSITION_TIME);   
                         else
-                            $('#stage5').animate({ opacity: 1.0 }, 400);   
+                            $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
                     } else {
                         var list = JSON.parse(data);
                         for (var i = 0; i < list.length; i++)
@@ -97,21 +102,21 @@ function goStage4(i) {
 
                     $('#wait').hide();
 
-                    $('#stage3').animate({ opacity: 0.0 }, 400);
+                    $('#stage3').animate({ opacity: 0.0 }, TRANSITION_TIME);
                     if (lmtk_exists)
-                        $('#stage4').animate({ opacity: 1.0 }, 400);   
+                        $('#stage4').animate({ opacity: 1.0 }, TRANSITION_TIME);   
                     else
-                        $('#stage5').animate({ opacity: 1.0 }, 400);   
+                        $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
 
                 });                
             }
         });
     } else {
-        $('#stage3').animate({ opacity: 0.0 }, 400);
+        $('#stage3').animate({ opacity: 0.0 }, TRANSITION_TIME);
         if (lmtk_exists)
-            $('#stage4').animate({ opacity: 1.0 }, 400);   
+            $('#stage4').animate({ opacity: 1.0 }, TRANSITION_TIME);   
         else
-            $('#stage5').animate({ opacity: 1.0 }, 400);   
+            $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
     }  
 }
 
@@ -126,8 +131,8 @@ function goStage5(i) {
             if (err) {
                 $('#wait').hide();
 
-                $('#stage4').animate({ opacity: 0.0 }, 400);
-                $('#stage5').animate({ opacity: 1.0 }, 400);   
+                $('#stage4').animate({ opacity: 0.0 }, TRANSITION_TIME);
+                $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
             } else {
                 var list = JSON.parse(data);
                 for (var i = 0; i < list.length; i++) {
@@ -162,8 +167,8 @@ function goStage5(i) {
                     if (err) {
                         $('#wait').hide();
 
-                        $('#stage4').animate({ opacity: 0.0 }, 400);
-                        $('#stage5').animate({ opacity: 1.0 }, 400);   
+                        $('#stage4').animate({ opacity: 0.0 }, TRANSITION_TIME);
+                        $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
                     } else {
                         var list = JSON.parse(data);
                         for (var i = 0; i < list.length; i++)
@@ -175,8 +180,8 @@ function goStage5(i) {
                         if (err) {
                             $('#wait').hide();
 
-                            $('#stage4').animate({ opacity: 0.0 }, 400);
-                            $('#stage5').animate({ opacity: 1.0 }, 400);   
+                            $('#stage4').animate({ opacity: 0.0 }, TRANSITION_TIME);
+                            $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
                         } else {
                             var list = JSON.parse(data);
                             for (var i = 0; i < list.length; i++)
@@ -186,8 +191,8 @@ function goStage5(i) {
 
                         $('#wait').hide();
 
-                        $('#stage4').animate({ opacity: 0.0 }, 400);
-                        $('#stage5').animate({ opacity: 1.0 }, 400);   
+                        $('#stage4').animate({ opacity: 0.0 }, TRANSITION_TIME);
+                        $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);   
 
                     });  
                 });                
@@ -196,16 +201,16 @@ function goStage5(i) {
     } else {
         $('#wait').hide();
 
-        $('#stage4').animate({ opacity: 0.0 }, 400);
-        $('#stage5').animate({ opacity: 1.0 }, 400);           
+        $('#stage4').animate({ opacity: 0.0 }, TRANSITION_TIME);
+        $('#stage5').animate({ opacity: 1.0 }, TRANSITION_TIME);           
     }
 
 }
 
 function goStage6() {
 
-    $('#stage5').animate({ opacity: 0.0 }, 400);
-    $('#stage6').animate({ opacity: 1.0 }, 400);           
+    $('#stage5').animate({ opacity: 0.0 }, TRANSITION_TIME);
+    $('#stage6').animate({ opacity: 1.0 }, TRANSITION_TIME);           
 
     tempvar.list = DataManager.getAllBookmarks();
     tempvar.index = 0;
@@ -213,7 +218,7 @@ function goStage6() {
 
     setTimeout(function(){
         processBookmarksThread();
-    }, 800);
+    }, TRANSITION_TIME);
 
 }
 
@@ -232,7 +237,7 @@ function processBookmarksThread() {
             
             window.close();
         } else {
-            setTimeout(function() { processBookmarksThread(); }, 200);
+            setTimeout(function() { processBookmarksThread(); }, TRANSITION_TIME);
         }
 
         $('#progressbar div').css({ width: ((tempvar.index / tempvar.max) * 100) + '%' });

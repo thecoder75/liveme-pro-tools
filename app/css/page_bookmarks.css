@@ -31,7 +31,7 @@
 
 #bookmark-list td div.buttons a.button { margin-right: 3px; width: 92px; }
 
-#bookmark-list td.new {
+#bookmark-list tr.new {
     background-color: rgba(0,240,80,0.2);
 }
 #bookmark-list td .flag { display: none; }
