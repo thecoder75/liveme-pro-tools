@@ -15,7 +15,7 @@ var     winType = 0,
         threads = 0,
         scroll_busy = false, 
         filters = { countryCode: '', seen: true, active: false }, 
-        MAX_PAGE_SIZE = 10;
+        MAX_PAGE_SIZE = 20;
 
 var     cclist = [
             [ "All Countries", "-" ], [ "Afghanistan", "AF" ], [ "Albania", "AL" ], [ "Algeria", "DZ" ], [ "American Samoa", "AS" ], [ "Andorra", "AD" ], 
@@ -87,6 +87,23 @@ $(function(){
         }
     });
 
+    $('main').scroll(function() {
+        if (($(this).scrollTop() + $(this).height()) > ($('table').height() - 240)) {
+
+            if (has_more == false) return;
+            if (scroll_busy == true) return;
+
+            scroll_busy = true;
+            current_page++;
+
+            if (winType == 1) {
+                doFollowings();
+            } else {
+                doFans();
+            }
+        }
+    });
+
 });
 
 function startLoad() {
@@ -96,7 +113,6 @@ function startLoad() {
     scroll_busy = true;
     current_page = 1;
     total_count = 0;
-    threads = 0;
 
     switch (winType) {
         case 1:   // Followers/Fans
@@ -111,13 +127,6 @@ function startLoad() {
 }
 
 function loadMore() {
-
-    if (threads > 0) {
-        setTimeout(function(){
-            loadMore();
-        }, 100);
-        return;
-    }
 
     scroll_busy = true;
     threads = 0;
@@ -146,7 +155,7 @@ function toggleSeen() {
         filters.seen = false;
         $('i.icon-eye').addClass('icon-eye-blocked').removeClass('icon-eye');
     } else {
-        filters.seen = false;
+        filters.seen = true;
         $('i.icon-eye-blocked').addClass('icon-eye').removeClass('icon-eye-blocked');
     }
     filters.active = !filters.seen;
@@ -167,24 +176,24 @@ function doFollowings() {
 
         for(var i = 0; i < results.length; i++) {
             if ((filters.seen == true) && (filters.countryCode.length < 2)) {
-                threads++;
                 addEntry(results[i]);
             } if ((filters.countryCode.length > 1) && (results[i].countryCode == filters.countryCode)) {
                 if (filters.seen == true) {
-                    threads++;
                     addEntry(results[i]);
                 } else if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) != false)) {
-                    threads++;
                     addEntry(results[i]);
                 }
             } else if (filters.countryCode.length < 2) {
                 if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) == false)) {
-                    threads++;
                     addEntry(results[i]);
                 }
             }
         }
         
+        setTimeout(function(){
+            scroll_busy = false;
+        }, 200);
+
         has_more = results.length >= MAX_PAGE_SIZE;
 
         var c = $('table.fflist tbody tr').length;
@@ -194,10 +203,10 @@ function doFollowings() {
             $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
         }
 
-        if (has_more && ($('table.fflist tbody tr').length < max_count)) {
+        if (has_more && ($('table.fflist tbody tr').length < 30)) {
             setTimeout(function(){                
                 loadMore();
-            }, 100);
+            }, 200);
         }
     });
 
@@ -215,23 +224,23 @@ function doFans() {
         
         for(var i = 0; i < results.length; i++) {
             if ((filters.seen == true) && (filters.countryCode.length < 2)) {
-                threads++;
                 addEntry(results[i]);
             } if ((filters.countryCode.length > 1) && (results[i].countryCode == filters.countryCode)) {
                 if (filters.seen == true) {
-                    threads++;
                     addEntry(results[i]);
                 } else if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) != false)) {
-                    threads++;
                     addEntry(results[i]);
                 }
             } else if (filters.countryCode.length < 2) {
                 if ((filters.seen == false) && (DataManager.wasProfileViewed(results[i].uid) == false)) {
-                    threads++;
                     addEntry(results[i]);
                 }
             }
         }
+
+        setTimeout(function(){
+            scroll_busy = false;
+        }, 200);
 
         has_more = results.length >= MAX_PAGE_SIZE;
 
@@ -242,10 +251,10 @@ function doFans() {
             $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
         }
 
-        if (has_more && ($('table.fflist tbody tr').length < max_count)) {
+        if (has_more && ($('table.fflist tbody tr').length < 30)) {
             setTimeout(function(){                
                 loadMore();
-            }, 100);
+            }, 200);
         }
     });
 }
@@ -293,16 +302,16 @@ function addEntry(entry) {
     LiveMe.getUserInfo(entry.uid).then(user => {
 
         if ((user.count_info.replay_count < 1) && (appSettings.get('general.hide_zeroreplay_followings') == true) && (winType == 1)) {
-            $('#entry-' + user.user_info.uid).hide();
+            $('#entry-' + user.user_info.uid).remove();
         } else if ((user.count_info.replay_count < 1) && (appSettings.get('general.hide_zeroreplay_fans') == true) && (winType == 0)) {
-            $('#entry-' + user.user_info.uid).hide();
+            $('#entry-' + user.user_info.uid).remove();
         } else {
             $('#entry-' + user.user_info.uid).addClass('entry-' + user.user_info.short_id);
             $('#user-' + user.user_info.uid + '-buttons a.view').html(user.count_info.replay_count + ' Replays');
             $('#user-' + user.user_info.uid + '-buttons a.fans').html(user.count_info.follower_count + ' Fans');
             $('#user-' + user.user_info.uid + '-buttons a.following').html('Following ' + user.count_info.following_count);
         }
-        threads--;
+        
     });
 
     /*
