@@ -241,18 +241,14 @@ function downloadFile() {
                 url: 'http://localhost:8297/addLink',
                 method: 'post',
                 json: true,
-                timeout: 3000,
-                body: { 
-                    url: video.hlsvideosource, 
-                    packageName: video.vid, 
-                    forcePackageName: false 
-                }
+                timeout: 3500,
+                body: { url: video.hlsvideosource }
             }, function(err,httpResponse,body) {
                 if (err) {
                     mainWindow.webContents.send('popup-message', {
                         text: 'No response from jDownloader, trying again...'
                     });
-                    setTimeout(function(){ downloadFile(); }, 2000);
+                    setTimeout(function(){ downloadFile(); }, 2500);
                 } else if (httpResponse.statusCode == 200) {
                     DataManager.addDownloaded(download_list[0]);
                     download_list.shift();
