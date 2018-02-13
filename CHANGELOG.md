@@ -1,5 +1,14 @@
 # Change Log
 
+### v1.30.20180212
+Added:
+- Ability to filter bookmarks (show/hide non-updated accounts)
+- Updated bookmarks window to render faster without performing additional unnecessary account checks
+
+Fixed:
+- Reverted back to scroll load on the followings and fans lists to fix performance issue
+- Fixed broken filter button on the fans and followings window
+
 ### v1.28.20180212
 Added:
 - Ability to select between using jDownloader2 or YouTube-DL for downloads now
