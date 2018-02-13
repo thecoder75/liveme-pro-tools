@@ -1,5 +1,9 @@
 # Change Log
 
+### v1.31.20180213
+Fixed:
+- Minor detection bug in First Run Wizard causing old LiveMe Tools installation to not be detected
+
 ### v1.30.20180212
 Added:
 - Ability to filter bookmarks (show/hide non-updated accounts)
