@@ -54,7 +54,8 @@ function createWindow() {
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
             template: '%%replayid%%',
-            concurrent: 1
+            concurrent: 1,
+            speed: 1
         });
 	}
 
