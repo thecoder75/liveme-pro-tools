@@ -33,9 +33,9 @@
             </div>
 
             <div class="group">
-                &nbsp;&nbsp;
                 <a class="button icon-only" title="Go Home" onClick="goHome()"><i class="icon icon-home3"></i></a>
                 <a class="button icon-only" title="View Bookmarks" onClick="openBookmarks()"><i class="icon icon-bookmarks"></i></a>
+                <a class="button icon-only" title="Toggle Queue List" onClick="showDownloads()"><i class="icon icon-folder-download"></i></a>
             </div>
 
             <a class="close-button" onClick="closeWindow()">&#x2715;</a>
@@ -46,6 +46,7 @@
             <div class="panel"></div>
         </div>
 
+        <div id="queue-list"></div>
 
         <main id="view-userinfo-replays" class="has-footer has-details">
 
@@ -107,17 +108,66 @@
                         <li style="padding-bottom: 5px;"><h4>Downloads</h4></li>
                         <li>
                             <ul style="margin: 16px 0 0; padding: 0;">
-                                <li style="line-height: 16px;">
-                                    Select the download handler you would like to use:
-                                    <div class="select" style="display: inline-block; margin-left: 8px; vertical-align: middle;">
-                                        <select id="download-handler" onChange="saveSettings()">
-                                            <option selected value="1">jDownloader2</option>
+                                <li style="margin: 12px 0; line-height: 24px;">
+                                    Concurrent Downloads:&nbsp;&nbsp; <div class="select" style="vertical-align: middle; margin-bottom: 1px; width: 40px; font-size: 11pt;">
+                                        <select id="downloads-concurrent" onChange="saveSettings()">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
                                         </select>
                                     </div>
                                 </li>
-                                <li style="padding: 20px 0; font-size: 9pt;">
-                                    You will need to add and enable the <a href="#" onClick="openURL('https://github.com/nemec/JDHttpAPI')">JDHttpAPI plugin</a> in jDownloader2
-                                    for downloading to work.  This program uses the default configuration of that plugin.<br>
+                                <li style="margin: 12px 0; line-height: 24px;">
+                                   Per Download Speed:&nbsp;&nbsp; <div class="select" style="vertical-align: middle; margin-bottom: 1px; width: 40px; font-size: 11pt;">
+                                        <select id="downloads-speed" onChange="saveSettings()">
+                                            <option value="1">Whenever It Downloads</option>
+                                            <option value="2">Let's Go Baby!</option>
+                                            <option value="3">Oh Hell Yeah!</option>
+                                            <option value="4">Holy #@%$!</option>
+                                        </select>
+                                    </div>
+                                </li>
+                                <li style="margin: 12px 0; line-height: 16px;">
+                                    Download Location:<br>
+                                    <input type="text" id="downloads-path" style="width: 500px;" onBlur="saveSettings()">
+                                </li>
+                                <li style="margin: 12px 0; line-height: 16px;">
+                                    Filename Template:<br>
+                                    <input type="text" id="downloads-template" style="width: 300px;" onBlur="saveSettings()">
+                                </li>
+                                <li style="margin: 12px 0; font-size: 9pt;">
+                                    You can customize how downloaded replays are named using the variables below in the text box above.<br>
+                                    <table style="width: 560px; margin: 8px auto;">
+                                        <tbody>
+                                            <tr>
+                                                <td width="200">%%broadcaster%%</td><td width="360">Broadcaster's Nickname</td>
+                                            </tr>
+                                            <tr>
+                                                <td>%%longid%%</td><td>Broadcaster's Long ID Number</td>
+                                            </tr>
+                                            <tr>
+                                                <td>%%replayid%%</td><td>ID Number of the Replay</td>
+                                            </tr>
+                                            <tr>
+                                                <td>%%replayviews%%</td><td>Number of Views</td>
+                                            </tr>
+                                            <tr>
+                                                <td>%%replaylikes%%</td><td>Number of Likes</td>
+                                            </tr>
+                                            <tr>
+                                                <td>%%replayshares%%</td><td>Number of Shares</td>
+                                            </tr>
+                                            <tr>
+                                                <td>%%replaytitle%%</td><td>Title of the Replay</td>
+                                            </tr>
+                                            <tr>
+                                                <td>%%replayduration%%</td><td>Duration of the Replay</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
                                 </li>
                             </ul>
                         </li>
@@ -142,6 +192,33 @@
                 </div>
                 <div class="section">
                     <ul>
+                        <li style="padding-bottom: 5px;"><h4>Data Stats</h4></li>
+                        <li>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td width="150">Bookmarks:</td>
+                                        <td width="150" style="text-align: right;" id="counts-bookmarks"></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="150">Viewed Accounts:</td>
+                                        <td width="150" style="text-align: right;" id="counts-profiles"></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="150">Watched Replays:</td>
+                                        <td width="150" style="text-align: right;" id="counts-watched"></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="150">Downloaded Replays:</td>
+                                        <td width="150" style="text-align: right;" id="counts-downloaded"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <ul>
                         <li>
                             <h4 id="appname">LiveMe Pro Tools <h6 id="version">Version 20180000</h6></h4>
                         </li>
@@ -153,6 +230,25 @@
                         </li>
                     </ul>
                 </div>
+
+                <div class="section">
+                    <ul>
+                        <li style="padding-bottom: 5px;"><h4>Reset</h4></li>
+                        <li style="line-height: 24px;">
+                            <p>
+                                By clicking the button below, you will wipe all Bookmarks, Downloads, Visited and Watched entries
+                                and reset all settings to their defaults.
+                            </p>
+                            <p>
+                                There is no confirmation once you click the button below so use it wisely!
+                            </p>
+                            <div style="margin: 32px 0; text-align: center;">
+                                <button onClick="resetSettings()">Yes, I want to reset everything!</button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
         </div>
 

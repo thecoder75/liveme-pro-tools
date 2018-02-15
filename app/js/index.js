@@ -9,11 +9,13 @@ const   MAX_PER_PAGE = 5;
 const   { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard } = require('electron'),
         fs = require('fs'), path = require('path'), 
         appSettings = remote.require('electron-settings'),
+        isDev = remote.getGlobal('isDev'),
         LiveMe = remote.getGlobal('LiveMe'),
         DataManager = remote.getGlobal('DataManager'),
         formatDuration = require('format-duration'),
         prettydate = require('pretty-date'),
-        request = require('request');
+        request = require('request');        
+
 
 var     current_user = {}, current_page = 1, current_index = 0, tempvar = null, has_more = false, current_search = '', scroll_busy = false;
 
@@ -28,7 +30,9 @@ $(function(){
     setupLoadOnScroll();    // Setup loading more on scroll only when searching for usernames
 
     initSettingsPanel();
-    initHome();
+
+    if (!isDev)
+        initHome();
 
 });
 
@@ -114,6 +118,31 @@ function setupIPCListeners() {
     ipcRenderer.on('shutdown' , function(event, arg) {
         $('overlay').show();
         $('#status').html('Storing data and shutting down...');
+    });
+
+
+
+
+    ipcRenderer.on('download-start' , function(event, arg) {
+        if ($('#download-'+arg.videoid).length < 1) return;
+
+        $('#download-'+arg.videoid).addClass('active');
+        $('#download-'+arg.videoid+' .status').html('Downloading <span></span>');
+        $('#download-'+arg.videoid+' .filename').html(arg.filename);
+    });
+
+    ipcRenderer.on('download-progress' , function(event, arg) {
+        if ($('#download-'+arg.videoid).length < 1) return;
+
+        var p = Math.round((arg.current / arg.total) * 100);
+        $('#download-'+arg.videoid+' .bar').css({ width: p + '%' });
+        $('#download-'+arg.videoid+' .status span').html(arg.current + ' / ' + arg.total);
+    });
+
+    ipcRenderer.on('download-complete' , function(event, arg) {
+        if ($('#download-'+arg.videoid).length < 1) return;
+
+        $('#download-'+arg.videoid).remove();
     });
 
 }
@@ -230,11 +259,31 @@ function showUser(u) {
 function openBookmarks() { ipcRenderer.send('open-bookmarks'); }
 function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
-
 function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }); }
-/* MAY BE ADDED IN FUTURE RELEASE function viewMessages(vid) { ipcRenderer.send('view-messages', { videoid: vid }); } */
 function downloadVideo(vid) { 
+
+    if ($('#download-'+vid).length > 0) return;
+
+    $('#queue-list').append(`
+            <div class="download" id="download-${vid}">
+                <div class="filename">${vid}</div>
+                <div class="status">Queued for download</div>
+                <div class="progress-bar">
+                    <div class="bar" style="width: 0%"></div>
+                </div>
+            </div>
+    `);
+
     ipcRenderer.send('download-replay', { videoid: vid }); 
+}
+function showDownloads() {
+    if ($('#queue-list').is(':visible')) {
+        $('overlay').hide();
+        $('#queue-list').hide();
+    } else {
+        $('overlay').show();
+        $('#queue-list').show();
+    }
 }
 function openURL(u) { shell.openExternal(u); }
 function readComments(u) { ipcRenderer.send('read-comments', { userid: u }); }
@@ -700,6 +749,7 @@ function _addReplayEntry(replay, wasSearched) {
     var seen = watchDate == false ? '' : 'watched';
 
     var isLive = replay.hlsvideosource.endsWith('flv') || replay.hlsvideosource.indexOf('liveplay') > 0 ? '[LIVE]' : '';
+    var in_queue = $('#download-'+replay.vid).length > 0 ? '<a class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a class="button icon-only" onClick="downloadVideo(\''+replay.vid+'\')" title="Download Replay"><i class="icon icon-download"></i></a>';
 
     var h = `
                     <tr data-id="${replay.vid}" class="${searched} ${seen} user-${replay.userid}">
@@ -716,7 +766,7 @@ function _addReplayEntry(replay, wasSearched) {
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <a class="button icon-only" onClick="playVideo('${replay.vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
                             <a class="button icon-only" onClick="readComments('${replay.vid}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
-                            <a class="button icon-only" onClick="downloadVideo('${replay.vid}')" title="Download Replay"><i class="icon icon-download"></i></a>
+                            ${in_queue}
                         </td>
                     </tr>
     `;
@@ -804,10 +854,19 @@ function initSettingsPanel() {
     $('#viewmode-followings').prop('checked', appSettings.get('general.hide_zeroreplay_followings'));
 
     $('#playerpath').val(appSettings.get('general.playerpath'));
-    $('#download-handler').val(appSettings.get('downloads.handler'));
 
-    var v = remote.app.getVersion().split('.')[2];
+    $('#downloads-path').val(appSettings.get('downloads.path'));
+    $('#downloads-template').val(appSettings.get('downloads.template'));
+    $('#downloads-concurrent').val(appSettings.get('downloads.concurrent'));
+
+    var v = remote.app.getVersion().split('.')[2], stats = DataManager.getStats();
     $('#settings h6#version').html('Version ' + v);
+
+    $('#counts-bookmarks').html(stats.bookmarks);
+    $('#counts-profiles').html(stats.profiles);
+    $('#counts-downloaded').html(stats.downloaded);
+    $('#counts-watched').html(stats.watched);
+
 }
 
 function saveSettings() {       
@@ -816,7 +875,11 @@ function saveSettings() {
     appSettings.set('general.hide_zeroreplay_followings', ($('#viewmode-followings').is(':checked') ? true : false) )
 
     appSettings.set('general.playerpath', $('#playerpath').val());    
-    appSettings.set('downloads.handler', $('#download-handler').val());    
+
+    appSettings.set('downloads.path', $('#downloads-path').val());    
+    appSettings.set('downloads.template', $('#downloads-template').val());    
+    appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());    
+
 }
 
 function resetSettings() {
@@ -825,6 +888,12 @@ function resetSettings() {
         playerpath: '',
         hide_zeroreplay_fans: false,
         hide_zeroreplay_followings: true
+    });
+    appSettings.set('downloads', {
+        path: path.join(app.getPath('home'), 'Downloads'),
+        template: '%%replayid%%',
+        concurrent: 1,
+        speed: 1
     });
     appSettings.set('position', {
         mainWindow: [ -1, -1],
