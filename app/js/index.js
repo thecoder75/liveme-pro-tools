@@ -858,6 +858,7 @@ function initSettingsPanel() {
     $('#downloads-path').val(appSettings.get('downloads.path'));
     $('#downloads-template').val(appSettings.get('downloads.template'));
     $('#downloads-concurrent').val(appSettings.get('downloads.concurrent'));
+    $('#downloads-speed').val(appSettings.get('downloads.speed'));
 
     var v = remote.app.getVersion().split('.')[2], stats = DataManager.getStats();
     $('#settings h6#version').html('Version ' + v);
@@ -879,6 +880,7 @@ function saveSettings() {
     appSettings.set('downloads.path', $('#downloads-path').val());    
     appSettings.set('downloads.template', $('#downloads-template').val());    
     appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());    
+    appSettings.set('downloads.speed', $('#downloads-speed').val());    
 
 }
 
