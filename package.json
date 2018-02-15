@@ -32,13 +32,6 @@
             "x64",
             "ia32"
           ]
-        },
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
         }
       ],
       "icon": "build/appicon.ico"
