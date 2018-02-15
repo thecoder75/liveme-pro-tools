@@ -1,5 +1,14 @@
 # Change Log
 
+### v1.50.20180215
+Added:
+- Added new built-in downloader with up to 5 concurrent downloads capability
+- Added database stats to the Settings view
+- Added `Master Reset` button to the Settings view
+
+Fixed:
+- Improved UI rendering in Booksmark window
+
 ### v1.31.20180213
 Fixed:
 - Minor detection bug in First Run Wizard causing old LiveMe Tools installation to not be detected
