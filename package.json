@@ -1,6 +1,6 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.31.20180212",
+  "version": "1.50.20180215",
   "description": "Tools for Live.me video network",
   "homepage": "https://github.com/thecoder75/liveme-pro-tools/",
   "main": "index.js",
@@ -43,7 +43,7 @@
       ],
       "icon": "build/appicon.ico"
     },
-    "nsis":{
+    "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "perMachine": true
@@ -80,6 +80,7 @@
     "electron-settings": "^3.1.4",
     "format-duration": "^1.0.0",
     "liveme-api": "^1.2.6",
+    "m3u8stream": "^0.2.1",
     "miniget": "^1.1.0",
     "pretty-date": "^0.2.0",
     "request": "^2.83.0",
