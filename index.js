@@ -13,7 +13,9 @@ const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron'
         tarfs = require('tar-fs'),
         DataManager = new(require('./datamanager').DataManager)(),
         LiveMe = require('liveme-api'),
-        isDev = require('electron-is-dev');
+        isDev = require('electron-is-dev'),
+        formatDuration = require('format-duration'),
+        m3u8stream = require('./modules/m3u8stream');               // We use a custom variation of this module
 
 var 	mainWindow = null,
         playerWindow = null,
@@ -22,7 +24,8 @@ var 	mainWindow = null,
         wizardWindow = null,
         menu = null,
         appSettings = require('electron-settings'),
-        download_list = [];
+        download_list = [],
+        activeDownloads = 0;
 
 
 
@@ -49,13 +52,17 @@ function createWindow() {
             bookmarksWindow: [ 400, 720 ]
         });
         appSettings.set('downloads', {
-            handler: 1
+            path: path.join(app.getPath('home'), 'Downloads'),
+            template: '%%replayid%%',
+            concurrent: 1
         });
 	}
 
-    if (!appSettings.get('downloads.handler')) {
+    if (!appSettings.get('downloads.path')) {
         appSettings.set('downloads', {
-            handler: 1
+            path: path.join(app.getPath('home'), 'Downloads'),
+            template: '%%replayid%%',
+            concurrent: 1
         });
     }
 
@@ -166,6 +173,7 @@ function createWindow() {
     menu = Menu.buildFromTemplate(getMenuTemplate());
     Menu.setApplicationMenu(menu);
 
+    global.isDev = isDev;
     global.LiveMe = LiveMe;
     global.DataManager = DataManager;
 
@@ -216,10 +224,12 @@ app.on('activate', () => {
 
 */
 ipcMain.on('download-replay', (event, arg) => {
+
     download_list.push(arg.videoid);
-    setTimeout(function(){
+
+    setImmediate(() => {
         downloadFile();
-    }, 100);
+    });
 });
 /*
     It is done this way in case the API call to jDownloader returns an error or doesn't connect.
@@ -227,36 +237,59 @@ ipcMain.on('download-replay', (event, arg) => {
 function downloadFile() {
 
     if (download_list.length == 0) return;
+    if (activeDownloads >= parseInt(appSettings.get('downloads.concurrent'))) return;
 
-    var handler = appSettings.get('downloads.handler');
+    activeDownloads++;
 
     LiveMe.getVideoInfo(download_list[0]).then(video => {
-        let isLive = video.hlsvideosource.endsWith('flv') || video.hlsvideosource.indexOf('liveplay') > 0 ? true : false;
-        if (isLive) {
-            mainWindow.webContents.send('popup-message', {
-                text: 'Video is live and cannot be downloaded.'
-            });
-        } else {
-            request({
-                url: 'http://localhost:8297/addLink',
-                method: 'post',
-                json: true,
-                timeout: 3500,
-                body: { url: video.hlsvideosource }
-            }, function(err,httpResponse,body) {
-                if (err) {
-                    mainWindow.webContents.send('popup-message', {
-                        text: 'No response from jDownloader, trying again...'
-                    });
-                    setTimeout(function(){ downloadFile(); }, 2500);
-                } else if (httpResponse.statusCode == 200) {
-                    DataManager.addDownloaded(download_list[0]);
-                    download_list.shift();
-                }
-            });  
-        }
-    });
 
+        var path = appSettings.get('downloads.path'),
+            filename = appSettings.get('downloads.template')
+                .replace(/%%broadcaster%%/g, video.uname)
+                .replace(/%%longid%%/g, video.userid)
+                .replace(/%%replayid%%/g, video.vid)
+                .replace(/%%replayviews%%/g, video.playnumber)
+                .replace(/%%replaylikes%%/g, video.likenum)
+                .replace(/%%replayshares%%/g, video.sharenum)
+                .replace(/%%replaytitle%%/g, video.title ? video.title : 'untitled')
+                .replace(/%%replayduration%%/g, video.videolength);
+
+        filename += '.ts';
+        video._filename = filename;
+
+        mainWindow.webContents.send('download-start', {
+            videoid: video.vid,
+            filename: filename
+        });
+
+        download_list.shift();
+
+        m3u8stream(video, {
+            on_progress: (e) => {
+                mainWindow.webContents.send('download-progress', {
+                    videoid: e.videoid,
+                    current: e.index,
+                    total: e.total
+                });
+            }, 
+            on_complete: (e) => {
+
+                mainWindow.webContents.send('popup-message', {
+                    text: e.filename + ' downloaded.'
+                });
+
+                activeDownloads--;
+                mainWindow.webContents.send('download-complete', { videoid: e.videoid });
+                DataManager.addDownloaded(e.videoid);
+
+                setImmediate(() => { downloadFile(); });
+
+            },
+            on_error: () => {
+                activeDownloads--;
+            }
+        }).pipe(fs.createWriteStream(path + '/' + filename));
+    });
 
 }
 
