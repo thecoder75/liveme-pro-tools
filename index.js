@@ -254,7 +254,8 @@ function downloadFile() {
                 .replace(/%%replaylikes%%/g, video.likenum)
                 .replace(/%%replayshares%%/g, video.sharenum)
                 .replace(/%%replaytitle%%/g, video.title ? video.title : 'untitled')
-                .replace(/%%replayduration%%/g, video.videolength);
+                .replace(/%%replayduration%%/g, video.videolength),
+            chunkReadahead = 5;
 
         filename += '.ts';
         video._filename = filename;
@@ -266,7 +267,15 @@ function downloadFile() {
 
         download_list.shift();
 
+        switch (parseInt(appSettings.get('downloads.speed'))) {
+            case 1: chunkReadahead = 5; break;          // Approx  5 - 10Mbps download rate per concurrent download
+            case 2: chunkReadahead = 10; break;         // Approx 10 - 25Mbps download rate per concurrent download
+            case 3: chunkReadahead = 25; break;         // Approx 30 - 75Mbps download rate per concurrent download
+        }
+
+
         m3u8stream(video, {
+            chunkReadahead: chunkReadahead,
             on_progress: (e) => {
                 mainWindow.webContents.send('download-progress', {
                     videoid: e.videoid,
