@@ -1,14 +1,17 @@
 [
     {
+        "title":"New Downloader",
+        "date":"2018-02-15",
+        "body":"LiveMe Pro Tools v1.50 now has the ability to download replays directly without needing to use jDownloader2 and even supports concurrent downloading."
+    }
+    {
         "title":"New Filtering",
+        "date":"2018-02-11",
         "body":"<p>Did you know starting in v1.20 you can now filter your Following and Fans list by country now?</p>"
     },
     {
         "title":"Missing Replays",
+        "date":"2018-02-10",
         "body":"<p>Even though it may say there's replays available, sometimes they are marked hidden and therefore are not visible.</p>"
-    },
-    {
-        "title":"News Feed",
-        "body":"<p>This news feed section will update periodically with bulletins and tips.  Be sure to keep checking it.</p><p>If you find any bugs please open an Issue Ticket so the contributors can address it right away.</p>"
     }
 ]
