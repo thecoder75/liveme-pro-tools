@@ -30,6 +30,15 @@ class DataManager {
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });        
     }
 
+    getStats() {
+        return {
+            bookmarks: bookmarks.length,
+            profiles: profiles.length,
+            downloaded: downloaded.length,
+            watched: watched.length
+        }
+    }
+
     loadFromDisk() {
         fs.readFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), 'utf8', function (err,data) {
             if (err) {
