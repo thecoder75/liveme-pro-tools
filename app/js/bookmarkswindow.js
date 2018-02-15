@@ -17,9 +17,9 @@ $(function(){
     $('#bookmark-list').html('');
     $('footer h1').html(max + ' bookmarks listed.');
 
-    setTimeout(function(){
+    setImmediate(() => {
         drawEntry();
-    }, 5);
+    });
 
 });
 
@@ -64,7 +64,7 @@ function drawEntry() {
     `);
     index++;
 
-    setTimeout(function(){ drawEntry(); }, 5);
+    setImmediate(() => { drawEntry(); });
 }
 
 function hideNonRecent() {
