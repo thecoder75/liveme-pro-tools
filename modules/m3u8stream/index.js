@@ -29,15 +29,7 @@ module.exports = (video, options) => {
     on_progress: function(e) { return { current: 0, total: 0 }}
   };
 
-  var chunkReadahead = 5;
-
-  switch (options.speed) {
-    case 2: chunkReadahead = 10; break;
-    case 3: chunkReadahead = 25; break;
-    case 4: chunkReadahead = 100; break;
-    default: chunkReadahead = 5; break;
-  }
-
+  var chunkReadahead = options.chunkReadahead || 3;
   var refreshInterval = options.refreshInterval || 600000; // 10 minutes
   var requestOptions = options.requestOptions;
   
