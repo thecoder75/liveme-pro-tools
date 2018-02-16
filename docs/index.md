@@ -1,6 +1,8 @@
 ---
 layout: default
 title: LiveMe Pro Tools
+github:
+    windows_url: https://
 ---
 
 ![release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg?style=flat-square)
@@ -17,5 +19,5 @@ Its an [Electron](https://electronjs.org) based app for Live.me Social Video net
 - Watch and download replays
 
 ## Download Prebuilt Releases
-For the latest downloads check the [release][releases] page.
+For the latest downloads check the [release](releases) page.
 
