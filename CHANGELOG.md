@@ -1,6 +1,6 @@
 ## Change Log
 
-### v1.51.20180215
+### v1.51.20180216
 Fixed:
 - #7 - Added better error trapping for the sparse download error bug
 
