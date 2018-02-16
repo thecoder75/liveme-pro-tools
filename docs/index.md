@@ -2,12 +2,12 @@
 layout: default
 title: LiveMe Pro Tools
 ---
-
 ![release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg?style=flat-square)
 ![issues](https://img.shields.io/github/issues-raw/thecoder75/liveme-pro-tools.svg?style=flat-square)
 ![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg?style=flat-square&label=All+Releases+Downloaded)
 ![Latest Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/latest/total.svg?style=flat-square&label=Latest+Release+Downloaded)
 
+* * *
 
 ## What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based app for Live.me Social Video network for:
@@ -17,5 +17,11 @@ Its an [Electron](https://electronjs.org) based app for Live.me Social Video net
 - Watch and download replays
 
 ## Download Prebuilt Releases
-For the latest downloads check the [release](releases) page.
+For the latest downloads check the [releases](releases) page.
+
+* * *
+
+## Contributing
+
+To contribute, submit a pull request for review.  Be sure to respect the style and methodology of coding we use in this project.
 
