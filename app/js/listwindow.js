@@ -15,7 +15,7 @@ var     winType = 0,
         threads = 0,
         scroll_busy = false, 
         filters = { countryCode: '', seen: true, active: false }, 
-        MAX_PAGE_SIZE = 20;
+        MAX_PAGE_SIZE = 50;
 
 var     cclist = [
             [ "All Countries", "-" ], [ "Afghanistan", "AF" ], [ "Albania", "AL" ], [ "Algeria", "DZ" ], [ "American Samoa", "AS" ], [ "Andorra", "AD" ], 
