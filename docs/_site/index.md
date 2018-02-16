@@ -1,8 +1,3 @@
----
-layout: default
-title: LiveMe Pro Tools
----
-
 ![release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg?style=flat-square)
 ![issues](https://img.shields.io/github/issues-raw/thecoder75/liveme-pro-tools.svg?style=flat-square)
 ![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg?style=flat-square&label=All+Releases+Downloaded)
