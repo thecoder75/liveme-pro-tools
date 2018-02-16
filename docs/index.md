@@ -17,7 +17,7 @@ Its an [Electron](https://electronjs.org) based app for Live.me Social Video net
 - Watch and download replays
 
 ## Download Prebuilt Releases
-For the latest downloads check the [releases](releases) page.
+For the latest downloads check the [releases](https://github.com/thecoder75/liveme-pro-tools/releases) page.
 
 * * *
 
