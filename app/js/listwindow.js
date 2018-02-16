@@ -203,7 +203,7 @@ function doFollowings() {
             $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
         }
 
-        if (has_more && ($('table.fflist tbody tr').length < 30)) {
+        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 2))) {
             setTimeout(function(){                
                 loadMore();
             }, 200);
@@ -251,7 +251,7 @@ function doFans() {
             $('footer h1').html(`Showing ${total_count} of ${max_count} accounts.`);
         }
 
-        if (has_more && ($('table.fflist tbody tr').length < 30)) {
+        if (has_more && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 2))) {
             setTimeout(function(){                
                 loadMore();
             }, 200);
