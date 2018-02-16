@@ -2,6 +2,8 @@
 ## *The successor to LiveMe Tools!*
 
 ![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg)
+![npm](https://img.shields.io/npm/v/liveme-pro-tools.svg)
+
 
 ## What Is This?
 
