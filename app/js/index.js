@@ -107,7 +107,7 @@ function setupIPCListeners() {
 
     ipcRenderer.on('popup-message' , function(event, arg) {
         var p = $('#popup-message');
-        p.html(arg.text).animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() - 20 }, 400);
+        p.html(arg.text).animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
 
     });
 
@@ -143,6 +143,15 @@ function setupIPCListeners() {
         if ($('#download-'+arg.videoid).length < 1) return;
 
         $('#download-'+arg.videoid).remove();
+    });
+
+    ipcRenderer.on('download-error' , function(event, arg) {
+        if ($('#download-'+arg.videoid).length < 1) return;
+
+        var p = $('#popup-message');
+        p.html(arg.error).animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
+
+        $('#download-'+arg.videoid).addClass('error').delay(4000).remove();
     });
 
 }

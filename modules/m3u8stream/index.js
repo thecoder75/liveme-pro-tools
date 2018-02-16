@@ -61,7 +61,7 @@ module.exports = (video, options) => {
 
   function onError(err) {
     stream.emit('error', err);
-    options.on_error(err);
+    options.on_error({ videoid: video.vid, error: err });
     stream.end();
   }
 
@@ -121,7 +121,7 @@ module.exports = (video, options) => {
     requestQueue.die();
     clearTimeout(tid);
     if (latestSegment) { latestSegment.unpipe(); }
-    PassThrough.prototype.end.call(stream);
+    PassThrough.prototype.end.call(stream);    
   };
 
   return stream;

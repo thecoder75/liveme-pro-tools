@@ -294,9 +294,9 @@ function downloadFile() {
                 DataManager.addDownloaded(e.videoid);
                 setImmediate(() => { downloadFile(); });
             },
-            on_error: () => {
+            on_error: (e) => {
                 activeDownloads--;
-                mainWindow.webContents.send('download-error', { videoid: e.videoid });
+                mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error });
                 setImmediate(() => { downloadFile(); });
             }
         }).pipe(fs.createWriteStream(path + '/' + filename));
