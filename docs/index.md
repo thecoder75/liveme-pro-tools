@@ -1,8 +1,6 @@
 ---
 layout: default
 title: LiveMe Pro Tools
-github:
-    windows_url: https://
 ---
 
 ![release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg?style=flat-square)
