@@ -8,14 +8,12 @@
 
   2018-02-15    Added callbacks and integration of LiveMe Video Structure
 
-
-
 */
 
 
 const PassThrough = require('stream').PassThrough;
 const urlResolve  = require('url').resolve;
-const miniget     = require('miniget');
+const miniget     = require('./miniget');
 const m3u8        = require('./m3u8-parser');
 const Queue       = require('./queue');
 
@@ -93,6 +91,7 @@ module.exports = (video, options) => {
     fetchingPlaylist = true;
     var req = miniget(video.hlsvideosource, requestOptions);
     req.on('error', onError);
+
     var parser = req.pipe(new m3u8());
     parser.on('tag', (tagName) => {
       if (tagName === 'EXT-X-ENDLIST') {
