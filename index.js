@@ -292,12 +292,12 @@ function downloadFile() {
                 activeDownloads--;
                 mainWindow.webContents.send('download-complete', { videoid: e.videoid });
                 DataManager.addDownloaded(e.videoid);
-
                 setImmediate(() => { downloadFile(); });
-
             },
             on_error: () => {
                 activeDownloads--;
+                mainWindow.webContents.send('download-error', { videoid: e.videoid });
+                setImmediate(() => { downloadFile(); });
             }
         }).pipe(fs.createWriteStream(path + '/' + filename));
     });
