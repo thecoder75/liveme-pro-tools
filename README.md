@@ -3,7 +3,7 @@
 
 ![release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg?style=flat-square)
 ![license](https://img.shields.io/thecoder75/l/liveme-pro-tools.svg?style=flat-square)
-![issues](https://img.shields.io/thecoder75/issues/badges/liveme-pro-tools.svg?style=flat-square)
+![issues](https://img.shields.io/thecoder75/issues/liveme-pro-tools.svg?style=flat-square)
 ![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg?style=flat-square&label=All+Releases+Downloaded)
 ![Latest Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/latest/total.svg?style=flat-square&label=Latest+Release+Downloaded)
 
