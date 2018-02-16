@@ -19,7 +19,3 @@ Its an [Electron](https://electronjs.org) based app for Live.me Social Video net
 ## Download Prebuilt Releases
 For the latest downloads check the [release][releases] page.
 
-
-
-
-https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/latest/total.svg
