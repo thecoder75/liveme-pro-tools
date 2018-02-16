@@ -268,9 +268,9 @@ function downloadFile() {
         download_list.shift();
 
         switch (parseInt(appSettings.get('downloads.speed'))) {
-            case 1: chunkReadahead = 5; break;          // Approx  5 - 10Mbps download rate per concurrent download
-            case 2: chunkReadahead = 10; break;         // Approx 10 - 25Mbps download rate per concurrent download
-            case 3: chunkReadahead = 25; break;         // Approx 30 - 75Mbps download rate per concurrent download
+            case 1: chunkReadahead = 3; break;
+            case 2: chunkReadahead = 8; break;
+            case 3: chunkReadahead = 25; break;
         }
 
 
