@@ -12,7 +12,7 @@
     "postinstall": "",
     "start": "./node_modules/.bin/electron . --enable-logging",
     "dev": "NODE_ENV='development' npm run start",
-    "release-appveyor": "build -lm --publish always",
+    "release-appveyor": "build --publish always",
     "release-travis": "build --publish always",
     "release": "build -lw --publish always"
   },
