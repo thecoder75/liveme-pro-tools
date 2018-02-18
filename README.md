@@ -1,9 +1,16 @@
 # LiveMe Pro Tools
 
+![linux builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?style=flat-square&label=Linux Builds)
+![macos builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?style=flat-square&label=macOS Builds)
+![windows builds](https://img.shields.io/appveyor/ci/thecoder75/liveme-pro-tools.svg?style=flat-square&label=Windows Builds)
+
 ![release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg?style=flat-square)
 ![issues](https://img.shields.io/github/issues-raw/thecoder75/liveme-pro-tools.svg?style=flat-square)
 ![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg?style=flat-square&label=All+Releases+Downloaded)
 ![Latest Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/latest/total.svg?style=flat-square&label=Latest+Release+Downloaded)
+
+
+
 
 ## What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
