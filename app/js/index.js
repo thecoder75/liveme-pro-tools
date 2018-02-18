@@ -889,7 +889,6 @@ function saveSettings() {
     appSettings.set('downloads.path', $('#downloads-path').val());    
     appSettings.set('downloads.template', $('#downloads-template').val());    
     appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());    
-    appSettings.set('downloads.speed', $('#downloads-speed').val());    
 
 }
 
@@ -903,8 +902,7 @@ function resetSettings() {
     appSettings.set('downloads', {
         path: path.join(app.getPath('home'), 'Downloads'),
         template: '%%replayid%%',
-        concurrent: 1,
-        speed: 1
+        concurrent: 1
     });
     appSettings.set('position', {
         mainWindow: [ -1, -1],
@@ -918,5 +916,5 @@ function resetSettings() {
     });
 
     DataManager.wipeAllData();
-
+    remote.app.relaunch();
 }

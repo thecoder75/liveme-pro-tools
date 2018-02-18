@@ -54,8 +54,7 @@ function createWindow() {
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
             template: '%%replayid%%',
-            concurrent: 1,
-            speed: 1
+            concurrent: 1
         });
 	}
 
@@ -63,8 +62,7 @@ function createWindow() {
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
             template: '%%replayid%%',
-            concurrent: 1,
-            speed: 1
+            concurrent: 1
         });
     }
 
@@ -267,15 +265,8 @@ function downloadFile() {
 
         download_list.shift();
 
-        switch (parseInt(appSettings.get('downloads.speed'))) {
-            case 1: chunkReadahead = 3; break;
-            case 2: chunkReadahead = 8; break;
-            case 3: chunkReadahead = 25; break;
-        }
-
-
         m3u8stream(video, {
-            chunkReadahead: chunkReadahead,
+            chunkReadahead: 3, // ----------------> DO NOT INCREASE HIGHER OR RANDOM DROPS WILL OCCUR ON MYQCLOUD LINKS
             on_progress: (e) => {
                 mainWindow.webContents.send('download-progress', {
                     videoid: e.videoid,
