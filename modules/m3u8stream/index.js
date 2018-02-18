@@ -27,6 +27,8 @@ module.exports = (video, options) => {
     on_progress: function(e) { return { current: 0, total: 0 }}
   };
 
+  var timeoutTimer = null;
+
   var chunkReadahead = options.chunkReadahead || 3;
   var refreshInterval = options.refreshInterval || 600000; // 10 minutes
   var requestOptions = options.requestOptions;
@@ -46,6 +48,11 @@ module.exports = (video, options) => {
     var segment = miniget(urlResolve(video.hlsvideosource, segmentURL), requestOptions);
     segment.on('error', callback);
     streamQueue.push(segment, callback);
+
+    clearTimeout(timeoutTimer);
+    timeoutTimer = setTimeout(() => {
+      onError('Download timeout');
+    }, 15000);
 
     chunkIndex++;
     if (chunkIndex > chunkReadahead) 
