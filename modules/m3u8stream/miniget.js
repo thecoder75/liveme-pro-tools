@@ -28,7 +28,7 @@ module.exports = (url, options, callback) => {
     if (callback) {
       callback(err);
     } else {
-      stream.emit('error', err);
+      // stream.emit('error', err);
     }
   }
 
@@ -75,7 +75,7 @@ module.exports = (url, options, callback) => {
           callback(null, res, body);
         });
         res.on('error', (err) => {
-          console.log(err);
+          res.on('error', onError);
         });
       } else {
         stream.emit('response', res);

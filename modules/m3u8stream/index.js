@@ -67,7 +67,7 @@ module.exports = (video, options) => {
   });
 
   function onError(err) {
-    stream.emit('error', err);
+    //stream.emit('error', err);
     options.on_error({ videoid: video.vid, error: err });
     stream.end();
   }

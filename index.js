@@ -266,7 +266,7 @@ function downloadFile() {
         download_list.shift();
 
         m3u8stream(video, {
-            chunkReadahead: 3, // ----------------> DO NOT INCREASE HIGHER OR RANDOM DROPS WILL OCCUR ON MYQCLOUD LINKS
+            chunkReadahead: 10, // ----------------> DO NOT INCREASE HIGHER OR RANDOM DROPS WILL OCCUR ON MYQCLOUD LINKS
             on_progress: (e) => {
                 mainWindow.webContents.send('download-progress', {
                     videoid: e.videoid,
