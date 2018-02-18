@@ -1,5 +1,11 @@
 ## Change Log
 
+### v1.52.20180217
+Fixed:
+- #7 - Removed download speed selector
+- #7 - Changed maximum concurrent downloads from 5 to 3
+- #7 - Added a timeout catch to downloads in case there is a stall it will automatically end them instead of leaving them hanging
+
 ### v1.51.20180216
 Fixed:
 - #7 - Added better error trapping for the sparse download error bug
