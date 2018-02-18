@@ -6,20 +6,19 @@
 ![Latest Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/latest/total.svg?style=flat-square&label=Latest+Release+Downloaded)
 
 ## What Is LiveMe Pro Tools?
-Its an [Electron](https://electronjs.org) based app for Live.me Social Video network for:
+Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
 - Search and browse user accounts
 - View public replays for user accounts
 - See and navigate user's followers and followings
 - Watch and download replays
 
 ## Download Prebuilt Releases
-For the latest downloads check the [release][releases] page.
+New releases are built automatically when updates are pushed to this repo and can be found on the [release][releases] page.
 
 #### Supported OS/Platforms
 - Microsoft Windows 7 or higher (32-bit or 64-bit)
 - Ubuntu-based Linux and Debian Distributions (32-bit or 64-bit)
-
-*Please note there are no plans to release a macOS version at this time!*
+- macOS 10.12 or higher (64-bit only)
 
 ## Built With
 * [Electron](http://electron.atom.io)

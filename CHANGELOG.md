@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.52.20180218
+**Moved to using automated build process using Travis-CI and AppVeyor.  Also adds macOS version now!**
+
 ### v1.52.20180217
 Fixed:
 - #7 - Removed download speed selector
