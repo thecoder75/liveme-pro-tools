@@ -1,5 +1,10 @@
 [
     {
+        "title":"Automated Builds",
+        "date":"2018-02-18",
+        "body":"The build/release process has been switched to using Travis-CI and Appveyor for automation.  Releases will be available within 15 minutes of new updates being committed to the GitHub repo."
+    },
+    {
         "title":"New Downloader",
         "date":"2018-02-15",
         "body":"LiveMe Pro Tools v1.50 now has the ability to download replays directly without needing to use jDownloader2 and even supports concurrent downloading."
