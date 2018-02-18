@@ -30,7 +30,7 @@ install:
   - yarn install
 
 script:
-  - yarn release
+  - yarn release-travis
 
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
