@@ -3,14 +3,7 @@
 ![linux builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?style=flat-square&label=Linux%20Builds)
 ![macos builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?style=flat-square&label=macOS%20Builds)
 ![windows builds](https://img.shields.io/appveyor/ci/thecoder75/liveme-pro-tools.svg?style=flat-square&label=Windows%20Builds)
-
-![release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg?style=flat-square)
 ![issues](https://img.shields.io/github/issues-raw/thecoder75/liveme-pro-tools.svg?style=flat-square)
-![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg?style=flat-square&label=All+Releases+Downloaded)
-![Latest Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/latest/total.svg?style=flat-square&label=Latest+Release+Downloaded)
-
-
-
 
 ## What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
@@ -20,6 +13,9 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - Watch and download replays
 
 ## Download Prebuilt Releases
+![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg?style=flat-square&label=All+Releases+Downloaded)
+![Latest Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/latest/total.svg?style=flat-square&label=Latest+Release+Downloaded)
+
 New releases are built automatically when updates are pushed to this repo and can be found on the [release][releases] page.
 
 #### Supported OS/Platforms
