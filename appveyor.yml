@@ -9,7 +9,6 @@ environment:
 install:
   - ps: Install-Product node $env:nodejs_version
   - set CI=true
-  - cd src
   - yarn install
 matrix:
   fast_finish: true
