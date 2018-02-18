@@ -1,6 +1,6 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.52.20180217",
+  "version": "1.52.20180218",
   "description": "Tools for Live.me video network",
   "homepage": "https://github.com/thecoder75/liveme-pro-tools/",
   "main": "index.js",
@@ -12,9 +12,9 @@
     "postinstall": "",
     "start": "./node_modules/.bin/electron . --enable-logging",
     "dev": "NODE_ENV='development' npm run start",
-    "release-win": "build -w --publish always",
-    "release-linux": "build -l --publish always",
-    "release": "build -l --publish always && build -w --publish always"
+    "release-appveyor": "build -lm --publish always",
+    "release-travis": "build --publish always",
+    "release": "build -lw --publish always"
   },
   "author": "TheCoder75",
   "license": "GPL-3.0",
@@ -24,6 +24,14 @@
     "artifactName": "${productName}-${version}-${arch}.${ext}",
     "asar": true,
     "compression": "maximum",
+    "mac": {
+      "category": "public.app-category.video",
+      "target": [
+        "dmg"
+      ],
+      "identity": null,
+      "icon": "build/appicon.icns"
+    },
     "win": {
       "target": [
         {
@@ -62,7 +70,7 @@
       {
         "provider": "github",
         "vPrefixedTagName": true,
-        "releaseType": "draft"
+        "releaseType": "release"
       }
     ]
   },
