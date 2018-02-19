@@ -4,7 +4,7 @@ title: LiveMe Pro Tools
 ---
 ![linux builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?style=flat-square&label=Linux%20Builds)
 ![macos builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?style=flat-square&label=macOS%20Builds)
-![windows builds](https://img.shields.io/appveyor/ci/thecoder75/liveme-pro-tools.svg?style=flat-square&label=Windows%20Builds)
+![windows builds](https://img.shields.io/appveyor/thecoder75/liveme-pro-tools.svg?style=flat-square&label=Windows%20Builds)
 ![issues](https://img.shields.io/github/issues-raw/thecoder75/liveme-pro-tools.svg?style=flat-square)
 
 * * *
