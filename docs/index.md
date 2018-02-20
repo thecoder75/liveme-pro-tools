@@ -3,7 +3,6 @@ layout: default
 title: LiveMe Pro Tools
 ---
 ![linux builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?label=Linux%20Builds)
-![macos builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?label=macOS%20Builds)
 [![Windows Build](https://ci.appveyor.com/api/projects/status/jc119jb9vkt7p4qj/branch/master?svg=true)](https://ci.appveyor.com/project/TheCoder/liveme-pro-tools/branch/master)
 ![issues](https://img.shields.io/github/issues-raw/thecoder75/liveme-pro-tools.svg?label=Open%20Issues)
 

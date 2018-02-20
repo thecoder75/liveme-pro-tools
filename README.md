@@ -1,7 +1,6 @@
 # LiveMe Pro Tools
 
 ![linux builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?label=Linux%20Builds)
-![macos builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?label=macOS%20Builds)
 [![Windows Build](https://ci.appveyor.com/api/projects/status/jc119jb9vkt7p4qj/branch/master?svg=true)](https://ci.appveyor.com/project/TheCoder/liveme-pro-tools/branch/master)
 ![issues](https://img.shields.io/github/issues-raw/thecoder75/liveme-pro-tools.svg?label=Open%20Issues)
 
@@ -21,7 +20,8 @@ New releases are built automatically when updates are pushed to this repo and ca
 #### Supported OS/Platforms
 - Microsoft Windows 7 or higher (32-bit or 64-bit)
 - Ubuntu-based Linux and Debian Distributions (32-bit or 64-bit)
-- macOS 10.12 or higher (64-bit only)
+
+***macOS is not supported as the macOS version of Electron is causing multiple issues.***
 
 ## Built With
 * [Electron](http://electron.atom.io)
