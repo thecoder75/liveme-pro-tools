@@ -24,14 +24,6 @@
     "artifactName": "${productName}-${version}-${arch}.${ext}",
     "asar": true,
     "compression": "maximum",
-    "mac": {
-      "category": "public.app-category.video",
-      "target": [
-        "dmg"
-      ],
-      "identity": null,
-      "icon": "build/appicon.icns"
-    },
     "win": {
       "target": [
         {
