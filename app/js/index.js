@@ -17,7 +17,7 @@ const   { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard
         request = require('request');        
 
 
-var     current_user = {}, current_page = 1, current_index = 0, tempvar = null, has_more = false, current_search = '', scroll_busy = false;
+var     current_user = {}, current_page = 1, current_index = 0, tempvar = null, has_more = false, current_search = '', scroll_busy = false, debounce = 0;
 
 
 $(function(){
@@ -408,7 +408,7 @@ function initHome() {
 
         });  
 
-    }, 1000);
+    }, 500);
 
     $('footer h1').html('Bookmarks are now being scanned for new replays...');
     showProgressBar();
@@ -636,6 +636,8 @@ function performUserLookup(uid) {
                         <th width="210">Actions</th>
                     </tr>
             `);    
+
+            setTimeout(() => { CheckForLAMD(); }, 50);
 
             var sex = user.user_info.sex < 0 ? '' : (user.user_info.sex == 0 ? 'female' : 'male');
             $('#user-details').show();
@@ -867,7 +869,9 @@ function initSettingsPanel() {
     $('#downloads-path').val(appSettings.get('downloads.path'));
     $('#downloads-template').val(appSettings.get('downloads.template'));
     $('#downloads-concurrent').val(appSettings.get('downloads.concurrent'));
-    $('#downloads-speed').val(appSettings.get('downloads.speed'));
+
+    $('#lamd-enabled').prop('checked', appSettings.get('lamd.enabled'));
+    $('#lamd-url').val(appSettings.get('lamd.url'));
 
     var v = remote.app.getVersion().split('.')[2], stats = DataManager.getStats();
     $('#settings h6#version').html('Version ' + v);
@@ -889,6 +893,9 @@ function saveSettings() {
     appSettings.set('downloads.path', $('#downloads-path').val());    
     appSettings.set('downloads.template', $('#downloads-template').val());    
     appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());    
+
+    appSettings.set('lamd.enabled', ($('#lamd-enabled').is(':checked') ? true : false) )
+    appSettings.set('lamd.url', $('#lamd-url').val());    
 
 }
 
@@ -917,4 +924,64 @@ function resetSettings() {
 
     DataManager.wipeAllData();
     remote.app.relaunch();
+}
+
+
+function CheckForLAMD() {
+    var lamd_config = appSettings.get('lamd');
+
+    if (lamd_config.enabled == false) {
+        $('.lamd-button').hide();
+        return;
+    }
+    $('.lamd-button').html('<i class="icon icon-hour-glass"></i>');
+
+    request({
+        url: lamd_config.url + '/ping',
+        method: 'get'
+    }, function(err,httpResponse,body) {
+        
+        if (err) return;
+
+        setTimeout(() => {
+            request({
+                url: lamd_config.url + '/check-account/'+current_user.uid,   
+            }, (err, resp, body) => {
+                if (JSON.parse(body).message == "Account is in the list.") {
+                    $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove');
+                } else {
+                    $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add');
+                }
+
+            });
+        }, 100);
+
+        
+
+    });      
+
+}
+
+
+function AddToLAMD(u) {
+
+    var lamd_config = appSettings.get('lamd'), v = $('.lamd-button').attr('mode');
+
+    if (lamd_config.enabled == false) return;   // If we are not allowed to use it, then don't continue on inside this script.
+
+    request({
+        url: lamd_config.url + (v == 'add' ? '/add-account/' : '/remove-account/') + current_user.uid,
+        method: 'get'
+    }, function(err,httpResponse,body) {
+        
+        if (err) return;
+
+        var r = JSON.parse(body);
+        if (r.message == "Account removed.") {
+            $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add');
+        } else {
+            $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove');
+        }
+
+    });      
 }

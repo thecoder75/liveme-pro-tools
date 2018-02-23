@@ -66,6 +66,13 @@ function createWindow() {
         });
     }
 
+    if (!appSettings.get('lamd.enabled')) {
+        appSettings.set('lamd', {
+            enabled: false,
+            url: 'localhost'
+        });
+    }
+
     var test = appSettings.get('position');
     if (test.mainWindow[1] == undefined) {
         appSettings.set('position', {
