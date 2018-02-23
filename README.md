@@ -10,18 +10,17 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - View public replays for user accounts
 - See and navigate user's followers and followings
 - Watch and download replays
+- Supports [LAMD](https://thecoderstoolbox.com/lamd)
 
 ## Download Prebuilt Releases
 ![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg?style=flat-square&label=All+Releases+Downloaded)
 ![Latest Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/latest/total.svg?style=flat-square&label=Latest+Release+Downloaded)
 
-New releases are built automatically when updates are pushed to this repo and can be found on the [release][releases] page.
+New releases are built automatically when updates are pushed to this repo and can be found on the [release](https://github.com/thecoder75/liveme-pro-tools/releases) page.
 
 #### Supported OS/Platforms
 - Microsoft Windows 7 or higher (32-bit or 64-bit)
 - Ubuntu-based Linux and Debian Distributions (32-bit or 64-bit)
-
-***macOS is not supported as the macOS version of Electron is causing multiple issues.***
 
 ## Built With
 * [Electron](http://electron.atom.io)

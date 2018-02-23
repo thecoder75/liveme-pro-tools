@@ -14,6 +14,7 @@ Its an [Electron](https://electronjs.org) based app for Live.me Social Video net
 - View public replays for user accounts
 - See and navigate user's followers and followings
 - Watch and download replays
+- Supports [LAMD](https://thecoderstoolbox.com/lamd)
 
 ## Download Prebuilt Releases
 ![All Downloads](https://img.shields.io/github/downloads/thecoder75/liveme-pro-tools/total.svg?style=flat-square&label=All+Releases+Downloaded)

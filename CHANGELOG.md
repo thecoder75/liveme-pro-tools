@@ -1,5 +1,14 @@
 ## Change Log
 
+### v1.60.20180223
+Added:
+- Added support for LAMD.
+
+Fixed:
+- Fixed issues with previously watch replays logging not getting updated with new times.
+- Fixed issues with previously downloaded replays logging not getting updated with new times.
+- Fixed issues with previously viewed profiles logging not getting updated with new times.
+
 ### v1.52.20180218
 **Moved to using automated build process using Travis-CI and AppVeyor.  Also adds macOS version now!**
 
