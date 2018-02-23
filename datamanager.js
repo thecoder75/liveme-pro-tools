@@ -82,11 +82,16 @@ class DataManager {
 
 
 
+
+
     addDownloaded(vidid) {
         is_busy = true;
         var add = true, dt = new Date();
         for (var i = 0; i < downloaded.length; i++) {
-            if (downloaded[i].videoid == vidid) add =false;
+            if (downloaded[i].videoid == vidid) {
+                downloaded[i].dt = Math.floor(dt.getTime() / 1000);
+                add =false;
+            }
         }
         if (add) {
             downloaded.push({
@@ -106,11 +111,16 @@ class DataManager {
 
 
 
+
+
     addWatched(vidid) {
         is_busy = true;
         var add = true, dt = new Date();
         for (var i = 0; i < watched.length; i++) {
-            if (watched[i].videoid == vidid) add =false;
+            if (watched[i].videoid == vidid) { 
+                watched[i].dt = Math.floor(dt.getTime() / 1000);
+                add =false;
+            }
         }
         if (add) {
             watched.push({
@@ -130,11 +140,15 @@ class DataManager {
 
 
 
+
     addViewed(userid) {
         is_busy = true;
         var add = true, dt = new Date();
         for (var i = 0; i < profiles.length; i++) {
-            if (profiles[i].userid == userid) add =false;
+            if (profiles[i].userid == userid) { 
+                profiles[i].dt = Math.floor(dt.getTime() / 1000);
+                add =false;
+            }
         }
         if (add) {
             profiles.push({
@@ -153,22 +167,8 @@ class DataManager {
     }
 
 
-    /*
-        current_user = {
-            uid: user.user_info.uid,
-            shortid: user.user_info.short_id,
-            signature: user.user_info.usign,
-            sex: sex,
-            face: user.user_info.face,
-            nickname: user.user_info.uname,
-            counts: {
-                replays: user.count_info.video_count,
-                friends: user.count_info.friends_count,
-                followers: user.count_info.follower_count,
-                followings: user.count_info.following_count,
-            }
-        };
-    */
+
+
     addBookmark(user) {
         is_busy = true;
         var add = true;

@@ -618,12 +618,12 @@ function performUserLookup(uid) {
         .then(user => {
 
             var bookmark = DataManager.getSingleBookmark(user.user_info.uid);
+
             if (bookmark != false) {
                 bookmark.last_viewed = Math.floor(new Date().getTime() / 1000);
                 DataManager.updateBookmark(bookmark);
-            } else {
-                DataManager.addViewed(user.user_info.uid);
             }
+            DataManager.addViewed(user.user_info.uid);
 
             $('#list thead').html(`
                     <tr>
