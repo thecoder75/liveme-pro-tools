@@ -1,5 +1,10 @@
 [
     {
+        "title":":LAMD Support",
+        "date":"2018-02-23",
+        "body":"The latest release now supports sending UserIDs and removing UserIDs from LAMD for monitoring.  Be sure to also upgrade to the latest version of LAMD for full support."
+    },
+    {
         "title":"Automated Builds",
         "date":"2018-02-18",
         "body":"The build/release process has been switched to using Travis-CI and Appveyor for automation.  Releases will be available within 15 minutes of new updates being committed to the GitHub repo."
