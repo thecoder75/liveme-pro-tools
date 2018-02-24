@@ -895,6 +895,8 @@ function saveSettings() {
     appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());    
 
     appSettings.set('lamd.enabled', ($('#lamd-enabled').is(':checked') ? true : false) )
+
+    if ($('#lamd-url').val().length < 21) $('#lamd-url').val('http://localhost:8280');
     appSettings.set('lamd.url', $('#lamd-url').val());    
 
 }

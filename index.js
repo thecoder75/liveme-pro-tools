@@ -56,6 +56,11 @@ function createWindow() {
             template: '%%replayid%%',
             concurrent: 1
         });
+        appSettings.set('lamd', {
+            enabled: false,
+            url: 'http://localhost:8280'
+        });
+        
 	}
 
     if (!appSettings.get('downloads.path')) {
@@ -69,7 +74,7 @@ function createWindow() {
     if (!appSettings.get('lamd.enabled')) {
         appSettings.set('lamd', {
             enabled: false,
-            url: 'localhost'
+            url: 'http://localhost:8280'
         });
     }
 
