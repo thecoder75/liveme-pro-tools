@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.61.20180224
+Fixed:
+- Fixed default settings for LAMD url, should now set defaults to `http://localhost:8280`
+
 ### v1.60.20180223
 Added:
 - Added support for LAMD.
