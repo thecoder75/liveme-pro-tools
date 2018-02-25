@@ -271,19 +271,23 @@ function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: 
 function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }); }
 function downloadVideo(vid) { 
 
-    if ($('#download-'+vid).length > 0) return;
+    if (appSettings.get('lamd.handle_downloads') == true) {
+        AddReplayToLAMD(vid);
+    } else {
+        if ($('#download-'+vid).length > 0) return;
 
-    $('#queue-list').append(`
-            <div class="download" id="download-${vid}">
-                <div class="filename">${vid}</div>
-                <div class="status">Queued for download</div>
-                <div class="progress-bar">
-                    <div class="bar" style="width: 0%"></div>
+        $('#queue-list').append(`
+                <div class="download" id="download-${vid}">
+                    <div class="filename">${vid}</div>
+                    <div class="status">Queued for download</div>
+                    <div class="progress-bar">
+                        <div class="bar" style="width: 0%"></div>
+                    </div>
                 </div>
-            </div>
-    `);
+        `);
 
-    ipcRenderer.send('download-replay', { videoid: vid }); 
+        ipcRenderer.send('download-replay', { videoid: vid }); 
+    }
 }
 function showDownloads() {
     if ($('#queue-list').is(':visible')) {
@@ -886,6 +890,7 @@ function initSettingsPanel() {
     $('#downloads-concurrent').val(appSettings.get('downloads.concurrent'));
 
     $('#lamd-enabled').prop('checked', appSettings.get('lamd.enabled'));
+    $('#lamd-downloads').prop('checked', appSettings.get('lamd.handle_downloads'));
     $('#lamd-url').val(appSettings.get('lamd.url'));
 
     var v = remote.app.getVersion().split('.')[2], stats = DataManager.getStats();
@@ -910,6 +915,7 @@ function saveSettings() {
     appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());    
 
     appSettings.set('lamd.enabled', ($('#lamd-enabled').is(':checked') ? true : false) )
+    appSettings.set('lamd.handle_downloads', ($('#lamd-downloads').is(':checked') ? true : false) )
 
     if ($('#lamd-url').val().length < 21) $('#lamd-url').val('http://localhost:8280');
     appSettings.set('lamd.url', $('#lamd-url').val());    
@@ -937,6 +943,11 @@ function resetSettings() {
         mainWindow: [ 1024, 600],
         playerWindow: [ 370, 680 ],
         bookmarksWindow: [ 400, 720 ]
+    });
+    appSettings.set('lamd', {
+        enabled: false,
+        url: 'http://localhost:8280',
+        handle_downloads: false
     });
 
     DataManager.wipeAllData();
