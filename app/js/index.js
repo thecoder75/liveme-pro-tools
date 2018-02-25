@@ -512,6 +512,21 @@ function _checkBookmark(i) {
 }
 
 
+function saveAccountFace() {
+
+    var u = appSettings.get('downloads.path');
+
+    request.get(current_user.face)
+        .on('error', (err) => {
+
+        })
+        .pipe(fs.createWriteStream(`${u}/${current_user.uid}.jpg`));
+
+    $('#popup-message').html('Image saved to downloads.').animate({ top: 40 }, 400).delay(2000).animate({ top: 0 - $('#popup-message').height() }, 400);
+   
+}
+
+
 function doSearch() {
     var query = '',
         userid = '',
@@ -989,10 +1004,10 @@ function AddToLAMD(u) {
         var r = JSON.parse(body);
         if (r.message == "Account removed.") {
             $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add').show();
-            $('#popup-message').html('Account removed from LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
+            $('#popup-message').html('Account removed from LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400);
         } else {
             $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove').show();
-            $('#popup-message').html('Account added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
+            $('#popup-message').html('Account added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400);
         }
 
     });      
@@ -1013,7 +1028,7 @@ function AddReplayToLAMD(r) {
         
         if (err) return;
 
-        $('#popup-message').html('Download added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
+        $('#popup-message').html('Download added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400);
 
     });      
 }
