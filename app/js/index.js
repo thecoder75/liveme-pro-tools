@@ -947,12 +947,19 @@ function CheckForLAMD() {
 
         setTimeout(() => {
             request({
-                url: lamd_config.url + '/check-account/'+current_user.uid,   
+                url: lamd_config.url + '/check-account/'+current_user.uid,  
+                method: 'get',
+                timeout: 2000
+
             }, (err, resp, body) => {
+                if (err) {
+                    $('.lamd-button').hide();
+                    return;
+                }
                 if (JSON.parse(body).message == "Account is in the list.") {
-                    $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove');
+                    $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove').show();
                 } else {
-                    $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add');
+                    $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add').show();
                 }
 
             });
@@ -973,17 +980,40 @@ function AddToLAMD(u) {
 
     request({
         url: lamd_config.url + (v == 'add' ? '/add-account/' : '/remove-account/') + current_user.uid,
-        method: 'get'
+        method: 'get',
+        timeout: 2000
     }, function(err,httpResponse,body) {
         
         if (err) return;
 
         var r = JSON.parse(body);
         if (r.message == "Account removed.") {
-            $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add');
+            $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add').show();
+            $('#popup-message').html('Account removed from LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
         } else {
-            $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove');
+            $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove').show();
+            $('#popup-message').html('Account added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
         }
+
+    });      
+}
+
+
+function AddReplayToLAMD(r) {
+
+    var lamd_config = appSettings.get('lamd'), v = $('.lamd-button').attr('mode');
+
+    if (lamd_config.enabled == false) return;   // If we are not allowed to use it, then don't continue on inside this script.
+
+    request({
+        url: lamd_config.url + '/add-download/' + r,
+        method: 'get',
+        timeout: 2000
+    }, function(err,httpResponse,body) {
+        
+        if (err) return;
+
+        $('#popup-message').html('Download added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
 
     });      
 }
