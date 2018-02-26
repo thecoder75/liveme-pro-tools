@@ -16,6 +16,7 @@ const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron'
         isDev = require('electron-is-dev'),
         formatDuration = require('format-duration'),
         m3u8stream = require('./modules/m3u8stream');               // We use a custom variation of this module
+        appollus = require('./modules/appollus');               // We use a custom variation of this module
 
 var 	mainWindow = null,
         playerWindow = null,
@@ -199,7 +200,7 @@ function createWindow() {
     } else {
         mainWindow.show();   
     }
-
+    
 }
 
 var shouldQuit = app.makeSingleInstance( function(commandLine,workingDirectory) {
@@ -448,6 +449,32 @@ ipcMain.on('read-comments', (event, arg) => {
         win.showInactive();
     }).loadURL(`file://${__dirname}/app/comments.html?` + arg.userid);
 });
+
+ipcMain.on('open-discovery', (event, arg) => {
+    var dicoveryWindow = new BrowserWindow({
+        icon: __dirname + '/appicon.ico',
+        width: 400,
+        height: 300,
+        minWidth: 350,
+        minHeight: 280,
+        darkTheme: true,
+        autoHideMenuBar: false,
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        fullscreen: false,
+        maximizable: false,
+        frame: false,
+        show: true,
+        backgroundColor: 'transparent',
+        webPreferences: {
+            webSecurity: false,
+            textAreasAreResizable: false,
+            plugins: true
+        }
+    });
+
+    dicoveryWindow.loadURL(`file://${__dirname}/app/discovery.html`);
+})
 
 ipcMain.on('open-bookmarks', (event, arg) => {
     if (bookmarksWindow == null) {
