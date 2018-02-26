@@ -54,7 +54,7 @@
             <div id="user-details" class="details">
                 <div class="avatar">
                     <img class="avatar" src=""  onerror="this.src='images/nouser.png'">
-                    <!--<a class="save" href="#"><i class="icon icon-download"></i></a>-->
+                    <a class="save" href="#" onClick="saveAccountFace()"><i class="icon icon-download"></i></a>
                 </div>
                 <div class="info">
                     <h1>
@@ -66,7 +66,7 @@
                     <h2 class="level"></h2>
                     <h4></h4>
                     <div class="buttons">
-                        <a href="#" class="button lamd-button" onClick="AddToLAMD()"><i class="icon icon-hour-glass"></i></a>
+                        <a href="#" class="button lamd-button" onClick="AddToLAMD()" style="display: none;"><i class="icon icon-hour-glass"></i></a>
                         <a href="#" class="button following" onClick="showFollowing()"><i class="icon icon-hour-glass"></i></a>
                         <a href="#" class="button followers" onClick="showFollowers()"><i class="icon icon-hour-glass"></i></a>
                     </div>
@@ -177,6 +177,9 @@
                         <li style="padding-bottom: 5px;"><h4>LAMD Support</h4></li>
                         <li style="line-height: 24px;">
                             <input type="checkbox" id="lamd-enabled"> Enable LAMD support.<br>
+                        </li>
+                        <li style="line-height: 24px;">
+                            <input type="checkbox" id="lamd-downloads"> Use LAMD to handle replay downloads.<br>
                         </li>
                         <li style="margin: 12px 0; line-height: 16px;">
                             LAMD URL:<br>

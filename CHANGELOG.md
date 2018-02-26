@@ -1,5 +1,12 @@
 ## Change Log
 
+### v1.80.20180225
+Added:
+- Added ability to save the avatar/face of an account.
+- Added ability to use LAMD for handling downloads in the background.
+- LAMD button now only shows if LAMD is running when profile is viewed.
+- LAMD commands now provide feedback.
+
 ### v1.61.20180224
 Fixed:
 - Fixed default settings for LAMD url, should now set defaults to `http://localhost:8280`

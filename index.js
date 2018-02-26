@@ -59,7 +59,8 @@ function createWindow() {
         });
         appSettings.set('lamd', {
             enabled: false,
-            url: 'http://localhost:8280'
+            url: 'http://localhost:8280',
+            handle_downloads: false
         });
         
 	}
@@ -75,7 +76,8 @@ function createWindow() {
     if (!appSettings.get('lamd.enabled')) {
         appSettings.set('lamd', {
             enabled: false,
-            url: 'http://localhost:8280'
+            url: 'http://localhost:8280',
+            handle_downloads : false
         });
     }
 

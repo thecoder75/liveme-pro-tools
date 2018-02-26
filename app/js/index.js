@@ -272,19 +272,23 @@ function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: 
 function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }); }
 function downloadVideo(vid) { 
 
-    if ($('#download-'+vid).length > 0) return;
+    if (appSettings.get('lamd.handle_downloads') == true) {
+        AddReplayToLAMD(vid);
+    } else {
+        if ($('#download-'+vid).length > 0) return;
 
-    $('#queue-list').append(`
-            <div class="download" id="download-${vid}">
-                <div class="filename">${vid}</div>
-                <div class="status">Queued for download</div>
-                <div class="progress-bar">
-                    <div class="bar" style="width: 0%"></div>
+        $('#queue-list').append(`
+                <div class="download" id="download-${vid}">
+                    <div class="filename">${vid}</div>
+                    <div class="status">Queued for download</div>
+                    <div class="progress-bar">
+                        <div class="bar" style="width: 0%"></div>
+                    </div>
                 </div>
-            </div>
-    `);
+        `);
 
-    ipcRenderer.send('download-replay', { videoid: vid }); 
+        ipcRenderer.send('download-replay', { videoid: vid }); 
+    }
 }
 function showDownloads() {
     if ($('#queue-list').is(':visible')) {
@@ -510,6 +514,21 @@ function _checkBookmark(i) {
 
     });        
 
+}
+
+
+function saveAccountFace() {
+
+    var u = appSettings.get('downloads.path');
+
+    request.get(current_user.face)
+        .on('error', (err) => {
+
+        })
+        .pipe(fs.createWriteStream(`${u}/${current_user.uid}.jpg`));
+
+    $('#popup-message').html('Image saved to downloads.').animate({ top: 40 }, 400).delay(2000).animate({ top: 0 - $('#popup-message').height() }, 400);
+   
 }
 
 
@@ -872,6 +891,7 @@ function initSettingsPanel() {
     $('#downloads-concurrent').val(appSettings.get('downloads.concurrent'));
 
     $('#lamd-enabled').prop('checked', appSettings.get('lamd.enabled'));
+    $('#lamd-downloads').prop('checked', appSettings.get('lamd.handle_downloads'));
     $('#lamd-url').val(appSettings.get('lamd.url'));
 
     var v = remote.app.getVersion().split('.')[2], stats = DataManager.getStats();
@@ -896,6 +916,7 @@ function saveSettings() {
     appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());    
 
     appSettings.set('lamd.enabled', ($('#lamd-enabled').is(':checked') ? true : false) )
+    appSettings.set('lamd.handle_downloads', ($('#lamd-downloads').is(':checked') ? true : false) )
 
     if ($('#lamd-url').val().length < 21) $('#lamd-url').val('http://localhost:8280');
     appSettings.set('lamd.url', $('#lamd-url').val());    
@@ -924,6 +945,11 @@ function resetSettings() {
         playerWindow: [ 370, 680 ],
         bookmarksWindow: [ 400, 720 ]
     });
+    appSettings.set('lamd', {
+        enabled: false,
+        url: 'http://localhost:8280',
+        handle_downloads: false
+    });
 
     DataManager.wipeAllData();
     remote.app.relaunch();
@@ -948,12 +974,19 @@ function CheckForLAMD() {
 
         setTimeout(() => {
             request({
-                url: lamd_config.url + '/check-account/'+current_user.uid,   
+                url: lamd_config.url + '/check-account/'+current_user.uid,  
+                method: 'get',
+                timeout: 2000
+
             }, (err, resp, body) => {
+                if (err) {
+                    $('.lamd-button').hide();
+                    return;
+                }
                 if (JSON.parse(body).message == "Account is in the list.") {
-                    $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove');
+                    $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove').show();
                 } else {
-                    $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add');
+                    $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add').show();
                 }
 
             });
@@ -974,17 +1007,40 @@ function AddToLAMD(u) {
 
     request({
         url: lamd_config.url + (v == 'add' ? '/add-account/' : '/remove-account/') + current_user.uid,
-        method: 'get'
+        method: 'get',
+        timeout: 2000
     }, function(err,httpResponse,body) {
         
         if (err) return;
 
         var r = JSON.parse(body);
         if (r.message == "Account removed.") {
-            $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add');
+            $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add').show();
+            $('#popup-message').html('Account removed from LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400);
         } else {
-            $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove');
+            $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove').show();
+            $('#popup-message').html('Account added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400);
         }
+
+    });      
+}
+
+
+function AddReplayToLAMD(r) {
+
+    var lamd_config = appSettings.get('lamd'), v = $('.lamd-button').attr('mode');
+
+    if (lamd_config.enabled == false) return;   // If we are not allowed to use it, then don't continue on inside this script.
+
+    request({
+        url: lamd_config.url + '/add-download/' + r,
+        method: 'get',
+        timeout: 2000
+    }, function(err,httpResponse,body) {
+        
+        if (err) return;
+
+        $('#popup-message').html('Download added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400);
 
     });      
 }
