@@ -651,7 +651,8 @@ function performUserLookup(uid) {
                         <th width="50" align="right">Length</th>
                         <th width="70" align="right">Views</th>
                         <th width="70" align="right">Likes</th>
-                        <th width="70" align="right">Shares</th>
+                        <th width="30" align="right">LPS</th>
+                        <th width="30" align="right">Shares</th>
                         <th width="210">Actions</th>
                     </tr>
             `);    
@@ -778,6 +779,8 @@ function _addReplayEntry(replay, wasSearched) {
     var watched = watchDate == false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched '+prettydate.format(watchDate)+'"></i>';
     var seen = watchDate == false ? '' : 'watched';
 
+    var lps = parseInt(replay.likenum)/(parseInt(replay.videolength))
+    lps = lps.toFixed(2)
     var isLive = replay.hlsvideosource.endsWith('flv') || replay.hlsvideosource.indexOf('liveplay') > 0 ? '[LIVE]' : '';
     var in_queue = $('#download-'+replay.vid).length > 0 ? '<a class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a class="button icon-only" onClick="downloadVideo(\''+replay.vid+'\')" title="Download Replay"><i class="icon icon-download"></i></a>';
 
@@ -788,7 +791,8 @@ function _addReplayEntry(replay, wasSearched) {
                         <td width="50" class="${highlight}" align="right">${length}</td>
                         <td width="70" class="${highlight}" align="right">${replay.playnumber}</td>
                         <td width="70" class="${highlight}" align="right">${replay.likenum}</td>
-                        <td width="70" class="${highlight}" align="right">${replay.sharenum}</td>
+                        <td width="30" class="${highlight}" align="right"><span style="color:orange">${lps}<span></td>
+                        <td width="30" class="${highlight}" align="right">${replay.sharenum}</td>
                         <td width="210" class="${highlight}" style="padding: 0 16px; text-align: right;">
                             <a class="button mini icon-small" onClick="copyToClipboard('${replay.vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
                             &nbsp;&nbsp;
