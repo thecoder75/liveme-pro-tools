@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.90.20180227
+Added:
+- Added [monstergarden](https://github.com/monstergarden)'s spider feature.
+
 ### v1.80.20180225
 Added:
 - Added ability to save the avatar/face of an account.

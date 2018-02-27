@@ -54,7 +54,6 @@ header.two-lines {
 }
 
 header.two-lines h1 { line-height: 24px; }
-header.two-lines i.icon { font-size: 12px; vertical-align: middle; }
 header.two-lines div.buttons-row {
     position: absolute;
     top: 24px;
@@ -72,7 +71,69 @@ header.two-lines div.buttons-row span {
     padding-right: 8px;
 }
 
-header.two-lines .select, header.two-lines input[type=text] {
+header.two-lines .select {
     vertical-align: middle;
     background-color: rgb(32,32,32);
+}
+
+header.two-lines .search input[type=text] {
+    width: 280px;
+}
+
+
+/*
+    Header Search
+*/
+.search {
+    display: inline-block;
+    height: 24px;
+    border-radius: 12px;
+    background-color: rgb(64,64,64);
+    vertical-align: middle;
+    -webkit-app-region: no-drag;
+}
+
+.search i.icon {
+    vertical-align: top;
+    font-size: 12px;
+    display: inline-block;
+    padding: 0 0 0 8px;
+    height: 24px;
+    line-height: 24px;
+}
+
+.search .select select {
+    color: rgb(128,128,128);
+    border: none;
+}
+
+.search .select select option {
+    border: none;
+}
+
+.search input[type=text] {
+    display: inline-block;
+    border: none;
+    width: 320px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 4px;
+    margin: 0;
+    color: rgb(192,192,192);
+    background-color: transparent;
+    vertical-align: top;
+    outline: none;
+}
+.search button {
+    border: none;
+    background-color: transparent;
+    color: rgb(160,160,160);
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0;
+    margin-right: 4px;
+    cursor: pointer;
+    vertical-align: top;
 }

@@ -442,7 +442,7 @@ ipcMain.on('read-comments', (event, arg) => {
         darkTheme: false,
         autoHideMenuBar: true,
         skipTaskbar: false,
-        backgroundColor: '#000000'
+        backgroundColor: '#000000',
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
         fullscreen: false,
