@@ -16,13 +16,13 @@ const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron'
         isDev = require('electron-is-dev'),
         formatDuration = require('format-duration'),
         m3u8stream = require('./modules/m3u8stream');               // We use a custom variation of this module
-        appollus = require('./modules/appollus');               // We use a custom variation of this module
 
 var 	mainWindow = null,
         playerWindow = null,
 		bookmarksWindow = null,
         chatWindow = null,
         wizardWindow = null,
+        discoveryWindow = null,
         menu = null,
         appSettings = require('electron-settings'),
         download_list = [],
@@ -156,6 +156,12 @@ function createWindow() {
 
             DataManager.saveToDisk();
 
+            if (playerWindow != null) { playerWindow.close(); }
+            if (bookmarksWindow != null) { bookmarksWindow.close(); }
+            if (chatWindow != null) { chatWindow.close(); }
+            if (discoveryWindow != null) { discoveryWindow.close(); }
+
+
             mainWindow.webContents.session.clearCache(() => {
                 // Purge the cache to help avoid eating up space on the drive
             });
@@ -164,7 +170,7 @@ function createWindow() {
             
             setTimeout(function(){
                 app.quit();
-            }, 1000);
+            }, 500);
         });
 
 
@@ -436,7 +442,7 @@ ipcMain.on('read-comments', (event, arg) => {
         darkTheme: false,
         autoHideMenuBar: true,
         skipTaskbar: false,
-        backgroundColor: '#000000',     // We utilize the macOS Vibrancy mode
+        backgroundColor: '#000000'
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
         fullscreen: false,
@@ -453,29 +459,31 @@ ipcMain.on('read-comments', (event, arg) => {
 });
 
 ipcMain.on('open-discovery', (event, arg) => {
-    var dicoveryWindow = new BrowserWindow({
-        icon: __dirname + '/appicon.ico',
-        width: 400,
-        height: 300,
-        minWidth: 350,
-        minHeight: 280,
-        darkTheme: true,
-        autoHideMenuBar: false,
-        disableAutoHideCursor: true,
-        titleBarStyle: 'default',
-        fullscreen: false,
-        maximizable: false,
-        frame: false,
-        show: true,
-        backgroundColor: 'transparent',
-        webPreferences: {
-            webSecurity: false,
-            textAreasAreResizable: false,
-            plugins: true
-        }
-    });
+    if (discoveryWindow == null) {
+        var dicoveryWindow = new BrowserWindow({
+            width: 400,
+            height: 600,
+            resizable: false,
+            darkTheme: false,
+            autoHideMenuBar: true,
+            disableAutoHideCursor: true,
+            titleBarStyle: 'default',
+            fullscreen: false,
+            maximizable: false,
+            frame: false,
+            show: true,
+            backgroundColor: '#000000'
+        });
 
-    dicoveryWindow.loadURL(`file://${__dirname}/app/discovery.html`);
+        dicoveryWindow.on('close', () => {
+            dicoveryWindow.webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            });            
+            dicoveryWindow = null;
+        }).loadURL(`file://${__dirname}/app/discovery.html`);
+
+    } else
+        discoveryWindow.show();
 })
 
 ipcMain.on('open-bookmarks', (event, arg) => {
