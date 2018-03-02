@@ -266,7 +266,6 @@ function showUser(u) {
 }
 
 function openBookmarks() { ipcRenderer.send('open-bookmarks'); }
-function openDiscovery() { ipcRenderer.send('open-discovery'); }
 function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
 function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }); }

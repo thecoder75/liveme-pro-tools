@@ -22,7 +22,6 @@ var 	mainWindow = null,
 		bookmarksWindow = null,
         chatWindow = null,
         wizardWindow = null,
-        discoveryWindow = null,
         menu = null,
         appSettings = require('electron-settings'),
         download_list = [],
@@ -159,8 +158,6 @@ function createWindow() {
             if (playerWindow != null) { playerWindow.close(); }
             if (bookmarksWindow != null) { bookmarksWindow.close(); }
             if (chatWindow != null) { chatWindow.close(); }
-            if (discoveryWindow != null) { discoveryWindow.close(); }
-
 
             mainWindow.webContents.session.clearCache(() => {
                 // Purge the cache to help avoid eating up space on the drive
@@ -459,34 +456,6 @@ ipcMain.on('read-comments', (event, arg) => {
         win.showInactive();
     }).loadURL(`file://${__dirname}/app/comments.html?` + arg.userid);
 });
-
-ipcMain.on('open-discovery', (event, arg) => {
-    if (discoveryWindow == null) {
-        var dicoveryWindow = new BrowserWindow({
-            width: 400,
-            height: 600,
-            resizable: false,
-            darkTheme: false,
-            autoHideMenuBar: true,
-            disableAutoHideCursor: true,
-            titleBarStyle: 'default',
-            fullscreen: false,
-            maximizable: false,
-            frame: false,
-            show: true,
-            backgroundColor: '#000000'
-        });
-
-        dicoveryWindow.on('close', () => {
-            dicoveryWindow.webContents.session.clearCache(() => {
-                // Purge the cache to help avoid eating up space on the drive
-            });            
-            dicoveryWindow = null;
-        }).loadURL(`file://${__dirname}/app/discovery.html`);
-
-    } else
-        discoveryWindow.show();
-})
 
 ipcMain.on('open-bookmarks', (event, arg) => {
     if (bookmarksWindow == null) {
