@@ -7,17 +7,24 @@
 const   MAX_PER_PAGE = 5;
 
 const   { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard } = require('electron'),
-        fs = require('fs'), path = require('path'), 
+        fs = require('fs'), path = require('path'),
         appSettings = remote.require('electron-settings'),
         isDev = remote.getGlobal('isDev'),
         LiveMe = remote.getGlobal('LiveMe'),
         DataManager = remote.getGlobal('DataManager'),
         formatDuration = require('format-duration'),
         prettydate = require('pretty-date'),
-        request = require('request');        
+        request = require('request');
 
 
-var     current_user = {}, current_page = 1, current_index = 0, tempvar = null, has_more = false, current_search = '', scroll_busy = false, debounce = 0;
+var     current_user = {},
+		current_page = 1,
+		current_index = 0,
+		tempvar = null,
+		has_more = false,
+		current_search = '',
+		scroll_busy = false,
+		current_view = 'home';
 
 
 $(function(){
@@ -76,13 +83,13 @@ function setupContextMenu() {
             }
             node = node.parentNode;
         }
-    }); 
+    });
 }
 
 function setupLoadOnScroll() {
     $('main').scroll(function() {
         if (($(this).scrollTop() + $(this).height()) > ($('table').height() - 80)) {
-    
+
             if (has_more == false) return;
             if (scroll_busy == true) return;
             scroll_busy = true;
@@ -147,11 +154,11 @@ function setupIPCListeners() {
 
     ipcRenderer.on('download-error' , function(event, arg) {
         if ($('#download-'+arg.videoid).length < 1) return;
-
         var p = $('#popup-message');
         p.html(arg.error).animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
 
         $('#download-'+arg.videoid).addClass('error').delay(4000).remove();
+		downloadVideo(arg.videoid);
     });
 
 }
@@ -214,7 +221,7 @@ function showMainMenu() {
             },
 
         ]
-    );  
+    );
 
     MainAppMenu.popup(
         remote.getCurrentWindow(),
@@ -229,25 +236,25 @@ function showMainMenu() {
 function onTypeChange() {
     var t=$('#search-type').val();
     switch (t) {
-        case 'user-id': 
-            $('#search-query').attr('placeholder', 'User ID'); 
+        case 'user-id':
+            $('#search-query').attr('placeholder', 'User ID');
             break;
-        case 'short-id': 
-            $('#search-query').attr('placeholder', 'Short ID'); 
+        case 'short-id':
+            $('#search-query').attr('placeholder', 'Short ID');
             break;
-        case 'video-id': 
-            $('#search-query').attr('placeholder', 'Video ID'); 
+        case 'video-id':
+            $('#search-query').attr('placeholder', 'Video ID');
             break;
         case 'video-url':
-            $('#search-query').attr('placeholder', 'Video URL'); 
+            $('#search-query').attr('placeholder', 'Video URL');
             break;
-        case 'username-like': 
-            $('#search-query').attr('placeholder', 'Partial or Full Username'); 
+        case 'username-like':
+            $('#search-query').attr('placeholder', 'Partial or Full Username');
             break;
     }
 }
 
-function enterOnSearch(e) { if (e.keyCode == 13) preSearch(); } 
+function enterOnSearch(e) { if (e.keyCode == 13) preSearch(); }
 function copyToClipboard(i) { clipboard.writeText(i); }
 function showSettings() { $('#settings').show(); }
 function hideSettings() { $('#settings').hide(); }
@@ -269,7 +276,7 @@ function openBookmarks() { ipcRenderer.send('open-bookmarks'); }
 function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
 function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }); }
-function downloadVideo(vid) { 
+function downloadVideo(vid) {
 
     if (appSettings.get('lamd.handle_downloads') == true) {
         AddReplayToLAMD(vid);
@@ -286,7 +293,7 @@ function downloadVideo(vid) {
                 </div>
         `);
 
-        ipcRenderer.send('download-replay', { videoid: vid }); 
+        ipcRenderer.send('download-replay', { videoid: vid });
     }
 }
 function showDownloads() {
@@ -301,16 +308,18 @@ function showDownloads() {
 function openURL(u) { shell.openExternal(u); }
 function readComments(u) { ipcRenderer.send('read-comments', { userid: u }); }
 
-function goHome() { 
-    $('footer').hide(); 
-    $('main').hide(); 
-    $('#home').show(); 
-    initHome(); 
+function goHome() {
+    $('footer').hide();
+    $('main').hide();
+    $('#home').show();
+    current_view = 'home';
+    initHome();
 }
 
 function preSearch(q) {
     var u=$('#search-query').val(), isnum = /^\d+$/.test(u);
     $('overlay').hide();
+    current_view = 'search';
 
     if ((u.length==20) && (isnum)) {
         if ($('#search-type').val() != 'video-id') {
@@ -332,13 +341,13 @@ function preSearch(q) {
             $('#search-type').val('video-url');
             onTypeChange();
         }
-    } else if (!isnum) {        
+    } else if (!isnum) {
         if ($('#search-type').val() != 'username-like') {
             $('#search-type').val('username-like');
             onTypeChange();
         }
     }
-    doSearch();    
+    doSearch();
 }
 
 function AddToBookmarks() {
@@ -375,7 +384,7 @@ function initHome() {
         url: 'https://raw.githubusercontent.com/thecoder75/liveme-pro-tools/master/package.json',
         method: 'get'
     }, function(err,httpResponse,body) {
-        
+
         var ghversion = JSON.parse(body).version, lversion = remote.app.getVersion(),
             g = ghversion.split('.'), ghv = g[0]+''+g[1],
             l = lversion.split('.'), lv = l[0]+''+l[1],
@@ -392,7 +401,7 @@ function initHome() {
                 </div>
             `);
         }
-    });  
+    });
 
     setTimeout(function(){
         request({
@@ -410,7 +419,7 @@ function initHome() {
                 `);
             }
 
-        });  
+        });
 
     }, 500);
 
@@ -424,19 +433,6 @@ function initHome() {
         list: bookmarks
     };
 
-    $('#home #bookmarklist').html('');
-    for (i = 0; i < tempvar.list.length; i++) {
-        $('#home #bookmarklist').append(`
-            <div class="bookmark nonew" id="bookmark-${tempvar.list[i].uid}" data-viewed="${tempvar.list[i].last_viewed}" onClick="showUser('${tempvar.list[i].uid}')">
-                <img src="${tempvar.list[i].face}" class="avatar" onError="$(this).hide()">
-                <h1>${tempvar.list[i].nickname}</h1>
-                <h2></h2>
-            </div>
-        `);
-
-    }
-
-
     setTimeout(function(){
         _homethread();
     }, 250);
@@ -446,32 +442,25 @@ function initHome() {
 
 function _homethread() {
 
-    setTimeout(function(){
+    setImmediate(function(){
 
-        if (tempvar.index == tempvar.max) {
-            $('footer h1').html('');
-            hideProgressBar();
-            $('div.nonew').remove();
-        } else {
-            setTimeout(function() { _homethread(); }, 250);
+        if (tempvar.index < tempvar.max) {
+            setTimeout(function() { _homethread(); }, 100);
         }
 
-        setProgressBarValue((tempvar.index / tempvar.max) * 100);
+        if (tempvar.index < tempvar.max - 1) { tempvar.index++; _checkBookmark(tempvar.list[tempvar.index].uid); }
+        if (tempvar.index < tempvar.max - 1) { tempvar.index++; _checkBookmark(tempvar.list[tempvar.index].uid); }
 
-        if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
-        if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
-        if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
-        if (tempvar.index < tempvar.max) { tempvar.index++; _checkBookmark(tempvar.index); }
-
-    }, 250);
+    });
 }
 
-function _checkBookmark(i) {
+function _checkBookmark(uid) {
 
-    if (tempvar.list[i] == undefined) return;
+    if (uid == undefined) return;
 
+	console.log(uid);
 
-    LiveMe.getUserInfo(tempvar.list[i].uid).then(user => {
+    LiveMe.getUserInfo(uid).then(user => {
 
         if (user == undefined) return;
 
@@ -488,30 +477,35 @@ function _checkBookmark(i) {
         DataManager.updateBookmark(b);
 
         if (b.counts.replays > 0) {
-            LiveMe.getUserReplays(tempvar.list[i].uid, 1, 2).then(replays => {
+            LiveMe.getUserReplays(uid, 1, 1).then(replays => {
 
                 if (replays == undefined) return;
                 if (replays.length < 1) return;
 
-                var count = 0, userid = replays[0].userid, d = $('#bookmark-'+userid).attr('data-viewed');
+                var count = 0, userid = replays[0].userid;
+				var bookmark = DataManager.getSingleBookmark(userid);
+
                 for (i = 0; i < replays.length; i++) {
-                    if (replays[i].vtime - d > 0) count++;
+                    if (replays[i].vtime - bookmark.newest_replay > 0) {
+						bookmark.newest_replay = Math.floor(replays[0].vtime);
+						DataManager.updateBookmark(bookmark);
+
+						if (current_view == 'home') {
+							$('#home #bookmarklist').append(`
+								<div class="bookmark" id="bookmark-${bookmark.uid}" onClick="showUser('${bookmark.uid}')">
+									<img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+									<h1>${bookmark.nickname}</h1>
+									<h2>NEW</h2>
+								</div>
+							`);
+						}
+						break;
+					}
                 }
-
-                if (count > 0) {
-                    $('#bookmark-' + userid + ' h2').html('NEW');
-                    $('#bookmark-' + userid).show().removeClass('nonew');
-
-                    var bookmark = DataManager.getSingleBookmark(userid);
-                    bookmark.newest_replay = Math.floor(replays[0].vtime);
-                    DataManager.updateBookmark(bookmark);
-
-                }
-
             });
         }
 
-    });        
+    });
 
 }
 
@@ -527,7 +521,7 @@ function saveAccountFace() {
         .pipe(fs.createWriteStream(`${u}/${current_user.uid}.jpg`));
 
     $('#popup-message').html('Image saved to downloads.').animate({ top: 40 }, 400).delay(2000).animate({ top: 0 - $('#popup-message').height() }, 400);
-   
+
 }
 
 
@@ -546,7 +540,7 @@ function doSearch() {
 
     current_page = 1;
     $('#list tbody').html('');
-    
+
     switch($('#search-type').val()) {
         case 'video-url':
             var t = q.split('/');
@@ -654,7 +648,7 @@ function performUserLookup(uid) {
                         <th width="70" align="right">Shares</th>
                         <th width="210">Actions</th>
                     </tr>
-            `);    
+            `);
 
             setTimeout(() => { CheckForLAMD(); }, 50);
 
@@ -667,7 +661,7 @@ function performUserLookup(uid) {
             $('#user-details div.info h2.shortid').html('<span>Short ID:</span> '+user.user_info.short_id+' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\''+user.user_info.uid+'\')"><i class="icon icon-copy"></i></a>');
             $('#user-details div.info h2.level').html('<span>Level:</span><b>'+user.user_info.level+'</b>');
             $('#user-details div.info h4').html(user.user_info.countryCode);
-            
+
             if (DataManager.isBookmarked(user.user_info) == true) {
                 $('#user-details a.bookmark').attr('title','Remove from Bookmarks').html('<i class="icon icon-star-full bright yellow"></i>');
             } else {
@@ -726,9 +720,9 @@ function getUsersReplays() {
 
                     for (var i = 0; i < replays.length; i++) {
                         _addReplayEntry(replays[i], false);
-                    }   
+                    }
                 }
-            } 
+            }
 
             $('table tbody tr').not('.user-'+current_user.uid).remove();
 
@@ -749,7 +743,7 @@ function getUsersReplays() {
                     $('#list table tbody tr.unlisted').removeClass('unlisted');
                 } else {
                     $('#list table tbody tr.unlisted').remove();
-                    $('footer h1').html($('#list tbody tr').length + ' visible of ' + current_user.counts.replays + ' total replays loaded.');   
+                    $('footer h1').html($('#list tbody tr').length + ' visible of ' + current_user.counts.replays + ' total replays loaded.');
                 }
                 if (d == 0) $('footer h1').html('No publicly listed replays available.');
 
@@ -757,7 +751,7 @@ function getUsersReplays() {
             }
 
         });
-        
+
 }
 
 function _addReplayEntry(replay, wasSearched) {
@@ -812,7 +806,7 @@ function _addReplayEntry(replay, wasSearched) {
 function performUsernameSearch() {
     LiveMe.performSearch($('#search-query').val(), current_page, MAX_PER_PAGE, 1)
         .then(results => {
-            
+
             current_search = 'performUsernameSearch';
             has_more = results.length >= MAX_PER_PAGE;
             setTimeout(function(){ scroll_busy = false; }, 250);
@@ -820,8 +814,8 @@ function performUsernameSearch() {
             for(var i = 0; i < results.length; i++) {
 
                 var bookmarked = DataManager.isBookmarked(results[i].user_id) ? '<i class="icon icon-star-full bright yellow"></i>' : '<i class="icon icon-star-full dim"></i>';
-                var viewed = DataManager.wasProfileViewed(results[i].user_id) ? 
-                    '<i class="icon icon-eye bright blue" title="Last viewed '+prettydate.format(DataManager.wasProfileViewed(results[i].user_id))+'"></i>' : 
+                var viewed = DataManager.wasProfileViewed(results[i].user_id) ?
+                    '<i class="icon icon-eye bright blue" title="Last viewed '+prettydate.format(DataManager.wasProfileViewed(results[i].user_id))+'"></i>' :
                     '<i class="icon icon-eye dim"></i>';
                 var sex = results[i].sex < 0 ? '' : (results[i].sex == 0 ? 'female' : 'male');
 
@@ -838,7 +832,7 @@ function performUsernameSearch() {
 
                             <h5 class="level"></h5>
                             <h5 class="country"></h5>
-                            
+
                             <div class="bookmarked">${bookmarked}</div>
                             <div class="viewed">${viewed}</div>
 
@@ -875,7 +869,7 @@ function performUsernameSearch() {
                 $('#status').hide();
             }
 
-        }); 
+        });
 }
 
 
@@ -903,22 +897,22 @@ function initSettingsPanel() {
 
 }
 
-function saveSettings() {       
+function saveSettings() {
 
     appSettings.set('general.hide_zeroreplay_fans', ($('#viewmode-followers').is(':checked') ? true : false) )
     appSettings.set('general.hide_zeroreplay_followings', ($('#viewmode-followings').is(':checked') ? true : false) )
 
-    appSettings.set('general.playerpath', $('#playerpath').val());    
+    appSettings.set('general.playerpath', $('#playerpath').val());
 
-    appSettings.set('downloads.path', $('#downloads-path').val());    
-    appSettings.set('downloads.template', $('#downloads-template').val());    
-    appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());    
+    appSettings.set('downloads.path', $('#downloads-path').val());
+    appSettings.set('downloads.template', $('#downloads-template').val());
+    appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());
 
     appSettings.set('lamd.enabled', ($('#lamd-enabled').is(':checked') ? true : false) )
     appSettings.set('lamd.handle_downloads', ($('#lamd-downloads').is(':checked') ? true : false) )
 
     if ($('#lamd-url').val().length < 21) $('#lamd-url').val('http://localhost:8280');
-    appSettings.set('lamd.url', $('#lamd-url').val());    
+    appSettings.set('lamd.url', $('#lamd-url').val());
 
 }
 
@@ -968,12 +962,12 @@ function CheckForLAMD() {
         url: lamd_config.url + '/ping',
         method: 'get'
     }, function(err,httpResponse,body) {
-        
+
         if (err) return;
 
         setTimeout(() => {
             request({
-                url: lamd_config.url + '/check-account/'+current_user.uid,  
+                url: lamd_config.url + '/check-account/'+current_user.uid,
                 method: 'get',
                 timeout: 2000
 
@@ -991,9 +985,9 @@ function CheckForLAMD() {
             });
         }, 100);
 
-        
 
-    });      
+
+    });
 
 }
 
@@ -1009,7 +1003,7 @@ function AddToLAMD(u) {
         method: 'get',
         timeout: 2000
     }, function(err,httpResponse,body) {
-        
+
         if (err) return;
 
         var r = JSON.parse(body);
@@ -1021,7 +1015,7 @@ function AddToLAMD(u) {
             $('#popup-message').html('Account added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400);
         }
 
-    });      
+    });
 }
 
 
@@ -1036,10 +1030,10 @@ function AddReplayToLAMD(r) {
         method: 'get',
         timeout: 2000
     }, function(err,httpResponse,body) {
-        
+
         if (err) return;
 
         $('#popup-message').html('Download added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400);
 
-    });      
+    });
 }
