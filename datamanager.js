@@ -23,11 +23,11 @@ class DataManager {
         profiles = [];
         downloaded = [];
         watched = [];
-        
+
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks), function(){ });
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });        
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });
     }
 
     getStats() {
@@ -68,13 +68,13 @@ class DataManager {
                 watched = JSON.parse(data);
             }
         });
-        
+
     }
     saveToDisk() {
         if (is_busy == true) return;
         if (can_write == false) return;
 
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks), function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), function(){ });
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), function(){ });
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });
@@ -117,7 +117,7 @@ class DataManager {
         is_busy = true;
         var add = true, dt = new Date();
         for (var i = 0; i < watched.length; i++) {
-            if (watched[i].videoid == vidid) { 
+            if (watched[i].videoid == vidid) {
                 watched[i].dt = Math.floor(dt.getTime() / 1000);
                 add =false;
             }
@@ -145,7 +145,7 @@ class DataManager {
         is_busy = true;
         var add = true, dt = new Date();
         for (var i = 0; i < profiles.length; i++) {
-            if (profiles[i].userid == userid) { 
+            if (profiles[i].userid == userid) {
                 profiles[i].dt = Math.floor(dt.getTime() / 1000);
                 add =false;
             }
