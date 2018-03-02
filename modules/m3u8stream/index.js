@@ -32,7 +32,7 @@ module.exports = (video, options) => {
   var chunkReadahead = options.chunkReadahead || 3;
   var refreshInterval = options.refreshInterval || 600000; // 10 minutes
   var requestOptions = options.requestOptions;
-  
+
   var totalItems = 0;
   var chunkIndex = 0;
 
@@ -52,14 +52,14 @@ module.exports = (video, options) => {
     clearTimeout(timeoutTimer);
     timeoutTimer = setTimeout(() => {
       onError('Download timeout');
-    }, 15000);
+    }, 7500);
 
     chunkIndex++;
-    if (chunkIndex > chunkReadahead) 
-      options.on_progress({ 
-        index: chunkIndex, 
-        total: totalItems, 
-        videoid: video.vid 
+    if (chunkIndex > chunkReadahead)
+      options.on_progress({
+        index: chunkIndex,
+        total: totalItems,
+        videoid: video.vid
       });
   }, {
     concurrency: chunkReadahead,
@@ -107,7 +107,7 @@ module.exports = (video, options) => {
         clearTimeout(tid);
       }
     });
-    
+
     parser.on('item', (item) => {
       totalItems++;
       requestQueue.push(item, onQueuedEnd);
@@ -128,7 +128,7 @@ module.exports = (video, options) => {
     requestQueue.die();
     clearTimeout(tid);
     if (latestSegment) { latestSegment.unpipe(); }
-    PassThrough.prototype.end.call(stream);    
+    PassThrough.prototype.end.call(stream);
   };
 
   return stream;
