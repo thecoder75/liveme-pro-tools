@@ -32,8 +32,6 @@ var 	mainWindow = null,
 function createWindow() {
     var isFreshInstall = appSettings.get('general.fresh_install') == null;
 
-    //if (isDev) isFreshInstall = true;
-
     if (isFreshInstall == true) {
         appSettings.set('general', {
             fresh_install: true,
@@ -44,7 +42,9 @@ function createWindow() {
         appSettings.set('position', {
             mainWindow: [ -1, -1],
             playerWindow: [ -1, -1],
-            bookmarksWindow: [ -1, -1]
+            bookmarksWindow: [ -1, -1],
+            fansWindow: [-1, -1],
+            followingsWindow: [-1, -1],
         });
         appSettings.set('size', {
             mainWindow: [ 1024, 600],
@@ -61,7 +61,7 @@ function createWindow() {
             url: 'http://localhost:8280',
             handle_downloads: false
         });
-        
+
 	}
 
     if (!appSettings.get('downloads.path')) {
@@ -92,26 +92,26 @@ function createWindow() {
     /*
         Create our window definitions
     */
-    var winposition = appSettings.get('position'), winsize = appSettings.get('size');
+    var winposition = appSettings.get('position.mainWindow'), winsize = appSettings.get('size.mainWindow');
 
     mainWindow = new BrowserWindow({
         icon: __dirname + '/appicon.ico',
-        width: winsize.mainWindow[0],
-        height: winsize.mainWindow[1],
-        x: winposition.mainWindow[0] != -1 ? winposition.mainWindow[0] : null,
-        y: winposition.mainWindow[1] != -1 ? winposition.mainWindow[1] : null,        
+        x: winposition[0],
+        y: winposition[1],
+        width: winsize[0],
+        height: winsize[1],
         minWidth: 1024,
         maxWidth: 1024,
         minHeight: 480,
-        darkTheme: true,
-        autoHideMenuBar: false,
+        maxHeight: 1200,
+        autoHideMenuBar: true,
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
         fullscreen: false,
         maximizable: false,
         frame: false,
-        show: false,
-        backgroundColor: 'transparent',
+        show: true,
+        backgroundColor: '#000000',
         webPreferences: {
             webSecurity: false,
             textAreasAreResizable: false,
@@ -150,6 +150,9 @@ function createWindow() {
 
     	})
         .on('close', () => {
+
+			console.log(JSON.stringify(mainWindow.getPosition(), null, 2));
+
             appSettings.set('position.mainWindow', JSON.stringify(mainWindow.getPosition()) );
             appSettings.set('size.mainWindow', JSON.stringify(mainWindow.getSize()) );
 
@@ -164,7 +167,7 @@ function createWindow() {
             });
 
             mainWindow = null;
-            
+
             setTimeout(function(){
                 app.quit();
             }, 500);
@@ -174,10 +177,10 @@ function createWindow() {
     wizardWindow.on('close', () => {
         wizardWindow.webContents.session.clearCache(() => {
             // Purge the cache to help avoid eating up space on the drive
-        });        
+        });
 
         if (mainWindow != null) {
-            mainWindow.show();        
+            mainWindow.show();
         }
 
         wizardWindow = null;
@@ -202,10 +205,9 @@ function createWindow() {
         DataManager.disableWrites();
         wizardWindow.loadURL(`file://${__dirname}/app/wizard.html`);
         wizardWindow.show();
-    } else {
-        mainWindow.show();   
+        mainWindow.hide();
     }
-    
+
 }
 
 var shouldQuit = app.makeSingleInstance( function(commandLine,workingDirectory) {
@@ -286,14 +288,14 @@ function downloadFile() {
         download_list.shift();
 
         m3u8stream(video, {
-            chunkReadahead: 10, // ----------------> DO NOT INCREASE HIGHER OR RANDOM DROPS WILL OCCUR ON MYQCLOUD LINKS
+            chunkReadahead: process.platform === 'linux' ? 10 : 3, 	// Linux we can push it, Windows tends to freak out and cause other end to drop connections
             on_progress: (e) => {
                 mainWindow.webContents.send('download-progress', {
                     videoid: e.videoid,
                     current: e.index,
                     total: e.total
                 });
-            }, 
+            },
             on_complete: (e) => {
 
                 mainWindow.webContents.send('popup-message', {
@@ -308,6 +310,7 @@ function downloadFile() {
             on_error: (e) => {
                 activeDownloads--;
                 mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error });
+
                 setImmediate(() => { downloadFile(); });
             }
         }).pipe(fs.createWriteStream(path + '/' + filename));
@@ -340,7 +343,7 @@ ipcMain.on('watch-replay', (event, arg) => {
                         width: winsize[0],
                         height: winsize[1],
                         x: winposition[0] != -1 ? winposition[0] : null,
-                        y: winposition[1] != -1 ? winposition[1] : null,        
+                        y: winposition[1] != -1 ? winposition[1] : null,
                         minWidth: 380,
                         minHeight: 708,
                         darkTheme: true,
@@ -384,14 +387,18 @@ ipcMain.on('show-user', (event, arg) => {
 
 ipcMain.on('open-followings-window', (event, arg) => {
 
+	var winposition = appSettings.get('position.followingsWindow') ? appSettings.get('position.followingsWindow') : [-1, -1];
+
     var win = new BrowserWindow({
+		x: winposition[0] != -1 ? winposition[0] : null,
+		y: winposition[1] != -1 ? winposition[1] : null,
         width: 420,
         height: 720,
         resizable: false,
         darkTheme: false,
         autoHideMenuBar: true,
         skipTaskbar: false,
-        backgroundColor: '#000000',     // We utilize the macOS Vibrancy mode
+        backgroundColor: '#000000',
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
         fullscreen: false,
@@ -404,19 +411,25 @@ ipcMain.on('open-followings-window', (event, arg) => {
 
     win.on('ready-to-show', () => {
         win.show();
-    }).loadURL(`file://${__dirname}/app/listwindow.html?1&` + arg.userid);
+    }).on('close', () => {
+		appSettings.set('position.followingsWindow', win.getPosition());
+	}).loadURL(`file://${__dirname}/app/listwindow.html?1&` + arg.userid);
 });
 
 ipcMain.on('open-followers-window', (event, arg) => {
 
+	var winposition = appSettings.get('position.fansWindow') ? appSettings.get('position.fansWindow') : [-1, -1];
+
     var win = new BrowserWindow({
+		x: winposition[0] != -1 ? winposition[0] : null,
+		y: winposition[1] != -1 ? winposition[1] : null,
         width: 420,
         height: 720,
         resizable: false,
         darkTheme: false,
         autoHideMenuBar: true,
         skipTaskbar: false,
-        backgroundColor: '#000000',     // We utilize the macOS Vibrancy mode
+        backgroundColor: '#000000',
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
         fullscreen: false,
@@ -429,6 +442,8 @@ ipcMain.on('open-followers-window', (event, arg) => {
 
     win.on('ready-to-show', () => {
         win.show();
+    }).on('close', () => {
+		appSettings.set('position.fansWindow', win.getPosition());
     }).loadURL(`file://${__dirname}/app/listwindow.html?0&` + arg.userid);
 });
 
@@ -462,7 +477,8 @@ ipcMain.on('open-bookmarks', (event, arg) => {
         var winposition = appSettings.get('position.bookmarksWindow'), winsize = appSettings.get('size.bookmarksWindow');
 
         bookmarksWindow = new BrowserWindow({
-            icon: __dirname + '/appicon.ico',
+			x: winposition[0] > -1 ? winposition[0] : null,
+			y: winposition[1] > -1 ? winposition[1] : null,
             width: 400,
             height: winsize[1],
             minWidth: 400,
@@ -477,12 +493,7 @@ ipcMain.on('open-bookmarks', (event, arg) => {
             maximizable: false,
             frame: false,
             show: false,
-            backgroundColor: '#000000',
-            webPreferences: {
-                webSecurity: false,
-                textAreasAreResizable: false,
-                plugins: true
-            }
+            backgroundColor: '#000000'
         });
 
         bookmarksWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()));
@@ -515,7 +526,7 @@ ipcMain.on('restore-backup', (event, arg) => {
             ],
             buttonLabel : 'Restore',
             filters : [
-                { name : 'TAR files', extensions: [ 'tar' ]}   
+                { name : 'TAR files', extensions: [ 'tar' ]}
             ]
         },
         (filePath) => {
@@ -531,7 +542,7 @@ ipcMain.on('restore-backup', (event, arg) => {
                     app.relaunch();
                     app.quit();
                 }, 1000);
-                
+
             }
         }
     );
@@ -601,6 +612,11 @@ function getMenuTemplate() {
         }
     ];
 
+	/*
+		This is here in case macOS version gets added back end after all the bugs/issues are figured out.
+
+		Requires a contributor running macOS now.
+	*/
     if (process.platform === 'darwin') {
         template.unshift({
             label: appName,
@@ -623,7 +639,7 @@ function getMenuTemplate() {
                 }
             ]
         });
-    } 
+    }
 
     return template;
 }
