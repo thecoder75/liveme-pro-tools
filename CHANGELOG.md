@@ -1,5 +1,16 @@
 ## Change Log
 
+### v1.90.20180302
+Added:
+- Timed out downloads are now added back into the queue for retry.
+- Added remembering last window positions for Fans and Followings lists.
+
+Fixed:
+- Fixed invalid filename character bug for downloaded replays.
+- Adjusted number of chunks in downloader to try to reduce the timeout issue.
+- Moved new replay check to a background style thread so it will continue checking while user does other things.
+
+
 ### v1.80.20180226
 Fixed:
 - Minor code cleanups and preparing for future features.
