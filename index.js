@@ -276,6 +276,8 @@ function downloadFile() {
                 .replace(/%%replayduration%%/g, video.videolength),
             chunkReadahead = 5;
 
+		filename.replace(/([^a-z0-9]+)/gi, '-');
+
         filename += '.ts';
         video._filename = filename;
 
