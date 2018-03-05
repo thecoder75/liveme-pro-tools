@@ -373,7 +373,7 @@ function restoreData() {
 
 function initHome() {
 
-    $('#home div.panel').html('');
+    $('#home div.panel').html('<div class="loading">Loading feed...</div>');
 
     // Check for updates
     request({
@@ -387,6 +387,10 @@ function initHome() {
             upgrade = (g[0] - l[0]) + (g[1] - l[1]);
 
         if (upgrade > 0) {
+			if ($('#home div.panel .section').length < 1) {
+				$('#home div.panel').empty();
+			}
+
             $('#home div.panel').append(`
                 <div class="section">
                     <h3><i class="icon icon-github"></i> Update Available</h3>
@@ -406,6 +410,10 @@ function initHome() {
         }, function(err,httpResponse,body) {
             var feed = JSON.parse(body);
 
+			if ($('#home div.panel .section').length < 1) {
+				$('#home div.panel').empty();
+			}
+
             for (i = 0; i < feed.length; i++) {
                 $('#home div.panel').append(`
                 <div class="section">
@@ -420,7 +428,7 @@ function initHome() {
     }, 500);
 
     $('footer h1').html('Bookmarks are now being scanned for new replays...');
-    showProgressBar();
+    $('#home').show();
 
     var bookmarks = DataManager.getAllBookmarks();
     tempvar = {
@@ -429,9 +437,11 @@ function initHome() {
         list: bookmarks
     };
 
+    $('#home #bookmarklist').empty();
+
     setTimeout(function(){
         _homethread();
-    }, 250);
+    }, 50);
 
 
 }
@@ -441,7 +451,7 @@ function _homethread() {
     setImmediate(function(){
 
         if (tempvar.index < tempvar.max) {
-            setTimeout(function() { _homethread(); }, 100);
+            setTimeout(function() { _homethread(); }, 50);
         }
 
         if (tempvar.index < tempvar.max - 1) { tempvar.index++; _checkBookmark(tempvar.list[tempvar.index].uid); }
@@ -454,13 +464,11 @@ function _checkBookmark(uid) {
 
     if (uid == undefined) return;
 
-	console.log(uid);
-
     LiveMe.getUserInfo(uid).then(user => {
 
         if (user == undefined) return;
 
-        var b = DataManager.getSingleBookmark(user.user_info.uid);
+        var b = DataManager.getSingleBookmark(user.user_info.uid), dt = new Date();
         b.counts.replays = user.count_info.video_count;
         b.counts.friends = user.count_info.friends_count;
         b.counts.followers = user.count_info.follower_count;
@@ -470,10 +478,12 @@ function _checkBookmark(uid) {
         b.face = user.user_info.face;
         b.nickname = user.user_info.uname;
         b.shortid = user.user_info.short_id;
+        b.newest_replay = Math.floor(dt.getTime() / 1000) - 86400;
+
         DataManager.updateBookmark(b);
 
         if (b.counts.replays > 0) {
-            LiveMe.getUserReplays(uid, 1, 1).then(replays => {
+            LiveMe.getUserReplays(uid, 1, 2).then(replays => {
 
                 if (replays == undefined) return;
                 if (replays.length < 1) return;
@@ -483,14 +493,18 @@ function _checkBookmark(uid) {
 
                 for (i = 0; i < replays.length; i++) {
                     if (replays[i].vtime - bookmark.newest_replay > 0) {
+						var latest = prettydate.format(new Date(replays[0].vtime * 1000)), last = prettydate.format(new Date(bookmark.last_viewed * 1000));
+
 						bookmark.newest_replay = Math.floor(replays[0].vtime);
 						DataManager.updateBookmark(bookmark);
+
 
 						if (current_view == 'home') {
 							$('#home #bookmarklist').append(`
 								<div class="bookmark" id="bookmark-${bookmark.uid}" onClick="showUser('${bookmark.uid}')">
 									<img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
 									<h1>${bookmark.nickname}</h1>
+									<h3>Newest replay posted ${latest}</h3>
 									<h2>NEW</h2>
 								</div>
 							`);
@@ -720,7 +734,7 @@ function getUsersReplays() {
                 }
             }
 
-            $('table tbody tr').not('.user-'+current_user.uid).remove();
+            $('#list tbody tr').not('.user-'+current_user.uid).remove();
 
             $('footer h1').html($('#list tbody tr').length + ' visible of ' + current_user.counts.replays + ' total replays loaded.');
             setProgressBarValue(($('#list tbody tr').length / current_user.counts.replays) * 100);
@@ -791,11 +805,6 @@ function _addReplayEntry(replay, wasSearched) {
                     </tr>
     `;
     $('#list tbody').append(h);
-
-    /*
-        MAY BE ADDED IN FUTURE RELEASE
-        <a class="button icon-only" onClick="viewMessages('${replay.vid}')" title="View Message History"><i class="icon icon-bubbles"></i></a>&nbsp;&nbsp;
-    */
 
 }
 
@@ -875,6 +884,8 @@ function initSettingsPanel() {
 
     $('#playerpath').val(appSettings.get('general.playerpath'));
 
+    $('#cleanup-duration').val(appSettings.get('history.viewed_maxage'));
+
     $('#downloads-path').val(appSettings.get('downloads.path'));
     $('#downloads-template').val(appSettings.get('downloads.template'));
     $('#downloads-concurrent').val(appSettings.get('downloads.concurrent'));
@@ -897,8 +908,9 @@ function saveSettings() {
 
     appSettings.set('general.hide_zeroreplay_fans', ($('#viewmode-followers').is(':checked') ? true : false) )
     appSettings.set('general.hide_zeroreplay_followings', ($('#viewmode-followings').is(':checked') ? true : false) )
-
     appSettings.set('general.playerpath', $('#playerpath').val());
+
+    appSettings.set('history.viewed_maxage', $('#cleanup-duration').val());
 
     appSettings.set('downloads.path', $('#downloads-path').val());
     appSettings.set('downloads.template', $('#downloads-template').val());
@@ -923,6 +935,9 @@ function resetSettings() {
         path: path.join(app.getPath('home'), 'Downloads'),
         template: '%%replayid%%',
         concurrent: 1
+    });
+    appSettings.set('history', {
+        viewed_maxage: 30
     });
     appSettings.set('position', {
         mainWindow: [ -1, -1],

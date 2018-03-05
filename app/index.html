@@ -36,8 +36,6 @@
                 <a class="button icon-only" title="Go Home" onClick="goHome()"><i class="icon icon-home3"></i></a>
                 <a class="button icon-only" title="View Bookmarks" onClick="openBookmarks()"><i class="icon icon-bookmarks"></i></a>
                 <a class="button icon-only" title="Toggle Queue List" onClick="showDownloads()"><i class="icon icon-folder-download"></i></a>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <!--<a class="button icon-only" title="Lists Cleanup" onClick="showDataCleanup()"><i class="icon icon-database"></i></a>-->
             </div>
 
             <a class="minimize-button" onClick="minimizeWindow()">&#x1f5d5;</a>
@@ -48,11 +46,6 @@
             <div id="bookmarklist"></div>
             <div class="panel"></div>
         </div>
-
-		<div id="cleanup">
-			<h4>Data Cleanup</h4>
-
-		</div>
 
         <div id="queue-list"></div>
 
@@ -118,13 +111,23 @@
                         <li>
                             <ul style="margin: 16px 0 0; padding: 0;">
                                 <li style="margin: 12px 0; line-height: 24px;">
-                                    Concurrent Downloads:&nbsp;&nbsp; <div class="select" style="vertical-align: middle; margin-bottom: 1px; width: 40px; font-size: 11pt;">
+                                    Concurrent Downloads:&nbsp;&nbsp; <div class="select" style="vertical-align: middle; margin-bottom: 1px; width: 48px;">
                                         <select id="downloads-concurrent" onChange="saveSettings()">
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
                                         </select>
                                     </div>
+                                </li>
+                                <li style="margin: 12px 0; line-height: 16px;">
+									<small>The higher the concurrent value, the greater chance of timeouts occurring.</small>
                                 </li>
                                 <li style="margin: 12px 0; line-height: 16px;">
                                     Download Location:<br>
@@ -132,7 +135,7 @@
                                 </li>
                                 <li style="margin: 12px 0; line-height: 16px;">
                                     Filename Template:<br>
-                                    <input type="text" id="downloads-template" style="width: 300px;" onBlur="saveSettings()">
+                                    <input type="text" id="downloads-template" style="width: 500px;" onBlur="saveSettings()">
                                 </li>
                                 <li style="margin: 12px 0; font-size: 9pt;">
                                     You can customize how downloaded replays are named using the variables below in the text box above.<br>
@@ -208,6 +211,29 @@
                         </li>
                     </ul>
                 </div>
+
+                <div class="section">
+                    <ul>
+                        <li style="padding-bottom: 5px;"><h4>Viewed Profiles Auto Clear</h4></li>
+                        <li style="line-height: 26px;">
+                            Clear viewed profiles that were last seen more than
+                            <div class="select" style="vertical-align: middle; height: 26px;">
+								<select id="cleanup-duration">
+									<option value="1">1 Day</option>
+									<option value="2">2 Days</option>
+									<option value="3">3 Days</option>
+									<option value="5">5 Days</option>
+									<option value="7">7 Days</option>
+									<option value="10">10 Days</option>
+									<option value="14">14 Days</option>
+									<option value="30">30 Days</option>
+								</select>
+                            </div>
+                            old.
+                        </li>
+                    </ul>
+                </div>
+
                 <div class="section">
                     <ul>
                         <li style="padding-bottom: 5px;"><h4>Data Stats</h4></li>
