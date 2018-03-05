@@ -31,7 +31,7 @@ install:
   - yarn install
 
 script:
-  - yarn release-travis
+  - yarn release-travis-$([ "$TRAVIS_OS_NAME" == "linux" ] && echo "linux" || echo "macos")
 
 before_cache:
   - rm -rf $HOME/.cache/electron-builder/wine
