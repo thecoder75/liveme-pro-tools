@@ -182,8 +182,12 @@ class DataManager {
         }
         return ret;
     }
+
 	unviewProfiles(oldest_date, dry_run) {
 		if (dry_run == null) dry_run = false;
+
+		console.log('Old Viewed Profiles Count: ' + profiles.length);
+
 		var ret = 0, temp = [];
 		for (var i = 0; i < profiles.length; i++) {
 			if (profiles[i].dt > oldest_date) {
@@ -193,8 +197,9 @@ class DataManager {
 		}
 		if (!dry_run) {
 			profiles = temp;
-			fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
+			 fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
 		}
+		console.log('New Viewed Profiles Count: ' + temp.length);
 		return ret;
 	}
 
