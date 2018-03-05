@@ -80,6 +80,12 @@ function createWindow() {
         });
     }
 
+    if (!appSettings.get('history')) {
+        appSettings.set('history', {
+			viewed_maxage: 30
+        });
+    }
+
     var test = appSettings.get('position');
     if (test.mainWindow[1] == undefined) {
         appSettings.set('position', {
@@ -198,6 +204,12 @@ function createWindow() {
 
     DataManager.loadFromDisk();
 
+	setTimeout(() => {
+		var dt = new Date(), ma = appSettings.get('history.viewed_maxage'), od = Math.floor((dt.getTime() - (ma * 86400000)) / 1000);
+		DataManager.unviewProfiles(od, false);
+	}, 250);
+
+
 
     if (isFreshInstall) {
         DataManager.disableWrites();
@@ -205,7 +217,7 @@ function createWindow() {
         wizardWindow.show();
     } else {
 		var pos = appSettings.get('position.mainWindow').length > 1 ? appSettings.get('position.mainWindow') : [null, null];
-		mainWindow.setPosition(pos[0], pos[1], false);
+		if (pos[0] != null)	mainWindow.setPosition(pos[0], pos[1], false);
 		mainWindow.show();
 	}
 
@@ -260,7 +272,8 @@ function downloadFile() {
     if (download_list.length == 0) return;
     if (activeDownloads >= parseInt(appSettings.get('downloads.concurrent'))) return;
 
-    activeDownloads++;
+	console.log('List Size: ' + download_list.length);
+	console.log('Active Downloads: ' + activeDownloads);
 
     LiveMe.getVideoInfo(download_list[0]).then(video => {
 
@@ -273,46 +286,52 @@ function downloadFile() {
                 .replace(/%%replaylikes%%/g, video.likenum)
                 .replace(/%%replayshares%%/g, video.sharenum)
                 .replace(/%%replaytitle%%/g, video.title ? video.title : 'untitled')
-                .replace(/%%replayduration%%/g, video.videolength),
-            chunkReadahead = 5;
+                .replace(/%%replayduration%%/g, video.videolength);
 
-		filename.replace(/([^a-z0-9]+)/gi, '-');
+		filename = filename.replace(/[/\\?%*:|"<>]/g, '-');
+		filename = filename.replace(/([^a-z0-9\s]+)/gi, '-');
+		filename = filename.replace(/[\u{0080}-\u{FFFF}]/gu, '');
 
         filename += '.ts';
         video._filename = filename;
 
+		console.log('Download started: ' + video.vid + ' --> ' + filename);
         mainWindow.webContents.send('download-start', {
             videoid: video.vid,
             filename: filename
         });
 
         download_list.shift();
+		activeDownloads++;
 
         m3u8stream(video, {
-            chunkReadahead: 1,
+            chunkReadahead: 2,
             on_progress: (e) => {
-                mainWindow.webContents.send('download-progress', {
-                    videoid: e.videoid,
-                    current: e.index,
-                    total: e.total
-                });
+				if (mainWindow != null) {
+					mainWindow.webContents.send('download-progress', {
+						videoid: e.videoid,
+						current: e.index,
+						total: e.total
+					});
+				}
             },
             on_complete: (e) => {
 
-                mainWindow.webContents.send('popup-message', {
-                    text: e.filename + ' downloaded.'
-                });
+				if (mainWindow != null) {
+					mainWindow.webContents.send('popup-message', {
+						text: e.filename + ' downloaded.'
+					});
+				}
 
                 activeDownloads--;
-                mainWindow.webContents.send('download-complete', { videoid: e.videoid });
+                if (mainWindow != null) { mainWindow.webContents.send('download-complete', { videoid: e.videoid }); }
                 DataManager.addDownloaded(e.videoid);
-                setImmediate(() => { downloadFile(); });
+                setTimeout(() => { downloadFile(); }, 250);
             },
             on_error: (e) => {
                 activeDownloads--;
-                mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error });
-
-                setImmediate(() => { downloadFile(); });
+                if (mainWindow != null) { mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error }); }
+                setTimeout(() => { downloadFile(); }, 250);
             }
         }).pipe(fs.createWriteStream(path + '/' + filename));
     });
