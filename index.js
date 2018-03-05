@@ -216,9 +216,10 @@ function createWindow() {
         wizardWindow.loadURL(`file://${__dirname}/app/wizard.html`);
         wizardWindow.show();
     } else {
+		mainWindow.show();
+
 		var pos = appSettings.get('position.mainWindow').length > 1 ? appSettings.get('position.mainWindow') : [null, null];
 		if (pos[0] != null)	mainWindow.setPosition(pos[0], pos[1], false);
-		mainWindow.show();
 	}
 
 }
