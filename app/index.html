@@ -36,8 +36,11 @@
                 <a class="button icon-only" title="Go Home" onClick="goHome()"><i class="icon icon-home3"></i></a>
                 <a class="button icon-only" title="View Bookmarks" onClick="openBookmarks()"><i class="icon icon-bookmarks"></i></a>
                 <a class="button icon-only" title="Toggle Queue List" onClick="showDownloads()"><i class="icon icon-folder-download"></i></a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a class="button icon-only" title="Lists Cleanup" onClick="showDataCleanup()"><i class="icon icon-database"></i></a>
             </div>
 
+            <a class="minimize-button" onClick="minimizeWindow()">&#x1f5d5;</a>
             <a class="close-button" onClick="closeWindow()">&#x2715;</a>
         </header>
 
@@ -45,6 +48,11 @@
             <div id="bookmarklist"></div>
             <div class="panel"></div>
         </div>
+
+		<div id="cleanup">
+			<h4>Data Cleanup</h4>
+
+		</div>
 
         <div id="queue-list"></div>
 
@@ -236,7 +244,7 @@
                             <h6>Contributors:</h6>
                             <ul style="font-weight: 300; font-size: 10pt; line-height: 12pt">
                                 <li>TheCoder</li>
-                            </ul>                            
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -264,7 +272,7 @@
 
 
         <div id="status">
-            
+
         </div>
         <overlay>&nbsp;</overlay>
 

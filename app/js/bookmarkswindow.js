@@ -1,6 +1,6 @@
 
-const   { ipcRenderer, remote, clipboard } = require('electron'), 
-        LiveMe = remote.getGlobal('LiveMe'), 
+const   { ipcRenderer, remote, clipboard } = require('electron'),
+        LiveMe = remote.getGlobal('LiveMe'),
         appSettings = require('electron-settings'),
         prettydate = require('pretty-date'),
         DataManager = remote.getGlobal('DataManager');
@@ -23,6 +23,7 @@ $(function(){
 
 });
 
+function minimizeWindow() { remote.BrowserWindow.getFocusedWindow().minimize(); }
 function closeWindow() { window.close(); }
 function copyToClipboard(i) { clipboard.writeText(i); }
 function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: u }); }

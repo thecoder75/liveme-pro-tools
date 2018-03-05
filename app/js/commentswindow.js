@@ -1,8 +1,8 @@
 /*
 
 */
-const   { ipcRenderer, remote, clipboard } = require('electron'), 
-        LiveMe = remote.getGlobal('LiveMe'), 
+const   { ipcRenderer, remote, clipboard } = require('electron'),
+        LiveMe = remote.getGlobal('LiveMe'),
         appSettings = require('electron-settings'),
         formatDuration = require('format-duration'),
         DataManager = remote.getGlobal('DataManager');
@@ -14,6 +14,7 @@ $(function(){
     }, 400);
 });
 
+function minimizeWindow() { remote.BrowserWindow.getFocusedWindow().minimize(); }
 function closeWindow() { window.close(); }
 function showUser(u) { ipcRenderer.send('show-user', { userid: u }); }
 
@@ -22,7 +23,7 @@ function redrawList() {
 
     LiveMe.getVideoInfo(videoid)
         .then(video => {
-            
+
             var username = video.uname;
             var startTime = video.vtime * 1000;
 
@@ -56,5 +57,5 @@ function redrawList() {
                         }
                     }
                 });
-        });    
+        });
 }

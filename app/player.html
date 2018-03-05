@@ -4,7 +4,7 @@
         <title>Player</title>
 
         <script>
-            if (typeof module === 'object') {window.module = module; module = undefined;} 
+            if (typeof module === 'object') {window.module = module; module = undefined;}
         </script>
 
         <script src="js/jquery-3.2.1.min.js"></script>
@@ -18,6 +18,7 @@
 
                 var t=window.location.href.split('?');
                 $('header h1').html(t[1]);
+                document.title = t[1];
 
                 LiveMe.getVideoInfo(t[1])
                     .then(vid => {
@@ -74,7 +75,7 @@
         </header>
         <main class="has-small-header" style="display: block; overflow: hidden;">
             <video id="video" controls></video>
-            
+
             <a class="download" onClick="downloadVideo()"><i class="icon icon-download"></i></a>
             <a class=" info" onClick="showUser()"><i class="icon icon-info"></i></a>
 

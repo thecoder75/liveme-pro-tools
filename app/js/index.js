@@ -154,10 +154,7 @@ function setupIPCListeners() {
 
     ipcRenderer.on('download-error' , function(event, arg) {
         if ($('#download-'+arg.videoid).length < 1) return;
-        var p = $('#popup-message');
-        p.html(arg.error).animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() }, 400);
-
-        $('#download-'+arg.videoid).addClass('error').delay(4000).remove();
+        $('#download-'+arg.videoid+' .status').html('Timeout, restarting...<span></span>');
 		downloadVideo(arg.videoid);
     });
 
@@ -259,7 +256,7 @@ function copyToClipboard(i) { clipboard.writeText(i); }
 function showSettings() { $('#settings').show(); }
 function hideSettings() { $('#settings').hide(); }
 function closeWindow() { window.close(); }
-
+function minimizeWindow() { remote.BrowserWindow.getFocusedWindow().minimize(); }
 function showProgressBar() { $('#footer-progressbar').show(); }
 function hideProgressBar() {  $('#footer-progressbar').hide(); }
 function setProgressBarValue(v) { $('#footer-progressbar div').css({ width: v + '%'}); }
@@ -281,8 +278,9 @@ function downloadVideo(vid) {
     if (appSettings.get('lamd.handle_downloads') == true) {
         AddReplayToLAMD(vid);
     } else {
-        if ($('#download-'+vid).length > 0) return;
+		ipcRenderer.send('download-replay', { videoid: vid });
 
+        if ($('#download-'+vid).length > 0) return;
         $('#queue-list').append(`
                 <div class="download" id="download-${vid}">
                     <div class="filename">${vid}</div>
@@ -292,8 +290,6 @@ function downloadVideo(vid) {
                     </div>
                 </div>
         `);
-
-        ipcRenderer.send('download-replay', { videoid: vid });
     }
 }
 function showDownloads() {
