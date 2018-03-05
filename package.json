@@ -1,6 +1,6 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.90.20180302",
+  "version": "1.91.20180305",
   "description": "Tools for Live.me video network",
   "homepage": "https://github.com/thecoder75/liveme-pro-tools/",
   "main": "index.js",
@@ -55,6 +55,14 @@
       "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
       "maintainer": "thecoder1975@gmail.com"
     },
+    "mac": {
+      "category": "public.app-category.video",
+      "target": [
+        "dmg"
+      ],
+      "identity": null,
+      "icon": "build/appicon.icns"
+    },
     "deb": {
       "compression": "bzip2"
     },
@@ -73,8 +81,6 @@
     "electron-settings": "^3.1.4",
     "format-duration": "^1.0.0",
     "liveme-api": "^1.2.6",
-    "m3u8stream": "^0.2.1",
-    "miniget": "^1.1.0",
     "pretty-date": "^0.2.0",
     "request": "^2.83.0",
     "shelljs": "^0.8.1",

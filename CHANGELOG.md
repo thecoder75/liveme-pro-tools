@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.91.20180305
+Fixed:
+- Updated downloader code to try and reduce or avoid timeout issues by reducing chunk count down to 1
+
 ### v1.90.20180302
 Added:
 - Timed out downloads are now added back into the queue for retry.
