@@ -1,5 +1,19 @@
 ## Change Log
 
+### v1.92.20180305
+Added:
+- Added status text to feed view on home screen.
+- Added ability to clear viewed profiles from history based on age in Settings.
+
+Fixed:
+- Fixed home view not showing new replays detected.
+- Fixed illegal/invalid characters in download filenames.
+- Fixed downloader ignoring concurrency setting.
+- Fixed variables table getting wiped/disappearing in the Settings view.
+- Fixed null issue when shutting down with active downloads.
+- Fixed startup crash experienced by users.
+- Fixed Linux version not being built by Travis-CI.
+
 ### v1.91.20180305
 Fixed:
 - Updated downloader code to try and reduce or avoid timeout issues by reducing chunk count down to 1
