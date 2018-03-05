@@ -82,8 +82,9 @@ class DataManager {
 
 
 
-
-
+	/*
+	 * 		Track Downloaded Replays
+	 */
     addDownloaded(vidid) {
         is_busy = true;
         var add = true, dt = new Date();
@@ -110,9 +111,9 @@ class DataManager {
     }
 
 
-
-
-
+	/*
+	 *		Track Watched Replays
+	 */
     addWatched(vidid) {
         is_busy = true;
         var add = true, dt = new Date();
@@ -137,10 +138,26 @@ class DataManager {
         }
         return ret;
     }
+	dropWatched(oldest_date, dry_run) {
+		if (dry_run == null) dry_run = false;
+		var ret = 0, temp = [];
+		for (var i = 0; i < watched.length; i++) {
+			if (watched[i].dt > oldest_date) {
+				temp.push(watched[i]);
+				ret++;
+			}
+		}
+		if (!dry_run) {
+			watched = temp;
+			fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });
+		}
+		return ret;
+	}
 
 
-
-
+	/*
+	 *		Track Viewed Profiles
+	 */
     addViewed(userid) {
         is_busy = true;
         var add = true, dt = new Date();
@@ -165,10 +182,26 @@ class DataManager {
         }
         return ret;
     }
+	unviewProfiles(oldest_date, dry_run) {
+		if (dry_run == null) dry_run = false;
+		var ret = 0, temp = [];
+		for (var i = 0; i < profiles.length; i++) {
+			if (profiles[i].dt > oldest_date) {
+				temp.push(profiles[i]);
+				ret++;
+			}
+		}
+		if (!dry_run) {
+			profiles = temp;
+			fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
+		}
+		return ret;
+	}
 
 
-
-
+	/*
+	 *		Account Bookmarks
+	 */
     addBookmark(user) {
         is_busy = true;
         var add = true;
