@@ -4,7 +4,7 @@
 
 const   appName = 'LiveMe Pro Tools';
 
-const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron'),
+const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog, autoUpdater } = require('electron'),
         { exec, execFile } = require('child_process');
         os = require('os'),
 		fs = require('fs'),
@@ -96,8 +96,6 @@ function createWindow() {
 
     mainWindow = new BrowserWindow({
         icon: __dirname + '/appicon.ico',
-        x: winposition[0],
-        y: winposition[1],
         width: winsize[0],
         height: winsize[1],
         minWidth: 1024,
@@ -110,7 +108,7 @@ function createWindow() {
         fullscreen: false,
         maximizable: false,
         frame: false,
-        show: true,
+        show: false,
         backgroundColor: '#000000',
         webPreferences: {
             webSecurity: false,
@@ -151,10 +149,8 @@ function createWindow() {
     	})
         .on('close', () => {
 
-			console.log(JSON.stringify(mainWindow.getPosition(), null, 2));
-
-            appSettings.set('position.mainWindow', JSON.stringify(mainWindow.getPosition()) );
-            appSettings.set('size.mainWindow', JSON.stringify(mainWindow.getSize()) );
+            appSettings.set('position.mainWindow', mainWindow.getPosition() );
+            appSettings.set('size.mainWindow', mainWindow.getSize() );
 
             DataManager.saveToDisk();
 
@@ -174,13 +170,15 @@ function createWindow() {
         });
 
 
+
     wizardWindow.on('close', () => {
         wizardWindow.webContents.session.clearCache(() => {
             // Purge the cache to help avoid eating up space on the drive
         });
 
         if (mainWindow != null) {
-            mainWindow.show();
+			var pos = appSettings.get('position.mainWindow');
+			mainWindow.setPosition(pos[0], pos[1], false).show();
         }
 
         wizardWindow = null;
@@ -205,8 +203,11 @@ function createWindow() {
         DataManager.disableWrites();
         wizardWindow.loadURL(`file://${__dirname}/app/wizard.html`);
         wizardWindow.show();
-        mainWindow.hide();
-    }
+    } else {
+		var pos = appSettings.get('position.mainWindow').length > 1 ? appSettings.get('position.mainWindow') : [null, null];
+		mainWindow.setPosition(pos[0], pos[1], false);
+		mainWindow.show();
+	}
 
 }
 
@@ -288,7 +289,7 @@ function downloadFile() {
         download_list.shift();
 
         m3u8stream(video, {
-            chunkReadahead: process.platform === 'linux' ? 10 : 3, 	// Linux we can push it, Windows tends to freak out and cause other end to drop connections
+            chunkReadahead: 1,
             on_progress: (e) => {
                 mainWindow.webContents.send('download-progress', {
                     videoid: e.videoid,
