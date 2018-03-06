@@ -478,7 +478,6 @@ function _checkBookmark(uid) {
         b.face = user.user_info.face;
         b.nickname = user.user_info.uname;
         b.shortid = user.user_info.short_id;
-        b.newest_replay = Math.floor(dt.getTime() / 1000) - 86400;
 
         DataManager.updateBookmark(b);
 
