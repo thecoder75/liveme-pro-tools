@@ -25,7 +25,7 @@ var 	mainWindow = null,
         menu = null,
         appSettings = require('electron-settings'),
         download_list = [],
-        activeDownloads = 0;
+        download_active = false;
 
 
 
@@ -54,7 +54,7 @@ function createWindow() {
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
             template: '%%replayid%%',
-            concurrent: 1
+            chunks: 1
         });
         appSettings.set('lamd', {
             enabled: false,
@@ -68,9 +68,11 @@ function createWindow() {
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
             template: '%%replayid%%',
-            concurrent: 1
+            chunks: 1
         });
     }
+
+    if (!appSettings.get('downloads.chunks')) { appSettings.set('downloads.chunks', 1); }
 
     if (!appSettings.get('lamd.enabled')) {
         appSettings.set('lamd', {
@@ -266,15 +268,25 @@ ipcMain.on('download-replay', (event, arg) => {
     });
 });
 /*
+ * 		Cannot cancel active download, only remove queued entries.
+ */
+ipcMain.on('download-cancel', (event, arg) => {
+
+	for (var i = 0; i < download_list.length; i++) {
+		if (download_list[i] == arg.videois) {
+			download_list.splice(i, 1);
+		}
+	}
+
+});
+/*
     It is done this way in case the API call to jDownloader returns an error or doesn't connect.
 */
 function downloadFile() {
 
+	if (download_active) return;
     if (download_list.length == 0) return;
-    if (activeDownloads >= parseInt(appSettings.get('downloads.concurrent'))) return;
-
-	console.log('List Size: ' + download_list.length);
-	console.log('Active Downloads: ' + activeDownloads);
+	download_active = true;
 
     LiveMe.getVideoInfo(download_list[0]).then(video => {
 
@@ -296,17 +308,15 @@ function downloadFile() {
         filename += '.ts';
         video._filename = filename;
 
-		console.log('Download started: ' + video.vid + ' --> ' + filename);
         mainWindow.webContents.send('download-start', {
             videoid: video.vid,
             filename: filename
         });
 
         download_list.shift();
-		activeDownloads++;
 
         m3u8stream(video, {
-            chunkReadahead: 2,
+            chunkReadahead: appSettings.get('downloads.chunks'),
             on_progress: (e) => {
 				if (mainWindow != null) {
 					mainWindow.webContents.send('download-progress', {
@@ -324,14 +334,16 @@ function downloadFile() {
 					});
 				}
 
-                activeDownloads--;
                 if (mainWindow != null) { mainWindow.webContents.send('download-complete', { videoid: e.videoid }); }
                 DataManager.addDownloaded(e.videoid);
+                download_active = false;
+
                 setTimeout(() => { downloadFile(); }, 250);
             },
             on_error: (e) => {
-                activeDownloads--;
                 if (mainWindow != null) { mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error }); }
+
+                download_active = false;
                 setTimeout(() => { downloadFile(); }, 250);
             }
         }).pipe(fs.createWriteStream(path + '/' + filename));

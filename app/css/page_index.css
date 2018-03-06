@@ -130,7 +130,7 @@
 
 #queue-list {
     display: none;
-    width: 360px;
+    width: 400px;
     overflow-x: hidden;
     overflow-y: auto;
 
@@ -159,7 +159,7 @@
 
 }
 #queue-list .download .filename {
-    font-size: 10pt;
+    font-size: 9pt;
     font-weight:  400;
 
     position: absolute;
@@ -176,11 +176,11 @@
 
 #queue-list .download .status {
     font-size: 9pt;
-    font-weight:  400;
+    font-weight:  600;
 
     position: absolute;
     left: 8px;
-    right: 8px;
+    right: 32px;
     top: 34px;
 
     display: block;
@@ -198,7 +198,7 @@
     position: absolute;
     top: 28px;
     left: 4px;
-    right: 4px;
+    right: 32px;
     display: block;
     height: 4px;
     background-color: rgb(24,24,24);
@@ -211,6 +211,13 @@
     background-color: rgb(0,240,0);
 }
 
+#queue-list .download .cancel {
+	position: absolute;
+	right: 8px;
+	top: 20px;
+	font-size: 16px;
+	cursor: pointer;
+}
 
 
 /*

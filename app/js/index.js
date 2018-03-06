@@ -136,6 +136,7 @@ function setupIPCListeners() {
         $('#download-'+arg.videoid).addClass('active');
         $('#download-'+arg.videoid+' .status').html('Downloading <span></span>');
         $('#download-'+arg.videoid+' .filename').html(arg.filename);
+        $('#download-'+arg.videoid+' .cancel').remove();
     });
 
     ipcRenderer.on('download-progress' , function(event, arg) {
@@ -148,14 +149,14 @@ function setupIPCListeners() {
 
     ipcRenderer.on('download-complete' , function(event, arg) {
         if ($('#download-'+arg.videoid).length < 1) return;
-
         $('#download-'+arg.videoid).remove();
     });
 
     ipcRenderer.on('download-error' , function(event, arg) {
         if ($('#download-'+arg.videoid).length < 1) return;
-        $('#download-'+arg.videoid+' .status').html('Timeout, restarting...<span></span>');
-		downloadVideo(arg.videoid);
+        $('#download-'+arg.videoid+' .status').html('Download Error<span></span>');
+		$('#download-'+arg.videoid).append(`<div onClick="cancelDownload('${arg.videoid}')" class="cancel">&#x2715;</div>`);
+
     });
 
 }
@@ -288,9 +289,14 @@ function downloadVideo(vid) {
                     <div class="progress-bar">
                         <div class="bar" style="width: 0%"></div>
                     </div>
+                    <div onClick="cancelDownload('${vid}')" class="cancel">&#x2715;</div>
                 </div>
         `);
     }
+}
+function cancelDownload(i) {
+	ipcRenderer.send('download-cancel', { videoid: i });
+	$('#download-'+i).remove();
 }
 function showDownloads() {
     if ($('#queue-list').is(':visible')) {
@@ -308,13 +314,19 @@ function goHome() {
     $('footer').hide();
     $('main').hide();
     $('#home').show();
+
+	$('overlay').hide();
+	$('#queue-list').hide();
+
     current_view = 'home';
     initHome();
 }
 
 function preSearch(q) {
     var u=$('#search-query').val(), isnum = /^\d+$/.test(u);
-    $('overlay').hide();
+	$('overlay').hide();
+	$('#queue-list').hide();
+
     current_view = 'search';
 
     if ((u.length==20) && (isnum)) {
@@ -887,7 +899,7 @@ function initSettingsPanel() {
 
     $('#downloads-path').val(appSettings.get('downloads.path'));
     $('#downloads-template').val(appSettings.get('downloads.template'));
-    $('#downloads-concurrent').val(appSettings.get('downloads.concurrent'));
+    $('#downloads-chunks').val(appSettings.get('downloads.chunks'));
 
     $('#lamd-enabled').prop('checked', appSettings.get('lamd.enabled'));
     $('#lamd-downloads').prop('checked', appSettings.get('lamd.handle_downloads'));
@@ -913,7 +925,7 @@ function saveSettings() {
 
     appSettings.set('downloads.path', $('#downloads-path').val());
     appSettings.set('downloads.template', $('#downloads-template').val());
-    appSettings.set('downloads.concurrent', $('#downloads-concurrent').val());
+    appSettings.set('downloads.chunks', $('#downloads-chunks').val());
 
     appSettings.set('lamd.enabled', ($('#lamd-enabled').is(':checked') ? true : false) )
     appSettings.set('lamd.handle_downloads', ($('#lamd-downloads').is(':checked') ? true : false) )
@@ -933,7 +945,7 @@ function resetSettings() {
     appSettings.set('downloads', {
         path: path.join(app.getPath('home'), 'Downloads'),
         template: '%%replayid%%',
-        concurrent: 1
+        chunks: 1
     });
     appSettings.set('history', {
         viewed_maxage: 30
