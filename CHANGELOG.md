@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.95.20180305
+Fixed:
+- Changed downloader to now do a single file at a time using the Chunk Count in Settings.
+- Fixed new replay detection bug causing all accounts to be flagged as having new replays.
+
 ### v1.92.20180305
 Added:
 - Added status text to feed view on home screen.
