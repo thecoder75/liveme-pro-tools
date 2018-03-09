@@ -224,6 +224,10 @@ function createWindow() {
 		if (pos[0] != null)	mainWindow.setPosition(pos[0], pos[1], false);
 	}
 
+    setInterval(() => {
+        downloadFile();
+    }, 500);
+
 }
 
 var shouldQuit = app.makeSingleInstance( function(commandLine,workingDirectory) {
@@ -260,12 +264,7 @@ app.on('activate', () => {
 
 */
 ipcMain.on('download-replay', (event, arg) => {
-
     download_list.push(arg.videoid);
-
-    setImmediate(() => {
-        downloadFile();
-    });
 });
 /*
  * 		Cannot cancel active download, only remove queued entries.
@@ -284,8 +283,9 @@ ipcMain.on('download-cancel', (event, arg) => {
 */
 function downloadFile() {
 
-	if (download_active) return;
+	if (download_active == true) return;
     if (download_list.length == 0) return;
+
 	download_active = true;
 
     LiveMe.getVideoInfo(download_list[0]).then(video => {
@@ -327,24 +327,13 @@ function downloadFile() {
 				}
             },
             on_complete: (e) => {
-
-				if (mainWindow != null) {
-					mainWindow.webContents.send('popup-message', {
-						text: e.filename + ' downloaded.'
-					});
-				}
-
                 if (mainWindow != null) { mainWindow.webContents.send('download-complete', { videoid: e.videoid }); }
                 DataManager.addDownloaded(e.videoid);
                 download_active = false;
-
-                setTimeout(() => { downloadFile(); }, 250);
             },
             on_error: (e) => {
                 if (mainWindow != null) { mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error }); }
-
                 download_active = false;
-                setTimeout(() => { downloadFile(); }, 250);
             }
         }).pipe(fs.createWriteStream(path + '/' + filename));
     });

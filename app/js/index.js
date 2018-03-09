@@ -148,7 +148,7 @@ function setupIPCListeners() {
     });
 
     ipcRenderer.on('download-complete' , function(event, arg) {
-        if ($('#download-'+arg.videoid).length < 1) return;
+        if ($('#download-'+arg.videoid).length < 1) return;        
         $('#download-'+arg.videoid).remove();
     });
 

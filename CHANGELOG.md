@@ -5,6 +5,8 @@ Fixed:
 - Changed downloader to now do a single file at a time using the Chunk Count in Settings.
 - Fixed new replay detection bug causing all accounts to be flagged as having new replays.
 
+**This is the last version supporting Windows OS, future versions will be built only for Linux and macOS users.***
+
 ### v1.92.20180305
 Added:
 - Added status text to feed view on home screen.

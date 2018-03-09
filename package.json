@@ -1,6 +1,6 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.95.20180305",
+  "version": "1.95.20180309",
   "description": "Tools for Live.me video network",
   "homepage": "https://github.com/thecoder75/liveme-pro-tools/",
   "main": "index.js",
@@ -24,23 +24,6 @@
     "artifactName": "${productName}-${version}-${arch}.${ext}",
     "asar": true,
     "compression": "maximum",
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
-      "icon": "build/appicon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "perMachine": true
-    },
     "linux": {
       "target": [
         {

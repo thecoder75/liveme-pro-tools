@@ -19,8 +19,10 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 New releases are built automatically when updates are pushed to this repo and can be found on the [release](https://github.com/thecoder75/liveme-pro-tools/releases) page.
 
 #### Supported OS/Platforms
-- Microsoft Windows 7 or higher (32-bit or 64-bit)
 - Ubuntu-based Linux and Debian Distributions (32-bit or 64-bit)
+- macOS v10.11 or higher (64-bit only)
+
+**Windows OS builds are no longer being generated or supported due to incompatibilities with Windows 8 and 10.**
 
 ## Built With
 * [Electron](http://electron.atom.io)
@@ -32,6 +34,7 @@ If you find any bugs or would like to help add features or additional functions,
 
 ## Contributors
 * [thecoder75](https://github.com/thecoder75)
+* [zp](https://github.com/zp)
 
 ## License
 This project is licensed under the GPL-3 License - see the [LICENSE](LICENSE) file for details
