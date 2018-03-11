@@ -1,5 +1,8 @@
 ## Change Log
 
+### v1.95.20180310
+**Only bug fixes will be addressed from this point forward as the project will be moving away from using NodeJS and Electron to a more solid desktop application framework.**
+
 ### v1.95.20180305
 Fixed:
 - Changed downloader to now do a single file at a time using the Chunk Count in Settings.

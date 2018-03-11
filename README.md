@@ -1,8 +1,8 @@
 # LiveMe Pro Tools
 
 ![linux builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?label=Linux%20Builds)
-[![Windows Build](https://ci.appveyor.com/api/projects/status/jc119jb9vkt7p4qj/branch/master?svg=true)](https://ci.appveyor.com/project/TheCoder/liveme-pro-tools/branch/master)
-![issues](https://img.shields.io/github/issues-raw/thecoder75/liveme-pro-tools.svg?label=Open%20Issues)
+![macos builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?label=macOS%20Builds)
+![Windows Build](https://ci.appveyor.com/api/projects/status/jc119jb9vkt7p4qj/branch/master?svg=true)
 
 ## What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
@@ -21,8 +21,10 @@ New releases are built automatically when updates are pushed to this repo and ca
 #### Supported OS/Platforms
 - Ubuntu-based Linux and Debian Distributions (32-bit or 64-bit)
 - macOS v10.11 or higher (64-bit only)
+- Windows 7 or higher* (32/64-bit)
 
-**Windows OS builds are no longer being generated or supported due to incompatibilities with Windows 8 and 10.**
+#### Windows 8.x & 10 Users:
+You may need to disable BitDefender and other Antivirus/Firewall apps as they have been reported as causing connectivity and other issues with this app.  No other work arounds have been found.
 
 ## Built With
 * [Electron](http://electron.atom.io)
