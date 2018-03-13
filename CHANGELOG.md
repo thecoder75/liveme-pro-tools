@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.96.20180313
+Fixed:
+- Changed Video URL to now be `https://www.liveme.com/live.html?videoid=` so jDownloader will pick up naming better.
+
 ### v1.95.20180310
 **Only bug fixes will be addressed from this point forward as the project will be moving away from using NodeJS and Electron to a more solid desktop application framework.**
 

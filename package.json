@@ -1,6 +1,6 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.95.20180310",
+  "version": "1.96.20180313",
   "description": "Tools for Live.me video network",
   "homepage": "https://github.com/thecoder75/liveme-pro-tools/",
   "main": "index.js",
@@ -59,7 +59,9 @@
     "axios": "^0.17.1",
     "electron-is-dev": "^0.3.0",
     "electron-settings": "^3.1.4",
+    "fluent-ffmpeg": "^2.1.2",
     "format-duration": "^1.0.0",
+    "hlsdownloader": "^2.1.0",
     "liveme-api": "^1.2.6",
     "pretty-date": "^0.2.0",
     "request": "^2.83.0",
