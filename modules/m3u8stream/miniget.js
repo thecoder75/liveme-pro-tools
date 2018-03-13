@@ -20,7 +20,7 @@ module.exports = (url, options, callback) => {
   } else if (!options) {
     options = {};
   }
-  var maxRedirects = options.maxRedirects || 3;
+  var maxRedirects = options.maxRedirects || 10;
   var stream = new PassThrough({ highWaterMark: options.highWaterMark });
   var req, aborted = false;
 
@@ -73,9 +73,6 @@ module.exports = (url, options, callback) => {
         });
         res.on('end', () => {
           callback(null, res, body);
-        });
-        res.on('error', (err) => {
-          res.on('error', onError);
         });
       } else {
         stream.emit('response', res);
