@@ -38,6 +38,23 @@
       "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
       "maintainer": "thecoder1975@gmail.com"
     },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "build/appicon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true
+    },
     "mac": {
       "category": "public.app-category.video",
       "target": [
