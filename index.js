@@ -15,6 +15,7 @@ const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog, autoUpdater } = requi
         LiveMe = require('liveme-api'),
         isDev = require('electron-is-dev'),
         formatDuration = require('format-duration'),
+        ffmpeg = require('fluent-ffmpeg'),
         m3u8stream = require('./modules/m3u8stream');               // We use a custom variation of this module
 
 var 	mainWindow = null,
@@ -308,13 +309,47 @@ function downloadFile() {
         filename += '.ts';
         video._filename = filename;
 
+        
+        DataManager.addDownloaded(video.vid);
+
+        /*
+        ffmpeg(video.hlsvideosource)
+            .outputOptions([
+                '-c copy',
+                '-bsf:a aac_adtstoasc',
+                '-vsync 2',
+                '-movflags faststart'
+            ])
+            .output(path + '/' + filename)
+            .on('end', function(stdout, stderr) {
+                mainWindow.webContents.send('download-complete', { videoid: download_list[0] }); 
+                download_list.shift();
+            })
+            .on('progress', function(progress) {
+                mainWindow.webContents.send('download-progress', {
+                    videoid: download_list[0],
+                    current: progress.percent,
+                    total: 100
+                });
+            })
+            .on('start', function(c) {
+                mainWindow.webContents.send('download-start', {
+                    videoid: download_list[0],
+                    filename: filename
+                });                
+            })
+            .on('error', function(err, stdout, etderr) {
+                mainWindow.webContents.send('download-error', { videoid: download_list[0], error: err }); 
+                download_list.shift();
+            })
+            .run();
+        */
+
+
         mainWindow.webContents.send('download-start', {
-            videoid: video.vid,
+            videoid: download_list[0],
             filename: filename
-        });
-
-        download_list.shift();
-
+        });                
         m3u8stream(video, {
             chunkReadahead: appSettings.get('downloads.chunks'),
             on_progress: (e) => {
@@ -330,12 +365,15 @@ function downloadFile() {
                 if (mainWindow != null) { mainWindow.webContents.send('download-complete', { videoid: e.videoid }); }
                 DataManager.addDownloaded(e.videoid);
                 download_active = false;
+                download_list.shift();
             },
             on_error: (e) => {
                 if (mainWindow != null) { mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error }); }
                 download_active = false;
+                download_list.shift();
             }
         }).pipe(fs.createWriteStream(path + '/' + filename));
+        
     });
 
 }
