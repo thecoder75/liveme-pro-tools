@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.97.20180316
+Fixed:
+- Adjusted maximum history age for viewed profiles to avoid the possibility of a corrupt history file when the record counts gets too high.
+
 ### v1.96.20180313
 Fixed:
 - Changed Video URL to now be `https://www.liveme.com/live.html?videoid=` so jDownloader will pick up naming better.
