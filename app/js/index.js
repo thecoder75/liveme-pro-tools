@@ -948,7 +948,7 @@ function resetSettings() {
         chunks: 1
     });
     appSettings.set('history', {
-        viewed_maxage: 30
+        viewed_maxage: 1
     });
     appSettings.set('position', {
         mainWindow: [ -1, -1],
