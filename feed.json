@@ -1,10 +1,5 @@
 [
     {
-        "title":"Desktop App Rumor",
-        "date":"",
-        "body":"Plans for a desktop app are true.  Currently it is in the planning/precoding stage and there is no releaes date planned at this time."
-    },
-    {
         "title":"More LAMD Support",
         "date":"2018-02-25",
         "body":"You can now choose whether to use LAMD for handling the downloads or not.  Also added feedback to LAMD support commands."
