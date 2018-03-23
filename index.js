@@ -84,9 +84,9 @@ function createWindow() {
         });
     }
 
-    if (!appSettings.get('history')) {
+    if (!appSettings.get('history.viewed_maxage')) {
         appSettings.set('history', {
-			viewed_maxage: 30
+			viewed_maxage: 3
         });
     }
 
