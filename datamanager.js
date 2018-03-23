@@ -7,7 +7,7 @@ const   events = require('events'),
         { app } = require('electron'),
         LiveMeAPI = require('liveme-api');
 
-var     bookmarks = [], profiles = [], downloaded = [], watched = [], is_busy = false, can_write = true;
+var     bookmarks = [], profiles = [], downloaded = [], watched = [], errored = [], queued = [], is_busy = false, can_write = true;
 
 class DataManager {
 
@@ -23,11 +23,17 @@ class DataManager {
         profiles = [];
         downloaded = [];
         watched = [];
+        errored = [];
+        queued = [];
 
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), '[]', function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), '[]', function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), '[]', function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), '[]', function(){ });
+
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), '[]', function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), '[]', function(){ });
+
     }
 
     getStats() {
@@ -40,34 +46,60 @@ class DataManager {
     }
 
     loadFromDisk() {
-        fs.readFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), 'utf8', function (err,data) {
-            if (err) {
-                bookmarks = [];
-            } else {
-                bookmarks = JSON.parse(data);
-            }
-        });
-        fs.readFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), 'utf8', function (err,data) {
-            if (err) {
-                profiles = [];
-            } else {
-                profiles = JSON.parse(data);
-            }
-        });
-        fs.readFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), 'utf8', function (err,data) {
-            if (err) {
-                downloaded = [];
-            } else {
-                downloaded = JSON.parse(data);
-            }
-        });
-        fs.readFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), 'utf8', function (err,data) {
-            if (err) {
-                watched = [];
-            } else {
-                watched = JSON.parse(data);
-            }
-        });
+        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'))) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), 'utf8', function (err,data) {
+                if (err) {
+                    bookmarks = [];
+                } else {
+                    bookmarks = JSON.parse(data);
+                }
+            });
+        }
+        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'profiles.json'))) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), 'utf8', function (err,data) {
+                if (err) {
+                    profiles = [];
+                } else {
+                    profiles = JSON.parse(data);
+                }
+            });
+        }
+        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'))) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), 'utf8', function (err,data) {
+                if (err) {
+                    downloaded = [];
+                } else {
+                    downloaded = JSON.parse(data);
+                }
+            });
+        }
+        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'watched.json'))) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), 'utf8', function (err,data) {
+                if (err) {
+                    watched = [];
+                } else {
+                    watched = JSON.parse(data);
+                }
+            });
+        }
+        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'errored.json'))) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), 'utf8', function (err,data) {
+                if (err) {
+                    errored = [];
+                } else {
+                    errored = JSON.parse(data);
+                }
+            });
+        }
+        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'queued.json'))) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), 'utf8', function (err,data) {
+                if (err) {
+                    queued = [];
+                } else {
+                    queued = JSON.parse(data);
+                }
+            });
+        }
 
     }
     saveToDisk() {
@@ -78,6 +110,8 @@ class DataManager {
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), function(){ });
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), function(){ });
     }
 
 
@@ -258,6 +292,49 @@ class DataManager {
         return ret;
     }
 
+
+    /*
+     *      Queued
+     */
+    addToQueueList(vid) {
+        is_busy = true;
+        var add = true;
+        for (var i = 0; i < queued.length; i++) {
+            if (queued[i] == vid) add = false;
+        }
+        if (add == true) {
+            queued.push(vid);
+        }
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), function(){ });
+        is_busy = false;
+    }
+    removeFromQueueList(vid) {
+        is_busy = true;
+        for (var i = 0; i < queued.length; i++) {
+            if (queued[i] == vid) {
+                queued.splice(i, 1);
+            }
+        }
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), function(){ });
+        is_busy = false;
+    }
+
+
+    /*
+     *      Queued
+     */
+    addToErroredList(vid) {
+        is_busy = true;
+        var add = true;
+        for (var i = 0; i < errored.length; i++) {
+            if (errored[i] == vid) add = false;
+        }
+        if (add == true) {
+            errored.push(vid);
+        }
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), function(){ });
+        is_busy = false;
+    }
 }
 
 
