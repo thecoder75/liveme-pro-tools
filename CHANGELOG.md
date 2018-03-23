@@ -1,5 +1,12 @@
 ## Change Log
 
+### v1.98.20180323
+Added:
+- Added queued and errored list writers and readers for logging and resuming of downloads.
+
+Fixed:
+- Updated error handling in `miniget.js`.
+
 ### v1.97.20180316
 Fixed:
 - Adjusted maximum history age for viewed profiles to avoid the possibility of a corrupt history file when the record counts gets too high.

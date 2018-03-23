@@ -26,6 +26,7 @@ var 	mainWindow = null,
         menu = null,
         appSettings = require('electron-settings'),
         download_list = [],
+        errored_list = [],
         download_active = false;
 
 
@@ -227,7 +228,7 @@ function createWindow() {
 
     setInterval(() => {
         downloadFile();
-    }, 500);
+    }, 1000);
 
 }
 
@@ -266,6 +267,7 @@ app.on('activate', () => {
 */
 ipcMain.on('download-replay', (event, arg) => {
     download_list.push(arg.videoid);
+    DataManager.addToQueueList(arg.videoid);
 });
 /*
  * 		Cannot cancel active download, only remove queued entries.
@@ -275,6 +277,7 @@ ipcMain.on('download-cancel', (event, arg) => {
 	for (var i = 0; i < download_list.length; i++) {
 		if (download_list[i] == arg.videois) {
 			download_list.splice(i, 1);
+            DataManager.removeFromQueueList(arg.videoid);
 		}
 	}
 
@@ -364,11 +367,13 @@ function downloadFile() {
             on_complete: (e) => {
                 if (mainWindow != null) { mainWindow.webContents.send('download-complete', { videoid: e.videoid }); }
                 DataManager.addDownloaded(e.videoid);
+                DataManager.removeFromQueueList(arg.videoid);
                 download_active = false;
                 download_list.shift();
             },
             on_error: (e) => {
                 if (mainWindow != null) { mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error }); }
+                DataManager.addToErroredList(arg.videoid);
                 download_active = false;
                 download_list.shift();
             }
