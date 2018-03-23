@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.99.20180323
+Fixed:
+- Fixed a couple typos in `index.js` which caused some error messages to appear.
+
 ### v1.98.20180323
 Added:
 - Added queued and errored list writers and readers for logging and resuming of downloads.
