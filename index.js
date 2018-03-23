@@ -367,13 +367,13 @@ function downloadFile() {
             on_complete: (e) => {
                 if (mainWindow != null) { mainWindow.webContents.send('download-complete', { videoid: e.videoid }); }
                 DataManager.addDownloaded(e.videoid);
-                DataManager.removeFromQueueList(arg.videoid);
+                DataManager.removeFromQueueList(e.videoid);
                 download_active = false;
                 download_list.shift();
             },
             on_error: (e) => {
                 if (mainWindow != null) { mainWindow.webContents.send('download-error', { videoid: e.videoid, error: e.error }); }
-                DataManager.addToErroredList(arg.videoid);
+                DataManager.addToErroredList(e.videoid);
                 download_active = false;
                 download_list.shift();
             }
