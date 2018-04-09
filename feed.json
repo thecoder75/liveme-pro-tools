@@ -1,28 +1,8 @@
 [
     {
-        "title":"More LAMD Support",
-        "date":"2018-02-25",
-        "body":"You can now choose whether to use LAMD for handling the downloads or not.  Also added feedback to LAMD support commands."
-    },
-    {
-        "title":"LAMD Support",
-        "date":"2018-02-23",
-        "body":"The latest release now supports sending UserIDs and removing UserIDs from LAMD for monitoring.  Be sure to also upgrade to the latest version of LAMD for full support."
-    },
-    {
-        "title":"Automated Builds",
-        "date":"2018-02-18",
-        "body":"The build/release process has been switched to using Travis-CI and Appveyor for automation.  Releases will be available within 15 minutes of new updates being committed to the GitHub repo."
-    },
-    {
-        "title":"New Downloader",
-        "date":"2018-02-15",
-        "body":"LiveMe Pro Tools v1.50 now has the ability to download replays directly without needing to use jDownloader2 and even supports concurrent downloading."
-    },
-    {
-        "title":"New Filtering",
-        "date":"2018-02-11",
-        "body":"<p>Did you know starting in v1.20 you can now filter your Following and Fans list by country now?</p>"
+        "title":"FFMPEG",
+        "date":"2018-04-09",
+        "body":"The downloader module has now been switched to use FFMPEG to avoid errors now!"
     },
     {
         "title":"Missing Replays",
