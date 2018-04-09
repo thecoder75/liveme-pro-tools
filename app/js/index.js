@@ -144,7 +144,7 @@ function setupIPCListeners() {
 
         var p = Math.round((arg.current / arg.total) * 100);
         $('#download-'+arg.videoid+' .bar').css({ width: p + '%' });
-        $('#download-'+arg.videoid+' .status span').html(arg.current + ' / ' + arg.total);
+        $('#download-'+arg.videoid+' .status span').html(arg.current.toFixed(1) + '% completed');
     });
 
     ipcRenderer.on('download-complete' , function(event, arg) {
@@ -285,7 +285,7 @@ function downloadVideo(vid) {
         $('#queue-list').append(`
                 <div class="download" id="download-${vid}">
                     <div class="filename">${vid}</div>
-                    <div class="status">Queued for download</div>
+                    <div class="status">Queued</div>
                     <div class="progress-bar">
                         <div class="bar" style="width: 0%"></div>
                     </div>
@@ -899,7 +899,6 @@ function initSettingsPanel() {
 
     $('#downloads-path').val(appSettings.get('downloads.path'));
     $('#downloads-template').val(appSettings.get('downloads.template'));
-    $('#downloads-chunks').val(appSettings.get('downloads.chunks'));
 
     $('#lamd-enabled').prop('checked', appSettings.get('lamd.enabled'));
     $('#lamd-downloads').prop('checked', appSettings.get('lamd.handle_downloads'));
@@ -925,7 +924,6 @@ function saveSettings() {
 
     appSettings.set('downloads.path', $('#downloads-path').val());
     appSettings.set('downloads.template', $('#downloads-template').val());
-    appSettings.set('downloads.chunks', $('#downloads-chunks').val());
 
     appSettings.set('lamd.enabled', ($('#lamd-enabled').is(':checked') ? true : false) )
     appSettings.set('lamd.handle_downloads', ($('#lamd-downloads').is(':checked') ? true : false) )
@@ -944,8 +942,7 @@ function resetSettings() {
     });
     appSettings.set('downloads', {
         path: path.join(app.getPath('home'), 'Downloads'),
-        template: '%%replayid%%',
-        chunks: 1
+        template: '%%replayid%%'
     });
     appSettings.set('history', {
         viewed_maxage: 1

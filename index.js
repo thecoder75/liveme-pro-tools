@@ -15,8 +15,8 @@ const 	{ app, BrowserWindow, ipcMain, Menu, shell, dialog, autoUpdater } = requi
         LiveMe = require('liveme-api'),
         isDev = require('electron-is-dev'),
         formatDuration = require('format-duration'),
-        ffmpeg = require('fluent-ffmpeg'),
-        m3u8stream = require('./modules/m3u8stream');               // We use a custom variation of this module
+        ffmpeg = require('fluent-ffmpeg');
+        // m3u8stream = require('./modules/m3u8stream');  DISCONTINUED USE ON 04/09/2018 BY THECODER75
 
 var 	mainWindow = null,
         playerWindow = null,
@@ -55,8 +55,7 @@ function createWindow() {
         });
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
-            template: '%%replayid%%',
-            chunks: 1
+            template: '%%replayid%%'
         });
         appSettings.set('lamd', {
             enabled: false,
@@ -69,8 +68,7 @@ function createWindow() {
     if (!appSettings.get('downloads.path')) {
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
-            template: '%%replayid%%',
-            chunks: 1
+            template: '%%replayid%%'
         });
     }
 
@@ -86,7 +84,7 @@ function createWindow() {
 
     if (!appSettings.get('history.viewed_maxage')) {
         appSettings.set('history', {
-			viewed_maxage: 3
+			viewed_maxage: 1
         });
     }
 
@@ -226,9 +224,12 @@ function createWindow() {
 		if (pos[0] != null)	mainWindow.setPosition(pos[0], pos[1], false);
 	}
 
+    /*
+    20180409 - Removed by TheCoder
     setInterval(() => {
         downloadFile();
     }, 1000);
+    */
 
 }
 
@@ -268,6 +269,9 @@ app.on('activate', () => {
 ipcMain.on('download-replay', (event, arg) => {
     download_list.push(arg.videoid);
     DataManager.addToQueueList(arg.videoid);
+    if (download_active == false) {
+        downloadFile();
+    }
 });
 /*
  * 		Cannot cancel active download, only remove queued entries.
@@ -287,7 +291,6 @@ ipcMain.on('download-cancel', (event, arg) => {
 */
 function downloadFile() {
 
-	if (download_active == true) return;
     if (download_list.length == 0) return;
 
 	download_active = true;
@@ -309,13 +312,15 @@ function downloadFile() {
 		filename = filename.replace(/([^a-z0-9\s]+)/gi, '-');
 		filename = filename.replace(/[\u{0080}-\u{FFFF}]/gu, '');
 
-        filename += '.ts';
+        filename += '.mp4';
         video._filename = filename;
 
         
         DataManager.addDownloaded(video.vid);
 
         /*
+            20180409 - Added FFMPEG downloader by TheCoder
+        */
         ffmpeg(video.hlsvideosource)
             .outputOptions([
                 '-c copy',
@@ -327,6 +332,11 @@ function downloadFile() {
             .on('end', function(stdout, stderr) {
                 mainWindow.webContents.send('download-complete', { videoid: download_list[0] }); 
                 download_list.shift();
+
+                download_active = false;
+                setTimeout(() => {
+                    downloadFile();
+                }, 100);
             })
             .on('progress', function(progress) {
                 mainWindow.webContents.send('download-progress', {
@@ -344,10 +354,18 @@ function downloadFile() {
             .on('error', function(err, stdout, etderr) {
                 mainWindow.webContents.send('download-error', { videoid: download_list[0], error: err }); 
                 download_list.shift();
+
+                download_active = false;
+                setTimeout(() => {
+                    downloadFile();
+                }, 100);
             })
             .run();
-        */
+        
 
+        /*
+
+        20180409 - Removed by TheCoder
 
         mainWindow.webContents.send('download-start', {
             videoid: download_list[0],
@@ -378,7 +396,8 @@ function downloadFile() {
                 download_list.shift();
             }
         }).pipe(fs.createWriteStream(path + '/' + filename));
-        
+        */
+
     });
 
 }

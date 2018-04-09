@@ -110,24 +110,6 @@
                         <li style="padding-bottom: 5px;"><h4>Downloads</h4></li>
                         <li>
                             <ul style="margin: 16px 0 0; padding: 0;">
-                                <li style="margin: 12px 0; line-height: 24px;">
-                                    Number of chunks to fetch at a time:&nbsp;&nbsp; <div class="select" style="vertical-align: middle; margin-bottom: 1px; width: 48px;">
-                                        <select id="downloads-chunks" onChange="saveSettings()">
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="5">5</option>
-                                            <option value="8">8</option>
-                                            <option value="10">10</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                        </select>
-                                    </div>
-                                </li>
-                                <li style="margin: 12px 0; line-height: 16px;">
-									<small>The higher the value, the greater chance of timeouts occurring.  Setting to 1 or 2 pretty much eliminates the chances for timeouts but also means really slow downloads.</small>
-                                </li>
                                 <li style="margin: 12px 0; line-height: 16px;">
                                     Download Location:<br>
                                     <input type="text" id="downloads-path" style="width: 500px;" onBlur="saveSettings()">
