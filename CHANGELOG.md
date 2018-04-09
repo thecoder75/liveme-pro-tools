@@ -1,5 +1,12 @@
 ## Change Log
 
+### v1.101.20180409
+Added:
+- Changed downloader to use FFMPEG instead of stream downloading to help reduce chances of download errors.
+
+Fixed:
+- Changed downloader to be a single file at a time now, no more concurrent downloading since its now using FFMPEG.
+
 ### v1.99.20180323
 Fixed:
 - Fixed a couple typos in `index.js` which caused some error messages to appear.

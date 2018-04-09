@@ -10,6 +10,7 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - View public replays for user accounts
 - See and navigate user's followers and followings
 - Watch and download replays
+- Allows downloading of replays using FFMPEG
 - Supports [LAMD](https://thecoderstoolbox.com/lamd)
 
 ## Download Prebuilt Releases
@@ -23,8 +24,17 @@ New releases are built automatically when updates are pushed to this repo and ca
 - macOS v10.11 or higher (64-bit only)
 - Windows 7 or higher* (32/64-bit)
 
-#### Windows 8.x & 10 Users:
-You may need to disable BitDefender and other Antivirus/Firewall apps as they have been reported as causing connectivity and other issues with this app.  No other work arounds have been found.
+### Downloader Uses FFMPEG
+**Please note you must manually install FFMPEG on your computer for downloading to work.  If its not in the path, the downloader will fail!  Contributors will not offer support for installing FFMPEG, you will need to research install methods on your own!**
+
+#### Windows
+[Download](http://www.ffmpeg.org) and install FFMPEG into your `C:\Windows` folder.
+
+#### MacOS 
+[Download](http://www.ffmpeg.org) and install FFMPEG into a folder that is accessible in your path on your computer.  
+
+#### Linux
+You can either [download](http://www.ffmpeg.org) a static build or install the version maintained by your distribution using either `sudo apt install ffmpeg` or `sudo yum install ffmpeg`.
 
 ## Built With
 * [Electron](http://electron.atom.io)
