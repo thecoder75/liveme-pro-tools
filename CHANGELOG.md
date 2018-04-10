@@ -1,5 +1,10 @@
 ## Change Log
 
+### v1.102.20180410
+Added:
+- When you click on the download button for a replay, it changes state to indicate it was clicked.
+- Clicking on the background when the download queue is visible will now close it.
+
 ### v1.101.20180409
 Added:
 - Changed downloader to use FFMPEG instead of stream downloading to help reduce chances of download errors.
