@@ -252,6 +252,12 @@ function onTypeChange() {
     }
 }
 
+function closeOverlay() {
+    if($('#queue-list').is(':visible')) {
+        $('#queue-list').hide();
+        $('overlay').hide();
+    };
+}
 function enterOnSearch(e) { if (e.keyCode == 13) preSearch(); }
 function copyToClipboard(i) { clipboard.writeText(i); }
 function showSettings() { $('#settings').show(); }
@@ -275,6 +281,10 @@ function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid:
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: current_user.uid != undefined ? current_user.uid : u }); }
 function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }); }
 function downloadVideo(vid) {
+
+    console.log(vid);
+    $('#download-replay-' + vid).html('<i class="icon icon-download dim"></i>');
+    $('#download-replay-' + vid).unbind();
 
     if (appSettings.get('lamd.handle_downloads') == true) {
         AddReplayToLAMD(vid);
@@ -794,7 +804,7 @@ function _addReplayEntry(replay, wasSearched) {
     var seen = watchDate == false ? '' : 'watched';
 
     var isLive = replay.hlsvideosource.endsWith('flv') || replay.hlsvideosource.indexOf('liveplay') > 0 ? '[LIVE]' : '';
-    var in_queue = $('#download-'+replay.vid).length > 0 ? '<a class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a class="button icon-only" onClick="downloadVideo(\''+replay.vid+'\')" title="Download Replay"><i class="icon icon-download"></i></a>';
+    var in_queue = $('#download-'+replay.vid).length > 0 ? '<a id="download-replay-'+replay.vid+'" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-'+replay.vid+'" class="button icon-only" onClick="downloadVideo(\''+replay.vid+'\')" title="Download Replay"><i class="icon icon-download"></i></a>';
 
     var h = `
                     <tr data-id="${replay.vid}" class="${searched} ${seen} user-${replay.userid}">
