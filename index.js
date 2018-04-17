@@ -297,16 +297,24 @@ function downloadFile() {
 
     LiveMe.getVideoInfo(download_list[0]).then(video => {
 
+        console.log(JSON.stringify(video, null, 2));
+        return;
+
         var path = appSettings.get('downloads.path'),
-            filename = appSettings.get('downloads.template')
-                .replace(/%%broadcaster%%/g, video.uname)
-                .replace(/%%longid%%/g, video.userid)
-                .replace(/%%replayid%%/g, video.vid)
-                .replace(/%%replayviews%%/g, video.playnumber)
-                .replace(/%%replaylikes%%/g, video.likenum)
-                .replace(/%%replayshares%%/g, video.sharenum)
-                .replace(/%%replaytitle%%/g, video.title ? video.title : 'untitled')
-                .replace(/%%replayduration%%/g, video.videolength);
+            dt = new Date(video.vtime * 1000), mm = dt.getMonth() + 1, dd = getDate(), filename = '';
+
+        filename = appSettings.get('downloads.template')
+            .replace(/%%broadcaster%%/g, video.uname)
+            .replace(/%%longid%%/g, video.userid)
+            .replace(/%%replayid%%/g, video.vid)
+            .replace(/%%replayviews%%/g, video.playnumber)
+            .replace(/%%replaylikes%%/g, video.likenum)
+            .replace(/%%replayshares%%/g, video.sharenum)
+            .replace(/%%replaytitle%%/g, video.title ? video.title : 'untitled')
+            .replace(/%%replayduration%%/g, video.videolength)
+            .replace(/%%replaydatepacked%%/g, (dt.getFullYear() + (mm < 10 ? '0' : '') + mm + (dd < 10 ? '0' : '') + dd))
+            .replace(/%%replaydateus%%/g, ((mm < 10 ? '0' : '') + mm + '-' + (dd < 10 ? '0' : '') + dd + '-' + dt.getFullYear()))
+            .replace(/%%replaydateeu%%/g, ((dd < 10 ? '0' : '') + dd + '-' + (mm < 10 ? '0' : '') + mm + '-' + dt.getFullYear()));
 
 		filename = filename.replace(/[/\\?%*:|"<>]/g, '-');
 		filename = filename.replace(/([^a-z0-9\s]+)/gi, '-');
@@ -314,7 +322,6 @@ function downloadFile() {
 
         filename += '.mp4';
         video._filename = filename;
-
         
         DataManager.addDownloaded(video.vid);
 
