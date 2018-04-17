@@ -1,5 +1,9 @@
 ## Change Log
 
+### v1.103.20180417
+Added:
+- Added new filename template tags for adding the date of the replay to the filename.
+
 ### v1.102.20180410
 Added:
 - When you click on the download button for a replay, it changes state to indicate it was clicked.
