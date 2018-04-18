@@ -127,9 +127,6 @@ function setupIPCListeners() {
         $('#status').html('Storing data and shutting down...');
     });
 
-
-
-
     ipcRenderer.on('download-start' , function(event, arg) {
         if ($('#download-'+arg.videoid).length < 1) return;
 
@@ -158,7 +155,6 @@ function setupIPCListeners() {
 		$('#download-'+arg.videoid).append(`<div onClick="cancelDownload('${arg.videoid}')" class="cancel">&#x2715;</div>`);
 
     });
-
 }
 
 
@@ -167,6 +163,29 @@ function showMainMenu() {
 
     const MainAppMenu = remote.Menu.buildFromTemplate(
         [
+            /*
+            {
+                label: 'Import',
+                submenu: [
+                    {
+                        label: 'ReplayID List to Download',
+                        click: () => importReplayIDList()
+                    },
+                    {
+                        label: 'UserID List to Favorites',
+                        click: () => importUserIDList()
+                    }
+                ]
+            },
+            {
+                label: 'Export',
+                submenu: [
+                    {
+                        label: 'Favorites List',
+                        click: () => ExportFavorites()
+                    }
+                ]
+            }, */
             {
                 label: 'Backup/Restore',
                 submenu: [
@@ -317,6 +336,10 @@ function showDownloads() {
         $('#queue-list').show();
     }
 }
+function importReplayIDList() { ipcRenderer.send('import-queue'); }
+function importUserIDList() { ipcRenderer.send('import-users'); }
+function ExportFavorites() { ipcRenderer.send('export-users'); }
+
 function openURL(u) { shell.openExternal(u); }
 function readComments(u) { ipcRenderer.send('read-comments', { userid: u }); }
 
