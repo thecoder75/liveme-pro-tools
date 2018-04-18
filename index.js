@@ -301,7 +301,7 @@ function downloadFile() {
         return;
 
         var path = appSettings.get('downloads.path'),
-            dt = new Date(video.vtime * 1000), mm = dt.getMonth() + 1, dd = getDate(), filename = '';
+            dt = new Date(video.vtime * 1000), mm = dt.getMonth() + 1, dd = dt.getDate(), filename = '';
 
         filename = appSettings.get('downloads.template')
             .replace(/%%broadcaster%%/g, video.uname)
