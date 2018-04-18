@@ -762,6 +762,8 @@ function getUsersReplays() {
     LiveMe.getUserReplays(current_user.uid, current_page, MAX_PER_PAGE)
         .then(replays => {
 
+            console.log(JSON.stringify(replays, null, 2));
+
             if ((typeof replays == 'undefined') || (replays == null)) {
                 if (current_page == 1) {
                     $('footer h1').html('No publicly listed replays available.');
