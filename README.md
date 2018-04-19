@@ -4,6 +4,8 @@
 ![macos builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?label=macOS%20Builds)
 ![Windows Build](https://ci.appveyor.com/api/projects/status/jc119jb9vkt7p4qj/branch/master?svg=true)
 
+**IS ANYONE INTERESTED IN TAKING OVER MAINTAINING THIS REPO?  THECODER IS GOING TO STEP DOWN PERMENANTLY NOW.**
+
 ## What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
 - Search and browse user accounts
