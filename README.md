@@ -4,6 +4,8 @@
 ![macos builds](https://img.shields.io/travis/thecoder75/liveme-pro-tools.svg?label=macOS%20Builds)
 ![Windows Build](https://ci.appveyor.com/api/projects/status/jc119jb9vkt7p4qj/branch/master?svg=true)
 
+## This project will continue to get critical bugfixes on [Lewdninja/liveme-pro-tools](https://github.com/Lewdninja/liveme-pro-tools) repository.
+
 **IS ANYONE INTERESTED IN TAKING OVER MAINTAINING THIS REPO?  THECODER IS GOING TO STEP DOWN PERMENANTLY NOW.**
 
 ## What Is LiveMe Pro Tools?
