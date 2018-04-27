@@ -1,12 +1,6 @@
 [
     {
-        "title":"FFMPEG",
-        "date":"2018-04-09",
-        "body":"The downloader module has now been switched to use FFMPEG to avoid errors now!"
-    },
-    {
-        "title":"Missing Replays",
-        "date":"2018-02-10",
-        "body":"<p>Even though it may say there's replays available, sometimes they are marked hidden and therefore are not visible.</p>"
+        "title":"New Home",
+        "date":"2018-04-15",
+        "body":"Lewdninja is now managing the updates and improvements to LiveMe Pro Tools.  Please follow the links to the new downloads from his repo."
     }
-]
