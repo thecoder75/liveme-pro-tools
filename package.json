@@ -14,14 +14,15 @@
     "dev": "NODE_ENV='development' npm run start",
     "release": "build -wlm",
     "release-win": "build -w",
-    "release-linux": "build -l"
+    "release-linux": "build -l",
+    "release-linux": "build -m"
   },
   "author": "TheCoder75",
   "license": "GPL-3.0",
   "build": {
     "appId": "com.thecoderstoolbox.livemeprotools",
     "productName": "LiveMe Pro Tools",
-    "artifactName": "${productName}-${version}-${arch}.${ext}",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
     "asar": true,
     "compression": "maximum",
     "linux": {
@@ -41,7 +42,7 @@
     "win": {
       "target": [
         {
-          "target": "nsis",
+          "target": "zip",
           "arch": [
             "x64",
             "ia32"
@@ -58,7 +59,7 @@
     "mac": {
       "category": "public.app-category.video",
       "target": [
-        "dmg"
+        "zip"
       ],
       "identity": null,
       "icon": "build/appicon.icns"
