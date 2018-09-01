@@ -182,11 +182,16 @@ function createWindow () {
         })
 
         if (mainWindow != null) {
-            let pos = appSettings.get('position.mainWindow')
-            mainWindow.setPosition(pos[0], pos[1], false).show()
+			setTimeout(() => {
+				let pos = appSettings.get('position.mainWindow')
+				mainWindow.setPosition(pos[0], pos[1], false)
+				mainWindow.show()
+			}, 250)
+
         }
 
         wizardWindow = null
+        
     })
 
     /**
