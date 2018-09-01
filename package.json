@@ -12,7 +12,9 @@
     "postinstall": "",
     "start": "./node_modules/.bin/electron . --enable-logging",
     "dev": "NODE_ENV='development' npm run start",
-    "release": "build -wlm"
+    "release": "build -wlm",
+    "release-win": "build -w",
+    "release-linux": "build -l"
   },
   "author": "TheCoder75",
   "license": "GPL-3.0",
