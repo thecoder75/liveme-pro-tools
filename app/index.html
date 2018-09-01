@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="css/page_index.css" media="all">
 
         <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="js/handlebars-v4.0.11.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </head>
     <body>
@@ -36,6 +37,7 @@
                 <a class="button icon-only" title="Go Home" onClick="goHome()"><i class="icon icon-home3"></i></a>
                 <a class="button icon-only" title="View Bookmarks" onClick="openBookmarks()"><i class="icon icon-bookmarks"></i></a>
                 <a class="button icon-only" title="Toggle Queue List" onClick="showDownloads()"><i class="icon icon-folder-download"></i></a>
+                <a class="button" title="Support on Patreon" onClick="openPatreon()"><i class="icon icon-lifebuoy"></i> Patreon</a>
             </div>
 
             <a class="minimize-button" onClick="minimizeWindow()">&#x1f5d5;</a>
@@ -50,7 +52,6 @@
         <div id="queue-list"></div>
 
         <main id="view-userinfo-replays" class="has-footer has-details">
-
             <div id="user-details" class="details">
                 <div class="avatar">
                     <img class="avatar" src=""  onerror="this.src='images/nouser.png'">
@@ -77,18 +78,48 @@
                 <thead>
                     <tr>
                         <th width="410">Title</th>
-                        <th width="120">Date</th>
+                        <th width="120">
+                            <a href="#" class="link text-center" onClick="sortReplays('date')" title="Sort by Date (desc)">Date</a>
+                        </th>
                         <th width="50" align="right">Length</th>
-                        <th width="70" align="right">Views</th>
-                        <th width="70" align="right">Likes</th>
-                        <th width="70" align="right">Shares</th>
+                        <th width="70" align="right">
+                            <a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
+                        </th>
+                        <th width="70" align="right">
+                            <a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
+                        </th>
+                        <th width="70" align="right">
+                            <a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
+                        </th>
                         <th width="210">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
+            <div class="alert" id="replay-result-alert" style="display:none;"></div>
         </main>
+        <script id="replays-list-row" type="text/x-handlebars-template">
+            <tr data-id="{{vid}}" class="{{searched}} {{seen}} user-{{userid}}">
+                <td width="410" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;{{{downloaded}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
+                <td width="120" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
+                <td width="50" class="{{highlight}}" align="right">{{length}}</td>
+                <td width="70" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
+                <td width="70" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
+                <td width="70" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
+                <td width="300" class="{{highlight}}" style="padding: 0 16px; text-align: right;">
+                    <a class="button mini icon-small" onClick="copyToClipboard('{{vid}}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
+                    &nbsp;
+                    <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid={{vid}}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
+                    &nbsp;
+                    <a class="button mini icon-small" onClick="copyToClipboard('{{source}}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
+                    &nbsp;&nbsp;&nbsp;
+                    <a class="button icon-only" onClick="playVideo('{{vid}}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
+                    <a class="button icon-only" onClick="readComments('{{vid}}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
+                    {{{inQueue}}}
+                </td>
+            </tr>
+        </script>
 
         <div id="popup-message"></div>
 
@@ -97,7 +128,18 @@
             <div class="area">
                 <div class="section">
                     <ul>
-                        <li style="padding-bottom: 5px;"><h4>Video Player</h4></li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Authentication</h4></li>
+                        <li style="padding-bottom: 5px; display: none;" id="authStatus"><h5></h5></li>
+                        <li style="padding-bottom: 20px;">
+                            Email and password are required to see user replays.<br>
+                            <input type="text" id="authEmail" placeholder="user@example.com" style="width: 100%;margin-bottom:5px;" onBlur="saveSettings()"><br>
+                            <input type="password" id="authPassword" placeholder="Password" style="width: 100%;" onBlur="saveSettings()"><br>
+                        </li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <ul>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Video Player</h4></li>
                         <li style="padding-bottom: 20px;">
                             Internal player is used by default unless you specify one in the field below.<br>
                             <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
@@ -107,8 +149,8 @@
                 </div>
                 <div class="section">
                     <ul>
-                        <li style="padding-bottom: 5px;"><h4>Downloads</h4></li>
-                        <li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Downloads</h4></li>
+                        <li style="padding-bottom: 10px;">
                             <ul style="margin: 16px 0 0; padding: 0;">
                                 <li style="margin: 12px 0; line-height: 16px;">
                                     Download Location:<br>
@@ -161,11 +203,40 @@
                                 </li>
                             </ul>
                         </li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Download Method</h4></li>
+                        <li>
+                            <ul style="margin: 16px 0 0; padding: 0;">
+                                <li style="margin: 12px 0; line-height: 16px;">
+                                    <input type="radio" name="downloadMethod" value="ffmpeg" id="ffmpeg-method" onClick="saveSettings()">
+                                    <label for="ffmpeg-method" onClick="saveSettings()">FFMPEG Stream Download <small>(Slow, but stable.)</small></label>
+                                </li>
+                                <li style="margin: 12px 0; line-height: 16px;">
+                                    <input type="radio" name="downloadMethod" value="chunk" id="chunk-method" onClick="saveSettings()">
+                                    <label for="chunk-method" onClick="saveSettings()">Chunk Download and Concat <small>(Fast, but could be less stable.)</small></label>
+                                </li>
+                                <ul style="margin: 0; padding: 0 0 0 25px;">
+                                    <li style="margin: 12px 0; line-height: 16px;">
+                                        <input type="checkbox" id="chunk-method-tmp" onClick="saveSettings()">
+                                        <label for="chunk-method-tmp" onClick="saveSettings()">Delete temporary files left over by this method (.ts files)</label>
+                                    </li>
+                                </ul>
+                            </ul>
+                        </li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Parallel Downloads</h4></li>
+                        <li style="padding-bottom: 10px;">
+                            <input type="number" min="1" max="100" id="downloads-parallel" placeholder="Number" style="margin-right:10px;" onBlur="saveSettings()">
+                            How many replays to download in parallel.
+                        </li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">FFMPEG Location</h4></li>
+                        <li>
+                            Don't change this unless experiencing download problems and you know what you're doing.<br>
+                            <input type="text" id="ffmpegPath" placeholder="Full path to FFMPEG" style="width: 100%;" onBlur="saveSettings()">
+                        </li>
                     </ul>
                 </div>
                 <div class="section">
                     <ul>
-                        <li style="padding-bottom: 5px;"><h4>Fans and Followings</h4></li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Fans and Followings</h4></li>
                         <li style="line-height: 24px;">
                             <input type="checkbox" id="viewmode-followings"> Hide followings with no replays.<br>
                             <input type="checkbox" id="viewmode-followers"> Hide followers with no replays.<br>
@@ -174,7 +245,7 @@
                 </div>
                 <div class="section">
                     <ul>
-                        <li style="padding-bottom: 5px;"><h4>LAMD Support</h4></li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">LAMD Support</h4></li>
                         <li style="line-height: 24px;">
                             <input type="checkbox" id="lamd-enabled"> Enable LAMD support.<br>
                         </li>
@@ -195,7 +266,7 @@
                 </div>
                 <div class="section">
                     <ul>
-                        <li style="padding-bottom: 5px;"><h4>Tracking</h4></li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Tracking</h4></li>
                         <li>
                             LiveMe Pro Tools tracks all viewed profiles, replays and downloads.  This feature cannot be disabled.
                         </li>
@@ -204,7 +275,7 @@
 
                 <div class="section">
                     <ul>
-                        <li style="padding-bottom: 5px;"><h4>Viewed Profiles Auto Clear</h4></li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Viewed Profiles Auto Clear</h4></li>
                         <li style="line-height: 26px;">
                             Clear viewed profiles that were last seen more than
                             <div class="select" style="vertical-align: middle; height: 26px;">
@@ -221,7 +292,7 @@
 
                 <div class="section">
                     <ul>
-                        <li style="padding-bottom: 5px;"><h4>Data Stats</h4></li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Data Stats</h4></li>
                         <li>
                             <table>
                                 <tbody>
@@ -249,13 +320,14 @@
                 <div class="section">
                     <ul>
                         <li>
-                            <h4 id="appname">LiveMe Pro Tools <h6 id="version">Version 20180000</h6></h4>
+                            <h4 id="appname" class="titleColor">LiveMe Pro Tools <h6 id="version">Version 20180000</h6></h4>
                         </li>
                         <li style="padding-top: 20px;">
                             <h6>Contributors:</h6>
                             <ul style="font-weight: 300; font-size: 10pt; line-height: 12pt">
                                 <li>TheCoder</li>
                                 <li>zp</li>
+                                <li>Lewdninja</li>
                             </ul>
                         </li>
                     </ul>
@@ -263,7 +335,7 @@
 
                 <div class="section">
                     <ul>
-                        <li style="padding-bottom: 5px;"><h4>Reset</h4></li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Reset</h4></li>
                         <li style="line-height: 24px;">
                             <p>
                                 By clicking the button below, you will wipe all Bookmarks, Downloads, Visited and Watched entries

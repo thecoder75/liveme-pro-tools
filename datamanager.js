@@ -1,42 +1,48 @@
-/*
-*/
+const events = require('events')
+const path = require('path')
+const fs = require('fs')
+const { app } = require('electron')
+// const LiveMeAPI = require('liveme-api')
 
-const   events = require('events'),
-        path = require('path'),
-        fs = require('fs'),
-        { app } = require('electron'),
-        LiveMeAPI = require('liveme-api');
-
-var     bookmarks = [], profiles = [], downloaded = [], watched = [], errored = [], queued = [], is_busy = false, can_write = true;
+let bookmarks = []
+let profiles = []
+let downloaded = []
+let watched = []
+let errored = []
+let queued = []
+let isBusy = false
+let canWrite = true
 
 class DataManager {
-
-    constructor() {
-		this.events = new (events.EventEmitter)();
-	}
-
-    disableWrites() { can_write = false; }
-    enableWrites() { can_write = true; }
-
-    wipeAllData() {
-        bookmarks = [];
-        profiles = [];
-        downloaded = [];
-        watched = [];
-        errored = [];
-        queued = [];
-
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), '[]', function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), '[]', function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), '[]', function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), '[]', function(){ });
-
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), '[]', function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), '[]', function(){ });
-
+    constructor () {
+        this.events = new (events.EventEmitter)()
     }
 
-    getStats() {
+    disableWrites () {
+        canWrite = false
+    }
+    enableWrites () {
+        canWrite = true
+    }
+
+    wipeAllData () {
+        bookmarks = []
+        profiles = []
+        downloaded = []
+        watched = []
+        errored = []
+        queued = []
+
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), '[]', () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), '[]', () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), '[]', () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), '[]', () => { })
+
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), '[]', () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), '[]', () => { })
+    }
+
+    getStats () {
         return {
             bookmarks: bookmarks.length,
             profiles: profiles.length,
@@ -45,298 +51,298 @@ class DataManager {
         }
     }
 
-    loadFromDisk() {
+    loadFromDisk () {
         if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), 'utf8', function (err,data) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), 'utf8', function (err, data) {
                 if (err) {
-                    bookmarks = [];
+                    bookmarks = []
                 } else {
-                    bookmarks = JSON.parse(data);
+                    bookmarks = JSON.parse(data)
                 }
-            });
+            })
         }
         if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'profiles.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), 'utf8', function (err,data) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), 'utf8', function (err, data) {
                 if (err) {
-                    profiles = [];
+                    profiles = []
                 } else {
-                    profiles = JSON.parse(data);
+                    profiles = JSON.parse(data)
                 }
-            });
+            })
         }
         if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), 'utf8', function (err,data) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), 'utf8', function (err, data) {
                 if (err) {
-                    downloaded = [];
+                    downloaded = []
                 } else {
-                    downloaded = JSON.parse(data);
+                    downloaded = JSON.parse(data)
                 }
-            });
+            })
         }
         if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'watched.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), 'utf8', function (err,data) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), 'utf8', function (err, data) {
                 if (err) {
-                    watched = [];
+                    watched = []
                 } else {
-                    watched = JSON.parse(data);
+                    watched = JSON.parse(data)
                 }
-            });
+            })
         }
         if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'errored.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), 'utf8', function (err,data) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), 'utf8', function (err, data) {
                 if (err) {
-                    errored = [];
+                    errored = []
                 } else {
-                    errored = JSON.parse(data);
+                    errored = JSON.parse(data)
                 }
-            });
+            })
         }
         if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'queued.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), 'utf8', function (err,data) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), 'utf8', function (err, data) {
                 if (err) {
-                    queued = [];
+                    queued = []
                 } else {
-                    queued = JSON.parse(data);
+                    queued = JSON.parse(data)
                 }
-            });
+            })
         }
-
     }
-    saveToDisk() {
-        if (is_busy == true) return;
-        if (can_write == false) return;
+    saveToDisk () {
+        if (isBusy === true) return
+        if (canWrite === false) return
 
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), function(){ });
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), function(){ });
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), () => { })
     }
 
-
-
-	/*
-	 * 		Track Downloaded Replays
-	 */
-    addDownloaded(vidid) {
-        is_busy = true;
-        var add = true, dt = new Date();
+    /**
+     * Track Downloaded Replays
+     */
+    addDownloaded (vidid) {
+        isBusy = true
+        let add = true
+        let dt = new Date()
         for (var i = 0; i < downloaded.length; i++) {
-            if (downloaded[i].videoid == vidid) {
-                downloaded[i].dt = Math.floor(dt.getTime() / 1000);
-                add =false;
+            if (downloaded[i].videoid === vidid) {
+                downloaded[i].dt = Math.floor(dt.getTime() / 1000)
+                add = false
             }
         }
         if (add) {
             downloaded.push({
                 dt: Math.floor(dt.getTime() / 1000),
                 videoid: vidid
-            });
+            })
         }
-        is_busy = false;
+        isBusy = false
     }
-    wasDownloaded(vidid) {
-        var ret = false;
+    wasDownloaded (vidid) {
+        var ret = false
         for (var i = 0; i < downloaded.length; i++) {
-            if (downloaded[i].videoid == vidid) ret = new Date(downloaded[i].dt * 1000);
+            if (downloaded[i].videoid === vidid) ret = new Date(downloaded[i].dt * 1000)
         }
-        return ret;
+        return ret
     }
 
-
-	/*
-	 *		Track Watched Replays
-	 */
-    addWatched(vidid) {
-        is_busy = true;
-        var add = true, dt = new Date();
+    /**
+     * Track Watched Replays
+     */
+    addWatched (vidid) {
+        isBusy = true
+        let add = true
+        let dt = new Date()
         for (var i = 0; i < watched.length; i++) {
-            if (watched[i].videoid == vidid) {
-                watched[i].dt = Math.floor(dt.getTime() / 1000);
-                add =false;
+            if (watched[i].videoid === vidid) {
+                watched[i].dt = Math.floor(dt.getTime() / 1000)
+                add = false
             }
         }
         if (add) {
             watched.push({
                 dt: Math.floor(dt.getTime() / 1000),
                 videoid: vidid
-            });
+            })
         }
-        is_busy = false;
+        isBusy = false
     }
-    wasWatched(vidid) {
-        var ret = false;
+
+    wasWatched (vidid) {
+        var ret = false
         for (var i = 0; i < watched.length; i++) {
-            if (watched[i].videoid == vidid) ret = new Date(watched[i].dt * 1000);
+            if (watched[i].videoid === vidid) ret = new Date(watched[i].dt * 1000)
         }
-        return ret;
+        return ret
     }
-	dropWatched(oldest_date, dry_run) {
-		if (dry_run == null) dry_run = false;
-		var ret = 0, temp = [];
-		for (var i = 0; i < watched.length; i++) {
-			if (watched[i].dt > oldest_date) {
-				temp.push(watched[i]);
-				ret++;
-			}
-		}
-		if (!dry_run) {
-			watched = temp;
-			fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), function(){ });
-		}
-		return ret;
-	}
 
+    dropWatched (oldestDate, dryRun) {
+        if (dryRun == null) dryRun = false
 
-	/*
-	 *		Track Viewed Profiles
-	 */
-    addViewed(userid) {
-        is_busy = true;
-        var add = true, dt = new Date();
+        let ret = 0
+        let temp = []
+
+        for (var i = 0; i < watched.length; i++) {
+            if (watched[i].dt > oldestDate) {
+                temp.push(watched[i])
+                ret++
+            }
+        }
+        if (!dryRun) {
+            watched = temp
+            fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), () => { })
+        }
+        return ret
+    }
+
+    /**
+     * Track Viewed Profiles
+     */
+    addViewed (userid) {
+        isBusy = true
+        let add = true
+        let dt = new Date()
         for (var i = 0; i < profiles.length; i++) {
-            if (profiles[i].userid == userid) {
-                profiles[i].dt = Math.floor(dt.getTime() / 1000);
-                add =false;
+            if (profiles[i].userid === userid) {
+                profiles[i].dt = Math.floor(dt.getTime() / 1000)
+                add = false
             }
         }
         if (add) {
             profiles.push({
                 dt: Math.floor(dt.getTime() / 1000),
                 userid: userid
-            });
+            })
         }
-        is_busy = false;
+        isBusy = false
     }
-    wasProfileViewed(userid) {
-        var ret = false;
+
+    wasProfileViewed (userid) {
+        let ret = false
         for (var i = 0; i < profiles.length; i++) {
-            if (profiles[i].userid == userid) ret = new Date(profiles[i].dt * 1000);
+            if (profiles[i].userid === userid) ret = new Date(profiles[i].dt * 1000)
         }
-        return ret;
+        return ret
     }
 
-	unviewProfiles(oldest_date, dry_run) {
-		if (dry_run == null) dry_run = false;
+    unviewProfiles (oldestDate, dryRun) {
+        if (dryRun == null) dryRun = false
 
-		console.log('Old Viewed Profiles Count: ' + profiles.length);
+        console.log('Old Viewed Profiles Count: ' + profiles.length)
 
-		var ret = 0, temp = [];
-		for (var i = 0; i < profiles.length; i++) {
-			if (profiles[i].dt > oldest_date) {
-				temp.push(profiles[i]);
-				ret++;
-			}
-		}
-		if (!dry_run) {
-			profiles = temp;
-			 fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), function(){ });
-		}
-		console.log('New Viewed Profiles Count: ' + temp.length);
-		return ret;
-	}
-
-
-	/*
-	 *		Account Bookmarks
-	 */
-    addBookmark(user) {
-        is_busy = true;
-        var add = true;
-        for (var i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].uid == user.uid) add = false;
-        }
-        if (add == true) {
-            bookmarks.push(user);
-        }
-        is_busy = false;
-    }
-
-    removeBookmark(user) {
-        is_busy = true;
-        for (var i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].uid == user.uid) {
-                bookmarks.splice(i, 1);
+        let ret = 0
+        let temp = []
+        for (let i = 0; i < profiles.length; i++) {
+            if (profiles[i].dt > oldestDate) {
+                temp.push(profiles[i])
+                ret++
             }
         }
-        is_busy = false;
-    }
-
-    updateBookmark(user) {
-        is_busy = true;
-        var add = true;
-        for (var i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].uid == user.uid) {
-                bookmarks[i] = user;
-            }
+        if (!dryRun) {
+            profiles = temp
+            fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), () => { })
         }
-        is_busy = false;
+        console.log('New Viewed Profiles Count: ' + temp.length)
+        return ret
     }
 
-    isBookmarked(user) {
-        var ret = false;
-        for (var i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].uid == user.uid) ret = true;
-        }
-        return ret;
-    }
-
-    getAllBookmarks() { return bookmarks; }
-
-    getSingleBookmark(userid) {
-        var ret = false;
-        for (var i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].uid == userid) ret = bookmarks[i];
-        }
-        return ret;
-    }
-
-
-    /*
-     *      Queued
+    /**
+     * Account Bookmarks
      */
-    addToQueueList(vid) {
-        is_busy = true;
-        var add = true;
-        for (var i = 0; i < queued.length; i++) {
-            if (queued[i] == vid) add = false;
+    addBookmark (user) {
+        isBusy = true
+        let add = true
+        for (let i = 0; i < bookmarks.length; i++) {
+            if (bookmarks[i].uid === user.uid) add = false
         }
-        if (add == true) {
-            queued.push(vid);
+        if (add === true) {
+            bookmarks.push(user)
         }
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), function(){ });
-        is_busy = false;
+        isBusy = false
     }
-    removeFromQueueList(vid) {
-        is_busy = true;
-        for (var i = 0; i < queued.length; i++) {
-            if (queued[i] == vid) {
-                queued.splice(i, 1);
+
+    removeBookmark (user) {
+        isBusy = true
+        for (let i = 0; i < bookmarks.length; i++) {
+            if (bookmarks[i].uid === user.uid) {
+                bookmarks.splice(i, 1)
             }
         }
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), function(){ });
-        is_busy = false;
+        isBusy = false
     }
 
+    updateBookmark (user) {
+        isBusy = true
+        // let add = true
+        for (let i = 0; i < bookmarks.length; i++) {
+            if (bookmarks[i].uid === user.uid) {
+                bookmarks[i] = user
+            }
+        }
+        isBusy = false
+    }
 
-    /*
-     *      Queued
+    isBookmarked (user) {
+        let ret = false
+        for (let i = 0; i < bookmarks.length; i++) {
+            if (bookmarks[i].uid === user.uid) ret = true
+        }
+        return ret
+    }
+
+    getAllBookmarks () { return bookmarks }
+
+    getSingleBookmark (userid) {
+        let ret = false
+        for (let i = 0; i < bookmarks.length; i++) {
+            if (bookmarks[i].uid === userid) ret = bookmarks[i]
+        }
+        return ret
+    }
+
+    /**
+     * Queued
      */
-    addToErroredList(vid) {
-        is_busy = true;
-        var add = true;
-        for (var i = 0; i < errored.length; i++) {
-            if (errored[i] == vid) add = false;
+    addToQueueList (vid) {
+        isBusy = true
+        let add = true
+        for (let i = 0; i < queued.length; i++) {
+            if (queued[i] === vid) add = false
         }
-        if (add == true) {
-            errored.push(vid);
+        if (add === true) {
+            queued.push(vid)
         }
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), function(){ });
-        is_busy = false;
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), () => { })
+        isBusy = false
+    }
+    removeFromQueueList (vid) {
+        isBusy = true
+        for (let i = 0; i < queued.length; i++) {
+            if (queued[i] === vid) {
+                queued.splice(i, 1)
+            }
+        }
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), () => { })
+        isBusy = false
+    }
+
+    /**
+     * Queued
+     */
+    addToErroredList (vid) {
+        isBusy = true
+        let add = true
+        for (let i = 0; i < errored.length; i++) {
+            if (errored[i] === vid) add = false
+        }
+        if (add === true) {
+            errored.push(vid)
+        }
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), () => { })
+        isBusy = false
     }
 }
 
-
-
-exports.DataManager = DataManager;
+exports.DataManager = DataManager

@@ -114,7 +114,7 @@
     border: solid;
     border: solid 2px rgba(255,255,255,0.1);
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 3px;
     margin: 15px 0;
 }
 
@@ -267,8 +267,8 @@
     display: block;
     width: 600px;
     border: solid 1px rgba(255,255,255,0.1);
-    border-radius: 5px;
-    padding: 10px;
+    border-radius: 3px;
+    background: rgba(250, 250, 250, 0.01);
     margin: 20px auto;
     position: relative;
 }

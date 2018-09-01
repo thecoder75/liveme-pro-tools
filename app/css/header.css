@@ -16,7 +16,7 @@ header {
 }
 header.small { height: 24px; line-height: 24px; padding: 0 24px; }
 
-header a, header input[type=input],header button, header select { -webkit-app-region: no-drag; }
+header a, header input[type=input], header input[type=text], header button, header select { -webkit-app-region: no-drag; }
 
 header div.group {
     display: inline-block;
@@ -69,10 +69,17 @@ header.two-lines div.buttons-row {
     position: absolute;
     top: 24px;
     left: 16px;
-    right: 16px;
     display: block;
     height: 40px;
     line-height: 40px;
+}
+header.two-lines .search-row {
+    position: absolute;
+    top: 33px;
+    left: 107px;
+    right: 0px;
+    padding: 0 4px;
+    width: 50%;
 }
 
 header.two-lines div.buttons-row span {

@@ -1,46 +1,44 @@
-/*
+/* global $ */
+const { ipcRenderer, remote, clipboard } = require('electron')
+const LiveMe = remote.getGlobal('LiveMe')
+const appSettings = require('electron-settings')
+const formatDuration = require('format-duration')
+const DataManager = remote.getGlobal('DataManager')
 
-*/
-const   { ipcRenderer, remote, clipboard } = require('electron'),
-        LiveMe = remote.getGlobal('LiveMe'),
-        appSettings = require('electron-settings'),
-        formatDuration = require('format-duration'),
-        DataManager = remote.getGlobal('DataManager');
+$(function () {
+    $('main').show()
+    setTimeout(() => {
+        redrawList()
+    }, 400)
+})
 
-$(function(){
-    $('main').show();
-    setTimeout(function(){
-        redrawList();
-    }, 400);
-});
+function minimizeWindow () { remote.BrowserWindow.getFocusedWindow().minimize() }
+function closeWindow () { window.close() }
+function showUser (u) { ipcRenderer.send('show-user', { userid: u }) }
 
-function minimizeWindow() { remote.BrowserWindow.getFocusedWindow().minimize(); }
-function closeWindow() { window.close(); }
-function showUser(u) { ipcRenderer.send('show-user', { userid: u }); }
-
-function redrawList() {
-    var videoid = window.location.href.split('?')[1];
+function redrawList () {
+    let videoid = window.location.href.split('?')[1]
 
     LiveMe.getVideoInfo(videoid)
         .then(video => {
+            let username = video.uname
+            let startTime = video.vtime * 1000
 
-            var username = video.uname;
-            var startTime = video.vtime * 1000;
-
-            $('main').show();
+            $('main').show()
 
             LiveMe.getChatHistoryForVideo(video.msgfile)
                 .then(raw => {
-                    var t = raw.data.split('\n'), messages = [];
-                    for (var i = 0; i < t.length - 1; i++) {
+                    let t = raw.split('\n')
+                    let messages = []
+                    for (let i = 0; i < t.length - 1; i++) {
                         try {
+                            let j = JSON.parse(t[i])
+                            let timeStamp = formatDuration(parseInt(j.timestamp) - startTime)
 
-                            var j = JSON.parse(t[i]), timeStamp = formatDuration(parseInt(j.timestamp) - startTime);
-
-                            if (j.objectName == 'app:joinchatroommsgcontent') {
-                            } else if (j.objectName == 'app:leavechatrrommsgcontent') {
-                            } else if (j.objectName == 'app:praisemsgcontent') {
-                            } else if (j.objectName == 'RC:TxtMsg') {
+                            if (j.objectName === 'app:joinchatroommsgcontent') {
+                            } else if (j.objectName === 'app:leavechatrrommsgcontent') {
+                            } else if (j.objectName === 'app:praisemsgcontent') {
+                            } else if (j.objectName === 'RC:TxtMsg') {
                                 $('main').append(`
                                     <div class="entry">
                                         <div class="time">${timeStamp}</div>
@@ -49,13 +47,13 @@ function redrawList() {
                                             ${j.content.content}
                                         </div>
                                     </div>
-                                `);
+                                `)
                             }
-                        } catch(err) {
+                        } catch (err) {
                             // Caught
-                            console.log(err);
+                            console.log(err)
                         }
                     }
-                });
-        });
+                })
+        })
 }

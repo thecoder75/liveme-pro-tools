@@ -1,6 +1,14 @@
 /*
     Form Fields
 */
+input[type=number] {
+    width: 15%;
+    color: #b389f5;
+    padding: 2px 8px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 3px;
+}
 input[type=text],input[type=password] {
     border: solid 1px rgb(96,96,96);
     background-color: rgb(32,32,32);

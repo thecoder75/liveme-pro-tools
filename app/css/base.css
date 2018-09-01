@@ -28,6 +28,11 @@ h3 { font-weight: 400; font-size: 2em; }
 h4 { font-weight: 400; font-size: 1.5em; }
 h5 { font-weight: 400; font-size: 1em; }
 h6 { font-weight: 600; font-size: 0.8em; }
+.titleColor { color: #9356f3; }
+.link { color: #b389f5; text-decoration: none; }
+.link:hover { color: #d7bdff; }
+.text-center { width: 100%; text-align: center; display: block; }
+.text-right { width: 100%; text-align: right; display: block; }
 p { margin: 1em 0em; }
 
 ul {
@@ -40,3 +45,12 @@ ul li {
     padding: 0;
 }
 
+.alert {
+    font-size: 18px;
+    padding: 10px;
+    background: #000;
+}
+.alert span {
+    color: #9356f3;
+    font-weight: bold;
+}
