@@ -1,5 +1,6 @@
 # LiveMe Pro Tools
-## A review of the code-base is underway for a possible partial or complete fix/rewrite by TheCoder.  No timeframe or dates are set yet for any releases.
+
+**The time I have to spend on this project is now very limited.  Please be patient with me as I work on updates and releases.**
 
 ### What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
