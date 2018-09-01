@@ -1,20 +1,18 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.1.8",
+  "version": "1.200.20180901",
   "description": "Tools for Live.me video network",
-  "homepage": "https://github.com/lewdninja/liveme-pro-tools/",
+  "homepage": "https://notabug.org/thecoder1975/liveme-pro-tools",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lewdninja/liveme-pro-tools"
+    "url": "https://notabug.org/thecoder1975/liveme-pro-tools"
   },
   "scripts": {
     "postinstall": "",
     "start": "./node_modules/.bin/electron . --enable-logging",
     "dev": "NODE_ENV='development' npm run start",
-    "release-appveyor": "build -p always",
-    "release-travis": "build -p always",
-    "release": "build -wl -p never"
+    "release": "build -wlm"
   },
   "author": "TheCoder75",
   "license": "GPL-3.0",
@@ -36,7 +34,7 @@
       ],
       "category": "Network",
       "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
-      "maintainer": "lewdninjacom@gmail.com"
+      "maintainer": "thecoder1975@gmail.com"
     },
     "win": {
       "target": [
@@ -62,16 +60,7 @@
       ],
       "identity": null,
       "icon": "build/appicon.icns"
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "vPrefixedTagName": true,
-        "releaseType": "release",
-        "owner": "Lewdninja",
-        "repo": "liveme-pro-tools"
-      }
-    ]
+    }
   },
   "dependencies": {
     "async": "^2.6.0",
