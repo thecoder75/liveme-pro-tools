@@ -11,18 +11,18 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - Supports [LAMD](https://thecoderstoolbox.com/lamd)
 
 ### Prebuilt Releases
-**Any new builds in the future will be made available for download in the [Releases](https://notabug.org/thecoder1975/liveme-pro-tools/releases) section.**
+**Releases will now be built by TheCoder and added as updates warrant them.
 
-**Supported Platforms:**
+**Planned Supported Platforms:**
 - Ubuntu-based Linux and Debian Distributions (64-bit only!)
 - macOS v10.11 or higher (64-bit only!)
-- Windows 7 or higher (64-bit only!)
+- Windows 7 or higher (32 and 64-bit!)
 
 ### What about FFMPEG?
 The code-base is being reviewed for possible removal of dependancy of FFMPEG at this time.
 
 ### A Desktop Version?
-A long time ago, TheCoder wanted to release an actual desktop app that wasn't built using NodeJS and ElectronJS.  This is now being reviewed and different programming languages are being reviewed for which one would work in the long run on all platforms with the least amount of difficulty when compiling executables.
+A long time ago, TheCoder wanted to release an actual desktop app that wasn't built using NodeJS and ElectronJS.  This was being researched and planned but due to him getting a promotion at work, his available time for this project disappeared.  Now with what little time he has, he will try to maintain and perform minor updates as he is able to.
 
 ### Current Releases Built With
 * [Electron](http://electron.atom.io)
@@ -35,6 +35,7 @@ If you find any bugs or would like to help add features or additional functions,
 ### Contributors
 * [thecoder75](https://notabug.com/thecoder75)
 * [zp](https://github.com/zp)
+* [lewdninja](https://github.com/lewdninja)
 
 ### License
 This project is licensed under the GPL-3 License - see the [LICENSE](LICENSE) file for details
