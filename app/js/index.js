@@ -336,9 +336,6 @@ function showDownloads () {
         $('#queue-list').show()
     }
 }
-function openPatreon () {
-    shell.openExternal('https://patreon.com/lewdninja')
-}
 function importReplayIDList () { ipcRenderer.send('import-queue') }
 function importUserIDList () { ipcRenderer.send('import-users') }
 function ExportFavorites () { ipcRenderer.send('export-users') }
