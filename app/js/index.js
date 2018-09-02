@@ -203,12 +203,12 @@ function showMainMenu () {
                 label: 'Help',
                 submenu: [
                     {
-                        label: 'Github Home',
-                        click: () => shell.openExternal('https://github.com/lewdninja/liveme-pro-tools/')
+                        label: 'NotABug Home',
+                        click: () => shell.openExternal('https://notabug.org/thecoder1975/liveme-pro-tools/')
                     },
                     {
                         label: 'Report an Issue',
-                        click: () => shell.openExternal('https://github.com/lewdninja/liveme-pro-tools/issues')
+                        click: () => shell.openExternal('https://notabug.org/thecoder1975/liveme-pro-tools/issues')
                     }
                 ]
             },
@@ -416,11 +416,11 @@ function restoreData () {
 }
 
 function initHome () {
-    $('#home div.panel').html('<div class="loading">Loading feed...</div>')
+    $('#home div.panel').html('')
 
     // Check for updates
     request({
-        url: 'https://raw.githubusercontent.com/lewdninja/liveme-pro-tools/master/package.json',
+        url: 'https://notabug.org/thecoder1975/liveme-pro-tools/raw/master/package.json',
         method: 'get'
     }, (err, httpResponse, body) => {
         if (!err) {
@@ -439,40 +439,16 @@ function initHome () {
 
                 $('#home div.panel').append(`
                     <div class="section">
-                        <h3><i class="icon icon-github"></i> Update Available</h3>
+                        <h3><i class="icon icon-download"></i> Update Available</h3>
                         <p>
                             An updated release of LiveMe Pro Tools is available.
                         </p>
-                        <button onClick="openURL('https://github.com/lewdninja/liveme-pro-tools/releases/')">Download</button>
+                        <button onClick="openURL('https://notabug.org/thecoder1975/liveme-pro-tools/releases/')">Download</button>
                     </div>
                 `)
             }
         }
     })
-
-    setTimeout(() => {
-        request({
-            url: 'https://raw.githubusercontent.com/lewdninja/liveme-pro-tools/master/feed.json',
-            method: 'get'
-        }, function (err, httpResponse, body) {
-            if (!err) {
-                let feed = JSON.parse(body)
-
-                if ($('#home div.panel .section').length < 1) {
-                    $('#home div.panel').empty()
-                }
-
-                for (let i = 0; i < feed.length; i++) {
-                    $('#home div.panel').append(`
-                        <div class="section">
-                            <h4 class="titleColor">${feed[i].title}</h4>
-                            ${feed[i].body}
-                        </div>
-                    `)
-                }
-            }
-        })
-    }, 500)
 
     $('footer h1').html('Bookmarks are now being scanned for new replays...')
     $('#home').show()
@@ -706,8 +682,6 @@ function performUserLookup (uid) {
                     <th width="210">Actions</th>
                 </tr>
             `)
-
-            setTimeout(() => CheckForLAMD(), 50)
 
             let sex = user.user_info.sex < 0 ? '' : (user.user_info.sex === 0 ? 'female' : 'male')
             $('#user-details').show()
