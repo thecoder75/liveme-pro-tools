@@ -12,7 +12,7 @@
     font-size: 10.5pt;
     position: relative;
     padding: 8px 0;
-    height: 96px;
+    height: 104px;
     border-bottom: solid 8px #000;
 }
 
@@ -78,11 +78,11 @@
 .fflist td div.buttons {
     position: absolute;
     bottom: 0;
-    left: 16px;
-    font-size: 10pt;
-    font-weight:  400;
+    left: 6px;
+    font-size: 8.5pt;
+    font-weight:  600;
 }
-.fflist td div.buttons a.button { margin-right: 3px; width: 92px; }
+.fflist td div.buttons a.button { margin-right: 3px; width: 102px; line-height: 24px; height: 24px; margin-bottom: 4px; padding: 0; }
 
 
 footer h1 { font-size: 9pt; }
