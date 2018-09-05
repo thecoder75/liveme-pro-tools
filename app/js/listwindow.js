@@ -271,7 +271,7 @@ function doFans () {
 
 function addEntry (entry) {
     let prettydate = require('pretty-date')
-    let sex = entry.sex < 0 ? '' : (entry.sex === 0 ? 'is-female' : 'is-male')
+    let sex = entry.sex < 0 ? '' : (entry.sex == 0 ? 'is-female' : 'is-male')
     let seenRaw = DataManager.wasProfileViewed(entry.uid)
     let seenDate = seenRaw !== false ? prettydate.format(seenRaw) : ''
     let seen = seenRaw !== false ? 'bright blue' : 'dim'

@@ -534,7 +534,8 @@ function _checkBookmark (uid) {
                     }
                 })
                 .catch(error => {
-                    console.log(error)
+                    // Unhandled error occured
+                    
                 })
         }
     })
@@ -743,8 +744,7 @@ function getUsersReplays () {
     }
     LiveMe.getUserReplays(currentUser.uid, currentPage, MAX_PER_PAGE)
         .then(replays => {
-            console.log(JSON.stringify(replays, null, 2))
-
+            
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
                     $('#replay-result-alert').html('<span>No replays!</span> There is no publicly listed replays available.').fadeIn(200)
@@ -789,7 +789,8 @@ function getUsersReplays () {
             }
         })
         .catch(error => {
-            console.log(error)
+            // Unhandled error
+            
         })
 }
 
@@ -870,8 +871,8 @@ function performUsernameSearch () {
                 let viewed = DataManager.wasProfileViewed(results[i].user_id)
                     ? '<i class="icon icon-eye bright blue" title="Last viewed ' + prettydate.format(DataManager.wasProfileViewed(results[i].user_id)) + '"></i>'
                     : '<i class="icon icon-eye dim"></i>'
-                let sex = results[i].sex < 0 ? '' : (results[i].sex === 0 ? 'female' : 'male')
-
+                var sex = results[i].sex < 0 ? '' : (results[i].sex == 0 ? 'female' : 'male');
+                
                 $('#list tbody').append(`
                     <tr id="user-${results[i].user_id}" class="user-search ${sex}">
                         <td width="128" style="text-align: center;">
