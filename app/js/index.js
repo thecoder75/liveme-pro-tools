@@ -253,6 +253,9 @@ function onTypeChange () {
     case 'video-url':
         $('#search-query').attr('placeholder', 'Video URL')
         break
+    case 'hashtag':
+        $('#search-query').attr('placeholder', 'Enter a hashtag')
+        break
     case 'username-like':
         $('#search-query').attr('placeholder', 'Partial or Full Username')
         break
@@ -382,6 +385,12 @@ function preSearch (q) {
     } else if (u.indexOf('http') > -1) {
         if ($('#search-type').val() !== 'video-url') {
             $('#search-type').val('video-url')
+            onTypeChange()
+        }
+    } else if (u.indexOf('#') > -1) {
+        if ($('#search-type').val() !== 'hashtag') {
+            $('#search-type').val('hashtag')
+            $('#search-query').val($('#search-query').val().replace('#', ''))
             onTypeChange()
         }
     } else if (!isnum) {
@@ -616,6 +625,10 @@ function doSearch () {
 
     case 'short-id':
         performShortIDSearch()
+        break
+
+    case 'hashtag':
+        performHashtagSearch()
         break
 
     case 'username-like':
@@ -923,6 +936,118 @@ function performUsernameSearch () {
                 $('#status').hide()
             }
         })
+}
+
+function performHashtagSearch() {
+	LiveMe.performSearch($('#search-query').val(), currentPage, MAX_PER_PAGE, 2)
+		.then(results => {
+			for(var i = 0; i < results.length; i++) {
+
+
+				/*
+				var dt = new Date(results[i].vtime * 1000);
+				var ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes();
+				var hi1 = $('#type').val() == 'url-lookup' ? ($('#query').val() == results[i].hlsvideosource ? true : false) : false;
+				var hi2 = $('#type').val() == 'video-lookup' ? ($('#query').val() == results[i].vid ? true : false) : false;
+
+				let isLive = results[i].hlsvideosource.endsWith('flv') || results[i].hlsvideosource.indexOf('liveplay') > 0, videoUrl = results[i].hlsvideosource;
+
+				if (!isLive && results[i].hlsvideosource.indexOf('hlslive') > 0) {
+					videoUrl = results[i].videosource;
+				}
+
+				var h = `
+					<div class="item">
+						<div class="header">${results[i].title}&nbsp;</div>
+						<div class="content">
+							<div class="meta">
+								<div class="width180">
+									<span>Posted on:</span>
+									${ds}
+								</div>
+								<div class="width75">
+									<span>Length:</span>
+									${fmtDuration(+results[i].videolength * 1000)}
+								</div>
+								<div class="width100">
+									<span>Views:</span>
+									${results[i].playnumber}
+								</div>
+								<div class="width100">
+									<span>Likes:</span>
+									${results[i].likenum}
+								</div>
+								<div class="width100">
+									<span>Shares:</span>
+									${results[i].sharenum}
+								</div>
+								<div class="width60">
+									<span>Country</span>
+									${results[i].countryCode}
+								</div>
+								<div class="width200 align-right">
+									<a class="button icon icon-play" onClick="playVideo('${videoUrl}')" title="Play Video"></a>
+					`;
+				if (!isLive) {
+					h += `
+									<a class="button icon icon-chat" onClick="openChat('${results[i].vid}')" title="View Message History"></a>
+									<a class="button icon icon-download" onClick="downloadVideo('${results[i].userid}', '${results.uname}', '${results[i].vid}', '${results[i].title.replace("'", "")}', '${results[i].vtime}', '${videoUrl}')" title="Download Replay"></a>
+					`;
+				}
+
+				h += `
+								</div>
+							</div>
+						</div>
+						<div class="footer">
+							<div class="width200">
+								<span>Video ID:</span>
+								<div class="input has-right-button">
+									<input type="text" value="${results[i].vid}" disabled="disabled">
+									<input type="button" class="icon icon-copy" value="" onClick="copyToClipboard('${results[i].vid}')" title="Copy to Clipboard">
+								</div>
+							</div>
+							<div class="spacer">&nbsp;</div>
+							<div class="width700">
+								<span>Video URL:</span>
+								<div class="input has-right-button">
+									<input type="text" value="${videoUrl}" disabled="disabled">
+									<input type="button" class="icon icon-copy" value="" onClick="copyToClipboard('${videoUrl}')" title="Copy to Clipboard">
+								</div>
+							</div>
+						</div>
+					</div>
+				`;
+
+				$('.list').append(h);
+				*/
+
+			}
+
+			/*
+			current_search = 'performHashtagSearch';
+			scroll_busy = false;
+
+			if (results.length == 10) {
+				has_more = true;
+			} else if (results.length < 10) {
+				has_more = false;
+			}
+			*/
+
+
+            if (results.length === 0 && currentPage === 1) {
+                $('#status').html('No videos were found searching for #' + $('#search-query').val()).show()
+            } else {
+                $('#status').hide()
+            }
+
+
+	});
+	
+	
+	
+	
 }
 
 function initSettingsPanel () {
