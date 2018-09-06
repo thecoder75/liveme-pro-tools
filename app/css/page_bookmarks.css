@@ -1,5 +1,9 @@
 #bookmark-list tr:hover { background-color: rgba(0,0,0,0); }
 
+#bookmark-list tr.male img.avatar { border: solid 4px rgb(80,96,240); }
+#bookmark-list tr.female img.avatar { border: solid 4px rgb(255,160,160); }
+
+
 #bookmark-list td {
     font-size: 10pt;
     position: relative;

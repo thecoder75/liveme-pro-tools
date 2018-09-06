@@ -61,11 +61,12 @@ function drawEntry () {
     let d1 = prettydate.format(new Date(list[index].newest_replay * 1000))
     let d2 = prettydate.format(new Date(list[index].last_viewed * 1000))
     let isNew = list[index].newest_replay > list[index].last_viewed ? 'new' : 'not-new'
-
+	let sex = list[index].sex < 0 ? '' : (list[index].sex == 0 ? 'female' : 'male')
+		
     $('#bookmark-list').append(`
-        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${isNew}">
+        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${isNew} ${sex}">
             <td width="64">
-                <img src="${list[index].face}" style="height: 64px; width: 64px;" onError="$(this).hide()" align="bottom">
+                <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).hide()" align="bottom">
             </td>
             <td width="90%" class="main ${isNew}">
                 <div class="flag">NEW</div>
