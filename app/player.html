@@ -8,9 +8,14 @@
         </script>
 
         <script src="js/jquery-3.2.1.min.js"></script>
-        <script src="js/hls.js"></script>
 
         <script>
+            // VideoJS and HLS
+            var appSettings = require('electron-settings')
+            var videojs = require('video.js')
+            require('videojs-contrib-hls.js')
+            require('videojs-rotatezoom')
+
             const { ipcRenderer, remote } = require('electron'), LiveMe = remote.getGlobal('LiveMe');
             var videoid = '', userid = '';
 
@@ -24,16 +29,31 @@
                     .then(vid => {
                         videoid = vid.vid;
                         userid = vid.userid;
-
-                        var video = document.getElementById('video');
-                        var hls = new Hls();
-                        hls.loadSource(vid.hlsvideosource);
-                        hls.attachMedia(video);
-                        hls.on(Hls.Events.MANIFEST_PARSED,function() {
-                            video.play();
-                        });
+                        
+                        var player = videojs('video', {
+                            controls: true,
+                            autoplay: true,
+                            preload: 'auto'
+                        })
+                        player.src({ src: vid.hlsvideosource })
+                        player.tech_.on(Hls.Events.MANIFEST_LOADED, function () {
+                            player.volume(appSettings.get('player.volume') || 1)
+                            player.play()
+                        })
+                        player.on('volumechange', function (data) {
+                            appSettings.set('player.volume', player.volume())
+                        })
+                        window.rotation = 0
+                        window.debugPlayer = player
                     });
-            });
+                });
+            function rotateVideo() {
+                window.debugPlayer.zoomrotate({
+                    rotate: window.rotation + 90,
+                    zoom: 1
+                })
+                window.rotation += 90
+            }
             function closeWindow() { window.close(); }
             function downloadVideo() { ipcRenderer.send('download-replay', { videoid: videoid }); }
             function showUser() { ipcRenderer.send('show-user', { userid: userid }); }
@@ -63,7 +83,8 @@
                 cursor:  pointer;
             }
             main a.download { right: 12px; }
-            main a.info { right: 64px; }
+            main a.info { right: 54px; }
+            main a.rotate { right: 97px; width: auto; padding: 0 10px; }
             main a:hover { opacity: 0.9; }
             main a i.icon { vertical-align: middle; }
         </style>
@@ -74,11 +95,15 @@
             <a class="close-button" onClick="closeWindow()">&#x2715;</a>
         </header>
         <main class="has-small-header" style="display: block; overflow: hidden;">
-            <video id="video" controls></video>
+            <video 
+                id="video"
+                class="video-js">
+            </video>
 
+            
             <a class="download" onClick="downloadVideo()"><i class="icon icon-download"></i></a>
-            <a class=" info" onClick="showUser()"><i class="icon icon-info"></i></a>
-
+            <a class="info" onClick="showUser()"><i class="icon icon-info"></i></a>
+            <a class="rotate" onClick="rotateVideo()">Rotate</a>
         </main>
    </body>
 </html>
