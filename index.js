@@ -328,25 +328,14 @@ const dlQueue = async.queue((task, done) => {
             filename: filename
         })
         
-        switch (appSettings.get('downloads.ffmpegquality')) {
-			case 3:	// Best
+        console.log(JSON.stringify(appSettings.get('downloads'), null, 2));
+        
+        switch (parseInt(appSettings.get('downloads.ffmpegquality'))) {
+			case 2: // Best
 				ffmpegOpts = [
 					'-c:v h264',
-					'-preset fast',
-					'-crf 19',
-					'-c:a aac',
-					'-b:a 64k',
-					'-bsf:a aac_adtstoasc',
-					'-vsync 2',
-					'-movflags faststart'
-				]
-				break
-			
-			case 2: // Normal
-				ffmpegOpts = [
-					'-c:v h264',
-					'-preset veryfast',
-					'-crf 20',
+					'-preset faster',
+					'-q:v 0',
 					'-c:a copy',
 					'-bsf:a aac_adtstoasc',
 					'-vsync 2',
@@ -358,7 +347,7 @@ const dlQueue = async.queue((task, done) => {
 				ffmpegOpts = [
 					'-c:v h264',
 					'-preset superfast',
-					'-q:v 0',
+					'-b:v 420k',
 					'-c:a copy',
 					'-bsf:a aac_adtstoasc',
 					'-vsync 2',
@@ -409,8 +398,9 @@ const dlQueue = async.queue((task, done) => {
 					}
 					// Download chunks
 					let downloadedChunks = 0
+					var chunkThreads = parseInt(appSettings.get('downloads.chunkthreads')) > 1 ? parseInt(appSettings.get('downloads.chunkthreads')) : 1
 					
-					async.eachLimit(tsList, (appSettings.get('downloads.chunkthreads') ? appSettings.get('downloads.chunkthreads') : 1), (file, next) => {
+					async.eachLimit(tsList, chunkThreads, (file, next) => {
 						const stream = request(`${video.hlsvideosource.split('/').slice(0, -1).join('/')}/${file.name}`)
 							.on('error', err => {
 								fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))

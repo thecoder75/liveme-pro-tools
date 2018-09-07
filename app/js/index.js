@@ -1133,7 +1133,7 @@ function saveSettings () {
     appSettings.set('downloads.template', $('#downloads-template').val())
     appSettings.set('downloads.method', $('input[name="downloadMethod"]:checked').val() || 'ffmpeg')
     appSettings.set('downloads.deltmp', (!!$('#chunk-method-tmp').is(':checked')))
-    appSettings.set('downloads.ffmepg', $('#ffmpegPath').val().trim() || false)
+    appSettings.set('downloads.ffmpeg', $('#ffmpegPath').val().trim() || false)
     appSettings.set('downloads.parallel', $('#downloads-parallel').val() || 3)
     appSettings.set('downloads.chunkthreads', $('#chunk-thread-count').val())
     appSettings.set('downloads.ffmpegquality', $('#ffmpeg-transcode-setting').val())
