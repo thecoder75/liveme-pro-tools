@@ -387,12 +387,14 @@ function preSearch (q) {
             $('#search-type').val('video-url')
             onTypeChange()
         }
+	/*
     } else if (u.indexOf('#') > -1) {
         if ($('#search-type').val() !== 'hashtag') {
             $('#search-type').val('hashtag')
             $('#search-query').val($('#search-query').val().replace('#', ''))
             onTypeChange()
         }
+	*/
     } else if (!isnum) {
         if ($('#search-type').val() !== 'username-like') {
             $('#search-type').val('username-like')
@@ -875,6 +877,7 @@ function _addReplayEntry (replay, wasSearched) {
 function performUsernameSearch () {
     LiveMe.performSearch($('#search-query').val(), currentPage, MAX_PER_PAGE, 1)
         .then(results => {
+
             currentSearch = 'performUsernameSearch'
             hasMore = results.length >= MAX_PER_PAGE
             setTimeout(function () { scrollBusy = false }, 250)
@@ -943,7 +946,11 @@ function performHashtagSearch() {
 		.then(results => {
 			for(var i = 0; i < results.length; i++) {
 
+				currentSearch = 'performHashtagSearch'
+				hasMore = results.length >= MAX_PER_PAGE
+				setTimeout(function () { scrollBusy = false }, 250)
 
+				
 				/*
 				var dt = new Date(results[i].vtime * 1000);
 				var ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes();
@@ -1071,10 +1078,15 @@ function initSettingsPanel () {
         appSettings.set('downloads.deltmp', true)
     }
     $('#chunk-method-tmp').prop('checked', appSettings.get('downloads.deltmp'))
-    // Parallel downloads
     $('#downloads-parallel').val(appSettings.get('downloads.parallel') || 3)
-    // FFMPEG path val
+
     const ffmpegPath = appSettings.get('downloads.ffmpeg') || false
+	const chunkThreads = appSettings.get('downloads.chunkthreads') || false
+	const ffmpegQuality = appSettings.get('downloads.ffmpegquality') || false
+	
+	$('#chunk-thread-count').val(chunkThreads ? chunkThreads : 1);
+	$('#ffmpeg-transcode-setting').val(ffmpegQuality ? ffmpegQuality : 0);
+    
     if (ffmpegPath) {
         $('#ffmpegPath').val(ffmpegPath)
     }
@@ -1123,6 +1135,8 @@ function saveSettings () {
     appSettings.set('downloads.deltmp', (!!$('#chunk-method-tmp').is(':checked')))
     appSettings.set('downloads.ffmepg', $('#ffmpegPath').val().trim() || false)
     appSettings.set('downloads.parallel', $('#downloads-parallel').val() || 3)
+    appSettings.set('downloads.chunkthreads', $('#chunk-thread-count').val())
+    appSettings.set('downloads.ffmpegquality', $('#ffmpeg-transcode-setting').val())
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
 

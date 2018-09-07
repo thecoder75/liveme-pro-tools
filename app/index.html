@@ -27,6 +27,7 @@
                         <option selected value="user-id">User ID is</option>
                         <option value="short-id">User Short ID is</option>
                         <option value="username-like">Username like</option>
+                        <!-- <option value="hashtag">Hashtag like</option> -->
                     </select>
                 </div>
                 <input type="text" id="search-query" placeholder="Search" onKeyPress="enterOnSearch(event)" value="" >
@@ -205,20 +206,24 @@
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Download Method</h4></li>
                         <li>
                             <ul style="margin: 16px 0 0; padding: 0;">
-                                <li style="margin: 12px 0; line-height: 16px;">
+                                <li style="margin: 16px 0; line-height: 16px;">
                                     <input type="radio" name="downloadMethod" value="ffmpeg" id="ffmpeg-method" onClick="saveSettings()">
-                                    <label for="ffmpeg-method" onClick="saveSettings()">FFMPEG Stream Download <small>(Slow, but stable.)</small></label>
+                                    <label for="ffmpeg-method" onClick="saveSettings()">Use FFMPEG for downloading
                                 </li>
-                                <li style="margin: 12px 0; line-height: 16px;">
+                                <li style="margin: 16px 0; line-height: 16px;">
                                     <input type="radio" name="downloadMethod" value="chunk" id="chunk-method" onClick="saveSettings()">
-                                    <label for="chunk-method" onClick="saveSettings()">Chunk Download and Concat <small>(Fast, but could be less stable.)</small></label>
+                                    <label for="chunk-method" onClick="saveSettings()">Use internal chunk downloading
                                 </li>
-                                <ul style="margin: 0; padding: 0 0 0 25px;">
-                                    <li style="margin: 12px 0; line-height: 16px;">
-                                        <input type="checkbox" id="chunk-method-tmp" onClick="saveSettings()">
-                                        <label for="chunk-method-tmp" onClick="saveSettings()">Delete temporary files left over by this method (.ts files)</label>
-                                    </li>
-                                </ul>
+                                <li>
+								<li style="margin: 8px 0; line-height: 16px; padding: 0 0 0 25px;">
+									<input type="checkbox" id="chunk-method-tmp" onClick="saveSettings()">
+									<label for="chunk-method-tmp" onClick="saveSettings()">Delete temporary files left over by this method (.ts files)</label>
+								</li>
+								<li style="margin: 8px 0; padding: 0 0 0 25px;">
+									<label for="chunk-thread-count" onClick="saveSettings()">Number of threads:</label>
+									<input type="number" min="1" max="25" id="chunk-thread-count" placeholder="1" style="width: 50px; text-align: right" onBlur="saveSettings()"><br>
+									<small>The higher the thread count, the greater the chance of errors!</small>
+								</li>
                             </ul>
                         </li>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Parallel Downloads</h4></li>
@@ -226,11 +231,25 @@
                             <input type="number" min="1" max="100" id="downloads-parallel" placeholder="Number" style="margin-right:10px;" onBlur="saveSettings()">
                             How many replays to download in parallel.
                         </li>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">FFMPEG Location</h4></li>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">FFMPEG Settings</h4></li>
                         <li>
-                            Don't change this unless experiencing download problems and you know what you're doing.<br>
                             <input type="text" id="ffmpegPath" placeholder="Full path to FFMPEG" style="width: 100%;" onBlur="saveSettings()">
+                            <small style="line-height: 0.8em;">Don't change the path above unless you know what you're doing or were directed by one of the contributors/authors.</small>
                         </li>
+						<li style="margin: 16px 0; line-height: 16px;">
+							<label for="ffmpeg-transcode-setting" onClick="saveSettings()">Transcode Setting:
+                            <div class="select" style="vertical-align: middle; height: 26px;">
+								<select id="ffmpeg-transcode-setting">
+									<option value="1">None</option>
+									<option value="2">Poor</option>
+									<option value="3">Normal</option>
+									<option value="4">Best</option>
+								</select>
+                            </div>
+							<br>
+							<small>When set to <b>None</b>, the video may be glitchy or contain errors.</small>
+						</li>
+                        
                     </ul>
                 </div>
                 <div class="section">

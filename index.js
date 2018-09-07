@@ -299,6 +299,7 @@ const dlQueue = async.queue((task, done) => {
         const dt = new Date(video.vtime * 1000)
         const mm = dt.getMonth() + 1
         const dd = dt.getDate()
+        let ffmpegOpts = []
 
         let filename = appSettings.get('downloads.template')
             .replace(/%%broadcaster%%/g, video.uname)
@@ -326,6 +327,55 @@ const dlQueue = async.queue((task, done) => {
             videoid: task,
             filename: filename
         })
+        
+        switch (appSettings.get('downloads.ffmpegquality')) {
+			case 3:	// Best
+				ffmpegOpts = [
+					'-c:v h264',
+					'-preset fast',
+					'-crf 19',
+					'-c:a aac',
+					'-b:a 64k',
+					'-bsf:a aac_adtstoasc',
+					'-vsync 2',
+					'-movflags faststart'
+				]
+				break
+			
+			case 2: // Normal
+				ffmpegOpts = [
+					'-c:v h264',
+					'-preset veryfast',
+					'-crf 20',
+					'-c:a copy',
+					'-bsf:a aac_adtstoasc',
+					'-vsync 2',
+					'-movflags faststart'
+				]
+				break
+			
+			case 1: // Fast
+				ffmpegOpts = [
+					'-c:v h264',
+					'-preset superfast',
+					'-q:v 0',
+					'-c:a copy',
+					'-bsf:a aac_adtstoasc',
+					'-vsync 2',
+					'-movflags faststart'
+				]
+				break
+					
+			default: // None
+				ffmpegOpts = [
+					'-c copy',
+					'-bsf:a aac_adtstoasc',
+					'-vsync 2',
+					'-movflags faststart'
+				]
+				break
+		}
+        
 
         switch (appSettings.get('downloads.method')) {
 			case 'chunk':
@@ -359,7 +409,8 @@ const dlQueue = async.queue((task, done) => {
 					}
 					// Download chunks
 					let downloadedChunks = 0
-					async.eachLimit(tsList, 10, (file, next) => {
+					
+					async.eachLimit(tsList, (appSettings.get('downloads.chunkthreads') ? appSettings.get('downloads.chunkthreads') : 1), (file, next) => {
 						const stream = request(`${video.hlsvideosource.split('/').slice(0, -1).join('/')}/${file.name}`)
 							.on('error', err => {
 								fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))
@@ -385,8 +436,19 @@ const dlQueue = async.queue((task, done) => {
 								console.log('started', c)
 								mainWindow.webContents.send('download-progress', {
 									videoid: task,
-									state: `Converting to MP4, please wait..`,
+									state: `Converting to MP4 file, please wait..`,
 									percent: 100
+								})
+							})
+							.on('progress', function (progress) {
+								// FFMPEG doesn't always have this >.<
+								if (!progress.percent) {
+									progress.percent = ((progress.targetSize * 1000) / +video.videosize) * 100
+								}
+								mainWindow.webContents.send('download-progress', {
+									videoid: task,
+									state: `Converting to MP4 file (${Math.round(progress.percent)}%)`,
+									percent: progress.percent
 								})
 							})
 							.on('end', (stdout, stderr) => {
@@ -404,24 +466,14 @@ const dlQueue = async.queue((task, done) => {
 							})
 							.input(`concat:${concatList}`)
 							.output(`${path}/${filename}`)
-							.outputOptions([
-								'-c copy',
-								'-bsf:a aac_adtstoasc',
-								'-vsync 2',
-								'-movflags faststart'
-							])
+							.outputOptions(ffmpegOpts)
 							.run()
 					})
 				})
 				break
 			case 'ffmpeg':
 				ffmpeg(video.hlsvideosource)
-					.outputOptions([
-						'-c copy',
-						'-bsf:a aac_adtstoasc',
-						'-vsync 2',
-						'-movflags faststart'
-					])
+					.outputOptions(ffmpegOpts)
 					.output(path + '/' + filename)
 					.on('end', function (stdout, stderr) {
 						return done()
