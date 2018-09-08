@@ -1,6 +1,6 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.206.20180907",
+  "version": "1.207.20180908",
   "description": "Tools for Live.me video network",
   "homepage": "https://notabug.org/thecoder1975/liveme-pro-tools",
   "main": "index.js",
@@ -73,7 +73,6 @@
     "fluent-ffmpeg": "^2.1.2",
     "format-duration": "^1.0.0",
     "hlsdownloader": "^2.1.0",
-    "node-libcurl": "^1.3.3",
     "pretty-date": "^0.2.0",
     "request": "^2.83.0",
     "shelljs": "^0.8.2",
