@@ -1,6 +1,6 @@
 {
   "name": "liveme-pro-tools",
-  "version": "1.204.20180907",
+  "version": "1.205.20180907",
   "description": "Tools for Live.me video network",
   "homepage": "https://notabug.org/thecoder1975/liveme-pro-tools",
   "main": "index.js",
@@ -73,11 +73,13 @@
     "fluent-ffmpeg": "^2.1.2",
     "format-duration": "^1.0.0",
     "hlsdownloader": "^2.1.0",
-    "liveme-api": "github:Lewdninja/liveme-api",
     "pretty-date": "^0.2.0",
     "request": "^2.83.0",
     "shelljs": "^0.8.2",
-    "tar-fs": "^1.16.2"
+    "tar-fs": "^1.16.2",
+    "video.js": "^6.10.1",
+    "videojs-contrib-hls.js": "^3.2.0",
+    "videojs-rotatezoom": "0.0.1"
   },
   "devDependencies": {
     "electron": "^1.8.6",
