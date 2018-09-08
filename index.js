@@ -324,15 +324,10 @@ const dlQueue = async.queue((task, done) => {
         filename += '.mp4'
         video._filename = filename
 
-        DataManager.addDownloaded(video.vid)
-
-        // 20180409 - Added FFMPEG downloader by TheCoder
         mainWindow.webContents.send('download-start', {
             videoid: task,
             filename: filename
         })
-        
-        console.log(JSON.stringify(appSettings.get('downloads'), null, 2));
         
         switch (parseInt(appSettings.get('downloads.ffmpegquality'))) {
 			case 2: // Best
@@ -402,9 +397,9 @@ const dlQueue = async.queue((task, done) => {
 					}
 					// Download chunks
 					let downloadedChunks = 0
-					var chunkThreads = parseInt(appSettings.get('downloads.chunkthreads')) > 1 ? parseInt(appSettings.get('downloads.chunkthreads')) : 1
 					
-					async.eachLimit(tsList, chunkThreads, (file, next) => {
+					async.eachLimit(tsList, 2, (file, next) => {
+		
 						const stream = request(`${video.hlsvideosource.split('/').slice(0, -1).join('/')}/${file.name}`)
 							.on('error', err => {
 								fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))
@@ -423,6 +418,7 @@ const dlQueue = async.queue((task, done) => {
 							})
 							next()
 						})
+						
 					}, () => {
 						// Chunks downloaded
 						ffmpeg()
@@ -430,7 +426,7 @@ const dlQueue = async.queue((task, done) => {
 								mainWindow.webContents.send('download-progress', {
 									videoid: task,
 									state: `Converting to MP4 file, please wait..`,
-									percent: 100
+									percent: 0
 								})
 							})
 							.on('progress', function (progress) {
@@ -445,6 +441,8 @@ const dlQueue = async.queue((task, done) => {
 								})
 							})
 							.on('end', (stdout, stderr) => {
+
+								DataManager.addDownloaded(video.vid)
 								if (appSettings.get('downloads.deltmp')) {
 									tsList.forEach(file => fs.unlinkSync(file.path))
 								}
@@ -453,7 +451,7 @@ const dlQueue = async.queue((task, done) => {
 							.on('error', (err, stdout, stderr) => {
 								fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify([err, stdout, stderr], null, 2))
 								if (appSettings.get('downloads.deltmp')) {
-									tsList.forEach(file => fs.unlinkSync(file.path))
+									//tsList.forEach(file => fs.unlinkSync(file.path))
 								}
 								return done({ videoid: task, error: err })
 							})
@@ -469,6 +467,7 @@ const dlQueue = async.queue((task, done) => {
 					.outputOptions(ffmpegOpts)
 					.output(path + '/' + filename)
 					.on('end', function (stdout, stderr) {
+						DataManager.addDownloaded(video.vid)
 						return done()
 					})
 					.on('progress', function (progress) {
