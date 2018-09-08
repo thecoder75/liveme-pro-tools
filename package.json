@@ -12,9 +12,8 @@
     "postinstall": "",
     "start": "./node_modules/.bin/electron . --enable-logging",
     "dev": "NODE_ENV='development' npm run start",
-    "release": "build -wlm",
+    "release": "build -w && build -l && build -m",
     "release-win": "build -w",
-    "release-linux": "build -l",
     "release-linux": "build -m"
   },
   "author": "TheCoder75",
@@ -68,18 +67,17 @@
   "dependencies": {
     "async": "^2.6.0",
     "axios": "^0.17.1",
+    "node-libcurl": "^1.3.3",
     "electron-is-dev": "^0.3.0",
     "electron-settings": "^3.1.4",
     "fluent-ffmpeg": "^2.1.2",
     "format-duration": "^1.0.0",
     "hlsdownloader": "^2.1.0",
+    "node-libcurl": "^1.3.3",
     "pretty-date": "^0.2.0",
     "request": "^2.83.0",
     "shelljs": "^0.8.2",
-    "tar-fs": "^1.16.2",
-    "video.js": "^6.10.1",
-    "videojs-contrib-hls.js": "^3.2.0",
-    "videojs-rotatezoom": "0.0.1"
+    "tar-fs": "^1.16.2"
   },
   "devDependencies": {
     "electron": "^1.8.6",
