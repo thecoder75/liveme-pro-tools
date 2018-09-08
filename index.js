@@ -50,7 +50,9 @@ function createWindow () {
         })
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
-            template: '%%replayid%%'
+            template: '%%replayid%%',
+            chunkthreads: 1,
+            ffmpegquality: 1
         })
         appSettings.set('lamd', {
             enabled: false,
@@ -62,7 +64,9 @@ function createWindow () {
     if (!appSettings.get('downloads.path')) {
         appSettings.set('downloads', {
             path: path.join(app.getPath('home'), 'Downloads'),
-            template: '%%replayid%%'
+            template: '%%replayid%%',
+            chunkthreads: 1,
+            ffmpegquality: 1
         })
     }
 
@@ -423,7 +427,6 @@ const dlQueue = async.queue((task, done) => {
 						// Chunks downloaded
 						ffmpeg()
 							.on('start', c => {
-								console.log('started', c)
 								mainWindow.webContents.send('download-progress', {
 									videoid: task,
 									state: `Converting to MP4 file, please wait..`,
