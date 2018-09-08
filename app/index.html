@@ -221,14 +221,14 @@
 								</li>
 								<li style="margin: 8px 0; padding: 0 0 0 25px;">
 									<label for="chunk-thread-count" onClick="saveSettings()">Number of threads:</label>
-									<input type="number" min="1" max="25" id="chunk-thread-count" placeholder="1" style="width: 50px; text-align: right" onBlur="saveSettings()"><br>
-									<small>The higher the thread count, the greater the chance of errors!</small>
+									<input type="number" min="1" max="50" id="chunk-thread-count" placeholder="1" style="width: 50px; text-align: right" onBlur="saveSettings()"><br>
+									<small>The higher the thread count, the faster the downloads and the greater the chance of video issues!</small>
 								</li>
                             </ul>
                         </li>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Parallel Downloads</h4></li>
                         <li style="padding-bottom: 10px;">
-                            <input type="number" min="1" max="100" id="downloads-parallel" placeholder="Number" style="margin-right:10px;" onBlur="saveSettings()">
+                            <input type="number" min="1" max="10" id="downloads-parallel" placeholder="Number" style="margin-right:10px;" onBlur="saveSettings()">
                             How many replays to download in parallel.
                         </li>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">FFMPEG Settings</h4></li>
