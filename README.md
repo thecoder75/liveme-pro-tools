@@ -25,7 +25,7 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - Windows 7 or higher (32 and 64-bit!)
 
 ### What about FFMPEG?
-The code-base is being reviewed for possible removal of dependancy of FFMPEG at this time.
+Unfortunately at this time, every way I've looked at removing it has caused major breakage in the ability to download non-broken replays.
 
 ### A Desktop Version?
 A long time ago, TheCoder wanted to release an actual desktop app that wasn't built using NodeJS and ElectronJS.  This was being researched and planned but due to him getting a promotion at work, his available time for this project disappeared.  Now with what little time he has, he will try to maintain and perform minor updates as he is able to.
@@ -33,10 +33,10 @@ A long time ago, TheCoder wanted to release an actual desktop app that wasn't bu
 ### Current Releases Built With
 * [Electron](http://electron.atom.io)
 * [NodeJS](http://nodejs.org)
-* [LiveMe-API](https://thecoder75.github.io/liveme-api)
+* LiveMe-API - *now integrated into the project*
 
 ### Contributing
-If you find any bugs or would like to help add features or additional functions, please create a pull request for review.  
+If you find any bugs or would like to help add features or additional functions, please create a pull request for review and I'll add them if they don't break anything.
 
 ### Contributors
 * [thecoder75](https://notabug.com/thecoder75)
