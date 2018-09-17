@@ -1086,23 +1086,16 @@ function initSettingsPanel () {
     $('#downloads-parallel').val(appSettings.get('downloads.parallel') || 3)
 
     const ffmpegPath = appSettings.get('downloads.ffmpeg') || false
-	const chunkThreads = appSettings.get('downloads.chunkthreads') || false
 	const ffmpegQuality = appSettings.get('downloads.ffmpegquality') || false
-	
-	$('#chunk-thread-count').val(chunkThreads ? chunkThreads : 1);
-	$('#ffmpeg-transcode-setting').val(ffmpegQuality ? ffmpegQuality : 0);
-    
-    if (ffmpegPath) {
-        $('#ffmpegPath').val(ffmpegPath)
-    }
+	$('#ffmpeg-transcode-setting').val(ffmpegQuality ? ffmpegQuality : 0)
+    if (ffmpegPath) { $('#ffmpegPath').val(ffmpegPath) }
 
     $('#lamd-enabled').prop('checked', appSettings.get('lamd.enabled'))
     $('#lamd-downloads').prop('checked', appSettings.get('lamd.handle_downloads'))
     $('#lamd-url').val(appSettings.get('lamd.url'))
 
-    let v = remote.app.getVersion().split('.')[2]
     let stats = DataManager.getStats()
-    $('#settings h6#version').html('Version ' + v)
+    $('#settings h6#version').html('Version ' + remote.app.getVersion())
 
     $('#counts-bookmarks').html(stats.bookmarks)
     $('#counts-profiles').html(stats.profiles)
@@ -1140,7 +1133,6 @@ function saveSettings () {
     appSettings.set('downloads.deltmp', (!!$('#chunk-method-tmp').is(':checked')))
     appSettings.set('downloads.ffmpeg', $('#ffmpegPath').val().trim() || false)
     appSettings.set('downloads.parallel', $('#downloads-parallel').val() || 3)
-    appSettings.set('downloads.chunkthreads', $('#chunk-thread-count').val())
     appSettings.set('downloads.ffmpegquality', $('#ffmpeg-transcode-setting').val())
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
