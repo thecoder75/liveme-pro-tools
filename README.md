@@ -2,6 +2,11 @@
 
 **The time I have to spend on this project is now very limited.  Please be patient with me as I work on updates and releases.**
 
+### Support/Assistance/Reporting Issues
+Due to people repeating the same questions without reading previous postings, I've disabled the Issues Tracker here.  For reporting issues or for usage assistance, please visit the [Discord chat room](https://discord.gg/A5p2aF4).
+
+**I DO NOT RESPOND TO EMAILS EITHER ASKING FOR ASSISTANCE!**  This is my spare-time project so use the Discord chat room as others will assist as they can.
+
 ### What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
 - Search and browse user accounts
