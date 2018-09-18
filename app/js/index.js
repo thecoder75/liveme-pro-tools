@@ -98,7 +98,7 @@ function setupLoadOnScroll () {
             if (currentSearch === 'performUsernameSearch') {
                 performUsernameSearch()
             } else if (currentSearch === 'performHashtagSearch') {
-                performHashtagSearch()
+                _performHashtagSearch()
             } else {
                 scrollBusy = false
             }
@@ -208,12 +208,12 @@ function showMainMenu () {
                 label: 'Help',
                 submenu: [
                     {
-                        label: 'NotABug Home',
+                        label: 'NotABug Git Home',
                         click: () => shell.openExternal('https://notabug.org/thecoder1975/liveme-pro-tools/')
                     },
                     {
-                        label: 'Report an Issue',
-                        click: () => shell.openExternal('https://notabug.org/thecoder1975/liveme-pro-tools/issues')
+                        label: 'Report an Issue on Discord',
+                        click: () => shell.openExternal('https://discord.gg/vKwR3WB')
                     }
                 ]
             },
@@ -392,14 +392,12 @@ function preSearch (q) {
             $('#search-type').val('video-url')
             onTypeChange()
         }
-	/*
     } else if (u.indexOf('#') > -1) {
         if ($('#search-type').val() !== 'hashtag') {
             $('#search-type').val('hashtag')
             $('#search-query').val($('#search-query').val().replace('#', ''))
             onTypeChange()
         }
-	*/
     } else if (!isnum) {
         if ($('#search-type').val() !== 'username-like') {
             $('#search-type').val('username-like')
@@ -635,12 +633,15 @@ function doSearch () {
         break
 
     case 'hashtag':
+        $('main').show().removeClass('has-details')
+        $('#user-details').hide()
+        $('#list').show()
+        $('#list thead').html('')
         performHashtagSearch()
         break
 
     case 'username-like':
         $('main').show().removeClass('has-details')
-        $('.details').hide()
         $('#list thead').html('')
         performUsernameSearch()
         break
@@ -947,106 +948,80 @@ function performUsernameSearch () {
 }
 
 function performHashtagSearch() {
+	
+	$('#list thead').html(`
+		<tr>
+			<th width="410">Title</th>
+			<th width="120">
+				<a href="#" class="link text-center" onClick="sortReplays('date')" title="Sort by Date (desc)">Date</a>
+			</th>
+			<th width="50" align="right">Length</th>
+			<th width="70" align="right">
+				<a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
+			</th>
+			<th width="70" align="right">
+				<a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
+			</th>
+			<th width="70" align="right">
+				<a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
+			</th>
+			<th width="210">Actions</th>
+		</tr>
+	`)
+
+	setTimeout(() => {
+		_performHashtagSearch()
+	}, 100);
+}
+
+function _performHashtagSearch() {
 	LiveMe.performSearch($('#search-query').val(), currentPage, MAX_PER_PAGE, 2)
 		.then(results => {
-			for(var i = 0; i < results.length; i++) {
+			
+			currentSearch = 'performHashtagSearch'
+			hasMore = results.length >= MAX_PER_PAGE
+			setTimeout(function () { scrollBusy = false }, 250)
 
-				currentSearch = 'performHashtagSearch'
-				hasMore = results.length >= MAX_PER_PAGE
-				setTimeout(function () { scrollBusy = false }, 250)
-
+            for (var i = 0; i < results.length; i++) {
 				
-				/*
-				var dt = new Date(results[i].vtime * 1000);
-				var ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes();
-				var hi1 = $('#type').val() == 'url-lookup' ? ($('#query').val() == results[i].hlsvideosource ? true : false) : false;
-				var hi2 = $('#type').val() == 'video-lookup' ? ($('#query').val() == results[i].vid ? true : false) : false;
+				let dt = new Date(results[i].vtime * 1000)
+				let ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes()
 
-				let isLive = results[i].hlsvideosource.endsWith('flv') || results[i].hlsvideosource.indexOf('liveplay') > 0, videoUrl = results[i].hlsvideosource;
+				let length = formatDuration(parseInt(results[i].videolength) * 1000)
 
-				if (!isLive && results[i].hlsvideosource.indexOf('hlslive') > 0) {
-					videoUrl = results[i].videosource;
-				}
+				let downloadDate = DataManager.wasDownloaded(results[i].vid)
+				let watchDate = DataManager.wasWatched(results[i].vid)
+				let downloaded = downloadDate === false ? '<i class="icon icon-floppy-disk dim"></i>' : '<i class="icon icon-floppy-disk bright blue" title="Downloaded ' + prettydate.format(downloadDate) + '"></i>'
+				let watched = watchDate === false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched ' + prettydate.format(watchDate) + '"></i>'
+				let seen = watchDate === false ? '' : 'watched'
 
-				var h = `
-					<div class="item">
-						<div class="header">${results[i].title}&nbsp;</div>
-						<div class="content">
-							<div class="meta">
-								<div class="width180">
-									<span>Posted on:</span>
-									${ds}
-								</div>
-								<div class="width75">
-									<span>Length:</span>
-									${fmtDuration(+results[i].videolength * 1000)}
-								</div>
-								<div class="width100">
-									<span>Views:</span>
-									${results[i].playnumber}
-								</div>
-								<div class="width100">
-									<span>Likes:</span>
-									${results[i].likenum}
-								</div>
-								<div class="width100">
-									<span>Shares:</span>
-									${results[i].sharenum}
-								</div>
-								<div class="width60">
-									<span>Country</span>
-									${results[i].countryCode}
-								</div>
-								<div class="width200 align-right">
-									<a class="button icon icon-play" onClick="playVideo('${videoUrl}')" title="Play Video"></a>
-					`;
-				if (!isLive) {
-					h += `
-									<a class="button icon icon-chat" onClick="openChat('${results[i].vid}')" title="View Message History"></a>
-									<a class="button icon icon-download" onClick="downloadVideo('${results[i].userid}', '${results.uname}', '${results[i].vid}', '${results[i].title.replace("'", "")}', '${results[i].vtime}', '${videoUrl}')" title="Download Replay"></a>
-					`;
-				}
-
-				h += `
-								</div>
-							</div>
-						</div>
-						<div class="footer">
-							<div class="width200">
-								<span>Video ID:</span>
-								<div class="input has-right-button">
-									<input type="text" value="${results[i].vid}" disabled="disabled">
-									<input type="button" class="icon icon-copy" value="" onClick="copyToClipboard('${results[i].vid}')" title="Copy to Clipboard">
-								</div>
-							</div>
-							<div class="spacer">&nbsp;</div>
-							<div class="width700">
-								<span>Video URL:</span>
-								<div class="input has-right-button">
-									<input type="text" value="${videoUrl}" disabled="disabled">
-									<input type="button" class="icon icon-copy" value="" onClick="copyToClipboard('${videoUrl}')" title="Copy to Clipboard">
-								</div>
-							</div>
-						</div>
-					</div>
-				`;
-
-				$('.list').append(h);
-				*/
-
-			}
-
-			/*
-			current_search = 'performHashtagSearch';
-			scroll_busy = false;
-
-			if (results.length == 10) {
-				has_more = true;
-			} else if (results.length < 10) {
-				has_more = false;
-			}
-			*/
-
+				let isLive = results[i].hlsvideosource.endsWith('flv') || results[i].hlsvideosource.indexOf('liveplay') > 0 ? '<b style="color:limegreen;">[LIVE]</b>' : ''
+				let inQueue = $('#download-' + results[i].vid).length > 0 ? '<a id="download-replay-' + results[i].vid + '" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + results[i].vid + '" class="button icon-only" onClick="downloadVideo(\'' + results[i].vid + '\')" title="Download Replay"><i class="icon icon-download"></i></a>'
+                
+                $('#list tbody').append(`
+					<tr data-id="${results[i].vid}" class="user-${results[i].userid}">
+						<td width="410">${results[i].title}</td>
+						<td width="120" align="center">${ds}</td>
+						<td width="50" align="right">${length}</td>
+						<td width="70" align="right">${results[i].playnumber}</td>
+						<td width="70" align="right">${results[i].likenum}</td>
+						<td width="70" align="right">${results[i].sharenum}</td>
+						<td width="300" style="padding: 0 16px; text-align: right;">
+							<a class="button mini icon-small" onClick="copyToClipboard('${results[i].vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
+							&nbsp;
+							<a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid=${results[i].vid}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
+							&nbsp;
+							<a class="button mini icon-small" onClick="copyToClipboard('${results[i].videosource || results[i].hlsvideosource}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
+							&nbsp;&nbsp;&nbsp;
+							<a class="button icon-only" onClick="playVideo('${results[i].vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
+							<a class="button icon-only" onClick="readComments('${results[i].vid}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
+							${inQueue}
+						</td>
+					</tr>
+                `)
+				
+                $('footer h1').html($('#list tbody tr').length + ' accounts found so far, scroll down to load more.')
+            }
 
             if (results.length === 0 && currentPage === 1) {
                 $('#status').html('No videos were found searching for #' + $('#search-query').val()).show()
