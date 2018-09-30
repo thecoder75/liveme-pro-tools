@@ -39,10 +39,10 @@ $(function () {
 
     initHome()
     
-    // Store Bookmarks, History and more every 2 minutes (120,000ms) in case of a crash or something
+    // Store Bookmarks, History and more every 5 minutes (300,000ms) in case of a crash or something
     setInterval(() => {
 		DataManager.saveToDisk()
-	}, 120000)
+	}, 300000)
 })
 
 function setupContextMenu () {
