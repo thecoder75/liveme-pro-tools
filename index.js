@@ -397,7 +397,7 @@ const dlQueue = async.queue((task, done) => {
 					// Download chunks
 					let downloadedChunks = 0
 					
-					async.eachLimit(tsList, 2, (file, next) => {
+					async.eachLimit(tsList, 3, (file, next) => {
 		
 						const stream = request(`${video.hlsvideosource.split('/').slice(0, -1).join('/')}/${file.name}`)
 							.on('error', err => {
