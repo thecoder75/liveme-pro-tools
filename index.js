@@ -333,8 +333,7 @@ const dlQueue = async.queue((task, done) => {
 			case 2: // Best
 				ffmpegOpts = [
 					'-c:v h264',
-					'-preset faster',
-					'-q:v 0',
+					'-preset fast',
 					'-c:a copy',
 					'-bsf:a aac_adtstoasc',
 					'-vsync 2',
