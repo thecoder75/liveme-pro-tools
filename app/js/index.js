@@ -212,7 +212,7 @@ function showMainMenu () {
                         click: () => shell.openExternal('https://notabug.org/thecoder1975/liveme-pro-tools/')
                     },
                     {
-                        label: 'Report an Issue on Discord',
+                        label: 'Discord Chat Rooms for Support',
                         click: () => shell.openExternal('https://discord.gg/vKwR3WB')
                     }
                 ]
