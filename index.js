@@ -633,8 +633,12 @@ ipcMain.on('open-followers-window', (event, arg) => {
 ipcMain.on('read-comments', (event, arg) => {
     let win = new BrowserWindow({
         width: 400,
-        height: 660,
-        resizable: false,
+        width: 400,
+        minWidth: 400,
+        maxWidth: 400,
+        height: 600,
+        minHeight: 600,
+        resizable: true,
         darkTheme: false,
         autoHideMenuBar: true,
         skipTaskbar: false,
@@ -667,7 +671,6 @@ ipcMain.on('open-bookmarks', (event, arg) => {
             minWidth: 400,
             maxWidth: 400,
             minHeight: 480,
-            maxHeight: 1200,
             darkTheme: true,
             autoHideMenuBar: false,
             disableAutoHideCursor: true,
