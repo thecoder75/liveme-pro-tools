@@ -503,10 +503,24 @@ function _checkBookmark (uid) {
 
         let b = DataManager.getSingleBookmark(user.user_info.uid)
         let dt = new Date()
+		
+		b.counts.changed = (b.counts.followings != user.count_info.following_count) ? true : false
         b.counts.replays = user.count_info.video_count
         b.counts.friends = user.count_info.friends_count
         b.counts.followers = user.count_info.follower_count
         b.counts.followings = user.count_info.following_count
+
+		if (b.counts.changed) {
+			$('#home #bookmarklist').append(`
+				<div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showUser('${user.user_info.uid}')">
+					<img src="${user.user_info.face}" class="avatar" onError="$(this).hide()">
+					<h1>${user.user_info.uname}</h1>
+					<h3>User is following more accounts now.</h3>
+					<h2>NEW FOLLOWINGS</h2>
+				</div>
+			`)
+		}
+        
         b.signature = user.user_info.usign
         b.sex = user.user_info.sex
         b.face = user.user_info.face
@@ -539,7 +553,7 @@ function _checkBookmark (uid) {
                                         <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
                                         <h1>${bookmark.nickname}</h1>
                                         <h3>Newest replay posted ${latest}</h3>
-                                        <h2>NEW</h2>
+                                        <h2>NEW REPLAYS</h2>
                                     </div>
                                 `)
                             }
