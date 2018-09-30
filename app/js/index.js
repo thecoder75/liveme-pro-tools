@@ -475,20 +475,31 @@ function initHome () {
     }
 
     $('#home #bookmarklist').empty()
+	showProgressBar()
 
     setTimeout(() => {
         _homethread()
-    }, 50)
+    }, 250)
 }
 
 function _homethread () {
     setImmediate(() => {
-        if (tempvar.index < tempvar.max) {
-            setTimeout(() => _homethread(), 50)
+        if (tempvar.index < tempvar.max - 1) {
+            setTimeout(() => _homethread(), 25)
         }
 
-        if (tempvar.index < tempvar.max - 1) { tempvar.index++; _checkBookmark(tempvar.list[tempvar.index].uid) }
-        if (tempvar.index < tempvar.max - 1) { tempvar.index++; _checkBookmark(tempvar.list[tempvar.index].uid) }
+		$('footer h1').html('Checking ' + tempvar.index + ' of ' + tempvar.max + ' bookmarks.')
+		if ((tempvar.index > 0) && (tempvar.index < tempvar.max))
+			setProgressBarValue((tempvar.index / tempvar.max) * 100)
+
+        if (tempvar.index < tempvar.max - 1) { 
+			tempvar.index++
+			_checkBookmark(tempvar.list[tempvar.index].uid) 
+		} else {
+			$('footer h1').html('Bookmarks scan complete.')
+			hideProgressBar()
+        }
+        
     })
 }
 

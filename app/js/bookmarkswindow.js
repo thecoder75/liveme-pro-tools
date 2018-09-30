@@ -60,7 +60,7 @@ function drawEntry () {
 
     let d1 = prettydate.format(new Date(list[index].newest_replay * 1000))
     let d2 = prettydate.format(new Date(list[index].last_viewed * 1000))
-    let isNew = list[index].newest_replay > list[index].last_viewed ? 'new' : 'not-new'
+    let isNew = list[index].newest_replay > list[index].last_viewed ? 'new' : ''
     let isChanged = list[index].counts.changed ? 'changed' : ''
 	let sex = list[index].sex < 0 ? '' : (list[index].sex == 0 ? 'female' : 'male')
 	let cLabel = ''
@@ -69,9 +69,11 @@ function drawEntry () {
 		cLabel = 'NEW'
 	else if (isChanged == 'changed')
 		cLabel = 'CHANGED'
-		
+	
+	let toggleFlag = cLabel.length > 1 ? 'not-new' : ''
+	
     $('#bookmark-list').append(`
-        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${isNew} ${isChanged} ${sex}">
+        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${isNew} ${isChanged} ${sex} ${toggleFlag}">
             <td width="64">
                 <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).hide()" align="bottom">
             </td>
