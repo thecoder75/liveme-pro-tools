@@ -60,24 +60,16 @@ function drawEntry () {
 
     let d1 = prettydate.format(new Date(list[index].newest_replay * 1000))
     let d2 = prettydate.format(new Date(list[index].last_viewed * 1000))
-    let isNew = list[index].newest_replay > list[index].last_viewed ? 'new' : ''
-    let isChanged = list[index].counts.changed ? 'changed' : ''
+	let cLabel = (list[index].newest_replay > list[index].last_viewed ? 'NEW' : '') + (list[index].counts.changed ? 'UPDATED' : '')
 	let sex = list[index].sex < 0 ? '' : (list[index].sex == 0 ? 'female' : 'male')
-	let cLabel = ''
-
-	if (isNew == 'new')
-		cLabel = 'NEW'
-	else if (isChanged == 'changed')
-		cLabel = 'CHANGED'
-	
-	let toggleFlag = cLabel.length > 1 ? 'not-new' : ''
+	let toggleFlag = cLabel.length < 1 ? 'not-new' : 'new'
 	
     $('#bookmark-list').append(`
-        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${isNew} ${isChanged} ${sex} ${toggleFlag}">
+        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${toggleFlag}">
             <td width="64">
                 <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).hide()" align="bottom">
             </td>
-            <td width="90%" class="main ${isNew} ${isChanged}">
+            <td width="90%" class="main ${toggleFlag}">
                 <div class="flag">${cLabel}</div>
                 <h1>${list[index].nickname}</h1>
                 <h3><span>Latest Replay:</span> ${d1}</h3>
