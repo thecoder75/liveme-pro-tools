@@ -732,9 +732,9 @@ ipcMain.on('restore-backup', (event, arg) => {
 })
 
 ipcMain.on('create-backup', (event, arg) => {
-    let configPath = path.join(app.getPath('appData'), app.getName())
-    let backupFile = path.join(app.getPath('home'), 'Downloads', 'liveme-pro-tools-backup.tar')
-
+    let configPath = path.join(app.getPath('appData'), app.getName()), dt = new Date()
+    let fname = 'liveme_pro_tools_backup-' + dt.getFullYear() + (dt.getMonth() < 10 ? '0' : '') + dt.getMonth() + (dt.getDate() < 10 ? '0' : '') + dt.getDate()
+    let backupFile = path.join(app.getPath('home'), 'Downloads', fname)
     tarfs.pack(
         configPath,
         {
