@@ -23,6 +23,7 @@ let playerWindow = null
 let bookmarksWindow = null
 let chatWindow = null
 let wizardWindow = null
+let homeWindow = null
 let menu = null
 let appSettings = require('electron-settings')
 
@@ -268,6 +269,35 @@ ipcMain.on('export-users', (event, arg) => {})
 ipcMain.on('downloads-parallel', (event, arg) => {
     dlQueue.concurrency = arg
 })
+
+ipcMain.on('open-home-window', (event, arg) => {
+
+    var homeWindow = new BrowserWindow({
+        width: 400,
+        minWidth: 400,
+        maxWidth: 400,
+        height: 720,
+        minHeight: 600,
+        resizable: true,
+        darkTheme: false,
+        autoHideMenuBar: true,
+        skipTaskbar: false,
+        backgroundColor: '#000000',
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        fullscreen: false,
+        maximizable: false,
+        closable: true,
+        frame: false,
+        show: false
+    })
+    homeWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+
+    homeWindow.on('ready-to-show', () => {
+        homeWindow.show()
+    }).loadURL(`file://${__dirname}/app/newhome.html?0&`)
+})
+
 
 ipcMain.on('download-replay', (event, arg) => {
     DataManager.addToQueueList(arg.videoid)
