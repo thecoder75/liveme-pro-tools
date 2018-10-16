@@ -736,7 +736,7 @@ function performUserLookup (uid) {
             $('img.avatar').attr('src', user.user_info.face)
             $('#user-details div.info h1 span').html(user.user_info.uname)
             $('#user-details div.info h2.id').html('<span>ID:</span> ' + user.user_info.uid + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.uid + '\')"><i class="icon icon-copy"></i></a>')
-            $('#user-details div.info h2.shortid').html('<span>Short ID:</span> ' + user.user_info.short_id + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.uid + '\')"><i class="icon icon-copy"></i></a>')
+            $('#user-details div.info h2.shortid').html('<span>Short ID:</span> ' + user.user_info.short_id + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.short_id + '\')"><i class="icon icon-copy"></i></a>')
             $('#user-details div.info h2.level').html('<span>Level:</span><b>' + user.user_info.level + '</b>')
             $('#user-details div.info h4').html(user.user_info.countryCode)
 
