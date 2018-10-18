@@ -890,7 +890,7 @@ function _addReplayEntry (replay, wasSearched) {
             <td width="300" class="${highlight}" style="padding: 0 16px; text-align: right;">
                 <a class="button mini icon-small" onClick="copyToClipboard('${replay.vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
                 &nbsp;
-                <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid=${replay.vid}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
+                <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/us/v/${replay.vid}/index.html')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
                 &nbsp;
                 <a class="button mini icon-small" onClick="copyToClipboard('${replay.videosource || replay.hlsvideosource}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
                 &nbsp;&nbsp;&nbsp;
