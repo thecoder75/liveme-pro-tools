@@ -58,6 +58,21 @@ class DataManager {
                     bookmarks = []
                 } else {
                     bookmarks = JSON.parse(data)
+
+					if (bookmarks[0].counts.changed == undefined) {
+						// Upgrade to new format
+
+						for (var i = 0; i < bookmarks.length; i++)
+							bookmarks[i].counts = {
+								replays: bookmarks[i].counts.replays,
+								friends: bookmarks[i].counts.friends,
+								followers: bookmarks[i].counts.followers,
+								followings: bookmarks[i].counts.followings,
+								changed: false
+							}
+
+						fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), () => { })
+					}                    
                 }
             })
         }
@@ -279,6 +294,9 @@ class DataManager {
             }
         }
         isBusy = false
+
+		console.log(JSON.stringify(user, null, 2))
+		//fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), () => { })
     }
 
     isBookmarked (user) {
