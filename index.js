@@ -277,7 +277,7 @@ ipcMain.on('open-home-window', (event, arg) => {
         minWidth: 400,
         maxWidth: 400,
         height: 720,
-        minHeight: 600,
+        minHeight: 480,
         resizable: true,
         darkTheme: false,
         autoHideMenuBar: true,
@@ -295,7 +295,7 @@ ipcMain.on('open-home-window', (event, arg) => {
 
     homeWindow.on('ready-to-show', () => {
         homeWindow.show()
-    }).loadURL(`file://${__dirname}/app/newhome.html?0&`)
+    }).loadURL(`file://${__dirname}/app/newhome.html`)
 })
 
 
@@ -696,7 +696,7 @@ ipcMain.on('open-bookmarks', (event, arg) => {
         bookmarksWindow = new BrowserWindow({
             x: winposition[0] > -1 ? winposition[0] : null,
             y: winposition[1] > -1 ? winposition[1] : null,
-            width: 400,
+            width: 480,
             height: winsize[1],
             minWidth: 400,
             maxWidth: 400,
