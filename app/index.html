@@ -67,7 +67,6 @@
                     <h2 class="level"></h2>
                     <h4></h4>
                     <div class="buttons">
-                        <a href="#" class="button lamd-button" onClick="AddToLAMD()" style="display: none;"><i class="icon icon-hour-glass"></i></a>
                         <a href="#" class="button following" onClick="showFollowing()"><i class="icon icon-hour-glass"></i></a>
                         <a href="#" class="button followers" onClick="showFollowers()"><i class="icon icon-hour-glass"></i></a>
                     </div>
@@ -246,6 +245,7 @@
                         
                     </ul>
                 </div>
+
                 <div class="section">
                     <ul>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Fans and Followings</h4></li>
@@ -255,27 +255,7 @@
                         </li>
                     </ul>
                 </div>
-                <div class="section">
-                    <ul>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">LAMD Support</h4></li>
-                        <li style="line-height: 24px;">
-                            <input type="checkbox" id="lamd-enabled"> Enable LAMD support.<br>
-                        </li>
-                        <li style="line-height: 24px;">
-                            <input type="checkbox" id="lamd-downloads"> Use LAMD to handle replay downloads.<br>
-                        </li>
-                        <li style="margin: 12px 0; line-height: 16px;">
-                            LAMD URL:<br>
-                            <input type="text" id="lamd-url" style="width: 400px;" onBlur="saveSettings()" placeholder="http://localhost:8280">
-                        </li>
-                        <li>
-                            <small>
-                                Default URL is <b>http://localhost:8280</b>.  If you are running LAMD on a different computer then the one LiveMe Pro Tools runs on,
-                                enter the URL to it.
-                            </small>
-                        </li>
-                    </ul>
-                </div>
+
                 <div class="section">
                     <ul>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Tracking</h4></li>
