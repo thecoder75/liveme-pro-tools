@@ -60,17 +60,17 @@ function drawEntry () {
 
     let d1 = prettydate.format(new Date(list[index].newest_replay * 1000))
     let d2 = prettydate.format(new Date(list[index].last_viewed * 1000))
-	let cLabel = (list[index].newest_replay > list[index].last_viewed ? 'NEW' : '') + (list[index].counts.changed ? 'UPDATED' : '')
+	let nClass = list[index].newest_replay > list[index].last_viewed ? 'new_replays' : ''
+	let fClass = list[index].counts.changed ? 'new_followings' : ''
 	let sex = list[index].sex < 0 ? '' : (list[index].sex == 0 ? 'female' : 'male')
-	let toggleFlag = cLabel.length < 1 ? 'not-new' : 'new'
+	let isNew = nClass.length || fClass.length ? 'isnew' : ''
 	
     $('#bookmark-list').append(`
-        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${toggleFlag}">
+        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew} ${nClass} ${fClass}">
             <td width="64">
-                <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).hide()" align="bottom">
+                <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).attr('src', 'images/nouser.png')" align="bottom">
             </td>
-            <td width="90%" class="main ${toggleFlag}">
-                <div class="flag">${cLabel}</div>
+            <td width="90%" class="main">
                 <h1>${list[index].nickname}</h1>
                 <h3><span>Latest Replay:</span> ${d1}</h3>
                 <h4><span>Last Viewed:</span> ${d2}</h4>
@@ -89,5 +89,5 @@ function drawEntry () {
 }
 
 function hideNonRecent () {
-    $('#bookmark-list tr.not-new').toggle()
+    $('#bookmark-list tr:not(.isnew)').toggle()
 }
