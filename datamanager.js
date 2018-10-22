@@ -230,8 +230,6 @@ class DataManager {
     unviewProfiles (oldestDate, dryRun) {
         if (dryRun == null) dryRun = false
 
-        console.log('Old Viewed Profiles Count: ' + profiles.length)
-
         let ret = 0
         let temp = []
         for (let i = 0; i < profiles.length; i++) {
@@ -244,7 +242,6 @@ class DataManager {
             profiles = temp
             fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), () => { })
         }
-        console.log('New Viewed Profiles Count: ' + temp.length)
         return ret
     }
 
