@@ -37,7 +37,9 @@ $(function () {
         LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
     }
 
-    initHome()
+	setTimeout(() => {
+		initHome()
+	}, 5000)
     
     // Store Bookmarks, History and more every 5 minutes (300,000ms) in case of a crash or something
     setInterval(() => {
@@ -352,15 +354,19 @@ function openURL (u) { shell.openExternal(u) }
 function readComments (u) { ipcRenderer.send('read-comments', { userid: u }) }
 
 function goHome () {
-    $('footer').hide()
     $('main').hide()
     $('#home').show()
+    $('footer').hide()
 
     $('overlay').hide()
     $('#queue-list').hide()
 
     currentView = 'home'
     initHome()
+
+
+	// ipcRenderer.send('open-home-window', { videoid: vid })
+    
 }
 
 function preSearch (q) {
@@ -464,9 +470,6 @@ function initHome () {
         }
     })
 
-    $('footer h1').html('Bookmarks are now being scanned for new replays...')
-    $('#home').show()
-
     var bookmarks = DataManager.getAllBookmarks()
     tempvar = {
         index: 0,
@@ -474,18 +477,21 @@ function initHome () {
         list: bookmarks
     }
 
+    $('footer h1').html('Bookmarks are now being scanned for new replays...').show()
+    $('#home').show()
     $('#home #bookmarklist').empty()
 	showProgressBar()
 
-    setTimeout(() => {
+    setImmediate(() => {
         _homethread()
-    }, 250)
+    })
+    
 }
 
 function _homethread () {
     setImmediate(() => {
         if (tempvar.index < tempvar.max - 1) {
-            setTimeout(() => _homethread(), 25)
+            setTimeout(() => _homethread(), 50)
         }
 
 		$('footer h1').html('Checking ' + tempvar.index + ' of ' + tempvar.max + ' bookmarks.')
@@ -514,7 +520,7 @@ function _checkBookmark (uid) {
 
         let b = DataManager.getSingleBookmark(user.user_info.uid)
         let dt = new Date()
-		
+
 		b.counts.changed = (b.counts.followings != user.count_info.following_count) ? true : false
         b.counts.replays = user.count_info.video_count
         b.counts.friends = user.count_info.friends_count
@@ -539,7 +545,7 @@ function _checkBookmark (uid) {
         b.shortid = user.user_info.short_id
 
         DataManager.updateBookmark(b)
-
+		
         if (b.counts.replays > 0) {
             LiveMe.getUserReplays(uid, 1, 2)
                 .then(replays => {
@@ -764,6 +770,7 @@ function performUserLookup (uid) {
                 face: user.user_info.face,
                 nickname: user.user_info.uname,
                 counts: {
+					changed: bookmark.counts.changed,
                     replays: user.count_info.video_count,
                     friends: user.count_info.friends_count,
                     followers: user.count_info.follower_count,
@@ -1090,10 +1097,6 @@ function initSettingsPanel () {
 	$('#ffmpeg-transcode-setting').val(ffmpegQuality ? ffmpegQuality : 0)
     if (ffmpegPath) { $('#ffmpegPath').val(ffmpegPath) }
 
-    $('#lamd-enabled').prop('checked', appSettings.get('lamd.enabled'))
-    $('#lamd-downloads').prop('checked', appSettings.get('lamd.handle_downloads'))
-    $('#lamd-url').val(appSettings.get('lamd.url'))
-
     let stats = DataManager.getStats()
     $('#settings h6#version').html('Version ' + remote.app.getVersion())
 
@@ -1136,12 +1139,6 @@ function saveSettings () {
     appSettings.set('downloads.ffmpegquality', $('#ffmpeg-transcode-setting').val())
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
-
-    appSettings.set('lamd.enabled', (!!$('#lamd-enabled').is(':checked')))
-    appSettings.set('lamd.handle_downloads', (!!$('#lamd-downloads').is(':checked')))
-
-    if ($('#lamd-url').val().length < 21) $('#lamd-url').val('http://localhost:8280')
-    appSettings.set('lamd.url', $('#lamd-url').val())
 }
 
 function resetSettings () {
@@ -1168,89 +1165,7 @@ function resetSettings () {
         playerWindow: [370, 680],
         bookmarksWindow: [400, 720]
     })
-    appSettings.set('lamd', {
-        enabled: false,
-        url: 'http://localhost:8280',
-        handle_downloads: false
-    })
 
     DataManager.wipeAllData()
     remote.app.relaunch()
-}
-
-function CheckForLAMD () {
-    let lamdConfig = appSettings.get('lamd')
-
-    if (lamdConfig.enabled === false) {
-        $('.lamd-button').hide()
-        return
-    }
-    $('.lamd-button').html('<i class="icon icon-hour-glass"></i>')
-
-    request({
-        url: lamdConfig.url + '/ping',
-        method: 'get'
-    }, function (err, httpResponse, body) {
-        if (err) return
-
-        setTimeout(() => {
-            request({
-                url: lamdConfig.url + '/check-account/' + currentUser.uid,
-                method: 'get',
-                timeout: 2000
-
-            }, (err, resp, body) => {
-                if (err) {
-                    $('.lamd-button').hide()
-                    return
-                }
-                if (JSON.parse(body).message === 'Account is in the list.') {
-                    $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove').show()
-                } else {
-                    $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add').show()
-                }
-            })
-        }, 100)
-    })
-}
-
-function AddToLAMD (u) {
-    let lamdConfig = appSettings.get('lamd')
-    let v = $('.lamd-button').attr('mode')
-
-    if (lamdConfig.enabled === false) return // If we are not allowed to use it, then don't continue on inside this script.
-
-    request({
-        url: lamdConfig.url + (v === 'add' ? '/add-account/' : '/remove-account/') + currentUser.uid,
-        method: 'get',
-        timeout: 2000
-    }, function (err, httpResponse, body) {
-        if (err) return
-
-        var r = JSON.parse(body)
-        if (r.message === 'Account removed.') {
-            $('.lamd-button').html('<i class="icon icon-user-plus"></i> LAMD').attr('mode', 'add').show()
-            $('#popup-message').html('Account removed from LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400)
-        } else {
-            $('.lamd-button').html('<i class="icon icon-user-minus"></i> LAMD').attr('mode', 'remove').show()
-            $('#popup-message').html('Account added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400)
-        }
-    })
-}
-
-function AddReplayToLAMD (r) {
-    let lamdConfig = appSettings.get('lamd')
-    let v = $('.lamd-button').attr('mode')
-
-    if (lamdConfig.enabled === false) return // If we are not allowed to use it, then don't continue on inside this script.
-
-    request({
-        url: lamdConfig.url + '/add-download/' + r,
-        method: 'get',
-        timeout: 2000
-    }, function (err, httpResponse, body) {
-        if (err) return
-
-        $('#popup-message').html('Download added to LAMD').animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - $('#popup-message').height() }, 400)
-    })
 }
