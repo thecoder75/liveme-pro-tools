@@ -770,7 +770,7 @@ function performUserLookup (uid) {
                 face: user.user_info.face,
                 nickname: user.user_info.uname,
                 counts: {
-					changed: bookmark.counts.changed,
+					changed: false,
                     replays: user.count_info.video_count,
                     friends: user.count_info.friends_count,
                     followers: user.count_info.follower_count,
