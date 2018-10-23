@@ -294,9 +294,6 @@ class DataManager {
             }
         }
         isBusy = false
-
-		console.log(JSON.stringify(user, null, 2))
-		//fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), () => { })
     }
 
     isBookmarked (user) {
