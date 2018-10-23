@@ -100,13 +100,13 @@
         </main>
         <script id="replays-list-row" type="text/x-handlebars-template">
             <tr data-id="{{vid}}" class="{{searched}} {{seen}} user-{{userid}}">
-                <td width="410" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;{{{downloaded}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
-                <td width="120" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
-                <td width="50" class="{{highlight}}" align="right">{{length}}</td>
-                <td width="70" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
-                <td width="70" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
-                <td width="70" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
-                <td width="300" class="{{highlight}}" style="padding: 0 16px; text-align: right;">
+                <td width="400" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;{{{downloaded}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
+                <td width="130" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
+                <td width="55" class="{{highlight}}" align="right">{{length}}</td>
+                <td width="75" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
+                <td width="75" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
+                <td width="75" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
+                <td width="280" class="{{highlight}}" style="padding: 0 16px; text-align: right;">
                     <a class="button mini icon-small" onClick="copyToClipboard('{{vid}}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
                     &nbsp;
                     <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid={{vid}}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
