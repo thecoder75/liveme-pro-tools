@@ -291,6 +291,7 @@ class DataManager {
         for (let i = 0; i < bookmarks.length; i++) {
             if (bookmarks[i].uid === user.uid) {
                 bookmarks[i] = user
+                break
             }
         }
         isBusy = false
@@ -299,7 +300,10 @@ class DataManager {
     isBookmarked (user) {
         let ret = false
         for (let i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].uid === user.uid) ret = true
+            if (bookmarks[i].uid === user.uid) {
+                ret = true
+                break
+            }
         }
         return ret
     }
@@ -309,7 +313,10 @@ class DataManager {
     getSingleBookmark (userid) {
         let ret = false
         for (let i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].uid === userid) ret = bookmarks[i]
+            if (bookmarks[i].uid === userid) {
+                ret = bookmarks[i]
+                break
+            }
         }
         return ret
     }

@@ -138,6 +138,17 @@
                 </div>
                 <div class="section">
                     <ul>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Blocked countries</h4></li>
+                        <li style="padding-bottom: 20px;">
+                            <div style="height:15em;">
+                                <select multiple id="countryCode" style="width: 120px;" size="15" onBlur="saveSettings()">
+                                </select>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="section">
+                    <ul>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Video Player</h4></li>
                         <li style="padding-bottom: 20px;">
                             Internal player is used by default unless you specify one in the field below.<br>
@@ -250,8 +261,9 @@
                     <ul>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Fans and Followings</h4></li>
                         <li style="line-height: 24px;">
-                            <input type="checkbox" id="viewmode-followings"> Hide followings with no replays.<br>
-                            <input type="checkbox" id="viewmode-followers"> Hide followers with no replays.<br>
+                            <input type="checkbox" onChange="saveSettings()" id="viewmode-followings"> Hide followings with no replays.<br>
+                            <input type="checkbox" onchange="saveSettings()" id="viewmode-followers"> Hide followers with no replays.<br>
+                            <input type="checkbox" onchange="saveSettings()" id="loadAllResults"> Load ALL possible results (WARNING: Can be slow!)
                         </li>
                     </ul>
                 </div>
