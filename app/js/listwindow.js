@@ -179,6 +179,39 @@ function copyToClipboard (i) { clipboard.writeText(i) }
 function closeWindow () { window.close() }
 function minimizeWindow () { remote.BrowserWindow.getFocusedWindow().minimize() }
 
+function AddToBookmarks (userid) {
+
+    LiveMe.getUserInfo(userid).then(user => {
+
+        currentUser = {
+            uid: user.user_info.uid,
+            shortid: user.user_info.short_id,
+            signature: user.user_info.usign,
+            sex: user.sex,
+            face: user.user_info.face,
+            nickname: user.user_info.uname,
+            counts: {
+                changed: false,
+                replays: user.count_info.video_count,
+                friends: user.count_info.friends_count,
+                followers: user.count_info.follower_count,
+                followings: user.count_info.following_count
+            },
+            last_viewed: Math.floor((new Date()).getTime() / 1000),
+            newest_replay: 0
+        }
+
+        if (DataManager.isBookmarked(currentUser) === true) {
+            DataManager.removeBookmark(currentUser)
+            $('a.bookmark-' + userid).attr('title', 'Add to Bookmarks').html('<i class="icon icon-star-empty"></i>')
+        } else {
+            DataManager.addBookmark(currentUser)
+            $('a.bookmark-' + userid).attr('title', 'Remove from Bookmarks').html('<i class="icon icon-star-full bright yellow"></i>')
+        }
+    })
+}
+
+
 function populateList(results) {
         $('footer h2').html('<i class="icon icon-arrow-down dim"></i>')
 
@@ -261,7 +294,7 @@ function addEntry (entry) {
     let seenRaw = DataManager.wasProfileViewed(entry.uid)
     let seenDate = seenRaw !== false ? prettydate.format(seenRaw) : ''
     let seen = seenRaw !== false ? 'bright blue' : 'dim'
-    let bookmarked = DataManager.isBookmarked(entry) ? 'star-full bright yellow' : 'star-empty dim'
+    let bookmarked = DataManager.isBookmarked(entry) ? 'star-full bright yellow' : 'star-empty'
 
     $('table.fflist tbody').append(`
         <tr id="entry-${entry.uid}" class="entry-${entry.uid} ${sex}">
@@ -270,7 +303,7 @@ function addEntry (entry) {
             </td>
             <td width="90%">
                 <div class="seen" title="Last seen ${seenDate}"><i class="icon icon-eye ${seen}"></i></div>
-                <div class="bookmarked"><i class="icon icon-${bookmarked}"></i></div>
+                <div class="bookmarked"><a style="cursor:pointer" onClick="AddToBookmarks('${entry.uid}')" class="bookmark-${entry.uid}"><i class="icon icon-${bookmarked}"></i></a></div>
                 <h1>${entry.nickname}</h1>
                 <div id="user-${entry.uid}" class="countrylevel" data-seen="Last seen ${seenDate}">
                     ${entry.countryCode}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;<b>Level:</b> ${entry.level}

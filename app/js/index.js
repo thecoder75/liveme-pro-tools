@@ -575,7 +575,7 @@ function _checkBookmark (uid) {
 
 		if (b.counts.changed) {
 			$('#home #bookmarklist').append(`
-				<div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showUser('${user.user_info.uid}')">
+				<div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showFollowing('${user.user_info.uid}')">
 					<img src="${user.user_info.face}" class="avatar" onError="$(this).hide()">
 					<h1>${user.user_info.uname}</h1>
 					<h3>User is following more accounts now.</h3>
@@ -586,7 +586,7 @@ function _checkBookmark (uid) {
 
         if (b.counts.changed_followers) {
             $('#home #bookmarklist').append(`
-                <div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showUser('${user.user_info.uid}')">
+                <div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showFollowers('${user.user_info.uid}')">
                     <img src="${user.user_info.face}" class="avatar" onError="$(this).hide()">
                     <h1>${user.user_info.uname}</h1>
                     <h3>User has more followers/fans now.</h3>
