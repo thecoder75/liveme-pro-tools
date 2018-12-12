@@ -40,6 +40,7 @@ If you find any bugs or would like to help add features or additional functions,
 
 ### Contributors
 * [thecoder75](https://notabug.com/thecoder75)
+* [Tashiketh](https://notabug.org/Tashiketh)
 * [zp](https://github.com/zp)
 * [lewdninja](https://github.com/lewdninja)
 
