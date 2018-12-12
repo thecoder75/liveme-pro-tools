@@ -15,6 +15,8 @@ let threads = 0
 let scrollBusy = false
 let filters = { countryCode: '', seen: true, active: false }
 let MAX_PAGE_SIZE = 50
+let loadAllResults = appSettings.get('general.loadAllResults') || false
+let blockedCountries = appSettings.get('general.blockedCountries') || []
 
 const cclist = [
     [ 'All Countries', '-' ], [ 'Afghanistan', 'AF' ], [ 'Albania', 'AL' ], [ 'Algeria', 'DZ' ], [ 'American Samoa', 'AS' ], [ 'Andorra', 'AD' ],
@@ -177,15 +179,23 @@ function copyToClipboard (i) { clipboard.writeText(i) }
 function closeWindow () { window.close() }
 function minimizeWindow () { remote.BrowserWindow.getFocusedWindow().minimize() }
 
-function doFollowings () {
-    $('footer h2').html('<i class="icon icon-arrow-down bright green"></i>')
-
-    LiveMe.getFollowing(userid, currentPage, MAX_PAGE_SIZE).then(results => {
+function populateList(results) {
         $('footer h2').html('<i class="icon icon-arrow-down dim"></i>')
 
         totalCount += results.length
 
         for (let i = 0; i < results.length; i++) {
+
+            let isBlocked = false
+            for (let j = 0; j < blockedCountries.length; j++) {
+                if (results[i].countryCode == blockedCountries[j]) {
+                    isBlocked = true
+                    break
+                }
+            }
+
+            if (isBlocked) continue
+
             if ((filters.seen === true) && (filters.countryCode.length < 2)) {
                 addEntry(results[i])
             } if ((filters.countryCode.length > 1) && (results[i].countryCode === filters.countryCode)) {
@@ -215,11 +225,25 @@ function doFollowings () {
             $('footer h1').html(`Showing ${totalCount} of ${maxCount} accounts.`)
         }
 
-        if (hasMore && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 2))) {
+        loadTimeout = 200
+        if (loadAllResults) {
+            loadTimeout = 1000
+        }
+
+        if (hasMore && (loadAllResults || ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 2)))) {
             setTimeout(() => {
                 loadMore()
-            }, 200)
+            }, loadTimeout)
         }
+}
+
+function doFollowings () {
+    $('footer h2').html('<i class="icon icon-arrow-down bright green"></i>')
+
+    let blockedCountries = appSettings.get('blockedCountries')
+
+    LiveMe.getFollowing(userid, currentPage, MAX_PAGE_SIZE).then(results => {
+        populateList(results)
     })
 }
 
@@ -227,45 +251,7 @@ function doFans () {
     $('footer h2').html('<i class="icon icon-arrow-down bright green"></i>')
 
     LiveMe.getFans(userid, currentPage, MAX_PAGE_SIZE).then(results => {
-        $('footer h2').html('<i class="icon icon-arrow-down dim"></i>')
-
-        totalCount += results.length
-
-        for (let i = 0; i < results.length; i++) {
-            if ((filters.seen === true) && (filters.countryCode.length < 2)) {
-                addEntry(results[i])
-            } if ((filters.countryCode.length > 1) && (results[i].countryCode === filters.countryCode)) {
-                if (filters.seen === true) {
-                    addEntry(results[i])
-                } else if ((filters.seen === false) && (DataManager.wasProfileViewed(results[i].uid) !== false)) {
-                    addEntry(results[i])
-                }
-            } else if (filters.countryCode.length < 2) {
-                if ((filters.seen === false) && (DataManager.wasProfileViewed(results[i].uid) === false)) {
-                    addEntry(results[i])
-                }
-            }
-        }
-
-        setTimeout(() => {
-            scrollBusy = false
-            $('#list-search').trigger('keydown')
-        }, 200)
-
-        hasMore = results.length >= MAX_PAGE_SIZE
-
-        let c = $('table.fflist tbody tr').length
-        if (filters.seen === false || filters.countryCode.length > 1) {
-            $('footer h1').html(`Showing ${c} filtered from ${totalCount} of ${maxCount} accounts.`)
-        } else {
-            $('footer h1').html(`Showing ${totalCount} of ${maxCount} accounts.`)
-        }
-
-        if (hasMore && ($('table.fflist tbody tr').length < (MAX_PAGE_SIZE * 2))) {
-            setTimeout(() => {
-                loadMore()
-            }, 200)
-        }
+        populateList(results)
     })
 }
 
