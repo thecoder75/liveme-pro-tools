@@ -415,7 +415,7 @@ function readComments (u) { ipcRenderer.send('read-comments', { userid: u }) }
 function goHome () {
     $('main').hide()
     $('#home').show()
-    $('footer').hide()
+    $('footer h1').html('Loading Home').show()
 
     $('overlay').hide()
     $('#queue-list').hide()
