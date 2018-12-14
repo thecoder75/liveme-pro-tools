@@ -497,10 +497,7 @@ function restoreData () {
     ipcRenderer.send('restore-backup')
 }
 
-function initHome () {
-    $('#home div.panel').html('')
-
-    // Check for updates
+function checkForUpdatesOfLiveMeProTools() {
     request({
         url: 'https://notabug.org/thecoder1975/liveme-pro-tools/raw/master/package.json',
         method: 'get'
@@ -531,10 +528,16 @@ function initHome () {
             }
         }
     })
+}
+
+function initHome() {
+    $('#home div.panel').html('')
+
+    checkForUpdatesOfLiveMeProTools()
 
     $('#home').show()
     loadBookmarkFeeds()
-    
+
 }
 
 
@@ -542,16 +545,16 @@ function initHome () {
 
 
 function passwordShowToggler(e) {
-    if( e.innerHTML == 'Show' ) {
+    if (e.innerHTML == 'Show') {
         e.innerHTML = 'Hide'
-        document.getElementById('authPassword').type="text";
+        document.getElementById('authPassword').type = "text";
     } else {
         e.innerHTML = 'Show'
-        document.getElementById('authPassword').type="password";
+        document.getElementById('authPassword').type = "password";
     }
 }
 
-function rescanFeeds(){
+function rescanFeeds() {
     DataManager.saveToDisk()
     cachedBookmarkFeeds = undefined
     DataManager.loadFromDisk()
@@ -560,8 +563,8 @@ function rescanFeeds(){
 
 
 
-function loadBookmarkFeeds(){
-    if(!LiveMe.token) //  delay loop until successful login
+function loadBookmarkFeeds() {
+    if (!LiveMe.token) //  delay loop until successful login
     {
         setTimeout(() => loadBookmarkFeeds(), 500)
         $('footer h1').html('Waiting for Login').show()
@@ -569,33 +572,33 @@ function loadBookmarkFeeds(){
     }
 
     clearHomeUI();
- 
-    if(cachedBookmarkFeeds)
-    {
+
+    if (cachedBookmarkFeeds) {
         $('footer h1').html('Bookmark feeds are loaded from cache ...').show()
-        loadFromCache(cachedBookmarkFeeds, addToHome )
+        loadFromCache(cachedBookmarkFeeds, addToHome)
         $('footer h1').html('').show()
-        
-    }else{
+
+    } else {
         $('footer h1').html('Bookmarks are now being scanned for new replays...').show()
         $('#rescan-btn').html("Scanning ...")
-        document.getElementById("rescan-btn").disabled = true; 
+        document.getElementById("rescan-btn").disabled = true;
 
         setProgressBarValue(0)
         showProgressBar()
+
         scanLiveme()
     }
 }
 function scanLiveme() {
     bookmarksFromJson = DataManager.getAllBookmarks()
-    if(bookmarksFromJson.length === 0)
+    if (bookmarksFromJson.length === 0)
         return
- 
+
     cachedBookmarkFeeds = []
-    
+
     setImmediate(() => {
         _scanThread(0)
-    })  
+    })
 }
 function clearHomeUI() {
     $('#home #newreplays').empty();
@@ -603,90 +606,91 @@ function clearHomeUI() {
     $('#home #newfans').empty();
 }
 
-function loadFromCache(bookmarks, dispatch){
+function loadFromCache(bookmarks, dispatch) {
     setImmediate(() => {
-        bookmarks.forEach(b =>{
+        bookmarks.forEach(b => {
             if (b.changed_followings) {
                 dispatch(NEW_FOLLOWINGS, b)
             }
             if (b.changed_followers) {
                 dispatch(NEW_FANS, b)
             }
-            if(b.hasNewReplays)
-            {
+            if (b.hasNewReplays) {
                 dispatch(NEW_REPLAYS, b)
             }
         })
     })
 }
 
-function _scanThread (id) { 
+function _scanThread(id) {
     setImmediate(async () => {
-        if (id < bookmarksFromJson.length - 1) { 
-            // delay scanning: each bookmark scan delayed by 50ms
-            setTimeout(() => _scanThread(id+1), 50)
+        if (id < bookmarksFromJson.length - 1) {
+            // Iterate over bookmarks but start each recursive call with a delay.
+            // Each bookmark entry scan is delayed by 50 ms.
+            setTimeout(() => _scanThread(id + 1), 50)
         }
+
         // UI
-		$('footer h1').html('Checking ' + id + ' of ' + bookmarksFromJson.length + ' bookmarks.')
-		setProgressBarValue((id / bookmarksFromJson.length) * 100)
+        $('footer h1').html('Checking ' + id + ' of ' + bookmarksFromJson.length + ' bookmarks.')
+        setProgressBarValue((id / bookmarksFromJson.length) * 100)
 
-       
-        let uid = bookmarksFromJson[id].uid
-        //let b = DataManager.getSingleBookmark(uid)
+        // Logic
         let currentBookmarkToScan = bookmarksFromJson[id]
-        let updatedBookmark = await _checkBookmark(currentBookmarkToScan, addToHome) 
-        cachedBookmarkFeeds.push(updatedBookmark) 
+        let updatedBookmark = await _checkBookmark(currentBookmarkToScan, addToHome)
+        cachedBookmarkFeeds.push(updatedBookmark)
 
-        // update UI after last element was scanned
-        if(id === bookmarksFromJson.length - 1){
-			$('footer h1').html('Bookmarks scan complete.')
+        // Update UI after last element was scanned.
+        if (id === bookmarksFromJson.length - 1) {
+            $('footer h1').html('Bookmarks scan complete.')
             hideProgressBar()
             $('#rescan-btn').html("Rescan")
-            document.getElementById("rescan-btn").disabled = false; 
+            document.getElementById("rescan-btn").disabled = false;
         }
-        
+
     })
 }
 
 
 
-function addToHome(type, bookmark){
+function addToHome(type, bookmark) {
     if (currentView !== 'home') return
 
     switch (type) {
         case NEW_FOLLOWINGS:
-        $('#home #newfollowings').append(`
-        <div class="bookmark" 
-            id="bookmark-${bookmark.uid}" 
-            onClick="showFollowing('${bookmark.uid}')">
-            <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-            <h1>${bookmark.nickname}</h1>
-            <h3>User is following more accounts now.</h3>
-            <h2>${type}</h2>
-        </div>
+            $('#home #newfollowings').append(`
+                <div class="bookmark" 
+                    id="bookmark-${bookmark.uid}" 
+                    onClick="showFollowing('${bookmark.uid}')">
+                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+                    <h1>${bookmark.nickname}</h1>
+                    <h3>User is following more accounts now.</h3>
+                    <h2>${type}</h2>
+                </div>
         `)
             break;
         case NEW_FANS:
-            $('#home #newfans').append(`<div class="bookmark" 
-            id="bookmark-${bookmark.uid}" 
-            onClick="showFollowers('${bookmark.uid}')">
-            <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-            <h1>${bookmark.nickname}</h1>
-            <h3>User has more fans now.</h3>
-            <h2>${type}</h2>
-        </div>
-        `)
+            $('#home #newfans').append(`
+                <div class="bookmark" 
+                    id="bookmark-${bookmark.uid}" 
+                    onClick="showFollowers('${bookmark.uid}')">
+                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+                    <h1>${bookmark.nickname}</h1>
+                    <h3>User has more fans now.</h3>
+                    <h2>${type}</h2>
+                </div>
+                `)
             break;
         case NEW_REPLAYS:
-            $('#home #newreplays').append(`<div class="bookmark" 
-            id="bookmark-${bookmark.uid}" 
-            onClick="showUser('${bookmark.uid}')">
-            <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-            <h1>${bookmark.nickname}</h1>
-            <h3>User has new replays.</h3>
-            <h2>${type}</h2>
-        </div>
-        `)
+            $('#home #newreplays').append(`
+                <div class="bookmark" 
+                    id="bookmark-${bookmark.uid}" 
+                    onClick="showUser('${bookmark.uid}')">
+                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+                    <h1>${bookmark.nickname}</h1>
+                    <h3>User has new replays.</h3>
+                    <h2>${type}</h2>
+                </div>
+                `)
             break;
         default:
             break;
@@ -694,7 +698,7 @@ function addToHome(type, bookmark){
 
 }
 
-async function _checkBookmark (b, dispatch) {
+async function _checkBookmark(b, dispatch) {
     let uid = b.uid
     if (uid === undefined) return
     if (!LiveMe.user) {
@@ -704,7 +708,7 @@ async function _checkBookmark (b, dispatch) {
     let user = await LiveMe.getUserInfo(uid)
     if (user === undefined) return
 
-    
+
     b.changed_followings = b.counts.followings != user.count_info.following_count
     b.changed_followers = b.counts.followers != user.count_info.follower_count
 
@@ -725,10 +729,10 @@ async function _checkBookmark (b, dispatch) {
     if (b.changed_followers) {
         dispatch(NEW_FANS, b)
     }
-        
+
     if (b.counts.replays > 0) {
         let replays = await LiveMe.getUserReplays(uid, 1, 2)
-        
+
         if (replays === undefined) return
         if (replays.length < 1) return
 
@@ -736,14 +740,14 @@ async function _checkBookmark (b, dispatch) {
             if (replays[i].vtime - b.newest_replay > 0) {
                 b.hasNewReplays = true
                 b.newest_replay = Math.floor(replays[0].vtime)
-                
+
                 dispatch(NEW_REPLAYS, b)
                 break
             }
         }
     }
-        
-    
+
+
     return b;
 }
 
@@ -759,7 +763,6 @@ function saveAccountFace () {
 
 function doSearch () {
     let query = ''
-    let userid = ''
     let q = $('#search-query').val()
 
     if (q.length < 1) return
@@ -1046,29 +1049,7 @@ function _addReplayEntry (replay, wasSearched) {
             source: replay.videosource || replay.hlsvideosource
         })
     )
-    /*
-    let h = `
-        <tr data-id="${replay.vid}" class="${searched} ${seen} user-${replay.userid}">
-            <td width="410" class="${highlight}">${watched}&nbsp;&nbsp;${downloaded}&nbsp;&nbsp;&nbsp;${unlisted}${isLive}${replay.title}</td>
-            <td width="120" class="${highlight}" align="center">${ds}</td>
-            <td width="50" class="${highlight}" align="right">${length}</td>
-            <td width="70" class="${highlight}" align="right">${replay.playnumber}</td>
-            <td width="70" class="${highlight}" align="right">${replay.likenum}</td>
-            <td width="70" class="${highlight}" align="right">${replay.sharenum}</td>
-            <td width="300" class="${highlight}" style="padding: 0 16px; text-align: right;">
-                <a class="button mini icon-small" onClick="copyToClipboard('${replay.vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
-                &nbsp;
-                <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/us/v/${replay.vid}/index.html')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
-                &nbsp;
-                <a class="button mini icon-small" onClick="copyToClipboard('${replay.videosource || replay.hlsvideosource}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
-                &nbsp;&nbsp;&nbsp;
-                <a class="button icon-only" onClick="playVideo('${replay.vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
-                <a class="button icon-only" onClick="readComments('${replay.vid}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
-                ${inQueue}
-            </td>
-        </tr>
-    `
-    */
+ 
     const item = $(html).hide().fadeIn(200)
     $('#list tbody').append(item)
 }
