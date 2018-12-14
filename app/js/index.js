@@ -672,7 +672,7 @@ function addToHome(type, bookmark){
             onClick="showFollowers('${bookmark.uid}')">
             <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
             <h1>${bookmark.nickname}</h1>
-            <h3>User is following more accounts now.</h3>
+            <h3>User has more fans now.</h3>
             <h2>${type}</h2>
         </div>
         `)
@@ -683,7 +683,7 @@ function addToHome(type, bookmark){
             onClick="showUser('${bookmark.uid}')">
             <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
             <h1>${bookmark.nickname}</h1>
-            <h3>User is following more accounts now.</h3>
+            <h3>User has new replays.</h3>
             <h2>${type}</h2>
         </div>
         `)
