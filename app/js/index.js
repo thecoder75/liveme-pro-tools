@@ -1217,7 +1217,7 @@ function saveSettings () {
     const savedEmail = appSettings.get('auth.email')
     const savedPass = appSettings.get('auth.password')
     // Check if inputs contain value and that the values are changed (avoid unecessary auths)
-    if (authEmail && authPass && (authEmail !== savedEmail && authPass !== savedPass)) {
+    if (authEmail && authPass && (authEmail !== savedEmail || authPass !== savedPass)) {
         appSettings.set('auth.email', authEmail)
         appSettings.set('auth.password', authPass)
         LiveMe.setAuthDetails(authEmail, authPass)
