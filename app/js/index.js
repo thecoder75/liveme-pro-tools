@@ -15,13 +15,16 @@ const request = require('request')
 
 let currentUser = {}
 let currentPage = 1
-let currentIndex = 0
-let tempvar = null
 let hasMore = false
 let currentSearch = ''
 let scrollBusy = false
 let currentView = 'home'
+let bookmarksFromJson = undefined
+let cachedBookmarkFeeds = undefined
 
+const NEW_FANS = "New Fans"
+const NEW_FOLLOWINGS = "New Following"
+const NEW_REPLAYS = "New Replay"
 const cclist = [
     [ 'All Countries', '-' ], [ 'Afghanistan', 'AF' ], [ 'Albania', 'AL' ], [ 'Algeria', 'DZ' ], [ 'American Samoa', 'AS' ], [ 'Andorra', 'AD' ],
     [ 'Angola', 'AO' ], [ 'Anguilla', 'AI' ], [ 'Antarctica', 'AQ' ], [ 'Antigua and Barbuda', 'AG' ], [ 'Argentina', 'AR' ], [ 'Armenia', 'AM' ],
@@ -529,12 +532,14 @@ function initHome () {
         }
     })
 
-    var bookmarks = DataManager.getAllBookmarks()
-    tempvar = {
-        index: 0,
-        max: bookmarks.length,
-        list: bookmarks
-    }
+    $('#home').show()
+    loadBookmarkFeeds()
+    
+}
+
+
+
+
 
 function passwordShowToggler(e) {
     if( e.innerHTML == 'Show' ) {
@@ -545,126 +550,201 @@ function passwordShowToggler(e) {
         document.getElementById('authPassword').type="password";
     }
 }
-    $('footer h1').html('Bookmarks are now being scanned for new replays...').show()
-    $('#home').show()
-    $('#home #bookmarklist').empty()
-	showProgressBar()
 
-    setImmediate(() => {
-        _homethread()
-    })
-    
+function rescanFeeds(){
+    DataManager.saveToDisk()
+    cachedBookmarkFeeds = undefined
+    DataManager.loadFromDisk()
+    loadBookmarkFeeds()
 }
 
-function _homethread () {
-    setImmediate(() => {
-        if (tempvar.index < tempvar.max - 1) {
-            setTimeout(() => _homethread(), 50)
-        }
 
-		$('footer h1').html('Checking ' + tempvar.index + ' of ' + tempvar.max + ' bookmarks.')
-		if ((tempvar.index > 0) && (tempvar.index < tempvar.max))
-			setProgressBarValue((tempvar.index / tempvar.max) * 100)
 
-        if (tempvar.index < tempvar.max - 1) { 
-			tempvar.index++
-			_checkBookmark(tempvar.list[tempvar.index].uid) 
-		} else {
-			$('footer h1').html('Bookmarks scan complete.')
-			hideProgressBar()
-        }
-        
-    })
-}
-
-function _checkBookmark (uid) {
-    if (uid === undefined) return
-    if (!LiveMe.user) {
-        return setTimeout(() => _checkBookmark(), 5000)
+function loadBookmarkFeeds(){
+    if(!LiveMe.token) //  delay loop until successful login
+    {
+        setTimeout(() => loadBookmarkFeeds(), 500)
+        $('footer h1').html('Waiting for Login').show()
+        return;
     }
 
-    LiveMe.getUserInfo(uid).then(user => {
-        if (user === undefined) return
+    clearHomeUI();
+ 
+    if(cachedBookmarkFeeds)
+    {
+        $('footer h1').html('Bookmark feeds are loaded from cache ...').show()
+        loadFromCache(cachedBookmarkFeeds, addToHome )
+        $('footer h1').html('').show()
+        
+    }else{
+        $('footer h1').html('Bookmarks are now being scanned for new replays...').show()
+        $('#rescan-btn').html("Scanning ...")
+        document.getElementById("rescan-btn").disabled = true; 
 
-        let b = DataManager.getSingleBookmark(user.user_info.uid)
-        let dt = new Date()
+        setProgressBarValue(0)
+        showProgressBar()
+        scanLiveme()
+    }
+}
+function scanLiveme() {
+    bookmarksFromJson = DataManager.getAllBookmarks()
+    if(bookmarksFromJson.length === 0)
+        return
+ 
+    cachedBookmarkFeeds = []
+    
+    setImmediate(() => {
+        _scanThread(0)
+    })  
+}
+function clearHomeUI() {
+    $('#home #newreplays').empty();
+    $('#home #newfollowings').empty();
+    $('#home #newfans').empty();
+}
 
-        b.counts.changed = (b.counts.followings != user.count_info.following_count) ? true : false
-        b.counts.changed_followers = (b.counts.followers != user.count_info.follower_count) ? true: false
+function loadFromCache(bookmarks, dispatch){
+    setImmediate(() => {
+        bookmarks.forEach(b =>{
+            if (b.changed_followings) {
+                dispatch(NEW_FOLLOWINGS, b)
+            }
+            if (b.changed_followers) {
+                dispatch(NEW_FANS, b)
+            }
+            if(b.hasNewReplays)
+            {
+                dispatch(NEW_REPLAYS, b)
+            }
+        })
+    })
+}
 
-        b.counts.replays = user.count_info.video_count
-        b.counts.friends = user.count_info.friends_count
-        b.counts.followers = user.count_info.follower_count
-        b.counts.followings = user.count_info.following_count
+function _scanThread (id) { 
+    setImmediate(async () => {
+        if (id < bookmarksFromJson.length - 1) { 
+            // delay scanning: each bookmark scan delayed by 50ms
+            setTimeout(() => _scanThread(id+1), 50)
+        }
+        // UI
+		$('footer h1').html('Checking ' + id + ' of ' + bookmarksFromJson.length + ' bookmarks.')
+		setProgressBarValue((id / bookmarksFromJson.length) * 100)
 
-		if (b.counts.changed) {
-			$('#home #bookmarklist').append(`
-				<div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showFollowing('${user.user_info.uid}')">
-					<img src="${user.user_info.face}" class="avatar" onError="$(this).hide()">
-					<h1>${user.user_info.uname}</h1>
-					<h3>User is following more accounts now.</h3>
-					<h2>NEW FOLLOWINGS</h2>
-				</div>
-			`)
-		}
+       
+        let uid = bookmarksFromJson[id].uid
+        //let b = DataManager.getSingleBookmark(uid)
+        let currentBookmarkToScan = bookmarksFromJson[id]
+        let updatedBookmark = await _checkBookmark(currentBookmarkToScan, addToHome) 
+        cachedBookmarkFeeds.push(updatedBookmark) 
 
-        if (b.counts.changed_followers) {
-            $('#home #bookmarklist').append(`
-                <div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showFollowers('${user.user_info.uid}')">
-                    <img src="${user.user_info.face}" class="avatar" onError="$(this).hide()">
-                    <h1>${user.user_info.uname}</h1>
-                    <h3>User has more followers/fans now.</h3>
-                    <h2>NEW FANS</h2>
-                </div>
-            `)
+        // update UI after last element was scanned
+        if(id === bookmarksFromJson.length - 1){
+			$('footer h1').html('Bookmarks scan complete.')
+            hideProgressBar()
+            $('#rescan-btn').html("Rescan")
+            document.getElementById("rescan-btn").disabled = false; 
         }
         
-        b.signature = user.user_info.usign
-        b.sex = user.user_info.sex
-        b.face = user.user_info.face
-        b.nickname = user.user_info.uname
-        b.shortid = user.user_info.short_id
-
-        DataManager.updateBookmark(b)
-		
-        if (b.counts.replays > 0) {
-            LiveMe.getUserReplays(uid, 1, 2)
-                .then(replays => {
-                    if (replays === undefined) return
-                    if (replays.length < 1) return
-
-                    let count = 0
-                    let userid = replays[0].userid
-                    let bookmark = DataManager.getSingleBookmark(userid)
-
-                    for (let i = 0; i < replays.length; i++) {
-                        if (replays[i].vtime - bookmark.newest_replay > 0) {
-                            let latest = prettydate.format(new Date(replays[0].vtime * 1000))
-                            let last = prettydate.format(new Date(bookmark.last_viewed * 1000))
-
-                            bookmark.newest_replay = Math.floor(replays[0].vtime)
-                            DataManager.updateBookmark(bookmark)
-
-                            if (currentView === 'home') {
-                                $('#home #bookmarklist').append(`
-                                    <div class="bookmark" id="bookmark-${bookmark.uid}" onClick="showUser('${bookmark.uid}')">
-                                        <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-                                        <h1>${bookmark.nickname}</h1>
-                                        <h3>Newest replay posted ${latest}</h3>
-                                        <h2>NEW REPLAYS</h2>
-                                    </div>
-                                `)
-                            }
-                            break
-                        }
-                    }
-                })
-                .catch(error => {
-                    // Unhandled error occured
-                    
-                })
-        }
     })
+}
+
+
+
+function addToHome(type, bookmark){
+    if (currentView !== 'home') return
+
+    switch (type) {
+        case NEW_FOLLOWINGS:
+        $('#home #newfollowings').append(`
+        <div class="bookmark" 
+            id="bookmark-${bookmark.uid}" 
+            onClick="showFollowing('${bookmark.uid}')">
+            <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+            <h1>${bookmark.nickname}</h1>
+            <h3>User is following more accounts now.</h3>
+            <h2>${type}</h2>
+        </div>
+        `)
+            break;
+        case NEW_FANS:
+            $('#home #newfans').append(`<div class="bookmark" 
+            id="bookmark-${bookmark.uid}" 
+            onClick="showFollowers('${bookmark.uid}')">
+            <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+            <h1>${bookmark.nickname}</h1>
+            <h3>User is following more accounts now.</h3>
+            <h2>${type}</h2>
+        </div>
+        `)
+            break;
+        case NEW_REPLAYS:
+            $('#home #newreplays').append(`<div class="bookmark" 
+            id="bookmark-${bookmark.uid}" 
+            onClick="showUser('${bookmark.uid}')">
+            <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+            <h1>${bookmark.nickname}</h1>
+            <h3>User is following more accounts now.</h3>
+            <h2>${type}</h2>
+        </div>
+        `)
+            break;
+        default:
+            break;
+    }
+
+}
+
+async function _checkBookmark (b, dispatch) {
+    let uid = b.uid
+    if (uid === undefined) return
+    if (!LiveMe.user) {
+        return setTimeout(async () => await _checkBookmark(), 5000)
+    }
+
+    let user = await LiveMe.getUserInfo(uid)
+    if (user === undefined) return
+
+    
+    b.changed_followings = b.counts.followings != user.count_info.following_count
+    b.changed_followers = b.counts.followers != user.count_info.follower_count
+
+    b.counts.replays = user.count_info.video_count
+    b.counts.friends = user.count_info.friends_count
+    b.counts.followers = user.count_info.follower_count
+    b.counts.followings = user.count_info.following_count
+    b.signature = user.user_info.usign
+    b.sex = user.user_info.sex
+    b.face = user.user_info.face
+    b.nickname = user.user_info.uname
+    b.shortid = user.user_info.short_id
+
+    if (b.changed_followings) {
+        dispatch(NEW_FOLLOWINGS, b)
+    }
+
+    if (b.changed_followers) {
+        dispatch(NEW_FANS, b)
+    }
+        
+    if (b.counts.replays > 0) {
+        let replays = await LiveMe.getUserReplays(uid, 1, 2)
+        
+        if (replays === undefined) return
+        if (replays.length < 1) return
+
+        for (let i = 0; i < replays.length; i++) {
+            if (replays[i].vtime - b.newest_replay > 0) {
+                b.hasNewReplays = true
+                b.newest_replay = Math.floor(replays[0].vtime)
+                
+                dispatch(NEW_REPLAYS, b)
+                break
+            }
+        }
+    }
+        
+    
+    return b;
 }
 
 function saveAccountFace () {
