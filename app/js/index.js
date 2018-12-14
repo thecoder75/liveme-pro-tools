@@ -91,6 +91,21 @@ $(function () {
 	}, 300000)
 })
 
+async function loginManually(){
+    try {
+        if (appSettings.get('auth.email') && appSettings.get('auth.password')) 
+        {
+            await LiveMe.setAuthDetails(
+                appSettings.get('auth.email').trim(), 
+                appSettings.get('auth.password').trim())
+            alert("success")      
+        }     
+    } catch (error) {
+        alert(error)
+    }
+
+}
+
 function setupContextMenu () {
     const InputMenu = remote.Menu.buildFromTemplate([{
         label: 'Undo',
@@ -521,6 +536,15 @@ function initHome () {
         list: bookmarks
     }
 
+function passwordShowToggler(e) {
+    if( e.innerHTML == 'Show' ) {
+        e.innerHTML = 'Hide'
+        document.getElementById('authPassword').type="text";
+    } else {
+        e.innerHTML = 'Show'
+        document.getElementById('authPassword').type="password";
+    }
+}
     $('footer h1').html('Bookmarks are now being scanned for new replays...').show()
     $('#home').show()
     $('#home #bookmarklist').empty()
@@ -1178,6 +1202,13 @@ function initSettingsPanel () {
         $('#countryCode').append(`<option value="${cclist[i][1]}" ${isblocked}>${cclist[i][0]}</option>`)
     }
 
+}
+
+function saveLoginManually(){
+    const authEmail = $('#authEmail').val().trim()
+    const authPass = $('#authPassword').val().trim()
+    appSettings.set('auth.email', authEmail)
+    appSettings.set('auth.password', authPass)
 }
 
 function saveSettings () {
