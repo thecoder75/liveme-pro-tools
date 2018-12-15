@@ -512,11 +512,11 @@ function checkForUpdatesOfLiveMeProTools() {
             let upgrade = (g[0] - l[0]) + (g[1] - l[1])
 
             if (upgrade > 0) {
-                if ($('#home div.panel .section').length < 1) {
-                    $('#home div.panel').empty()
+                if ($('#lmptUpdateNews').length < 1) {
+                    $('#lmptUpdateNews').empty()
                 }
 
-                $('#home div.panel').append(`
+                $('#lmptUpdateNews').append(`
                     <div class="section">
                         <h3><i class="icon icon-download"></i> Update Available</h3>
                         <p>
@@ -531,7 +531,7 @@ function checkForUpdatesOfLiveMeProTools() {
 }
 
 function initHome() {
-    $('#home div.panel').html('')
+    $('#lmptUpdateNews').html('')
 
     checkForUpdatesOfLiveMeProTools()
 

@@ -14,6 +14,31 @@
             const { ipcRenderer, remote } = require('electron'), LiveMe = remote.getGlobal('LiveMe');
             var videoid = '', userid = '';
 
+            // Keyboard key to function mapping.
+            const keyMapping = {
+                'KeyJ' : back10,
+                'KeyK' : pause,
+                'KeyL' : skip10
+            }
+
+            function skip10() {
+                const video = document.getElementById('video');
+                video.currentTime = video.currentTime + 10
+            }
+            function pause() {
+                const video = document.getElementById('video');
+                video.paused ? video.play() : video.pause()
+            }
+            function back10() {
+                const video = document.getElementById('video');
+                video.currentTime = video.currentTime - 10
+            }
+
+            document.onkeypress = (e) => {
+                e = e || window.event;
+                e.code in keyMapping ? keyMapping[e.code]() : _                        
+            }
+
             $(function(){
 
                 var t=window.location.href.split('?');
