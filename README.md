@@ -3,7 +3,9 @@
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
 ### Support/Assistance/Reporting Issues
-Please use the [Discord chat room](https://discord.gg/A5p2aF4) for questions about its usage and to report any bugs.  There are now many on there who provide help and also work on this now.
+I've re-enabled the Issue Tracker here.  Please use it **ONLY** to report bugs or feature requests.
+
+For help in general use and general questions, please use the [Discord chat room](https://discord.gg/A5p2aF4).  There are now many on there who provide help and also work on this now.
 
 **I DO NOT RESPOND TO EMAILS EITHER ASKING FOR ASSISTANCE!**  This is my spare-time project so use the Discord chat room as others will assist as they can.
 
