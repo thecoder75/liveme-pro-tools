@@ -886,7 +886,7 @@ function performUserLookup (uid) {
             $('#user-details div.info h2.level').html('<span>Level:</span><b>' + user.user_info.level + '</b>')
             $('#user-details div.info h4').html(`
                 <abbr 
-                    title="${countryCodes.getByAbbr(user.user_info.countryCode)}">
+                    title="${countryCodes.getFullName(user.user_info.countryCode)}">
                     ${user.user_info.countryCode}
                 </abbr>
                 `)

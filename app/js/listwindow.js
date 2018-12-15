@@ -264,12 +264,12 @@ function addEntry (entry) {
                 <div class="bookmarked"><a style="cursor:pointer" onClick="AddToBookmarks('${entry.uid}')" class="bookmark-${entry.uid}"><i class="icon icon-${bookmarked}"></i></a></div>
                 <h1>${entry.nickname}</h1>
                 <div id="user-${entry.uid}" class="countrylevel" data-seen="Last seen ${seenDate}">
-                    <span style="display: block; height:1px; white-space:nowrap;">
+                    <div style="display: block; height:1px; white-space:nowrap;">
                         ${entry.countryCode} &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
                         <b>Level:</b> ${entry.level} &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-                        ${countryCodes.getByAbbr(entry.countryCode) }
-                    </span>
-                    <div class="cell" style="width: 160px; text-align: right;">
+                        ${countryCodes.getFullName(entry.countryCode) }
+                    </div>
+                    <div class="cell" style="float:right" text-align: right;">
                         ${seenDate}
                     </div>
                     <br>
