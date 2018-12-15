@@ -47,7 +47,9 @@ const ccDict = cclist.reduce((map, obj) => {
     return map;
 }, {});
 
+
 exports.getFullName = function (abbr) {
+
         return abbr in ccDict ? ccDict[abbr] : "Unkown country"
     }
 

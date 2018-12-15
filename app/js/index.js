@@ -109,6 +109,22 @@ function setupContextMenu () {
             node = node.parentNode
         }
     })
+
+    const CopyableContextMenu = remote.Menu.buildFromTemplate([
+        {
+            label: 'Copy',
+            role: 'copy'
+        }, {
+            label: 'Select all',
+            role: 'selectall'
+        }
+    ])
+
+    document.getElementById("username").addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        CopyableContextMenu.popup(remote.getCurrentWindow())
+    })
 }
 
 function setupLoadOnScroll () {
@@ -316,8 +332,8 @@ function showUser (u) {
 }
 
 function openBookmarks () { ipcRenderer.send('open-bookmarks') }
-function showFollowing (u) { ipcRenderer.send('open-followings-window', { userid: currentUser.uid !== undefined ? currentUser.uid : u }) }
-function showFollowers (u) { ipcRenderer.send('open-followers-window', { userid: currentUser.uid !== undefined ? currentUser.uid : u }) }
+function showFollowing (u) { ipcRenderer.send('open-followings-window', { userid: u === undefined ? currentUser.uid : u }) }
+function showFollowers (u) { ipcRenderer.send('open-followers-window', { userid: u === undefined ? currentUser.uid : u }) }
 function playVideo (vid) { ipcRenderer.send('watch-replay', { videoid: vid }) }
 function sortReplays (name) {
     $('table#list tbody tr').sort(function (a, b) {
@@ -472,11 +488,11 @@ function checkForUpdatesOfLiveMeProTools() {
             let upgrade = (g[0] - l[0]) + (g[1] - l[1])
 
             if (upgrade > 0) {
-                if ($('#home div.panel .section').length < 1) {
-                    $('#home div.panel').empty()
+                if ($('#lmptUpdateNews').length < 1) {
+                    $('#lmptUpdateNews').empty()
                 }
 
-                $('#home div.panel').append(`
+                $('#lmptUpdateNews').append(`
                     <div class="section">
                         <h3><i class="icon icon-download"></i> Update Available</h3>
                         <p>
@@ -491,7 +507,7 @@ function checkForUpdatesOfLiveMeProTools() {
 }
 
 function initHome() {
-    $('#home div.panel').html('')
+    $('#lmptUpdateNews').html('')
 
     checkForUpdatesOfLiveMeProTools()
 
