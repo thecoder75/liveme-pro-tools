@@ -58,3 +58,9 @@ ul li {
 .marginHomeElement {
     margin: 12px;
 }
+
+abbr[title] {
+    border-bottom: none !important;
+    cursor: inherit !important;
+    text-decoration: none !important;
+  }
