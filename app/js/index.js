@@ -512,7 +512,7 @@ function initHome() {
     checkForUpdatesOfLiveMeProTools()
 
     $('#home').show()
-    //loadBookmarkFeeds()
+    loadBookmarkFeeds()
 
 }
 
