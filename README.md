@@ -1,9 +1,9 @@
 # LiveMe Pro Tools
 
-**The time I have to spend on this project is now very limited.  Please be patient with me as I work on updates and releases.**
+**A big thank you to all those who are now contributing to help make this tool even better!**
 
 ### Support/Assistance/Reporting Issues
-Due to people repeating the same questions without reading previous postings, I've disabled the Issues Tracker here.  For reporting issues or for usage assistance, please visit the [Discord chat room](https://discord.gg/A5p2aF4).
+Please use the [Discord chat room](https://discord.gg/A5p2aF4) for questions about its usage and to report any bugs.  There are now many on there who provide help and also work on this now.
 
 **I DO NOT RESPOND TO EMAILS EITHER ASKING FOR ASSISTANCE!**  This is my spare-time project so use the Discord chat room as others will assist as they can.
 
@@ -14,13 +14,13 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - See and navigate user's followers and followings
 - Watch and download replays
 - Allows downloading of replays using FFMPEG
-- Supports [LAMD](https://thecoderstoolbox.com/lamd)
+- Supports [LAMD](https://notabug.org/thecoder75/lamd)
 
 ### Prebuilt Releases
 **Releases will now be built by TheCoder and added as updates warrant them.
 
 **Planned Supported Platforms:**
-- Ubuntu-based Linux and Debian Distributions (64-bit only!)
+- Ubuntu-based Linux and Debian Distributions (32 and 64-bit)
 - macOS v10.11 or higher (64-bit only!)
 - Windows 7 or higher (32 and 64-bit!)
 
@@ -40,9 +40,11 @@ If you find any bugs or would like to help add features or additional functions,
 
 ### Contributors
 * [thecoder75](https://notabug.com/thecoder75)
-* [Tashiketh](https://notabug.org/Tashiketh)
 * [zp](https://github.com/zp)
+* [polydragon](https://github.com/polydragon)
 * [lewdninja](https://github.com/lewdninja)
+* [Tashiketh](https://notabug.org/Tashiketh)
+* [monstergarden](https://github.com/monstergarden)
 
 ### License
 This project is licensed under the GPL-3 License - see the [LICENSE](LICENSE) file for details
