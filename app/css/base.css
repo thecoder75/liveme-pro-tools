@@ -54,3 +54,7 @@ ul li {
     color: #9356f3;
     font-weight: bold;
 }
+
+.marginHomeElement {
+    margin: 12px;
+}

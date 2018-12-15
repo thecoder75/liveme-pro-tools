@@ -105,14 +105,20 @@ class LiveMe {
                 'user-agent': 'FBAndroidSDK.0.0.1'
             },
             body: `--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="cmversion"\r\n\r\n38551987\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="code"\r\n\r\n\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="name"\r\n\r\n${this.email}\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="extra"\r\n\r\nuserinfo\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="password"\r\n\r\n${this.password}\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f`,
-            transform: function (body) {
-                if (typeof body === 'string') body = JSON.parse(body)
-                if (body.status === undefined) body.status = 200
-                if (body.ret === undefined) body.ret = 1
-                if (body.status != 200 || body.ret != 1) {
-                    throw new Error('Request failed.')
+            transform:  (rawBody) => {
+                if (typeof rawBody === 'string') 
+                {
+                    let body = JSON.parse(rawBody)
+                    if (body.status === undefined) body.status = 200
+                    if (body.ret === undefined) body.ret = 1
+                    if (body.status != 200 || body.ret != 1) {
+                        throw new Error(`Request failed with PW:${this.password} and ${this.email}. Got: ${rawBody}`   )
+                    }
+                    return body.data
                 }
-                return body.data
+                throw new Error(`Request failed with PW:${this.password} and ${this.email}. Got: ${rawBody}`   )
+
+
             }
         })
         .then(json => {

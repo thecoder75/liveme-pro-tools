@@ -15,13 +15,16 @@ const request = require('request')
 
 let currentUser = {}
 let currentPage = 1
-let currentIndex = 0
-let tempvar = null
 let hasMore = false
 let currentSearch = ''
 let scrollBusy = false
 let currentView = 'home'
+let bookmarksFromJson = undefined
+let cachedBookmarkFeeds = undefined
 
+const NEW_FANS = "New Fans"
+const NEW_FOLLOWINGS = "New Following"
+const NEW_REPLAYS = "New Replay"
 const cclist = [
     [ 'All Countries', '-' ], [ 'Afghanistan', 'AF' ], [ 'Albania', 'AL' ], [ 'Algeria', 'DZ' ], [ 'American Samoa', 'AS' ], [ 'Andorra', 'AD' ],
     [ 'Angola', 'AO' ], [ 'Anguilla', 'AI' ], [ 'Antarctica', 'AQ' ], [ 'Antigua and Barbuda', 'AG' ], [ 'Argentina', 'AR' ], [ 'Armenia', 'AM' ],
@@ -90,6 +93,21 @@ $(function () {
 		DataManager.saveToDisk()
 	}, 300000)
 })
+
+async function loginManually(){
+    try {
+        if (appSettings.get('auth.email') && appSettings.get('auth.password')) 
+        {
+            await LiveMe.setAuthDetails(
+                appSettings.get('auth.email').trim(), 
+                appSettings.get('auth.password').trim())
+            alert("success")      
+        }     
+    } catch (error) {
+        alert(error)
+    }
+
+}
 
 function setupContextMenu () {
     const InputMenu = remote.Menu.buildFromTemplate([{
@@ -400,7 +418,7 @@ function readComments (u) { ipcRenderer.send('read-comments', { userid: u }) }
 function goHome () {
     $('main').hide()
     $('#home').show()
-    $('footer').hide()
+    $('footer h1').html('Loading Home').show()
 
     $('overlay').hide()
     $('#queue-list').hide()
@@ -479,10 +497,7 @@ function restoreData () {
     ipcRenderer.send('restore-backup')
 }
 
-function initHome () {
-    $('#home div.panel').html('')
-
-    // Check for updates
+function checkForUpdatesOfLiveMeProTools() {
     request({
         url: 'https://notabug.org/thecoder1975/liveme-pro-tools/raw/master/package.json',
         method: 'get'
@@ -513,134 +528,227 @@ function initHome () {
             }
         }
     })
+}
 
-    var bookmarks = DataManager.getAllBookmarks()
-    tempvar = {
-        index: 0,
-        max: bookmarks.length,
-        list: bookmarks
+function initHome() {
+    $('#home div.panel').html('')
+
+    checkForUpdatesOfLiveMeProTools()
+
+    $('#home').show()
+    loadBookmarkFeeds()
+
+}
+
+
+
+
+
+function passwordShowToggler(e) {
+    if (e.innerHTML == 'Show') {
+        e.innerHTML = 'Hide'
+        document.getElementById('authPassword').type = "text";
+    } else {
+        e.innerHTML = 'Show'
+        document.getElementById('authPassword').type = "password";
+    }
+}
+
+function rescanFeeds() {
+    DataManager.saveToDisk()
+    cachedBookmarkFeeds = undefined
+    DataManager.loadFromDisk()
+    loadBookmarkFeeds()
+}
+
+
+
+function loadBookmarkFeeds() {
+    if (!LiveMe.token) //  delay loop until successful login
+    {
+        setTimeout(() => loadBookmarkFeeds(), 500)
+        $('footer h1').html('Waiting for Login').show()
+        return;
     }
 
-    $('footer h1').html('Bookmarks are now being scanned for new replays...').show()
-    $('#home').show()
-    $('#home #bookmarklist').empty()
-	showProgressBar()
+    clearHomeUI();
+
+    if (cachedBookmarkFeeds) {
+        $('footer h1').html('Bookmark feeds are loaded from cache ...').show()
+        loadFromCache(cachedBookmarkFeeds, addToHome)
+        $('footer h1').html('').show()
+
+    } else {
+        $('footer h1').html('Bookmarks are now being scanned for new replays...').show()
+        $('#rescan-btn').html("Scanning ...")
+        document.getElementById("rescan-btn").disabled = true;
+
+        setProgressBarValue(0)
+        showProgressBar()
+
+        scanLiveme()
+    }
+}
+function scanLiveme() {
+    bookmarksFromJson = DataManager.getAllBookmarks()
+    if (bookmarksFromJson.length === 0)
+        return
+
+    cachedBookmarkFeeds = []
 
     setImmediate(() => {
-        _homethread()
+        _scanThread(0)
     })
-    
+}
+function clearHomeUI() {
+    $('#home #newreplays').empty();
+    $('#home #newfollowings').empty();
+    $('#home #newfans').empty();
 }
 
-function _homethread () {
+function loadFromCache(bookmarks, dispatch) {
     setImmediate(() => {
-        if (tempvar.index < tempvar.max - 1) {
-            setTimeout(() => _homethread(), 50)
-        }
-
-		$('footer h1').html('Checking ' + tempvar.index + ' of ' + tempvar.max + ' bookmarks.')
-		if ((tempvar.index > 0) && (tempvar.index < tempvar.max))
-			setProgressBarValue((tempvar.index / tempvar.max) * 100)
-
-        if (tempvar.index < tempvar.max - 1) { 
-			tempvar.index++
-			_checkBookmark(tempvar.list[tempvar.index].uid) 
-		} else {
-			$('footer h1').html('Bookmarks scan complete.')
-			hideProgressBar()
-        }
-        
+        bookmarks.forEach(b => {
+            if (b.changed_followings) {
+                dispatch(NEW_FOLLOWINGS, b)
+            }
+            if (b.changed_followers) {
+                dispatch(NEW_FANS, b)
+            }
+            if (b.hasNewReplays) {
+                dispatch(NEW_REPLAYS, b)
+            }
+        })
     })
 }
 
-function _checkBookmark (uid) {
+function _scanThread(id) {
+    setImmediate(async () => {
+        if (id < bookmarksFromJson.length - 1) {
+            // Iterate over bookmarks but start each recursive call with a delay.
+            // Each bookmark entry scan is delayed by 50 ms.
+            setTimeout(() => _scanThread(id + 1), 50)
+        }
+
+        // UI
+        $('footer h1').html('Checking ' + id + ' of ' + bookmarksFromJson.length + ' bookmarks.')
+        setProgressBarValue((id / bookmarksFromJson.length) * 100)
+
+        // Logic
+        let currentBookmarkToScan = bookmarksFromJson[id]
+        let updatedBookmark = await _checkBookmark(currentBookmarkToScan, addToHome)
+        cachedBookmarkFeeds.push(updatedBookmark)
+
+        // Update UI after last element was scanned.
+        if (id === bookmarksFromJson.length - 1) {
+            $('footer h1').html('Bookmarks scan complete.')
+            hideProgressBar()
+            $('#rescan-btn').html("Rescan")
+            document.getElementById("rescan-btn").disabled = false;
+        }
+
+    })
+}
+
+
+
+function addToHome(type, bookmark) {
+    if (currentView !== 'home') return
+
+    switch (type) {
+        case NEW_FOLLOWINGS:
+            $('#home #newfollowings').append(`
+                <div class="bookmark" 
+                    id="bookmark-${bookmark.uid}" 
+                    onClick="showFollowing('${bookmark.uid}')">
+                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+                    <h1>${bookmark.nickname}</h1>
+                    <h3>User is following more accounts now.</h3>
+                    <h2>${type}</h2>
+                </div>
+        `)
+            break;
+        case NEW_FANS:
+            $('#home #newfans').append(`
+                <div class="bookmark" 
+                    id="bookmark-${bookmark.uid}" 
+                    onClick="showFollowers('${bookmark.uid}')">
+                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+                    <h1>${bookmark.nickname}</h1>
+                    <h3>User has more fans now.</h3>
+                    <h2>${type}</h2>
+                </div>
+                `)
+            break;
+        case NEW_REPLAYS:
+            $('#home #newreplays').append(`
+                <div class="bookmark" 
+                    id="bookmark-${bookmark.uid}" 
+                    onClick="showUser('${bookmark.uid}')">
+                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+                    <h1>${bookmark.nickname}</h1>
+                    <h3>User has new replays.</h3>
+                    <h2>${type}</h2>
+                </div>
+                `)
+            break;
+        default:
+            break;
+    }
+
+}
+
+async function _checkBookmark(b, dispatch) {
+    let uid = b.uid
     if (uid === undefined) return
     if (!LiveMe.user) {
-        return setTimeout(() => _checkBookmark(), 5000)
+        return setTimeout(async () => await _checkBookmark(), 5000)
     }
 
-    LiveMe.getUserInfo(uid).then(user => {
-        if (user === undefined) return
+    let user = await LiveMe.getUserInfo(uid)
+    if (user === undefined) return
 
-        let b = DataManager.getSingleBookmark(user.user_info.uid)
-        let dt = new Date()
 
-        b.counts.changed = (b.counts.followings != user.count_info.following_count) ? true : false
-        b.counts.changed_followers = (b.counts.followers != user.count_info.follower_count) ? true: false
+    b.changed_followings = b.counts.followings != user.count_info.following_count
+    b.changed_followers = b.counts.followers != user.count_info.follower_count
 
-        b.counts.replays = user.count_info.video_count
-        b.counts.friends = user.count_info.friends_count
-        b.counts.followers = user.count_info.follower_count
-        b.counts.followings = user.count_info.following_count
+    b.counts.replays = user.count_info.video_count
+    b.counts.friends = user.count_info.friends_count
+    b.counts.followers = user.count_info.follower_count
+    b.counts.followings = user.count_info.following_count
+    b.signature = user.user_info.usign
+    b.sex = user.user_info.sex
+    b.face = user.user_info.face
+    b.nickname = user.user_info.uname
+    b.shortid = user.user_info.short_id
 
-		if (b.counts.changed) {
-			$('#home #bookmarklist').append(`
-				<div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showFollowing('${user.user_info.uid}')">
-					<img src="${user.user_info.face}" class="avatar" onError="$(this).hide()">
-					<h1>${user.user_info.uname}</h1>
-					<h3>User is following more accounts now.</h3>
-					<h2>NEW FOLLOWINGS</h2>
-				</div>
-			`)
-		}
+    if (b.changed_followings) {
+        dispatch(NEW_FOLLOWINGS, b)
+    }
 
-        if (b.counts.changed_followers) {
-            $('#home #bookmarklist').append(`
-                <div class="bookmark" id="bookmark-${user.user_info.uid}" onClick="showFollowers('${user.user_info.uid}')">
-                    <img src="${user.user_info.face}" class="avatar" onError="$(this).hide()">
-                    <h1>${user.user_info.uname}</h1>
-                    <h3>User has more followers/fans now.</h3>
-                    <h2>NEW FANS</h2>
-                </div>
-            `)
+    if (b.changed_followers) {
+        dispatch(NEW_FANS, b)
+    }
+
+    if (b.counts.replays > 0) {
+        let replays = await LiveMe.getUserReplays(uid, 1, 2)
+
+        if (replays === undefined) return
+        if (replays.length < 1) return
+
+        for (let i = 0; i < replays.length; i++) {
+            if (replays[i].vtime - b.newest_replay > 0) {
+                b.hasNewReplays = true
+                b.newest_replay = Math.floor(replays[0].vtime)
+
+                dispatch(NEW_REPLAYS, b)
+                break
+            }
         }
-        
-        b.signature = user.user_info.usign
-        b.sex = user.user_info.sex
-        b.face = user.user_info.face
-        b.nickname = user.user_info.uname
-        b.shortid = user.user_info.short_id
+    }
 
-        DataManager.updateBookmark(b)
-		
-        if (b.counts.replays > 0) {
-            LiveMe.getUserReplays(uid, 1, 2)
-                .then(replays => {
-                    if (replays === undefined) return
-                    if (replays.length < 1) return
 
-                    let count = 0
-                    let userid = replays[0].userid
-                    let bookmark = DataManager.getSingleBookmark(userid)
-
-                    for (let i = 0; i < replays.length; i++) {
-                        if (replays[i].vtime - bookmark.newest_replay > 0) {
-                            let latest = prettydate.format(new Date(replays[0].vtime * 1000))
-                            let last = prettydate.format(new Date(bookmark.last_viewed * 1000))
-
-                            bookmark.newest_replay = Math.floor(replays[0].vtime)
-                            DataManager.updateBookmark(bookmark)
-
-                            if (currentView === 'home') {
-                                $('#home #bookmarklist').append(`
-                                    <div class="bookmark" id="bookmark-${bookmark.uid}" onClick="showUser('${bookmark.uid}')">
-                                        <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-                                        <h1>${bookmark.nickname}</h1>
-                                        <h3>Newest replay posted ${latest}</h3>
-                                        <h2>NEW REPLAYS</h2>
-                                    </div>
-                                `)
-                            }
-                            break
-                        }
-                    }
-                })
-                .catch(error => {
-                    // Unhandled error occured
-                    
-                })
-        }
-    })
+    return b;
 }
 
 function saveAccountFace () {
@@ -655,7 +763,6 @@ function saveAccountFace () {
 
 function doSearch () {
     let query = ''
-    let userid = ''
     let q = $('#search-query').val()
 
     if (q.length < 1) return
@@ -942,29 +1049,7 @@ function _addReplayEntry (replay, wasSearched) {
             source: replay.videosource || replay.hlsvideosource
         })
     )
-    /*
-    let h = `
-        <tr data-id="${replay.vid}" class="${searched} ${seen} user-${replay.userid}">
-            <td width="410" class="${highlight}">${watched}&nbsp;&nbsp;${downloaded}&nbsp;&nbsp;&nbsp;${unlisted}${isLive}${replay.title}</td>
-            <td width="120" class="${highlight}" align="center">${ds}</td>
-            <td width="50" class="${highlight}" align="right">${length}</td>
-            <td width="70" class="${highlight}" align="right">${replay.playnumber}</td>
-            <td width="70" class="${highlight}" align="right">${replay.likenum}</td>
-            <td width="70" class="${highlight}" align="right">${replay.sharenum}</td>
-            <td width="300" class="${highlight}" style="padding: 0 16px; text-align: right;">
-                <a class="button mini icon-small" onClick="copyToClipboard('${replay.vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
-                &nbsp;
-                <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/us/v/${replay.vid}/index.html')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
-                &nbsp;
-                <a class="button mini icon-small" onClick="copyToClipboard('${replay.videosource || replay.hlsvideosource}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
-                &nbsp;&nbsp;&nbsp;
-                <a class="button icon-only" onClick="playVideo('${replay.vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
-                <a class="button icon-only" onClick="readComments('${replay.vid}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
-                ${inQueue}
-            </td>
-        </tr>
-    `
-    */
+ 
     const item = $(html).hide().fadeIn(200)
     $('#list tbody').append(item)
 }
@@ -1180,13 +1265,20 @@ function initSettingsPanel () {
 
 }
 
+function saveLoginManually(){
+    const authEmail = $('#authEmail').val().trim()
+    const authPass = $('#authPassword').val().trim()
+    appSettings.set('auth.email', authEmail)
+    appSettings.set('auth.password', authPass)
+}
+
 function saveSettings () {
     const authEmail = $('#authEmail').val().trim()
     const authPass = $('#authPassword').val().trim()
     const savedEmail = appSettings.get('auth.email')
     const savedPass = appSettings.get('auth.password')
     // Check if inputs contain value and that the values are changed (avoid unecessary auths)
-    if (authEmail && authPass && (authEmail !== savedEmail && authPass !== savedPass)) {
+    if (authEmail && authPass && (authEmail !== savedEmail || authPass !== savedPass)) {
         appSettings.set('auth.email', authEmail)
         appSettings.set('auth.password', authPass)
         LiveMe.setAuthDetails(authEmail, authPass)

@@ -45,7 +45,19 @@
         </header>
 
         <div id="home">
-            <div id="bookmarklist"></div>
+            <div id="bookmarklist">
+            <button id="rescan-btn" disabled=true onClick="rescanFeeds()" class="marginHomeElement">Scanning ...</button>
+            <h4 class="marginHomeElement">NEW REPLAYS</h4>
+             <div id="newreplays" cl></div> 
+
+             <h4 class="marginHomeElement">NEW FOLLOWINGS</h4>
+
+             <div id="newfollowings"></div> 
+
+             <h4 class="marginHomeElement">NEW FANS</h4>
+             <div id="newfans"></div> 
+
+            </div>
             <div class="panel"></div>
         </div>
 
@@ -134,6 +146,10 @@
                             <input type="text" id="authEmail" placeholder="user@example.com" style="width: 100%;margin-bottom:5px;" onBlur="saveSettings()"><br>
                             <input type="password" id="authPassword" placeholder="Password" style="width: 100%;" onBlur="saveSettings()"><br>
                         </li>
+                        <button onClick="loginManually()">Check Login</button>
+                        <button onClick="saveLoginManually()">Save</button>
+                        <button onclick="passwordShowToggler(this)" type="button">Show</button>
+                        
                     </ul>
                 </div>
                 <div class="section">
@@ -368,7 +384,7 @@
             <div id="footer-progressbar">
                 <div></div>
             </div>
-            <h1>&nbsp;</h1>
+            <h1>Loading Home</h1>
         </footer>
     </body>
 </html>
