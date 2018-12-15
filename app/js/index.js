@@ -72,7 +72,7 @@ const cclist = [
 $(function () {
     document.title = 'LiveMe Pro Tools v' + remote.app.getVersion() // Set Title of Window
 
-    setupContextMenu() // Set up the Context Menu for Cut/Copy/Paste on text fields
+    setupContextMenu() // Set up the Context Menu for some UI elements
     onTypeChange() // Init Search Field
     setupIPCListeners() // Set up our IPC listeners
     setupLoadOnScroll() // Setup loading more on scroll only when searching for usernames
@@ -148,6 +148,22 @@ function setupContextMenu () {
             }
             node = node.parentNode
         }
+    })
+
+    const CopyableContextMenu = remote.Menu.buildFromTemplate([
+        {
+            label: 'Copy',
+            role: 'copy'
+        }, {
+            label: 'Select all',
+            role: 'selectall'
+        }
+    ])
+
+    document.getElementById("username").addEventListener('contextmenu', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        CopyableContextMenu.popup(remote.getCurrentWindow())
     })
 }
 
@@ -536,7 +552,7 @@ function initHome() {
     checkForUpdatesOfLiveMeProTools()
 
     $('#home').show()
-    loadBookmarkFeeds()
+    //loadBookmarkFeeds()
 
 }
 
