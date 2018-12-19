@@ -2,12 +2,13 @@ const events = require('events')
 const path = require('path')
 const fs = require('fs')
 const { app } = require('electron')
-// const LiveMeAPI = require('liveme-api')
 
 let bookmarks = []
 let profiles = []
 let downloaded = []
 let watched = []
+let ignored_temp = []
+let ignored_forever = []
 let errored = []
 let queued = []
 let isBusy = false
@@ -30,6 +31,8 @@ class DataManager {
         profiles = []
         downloaded = []
         watched = []
+        ignored_temp = []
+        ignored_forever = []
         errored = []
         queued = []
 
@@ -37,6 +40,7 @@ class DataManager {
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), '[]', () => { })
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), '[]', () => { })
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), '[]', () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'ignored.json'), '[]', () => { })
 
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), '[]', () => { })
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), '[]', () => { })
@@ -59,20 +63,20 @@ class DataManager {
                 } else {
                     bookmarks = JSON.parse(data)
 
-					if (bookmarks[0].counts.changed == undefined) {
-						// Upgrade to new format
+                    if (bookmarks[0].counts.changed == undefined) {
+                        // Upgrade to new format
 
-						for (var i = 0; i < bookmarks.length; i++)
-							bookmarks[i].counts = {
-								replays: bookmarks[i].counts.replays,
-								friends: bookmarks[i].counts.friends,
-								followers: bookmarks[i].counts.followers,
-								followings: bookmarks[i].counts.followings,
-								changed: false
-							}
+                        for (var i = 0; i < bookmarks.length; i++)
+                            bookmarks[i].counts = {
+                                replays: bookmarks[i].counts.replays,
+                                friends: bookmarks[i].counts.friends,
+                                followers: bookmarks[i].counts.followers,
+                                followings: bookmarks[i].counts.followings,
+                                changed: false
+                            }
 
-						fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), () => { })
-					}                    
+                        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), () => { })
+                    }
                 }
             })
         }
@@ -103,6 +107,15 @@ class DataManager {
                 }
             })
         }
+        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'ignored.json'))) {
+            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'ignored.json'), 'utf8', function (err, data) {
+                if (err) {
+                    ignored_forever = []
+                } else {
+                    ignored_forever = JSON.parse(data)
+                }
+            })
+        }
         if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'errored.json'))) {
             fs.readFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), 'utf8', function (err, data) {
                 if (err) {
@@ -130,6 +143,7 @@ class DataManager {
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), () => { })
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), () => { })
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), () => { })
+        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'ignored.json'), JSON.stringify(ignored_forever), () => { })
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), () => { })
         fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), () => { })
     }
@@ -162,6 +176,41 @@ class DataManager {
         }
         return ret
     }
+
+
+    /**
+     * Ignore Accounts
+     */
+    addIgnoredForever (userid) {
+        isBusy = true
+
+        let entry = userid in ignored_forever;
+        let dt = new Date()
+
+        if (entry != null) {
+            ignored_forever.push(userid)
+        }
+        isBusy = false
+    }
+
+    addIgnoredSession (userid) {
+        isBusy = true
+
+        let entry = userid in ignored_temp;
+        let dt = new Date()
+
+        if (entry == false) {
+            ignored_temp.push(userid)
+        }
+        isBusy = false
+    }
+
+    isIgnored (userid) {
+        return userid in ignored_forever || userid in ignored_temp;
+    }
+
+
+
 
     /**
      * Track Watched Replays
