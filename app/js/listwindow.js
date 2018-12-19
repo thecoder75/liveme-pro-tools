@@ -4,6 +4,7 @@ const { ipcRenderer, remote, clipboard } = require('electron')
 const LiveMe = remote.getGlobal('LiveMe')
 const appSettings = require('electron-settings')
 const DataManager = remote.getGlobal('DataManager')
+const Blacklist = remote.getGlobal('Blacklist')
 
 let winType = 0
 let userid = ''
@@ -186,6 +187,8 @@ function populateList(results) {
             }
 
             if (isBlocked) continue
+
+            if(Blacklist.isBlacklisted(results[i].uid)) continue
 
             if ((filters.seen === true) && (filters.countryCode.length < 2)) {
                 addEntry(results[i])
