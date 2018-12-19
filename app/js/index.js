@@ -45,25 +45,25 @@ $(function () {
         LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
     }
 
-	setTimeout(() => {
-		initHome()
-	}, 5000)
-    
+    setTimeout(() => {
+        initHome()
+    }, 5000)
+
     // Store Bookmarks, History and more every 5 minutes (300,000ms) in case of a crash or something
     setInterval(() => {
-		DataManager.saveToDisk()
-	}, 300000)
+        DataManager.saveToDisk()
+    }, 300000)
 })
 
 async function loginManually(){
     try {
-        if (appSettings.get('auth.email') && appSettings.get('auth.password')) 
+        if (appSettings.get('auth.email') && appSettings.get('auth.password'))
         {
             await LiveMe.setAuthDetails(
-                appSettings.get('auth.email').trim(), 
+                appSettings.get('auth.email').trim(),
                 appSettings.get('auth.password').trim())
-            alert("success")      
-        }     
+            alert("success")
+        }
     } catch (error) {
         alert(error)
     }
@@ -420,8 +420,8 @@ function goHome () {
     initHome()
 
 
-	// ipcRenderer.send('open-home-window', { videoid: vid })
-    
+    // ipcRenderer.send('open-home-window', { videoid: vid })
+
 }
 
 function preSearch (q) {
@@ -651,8 +651,8 @@ function addToHome(type, bookmark) {
     switch (type) {
         case NEW_FOLLOWINGS:
             $('#home #newfollowings').append(`
-                <div class="bookmark" 
-                    id="bookmark-${bookmark.uid}" 
+                <div class="bookmark"
+                    id="bookmark-${bookmark.uid}"
                     onClick="showFollowing('${bookmark.uid}')">
                     <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
                     <h1>${bookmark.nickname}</h1>
@@ -663,8 +663,8 @@ function addToHome(type, bookmark) {
             break;
         case NEW_FANS:
             $('#home #newfans').append(`
-                <div class="bookmark" 
-                    id="bookmark-${bookmark.uid}" 
+                <div class="bookmark"
+                    id="bookmark-${bookmark.uid}"
                     onClick="showFollowers('${bookmark.uid}')">
                     <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
                     <h1>${bookmark.nickname}</h1>
@@ -675,8 +675,8 @@ function addToHome(type, bookmark) {
             break;
         case NEW_REPLAYS:
             $('#home #newreplays').append(`
-                <div class="bookmark" 
-                    id="bookmark-${bookmark.uid}" 
+                <div class="bookmark"
+                    id="bookmark-${bookmark.uid}"
                     onClick="showUser('${bookmark.uid}')">
                     <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
                     <h1>${bookmark.nickname}</h1>
@@ -895,14 +895,14 @@ function performUserLookup (uid) {
 
             let sex = user.user_info.sex < 0 ? '' : (user.user_info.sex === 0 ? 'female' : 'male')
             $('#user-details').show()
-         
+
             $('img.avatar').attr('src', user.user_info.face)
             $('#user-details div.info h1 span').html(user.user_info.uname)
             $('#user-details div.info h2.id').html('<span>ID:</span> ' + user.user_info.uid + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.uid + '\')"><i class="icon icon-copy"></i></a>')
             $('#user-details div.info h2.shortid').html('<span>Short ID:</span> ' + user.user_info.short_id + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.short_id + '\')"><i class="icon icon-copy"></i></a>')
             $('#user-details div.info h2.level').html('<span>Level:</span><b>' + user.user_info.level + '</b>')
             $('#user-details div.info h4').html(`
-                <abbr 
+                <abbr
                     title="${countryCodes.getFullName(user.user_info.countryCode)}">
                     ${user.user_info.countryCode}
                 </abbr>
@@ -932,7 +932,7 @@ function performUserLookup (uid) {
                 face: user.user_info.face,
                 nickname: user.user_info.uname,
                 counts: {
-					changed: false,
+                    changed: false,
                     replays: user.count_info.video_count,
                     friends: user.count_info.friends_count,
                     followers: user.count_info.follower_count,
@@ -959,7 +959,7 @@ function getUsersReplays () {
     }
     LiveMe.getUserReplays(currentUser.uid, currentPage, MAX_PER_PAGE)
         .then(replays => {
-            
+
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
                     $('#replay-result-alert').html('<span>No replays!</span> There is no publicly listed replays available.').fadeIn(200)
@@ -1005,7 +1005,7 @@ function getUsersReplays () {
         })
         .catch(error => {
             // Unhandled error
-            
+
         })
 }
 
@@ -1047,7 +1047,7 @@ function _addReplayEntry (replay, wasSearched) {
             source: replay.videosource || replay.hlsvideosource
         })
     )
- 
+
     const item = $(html).hide().fadeIn(200)
     $('#list tbody').append(item)
 }
@@ -1066,7 +1066,7 @@ function performUsernameSearch () {
                     ? '<i class="icon icon-eye bright blue" title="Last viewed ' + prettydate.format(DataManager.wasProfileViewed(results[i].user_id)) + '"></i>'
                     : '<i class="icon icon-eye dim"></i>'
                 var sex = results[i].sex < 0 ? '' : (results[i].sex == 0 ? 'female' : 'male');
-                
+
                 $('#list tbody').append(`
                     <tr id="user-${results[i].user_id}" class="user-search ${sex}">
                         <td width="128" style="text-align: center;">
@@ -1120,78 +1120,78 @@ function performUsernameSearch () {
 }
 
 function performHashtagSearch() {
-	
-	$('#list thead').html(`
-		<tr>
-			<th width="410">Title</th>
-			<th width="120">
-				<a href="#" class="link text-center" onClick="sortReplays('date')" title="Sort by Date (desc)">Date</a>
-			</th>
-			<th width="50" align="right">Length</th>
-			<th width="70" align="right">
-				<a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
-			</th>
-			<th width="70" align="right">
-				<a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
-			</th>
-			<th width="70" align="right">
-				<a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
-			</th>
-			<th width="210">Actions</th>
-		</tr>
-	`)
 
-	setTimeout(() => {
-		_performHashtagSearch()
-	}, 100);
+    $('#list thead').html(`
+        <tr>
+            <th width="410">Title</th>
+            <th width="120">
+                <a href="#" class="link text-center" onClick="sortReplays('date')" title="Sort by Date (desc)">Date</a>
+            </th>
+            <th width="50" align="right">Length</th>
+            <th width="70" align="right">
+                <a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
+            </th>
+            <th width="70" align="right">
+                <a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
+            </th>
+            <th width="70" align="right">
+                <a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
+            </th>
+            <th width="210">Actions</th>
+        </tr>
+    `)
+
+    setTimeout(() => {
+        _performHashtagSearch()
+    }, 100);
 }
 
 function _performHashtagSearch() {
-	LiveMe.performSearch($('#search-query').val(), currentPage, MAX_PER_PAGE, 2)
-		.then(results => {
-			
-			currentSearch = 'performHashtagSearch'
-			hasMore = results.length >= MAX_PER_PAGE
-			setTimeout(function () { scrollBusy = false }, 250)
+    LiveMe.performSearch($('#search-query').val(), currentPage, MAX_PER_PAGE, 2)
+        .then(results => {
+
+            currentSearch = 'performHashtagSearch'
+            hasMore = results.length >= MAX_PER_PAGE
+            setTimeout(function () { scrollBusy = false }, 250)
 
             for (var i = 0; i < results.length; i++) {
-				
-				let dt = new Date(results[i].vtime * 1000)
-				let ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes()
 
-				let length = formatDuration(parseInt(results[i].videolength) * 1000)
+                let dt = new Date(results[i].vtime * 1000)
+                let ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes()
 
-				let downloadDate = DataManager.wasDownloaded(results[i].vid)
-				let watchDate = DataManager.wasWatched(results[i].vid)
-				let downloaded = downloadDate === false ? '<i class="icon icon-floppy-disk dim"></i>' : '<i class="icon icon-floppy-disk bright blue" title="Downloaded ' + prettydate.format(downloadDate) + '"></i>'
-				let watched = watchDate === false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched ' + prettydate.format(watchDate) + '"></i>'
-				let seen = watchDate === false ? '' : 'watched'
+                let length = formatDuration(parseInt(results[i].videolength) * 1000)
 
-				let isLive = results[i].hlsvideosource.endsWith('flv') || results[i].hlsvideosource.indexOf('liveplay') > 0 ? '<b style="color:limegreen;">[LIVE]</b>' : ''
-				let inQueue = $('#download-' + results[i].vid).length > 0 ? '<a id="download-replay-' + results[i].vid + '" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + results[i].vid + '" class="button icon-only" onClick="downloadVideo(\'' + results[i].vid + '\')" title="Download Replay"><i class="icon icon-download"></i></a>'
-                
+                let downloadDate = DataManager.wasDownloaded(results[i].vid)
+                let watchDate = DataManager.wasWatched(results[i].vid)
+                let downloaded = downloadDate === false ? '<i class="icon icon-floppy-disk dim"></i>' : '<i class="icon icon-floppy-disk bright blue" title="Downloaded ' + prettydate.format(downloadDate) + '"></i>'
+                let watched = watchDate === false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched ' + prettydate.format(watchDate) + '"></i>'
+                let seen = watchDate === false ? '' : 'watched'
+
+                let isLive = results[i].hlsvideosource.endsWith('flv') || results[i].hlsvideosource.indexOf('liveplay') > 0 ? '<b style="color:limegreen;">[LIVE]</b>' : ''
+                let inQueue = $('#download-' + results[i].vid).length > 0 ? '<a id="download-replay-' + results[i].vid + '" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + results[i].vid + '" class="button icon-only" onClick="downloadVideo(\'' + results[i].vid + '\')" title="Download Replay"><i class="icon icon-download"></i></a>'
+
                 $('#list tbody').append(`
-					<tr data-id="${results[i].vid}" class="user-${results[i].userid}">
-						<td width="410">${results[i].title}</td>
-						<td width="120" align="center">${ds}</td>
-						<td width="50" align="right">${length}</td>
-						<td width="70" align="right">${results[i].playnumber}</td>
-						<td width="70" align="right">${results[i].likenum}</td>
-						<td width="70" align="right">${results[i].sharenum}</td>
-						<td width="300" style="padding: 0 16px; text-align: right;">
-							<a class="button mini icon-small" onClick="copyToClipboard('${results[i].vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
-							&nbsp;
-							<a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid=${results[i].vid}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
-							&nbsp;
-							<a class="button mini icon-small" onClick="copyToClipboard('${results[i].videosource || results[i].hlsvideosource}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
-							&nbsp;&nbsp;&nbsp;
-							<a class="button icon-only" onClick="playVideo('${results[i].vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
-							<a class="button icon-only" onClick="readComments('${results[i].vid}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
-							${inQueue}
-						</td>
-					</tr>
+                    <tr data-id="${results[i].vid}" class="user-${results[i].userid}">
+                        <td width="410">${results[i].title}</td>
+                        <td width="120" align="center">${ds}</td>
+                        <td width="50" align="right">${length}</td>
+                        <td width="70" align="right">${results[i].playnumber}</td>
+                        <td width="70" align="right">${results[i].likenum}</td>
+                        <td width="70" align="right">${results[i].sharenum}</td>
+                        <td width="300" style="padding: 0 16px; text-align: right;">
+                            <a class="button mini icon-small" onClick="copyToClipboard('${results[i].vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
+                            &nbsp;
+                            <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/us/v/${results[i].vid}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
+                            &nbsp;
+                            <a class="button mini icon-small" onClick="copyToClipboard('${results[i].videosource || results[i].hlsvideosource}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
+                            &nbsp;&nbsp;&nbsp;
+                            <a class="button icon-only" onClick="playVideo('${results[i].vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
+                            <a class="button icon-only" onClick="readComments('${results[i].vid}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
+                            ${inQueue}
+                        </td>
+                    </tr>
                 `)
-				
+
                 $('footer h1').html($('#list tbody tr').length + ' accounts found so far, scroll down to load more.')
             }
 
@@ -1202,11 +1202,11 @@ function _performHashtagSearch() {
             }
 
 
-	});
-	
-	
-	
-	
+    });
+
+
+
+
 }
 
 function initSettingsPanel () {
@@ -1233,8 +1233,8 @@ function initSettingsPanel () {
     $('#downloads-parallel').val(appSettings.get('downloads.parallel') || 3)
 
     const ffmpegPath = appSettings.get('downloads.ffmpeg') || false
-	const ffmpegQuality = appSettings.get('downloads.ffmpegquality') || false
-	$('#ffmpeg-transcode-setting').val(ffmpegQuality ? ffmpegQuality : 0)
+    const ffmpegQuality = appSettings.get('downloads.ffmpegquality') || false
+    $('#ffmpeg-transcode-setting').val(ffmpegQuality ? ffmpegQuality : 0)
     if (ffmpegPath) { $('#ffmpegPath').val(ffmpegPath) }
 
     let stats = DataManager.getStats()
