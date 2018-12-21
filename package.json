@@ -1,91 +1,87 @@
 {
-  "name": "liveme-pro-tools",
-  "version": "1.219.20181219",
-  "description": "Tools for Live.me video network",
-  "homepage": "https://notabug.org/thecoder1975/liveme-pro-tools",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://notabug.org/thecoder1975/liveme-pro-tools"
-  },
-  "scripts": {
-    "postinstall": "",
-    "start": "./node_modules/.bin/electron . --enable-logging",
-    "dev": "NODE_ENV='development' npm run start",
-    "release": "build -w && build -l && build -m",
-    "release-win": "build -w",
-    "release-linux": "build -m"
-  },
-  "author": "TheCoder75",
-  "license": "GPL-3.0",
-  "build": {
-    "appId": "com.thecoderstoolbox.livemeprotools",
-    "productName": "LiveMe Pro Tools",
-    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
-    "asar": true,
-    "compression": "maximum",
-    "linux": {
-      "target": [
-        {
-          "target": "tar.gz",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
+    "name": "liveme-pro-tools",
+    "version": "1.220.20181221",
+    "description": "Tools for Live.me video network",
+    "homepage": "https://notabug.org/thecoder1975/liveme-pro-tools",
+    "main": "index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://notabug.org/thecoder1975/liveme-pro-tools"
+    },
+    "scripts": {
+        "postinstall": "",
+        "start": "./node_modules/.bin/electron . --enable-logging",
+        "dev": "NODE_ENV='development' npm run start",
+        "release": "build -w && build -l && build -m",
+        "release-win": "build -w",
+        "release-linux": "build -m"
+    },
+    "author": "TheCoder75",
+    "license": "GPL-3.0",
+    "build": {
+        "appId": "com.thecoderstoolbox.livemeprotools",
+        "productName": "LiveMe Pro Tools",
+        "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+        "asar": true,
+        "compression": "maximum",
+        "linux": {
+            "target": [{
+                "target": "tar.gz",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            }],
+            "category": "Network",
+            "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
+            "maintainer": "thecoder1975@gmail.com"
+        },
+        "win": {
+            "target": [{
+                "target": "zip",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            }],
+            "icon": "build/appicon.ico"
+        },
+        "nsis": {
+            "oneClick": false,
+            "allowToChangeInstallationDirectory": true,
+            "perMachine": true
+        },
+        "mac": {
+            "category": "public.app-category.video",
+            "target": [
+                "zip"
+            ],
+            "identity": null,
+            "icon": "build/appicon.icns"
         }
-      ],
-      "category": "Network",
-      "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
-      "maintainer": "thecoder1975@gmail.com"
     },
-    "win": {
-      "target": [
-        {
-          "target": "zip",
-          "arch": [
-            "x64",
-            "ia32"
-          ]
-        }
-      ],
-      "icon": "build/appicon.ico"
+    "dependencies": {
+        "async": "^2.6.0",
+        "axios": "^0.17.1",
+        "electron-is-dev": "^0.3.0",
+        "electron-settings": "^3.1.4",
+        "fluent-ffmpeg": "^2.1.2",
+        "format-duration": "^1.0.0",
+        "hlsdownloader": "^2.1.0",
+        "pretty-date": "^0.2.0",
+        "request": "^2.83.0",
+        "request-promise-native": "^1.0.5",
+        "shelljs": "^0.8.2",
+        "tar-fs": "^1.16.2"
     },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "perMachine": true
-    },
-    "mac": {
-      "category": "public.app-category.video",
-      "target": [
-        "zip"
-      ],
-      "identity": null,
-      "icon": "build/appicon.icns"
+    "devDependencies": {
+        "electron": "^1.8.6",
+        "electron-builder": "^19.56.0",
+        "eslint": "^4.19.1",
+        "eslint-config-standard": "^11.0.0",
+        "eslint-plugin-import": "^2.11.0",
+        "eslint-plugin-node": "^6.0.1",
+        "eslint-plugin-promise": "^3.7.0",
+        "eslint-plugin-standard": "^3.1.0"
     }
-  },
-  "dependencies": {
-    "async": "^2.6.0",
-    "axios": "^0.17.1",
-    "electron-is-dev": "^0.3.0",
-    "electron-settings": "^3.1.4",
-    "fluent-ffmpeg": "^2.1.2",
-    "format-duration": "^1.0.0",
-    "hlsdownloader": "^2.1.0",
-    "pretty-date": "^0.2.0",
-    "request": "^2.83.0",
-    "request-promise-native": "^1.0.5",
-    "shelljs": "^0.8.2",
-    "tar-fs": "^1.16.2"
-  },
-  "devDependencies": {
-    "electron": "^1.8.6",
-    "electron-builder": "^19.56.0",
-    "eslint": "^4.19.1",
-    "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-node": "^6.0.1",
-    "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.1.0"
-  }
 }
