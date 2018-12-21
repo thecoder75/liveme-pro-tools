@@ -1,107 +1,142 @@
 <!doctype html>
 <html>
-    <head>
-        <title>Player</title>
 
-        <script>
-            if (typeof module === 'object') {window.module = module; module = undefined;}
-        </script>
+<head>
+    <title>Player</title>
 
-        <script src="js/jquery-3.2.1.min.js"></script>
-		<script src="js/hls.js"></script>
-		
-        <script>
-            const { ipcRenderer, remote } = require('electron'), LiveMe = remote.getGlobal('LiveMe');
-            var videoid = '', userid = '';
+    <script>
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
 
-            // Keyboard key to function mapping.
-            const keyMapping = {
-                'KeyJ' : back10,
-                'KeyK' : pause,
-                'KeyL' : skip10
-            }
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/hls.js"></script>
 
-            function skip10() {
-                const video = document.getElementById('video');
-                video.currentTime = video.currentTime + 10
-            }
-            function pause() {
-                const video = document.getElementById('video');
-                video.paused ? video.play() : video.pause()
-            }
-            function back10() {
-                const video = document.getElementById('video');
-                video.currentTime = video.currentTime - 10
-            }
+    <script>
+        const {
+            ipcRenderer,
+            remote
+        } = require('electron'), LiveMe = remote.getGlobal('LiveMe');
+        var videoid = '',
+            userid = '';
 
-            document.onkeypress = (e) => {
-                e = e || window.event;
-                e.code in keyMapping ? keyMapping[e.code]() : _                        
-            }
+        // Keyboard key to function mapping.
+        const keyMapping = {
+            'KeyJ': back10,
+            'KeyK': pause,
+            'KeyL': skip10
+        }
 
-            $(function(){
+        function skip10() {
+            const video = document.getElementById('video');
+            video.currentTime = video.currentTime + 10
+        }
 
-                var t=window.location.href.split('?');
-                $('header h1').html(t[1]);
-                document.title = t[1];
+        function pause() {
+            const video = document.getElementById('video');
+            video.paused ? video.play() : video.pause()
+        }
 
-                LiveMe.getVideoInfo(t[1])
-                    .then(vid => {
-                        videoid = vid.vid;
-                        userid = vid.userid;
-                        
-                        var video = document.getElementById('video');
-                        var hls = new Hls();
-                        hls.loadSource(vid.hlsvideosource);
-                        hls.attachMedia(video);
-                        hls.on(Hls.Events.MANIFEST_PARSED,function() { video.play(); });
+        function back10() {
+            const video = document.getElementById('video');
+            video.currentTime = video.currentTime - 10
+        }
+
+        document.onkeypress = (e) => {
+            e = e || window.event;
+            e.code in keyMapping ? keyMapping[e.code]() : _
+        }
+
+        $(function() {
+
+            var t = window.location.href.split('?');
+            $('header h1').html(t[1]);
+            document.title = t[1];
+
+            LiveMe.getVideoInfo(t[1])
+                .then(vid => {
+                    videoid = vid.vid;
+                    userid = vid.userid;
+
+                    var video = document.getElementById('video');
+                    var hls = new Hls();
+                    hls.loadSource(vid.hlsvideosource);
+                    hls.attachMedia(video);
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        video.play();
                     });
                 });
-            function closeWindow() { window.close(); }
-            function downloadVideo() { ipcRenderer.send('download-replay', { videoid: videoid }); }
-            function showUser() { ipcRenderer.send('show-user', { userid: userid }); }
-        </script>
+        });
 
-        <link rel="stylesheet" href="css/player.css">
+        function closeWindow() {
+            window.close();
+        }
 
-        <style>
-            main a {
-                position: absolute;
-                z-index: 1000;
-                top: 8px;
+        function downloadVideo() {
+            ipcRenderer.send('download-replay', {
+                videoid: videoid
+            });
+        }
 
-                display: block;
-                width: 32px;
-                height: 32px;
+        function showUser() {
+            ipcRenderer.send('show-user', {
+                userid: userid
+            });
+        }
+    </script>
 
-                line-height: 32px;
-                font-size: 16px;
-                text-align:  center;
+    <link rel="stylesheet" href="css/player.css">
 
-                border-radius: 16px;
-                background-color: rgba(0,0,0,0.6);
-                color: rgb(255,255,255);
-                opacity: 0.1;
+    <style>
+        main a {
+            position: absolute;
+            z-index: 1000;
+            top: 8px;
+            display: block;
+            width: 48px;
+            height: 48px;
+            line-height: 48px;
+            font-size: 24px;
+            text-align: center;
+            border-radius: 24px;
+            background-color: rgba(0, 0, 0, 0.6);
+            color: rgb(255, 255, 255);
+            opacity: 0.1;
+            cursor: pointer;
+        }
+        
+        main a.download {
+            right: 12px;
+        }
+        
+        main a.info {
+            right: 64px;
+        }
+        
+        main a:hover {
+            opacity: 0.9;
+        }
+        
+        main a i.icon {
+            vertical-align: middle;
+        }
+    </style>
+</head>
 
-                cursor:  pointer;
-            }
-            main a.download { right: 12px; }
-            main a.info { right: 64px; }
-            main a:hover { opacity: 0.9; }
-            main a i.icon { vertical-align: middle; }
-        </style>
-    </head>
-    <body>
-        <header class="small">
-            <h1></h1>
-            <a class="close-button" onClick="closeWindow()">&#x2715;</a>
-        </header>
-        <main class="has-small-header" style="display: block; overflow: hidden;">
-            <video id="video" controls></video>
+<body>
+    <header class="small">
+        <h1></h1>
+        <a class="close-button" onClick="closeWindow()">&#x2715;</a>
+    </header>
+    <main class="has-small-header" style="display: block; overflow: hidden;">
+        <video id="video" controls></video>
 
-            <a class="download" onClick="downloadVideo()"><i class="icon icon-download"></i></a>
-            <a class="info" onClick="showUser()"><i class="icon icon-info"></i></a>
+        <a class="download" onClick="downloadVideo()"><i class="icon icon-download"></i></a>
+        <a class="info" onClick="showUser()"><i class="icon icon-info"></i></a>
 
-        </main>
-   </body>
+    </main>
+</body>
+
 </html>
