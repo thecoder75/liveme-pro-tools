@@ -50,11 +50,11 @@
             <h4 class="marginHomeElement">NEW REPLAYS</h4>
              <div id="newreplays" cl></div> 
 
-             <h4 class="marginHomeElement">NEW FOLLOWINGS</h4>
+             <h4 class="marginHomeElement" id="newFollowingsHeader">NEW FOLLOWINGS</h4>
 
              <div id="newfollowings"></div> 
 
-             <h4 class="marginHomeElement">NEW FANS</h4>
+             <h4 class="marginHomeElement" id="newFansHeader">NEW FANS</h4>
              <div id="newfans"></div> 
 
             </div>
@@ -350,6 +350,17 @@
                                 </tbody>
                             </table>
                         </li>
+                    </ul>
+                </div>
+                <div class="section">
+                      
+                    <ul>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Home Settings</h4></li>
+                       
+                        <li style="line-height: 24px;">
+                                <input type="checkbox" onChange="saveSettings()" id="homeHideNewFollowers"> Hide new Followers on home.<br>
+                                <input type="checkbox" onChange="saveSettings()" id="homeHideNewFans"> Hide new Fans on home.<br>
+                            </li>
                     </ul>
                 </div>
                 <div class="section">
