@@ -2,17 +2,46 @@ const events = require('events')
 const path = require('path')
 const fs = require('fs')
 const { app } = require('electron')
+const appSettings = require("electron-settings");
 
 let bookmarks = []
 let profiles = []
 let downloaded = []
 let watched = []
-let ignored_temp = []
-let ignored_forever = []
+let ignored_temp = {}
+let ignored_forever = {}
 let errored = []
 let queued = []
 let isBusy = false
 let canWrite = true
+
+const bookmarksJson = path.join(app.getPath('appData'), app.getName(), 'bookmarks.json')
+const profilesJson = path.join(app.getPath('appData'), app.getName(), 'profiles.json')
+const downloadedJson = path.join(app.getPath('appData'), app.getName(), 'downloaded.json')
+const watchedJson = path.join(app.getPath('appData'), app.getName(), 'watched.json')
+const ignoredJson = path.join(app.getPath('appData'), app.getName(), 'ignored.json')
+const erroredJson = path.join(app.getPath('appData'), app.getName(), 'errored.json')
+const queuedJson = path.join(app.getPath('appData'), app.getName(), 'queued.json')
+
+
+function timestamp() { return + new Date() }
+
+function migrateBlacklist() { 
+    try {
+        if(fs.existsSync(ignoredJson)){
+            return
+        }
+
+        let blacklist = appSettings.get("blacklist", {});
+        ignored_forever = blacklist
+        fs.writeFileSync(ignoredJson, JSON.stringify(ignored_forever), () => { })
+        // if something throws, we don't delete so it will be redone next start
+        appSettings.delete("blacklist")
+
+    } catch (error) {
+        
+    }
+}
 
 class DataManager {
     constructor () {
@@ -31,19 +60,18 @@ class DataManager {
         profiles = []
         downloaded = []
         watched = []
-        ignored_temp = []
-        ignored_forever = []
+        ignored_temp = {}
+        ignored_forever = {}
         errored = []
         queued = []
 
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), '[]', () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), '[]', () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), '[]', () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), '[]', () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'ignored.json'), '[]', () => { })
-
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), '[]', () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), '[]', () => { })
+        fs.writeFileSync(bookmarksJson, '[]', () => { })
+        fs.writeFileSync(profilesJson, '[]', () => { })
+        fs.writeFileSync(downloadedJson, '[]', () => { })
+        fs.writeFileSync(watchedJson, '[]', () => { })
+        fs.writeFileSync(ignoredJson, '{}', () => { })
+        fs.writeFileSync(erroredJson, '[]', () => { })
+        fs.writeFileSync(queuedJson, '[]', () => { })
     }
 
     getStats () {
@@ -56,8 +84,8 @@ class DataManager {
     }
 
     loadFromDisk () {
-        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), 'utf8', function (err, data) {
+        if (fs.existsSync(bookmarksJson)) {
+            fs.readFileSync(bookmarksJson, 'utf8', function (err, data) {
                 if (err) {
                     bookmarks = []
                 } else {
@@ -75,13 +103,13 @@ class DataManager {
                                 changed: false
                             }
 
-                        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), () => { })
+                        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2), () => { })
                     }
                 }
             })
         }
-        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'profiles.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), 'utf8', function (err, data) {
+        if (fs.existsSync(profilesJson)) {
+            fs.readFileSync(profilesJson, 'utf8', function (err, data) {
                 if (err) {
                     profiles = []
                 } else {
@@ -89,8 +117,8 @@ class DataManager {
                 }
             })
         }
-        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), 'utf8', function (err, data) {
+        if (fs.existsSync(downloadedJson)) {
+            fs.readFileSync(downloadedJson, 'utf8', function (err, data) {
                 if (err) {
                     downloaded = []
                 } else {
@@ -98,8 +126,8 @@ class DataManager {
                 }
             })
         }
-        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'watched.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), 'utf8', function (err, data) {
+        if (fs.existsSync(watchedJson)) {
+            fs.readFileSync(watchedJson, 'utf8', function (err, data) {
                 if (err) {
                     watched = []
                 } else {
@@ -107,17 +135,20 @@ class DataManager {
                 }
             })
         }
-        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'ignored.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'ignored.json'), 'utf8', function (err, data) {
+        if (fs.existsSync(ignoredJson)) {
+            fs.readFileSync(ignoredJson, 'utf8', function (err, data) {
                 if (err) {
-                    ignored_forever = []
+                    ignored_forever = {}
                 } else {
                     ignored_forever = JSON.parse(data)
                 }
             })
         }
-        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'errored.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), 'utf8', function (err, data) {
+        else{
+            migrateBlacklist()
+        }
+        if (fs.existsSync(erroredJson)) {
+            fs.readFileSync(erroredJson, 'utf8', function (err, data) {
                 if (err) {
                     errored = []
                 } else {
@@ -125,8 +156,8 @@ class DataManager {
                 }
             })
         }
-        if (fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'queued.json'))) {
-            fs.readFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), 'utf8', function (err, data) {
+        if (fs.existsSync(queuedJson)) {
+            fs.readFileSync(queuedJson, 'utf8', function (err, data) {
                 if (err) {
                     queued = []
                 } else {
@@ -135,17 +166,20 @@ class DataManager {
             })
         }
     }
+
+   
+
     saveToDisk () {
         if (isBusy === true) return
         if (canWrite === false) return
 
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'bookmarks.json'), JSON.stringify(bookmarks, null, 2), () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'downloaded.json'), JSON.stringify(downloaded), () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'ignored.json'), JSON.stringify(ignored_forever), () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), () => { })
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), () => { })
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2), () => { })
+        fs.writeFileSync(profilesJson, JSON.stringify(profiles), () => { })
+        fs.writeFileSync(downloadedJson, JSON.stringify(downloaded), () => { })
+        fs.writeFileSync(watchedJson, JSON.stringify(watched), () => { })
+        fs.writeFileSync(ignoredJson, JSON.stringify(ignored_forever), () => { })
+        fs.writeFileSync(erroredJson, JSON.stringify(errored), () => { })
+        fs.writeFileSync(queuedJson, JSON.stringify(queued), () => { })
     }
 
     /**
@@ -184,24 +218,21 @@ class DataManager {
     addIgnoredForever (userid) {
         isBusy = true
 
-        let entry = userid in ignored_forever;
-        let dt = new Date()
+        ignored_forever[userid] = timestamp()
 
-        if (entry != null) {
-            ignored_forever.push(userid)
-        }
         isBusy = false
     }
 
     addIgnoredSession (userid) {
         isBusy = true
 
-        let entry = userid in ignored_temp;
-        let dt = new Date()
-
-        if (entry == false) {
-            ignored_temp.push(userid)
+        if(userid in ignored_forever) { // remove from forever in case user miss clicked
+            delete ignored_forever[userid]
         }
+        ignored_temp[userid] = 0; 
+        // We don't save ignored_temp to disk, so the next time the app loads,
+        // those entries will not be ignored anymore (what we want).
+
         isBusy = false
     }
 
@@ -256,7 +287,7 @@ class DataManager {
         }
         if (!dryRun) {
             watched = temp
-            fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'watched.json'), JSON.stringify(watched), () => { })
+            fs.writeFileSync(watchedJson, JSON.stringify(watched), () => { })
         }
         return ret
     }
@@ -304,7 +335,7 @@ class DataManager {
         }
         if (!dryRun) {
             profiles = temp
-            fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'profiles.json'), JSON.stringify(profiles), () => { })
+            fs.writeFileSync(profilesJson, JSON.stringify(profiles), () => { })
         }
         return ret
     }
@@ -382,7 +413,7 @@ class DataManager {
         if (add === true) {
             queued.push(vid)
         }
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), () => { })
+        fs.writeFileSync(queuedJson, JSON.stringify(queued), () => { })
         isBusy = false
     }
     removeFromQueueList (vid) {
@@ -392,7 +423,7 @@ class DataManager {
                 queued.splice(i, 1)
             }
         }
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'queued.json'), JSON.stringify(queued), () => { })
+        fs.writeFileSync(queuedJson, JSON.stringify(queued), () => { })
         isBusy = false
     }
 
@@ -409,7 +440,7 @@ class DataManager {
         if (add === true) {
             errored.push(vid)
         }
-        fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'errored.json'), JSON.stringify(errored), () => { })
+        fs.writeFileSync(erroredJson, JSON.stringify(errored), () => { })
         isBusy = false
     }
 }

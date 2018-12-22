@@ -9,7 +9,6 @@ const appSettings = remote.require('electron-settings')
 const isDev = remote.getGlobal('isDev')
 const LiveMe = remote.getGlobal('LiveMe')
 const DataManager = remote.getGlobal('DataManager')
-const Blacklist = remote.getGlobal('Blacklist')
 const formatDuration = require('format-duration')
 const prettydate = require('pretty-date')
 const request = require('request')
@@ -130,10 +129,10 @@ function setupContextMenu () {
     const UserContextMenu = remote.Menu.buildFromTemplate([
         {
             label: 'Blacklist user (Forever)',
-            click: () => currentUser !== undefined ? Blacklist.addForever(currentUser.uid) : _
+            click: () => currentUser !== undefined ? DataManager.addIgnoredForever(currentUser.uid) : _
         }, {
             label: 'Blacklist user (current Session)',
-            click: () => currentUser !== undefined ? Blacklist.addForSession(currentUser.uid) : _
+            click: () => currentUser !== undefined ? DataManager.addIgnoredSession(currentUser.uid) : _
 }
     ])
 
