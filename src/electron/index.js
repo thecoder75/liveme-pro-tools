@@ -12,7 +12,6 @@ const path = require('path')
 const request = require('request')
 const tarfs = require('tar-fs')
 const DataManager = new (require('./datamanager').DataManager)()
-const Blacklist = new (require('./blacklist').Blacklist)()
 const LivemeAPI = require('./livemeapi')
 const LiveMe = new LivemeAPI({})
 const isDev = require('electron-is-dev')
@@ -210,7 +209,7 @@ function createWindow () {
     global.isDev = isDev
     global.LiveMe = LiveMe
     global.DataManager = DataManager
-    global.Blacklist = Blacklist
+
 
     DataManager.loadFromDisk()
 
