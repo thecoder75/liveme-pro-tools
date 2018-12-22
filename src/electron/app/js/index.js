@@ -332,7 +332,10 @@ function closeOverlay () {
 function enterOnSearch (e) { if (e.keyCode === 13) preSearch() }
 function copyToClipboard (i) { clipboard.writeText(i) }
 function showSettings () { $('#settings').show() }
-function hideSettings () { $('#settings').hide() }
+function hideSettings () { 
+    $('#settings').hide() 
+    initHome()
+}
 function closeWindow () { window.close() }
 function minimizeWindow () { remote.BrowserWindow.getFocusedWindow().minimize() }
 function showProgressBar () { $('#footer-progressbar').show() }
@@ -523,18 +526,34 @@ function checkForUpdatesOfLiveMeProTools() {
 }
 
 function initHome() {
+
+    refreshFeedHeaders();
+
     $('#lmptUpdateNews').html('')
-
-    checkForUpdatesOfLiveMeProTools()
-
     $('#home').show()
-    loadBookmarkFeeds()
+
+        checkForUpdatesOfLiveMeProTools()
+        loadBookmarkFeeds()
+
 
 }
 
 
 
 
+function refreshFeedHeaders() {
+    let hideFollowers = appSettings.get("general.homeHideNewFollowers");
+    if (hideFollowers)
+        document.getElementById("newFollowingsHeader").style.color = "black";
+    else
+        document.getElementById("newFollowingsHeader").style.color = null; 
+
+    let hideFans = appSettings.get("general.homeHideNewFans");
+    if (hideFans)
+        document.getElementById("newFansHeader").style.color = "black";
+    else
+        document.getElementById("newFansHeader").style.color = null; 
+}
 
 function passwordShowToggler(e) {
     if (e.innerHTML == 'Show') {
@@ -647,8 +666,12 @@ function _scanThread(id) {
 function addToHome(type, bookmark) {
     if (currentView !== 'home') return
 
+    let hideFollowers = appSettings.get("general.homeHideNewFollowers")
+    let hideFans = appSettings.get("general.homeHideNewFans")
+
     switch (type) {
         case NEW_FOLLOWINGS:
+            if(hideFollowers) return
             $('#home #newfollowings').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -661,6 +684,7 @@ function addToHome(type, bookmark) {
         `)
             break;
         case NEW_FANS:
+            if(hideFans) return
             $('#home #newfans').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -1215,6 +1239,9 @@ function initSettingsPanel () {
     $('#viewmode-followers').prop('checked', appSettings.get('general.hide_zeroreplay_fans'))
     $('#viewmode-followings').prop('checked', appSettings.get('general.hide_zeroreplay_followings'))
 
+    $('#homeHideNewFans').prop('checked', appSettings.get('general.homeHideNewFans'))
+    $('#homeHideNewFollowers').prop('checked', appSettings.get('general.homeHideNewFollowers'))
+
     $('#playerpath').val(appSettings.get('general.playerpath'))
 
     $('#cleanup-duration').val(appSettings.get('history.viewed_maxage'))
@@ -1304,6 +1331,9 @@ function saveSettings () {
     appSettings.set('general.blockedCountries', $('#countryCode').val())
     appSettings.set('general.loadAllResults', $('#loadAllResults').is(':checked'))
 
+    appSettings.set('general.homeHideNewFollowers', (!!$('#homeHideNewFollowers').is(':checked')))
+    appSettings.set('general.homeHideNewFans', (!!$('#homeHideNewFans').is(':checked')))
+
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
 }
 
@@ -1312,7 +1342,9 @@ function resetSettings () {
         fresh_install: true,
         playerpath: '',
         hide_zeroreplay_fans: false,
-        hide_zeroreplay_followings: true
+        hide_zeroreplay_followings: true,
+        homeHideNewFans: false,
+        homeHideNewFollowers: false
     })
     appSettings.set('downloads', {
         path: path.join(app.getPath('home'), 'Downloads'),
