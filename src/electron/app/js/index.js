@@ -128,15 +128,15 @@ function setupContextMenu () {
 
     const UserContextMenu = remote.Menu.buildFromTemplate([
         {
-            label: 'Blacklist user (Forever)',
+            label: 'Ignore user (Forever)',
             click: () => currentUser !== undefined ? DataManager.addIgnoredForever(currentUser.uid) : _
         }, {
-            label: 'Blacklist user (current Session)',
+            label: 'Ignore user (current Session)',
             click: () => currentUser !== undefined ? DataManager.addIgnoredSession(currentUser.uid) : _
 }
     ])
 
-    document.getElementById("blacklist").addEventListener('click', (e) => {
+    document.getElementById("userHamburgerMenu").addEventListener('click', (e) => {
         e.preventDefault()
         e.stopPropagation()
         UserContextMenu.popup(remote.getCurrentWindow())
