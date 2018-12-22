@@ -85,11 +85,13 @@ class DataManager {
 
     loadFromDisk () {
         if (fs.existsSync(bookmarksJson)) {
-            fs.readFileSync(bookmarksJson, 'utf8', function (err, data) {
+            fs.readFile(bookmarksJson, 'utf8', function (err, data) {
                 if (err) {
                     bookmarks = []
                 } else {
                     bookmarks = JSON.parse(data)
+
+                    if(bookmarks.length == 0) return
 
                     if (bookmarks[0].counts.changed == undefined) {
                         // Upgrade to new format
@@ -109,7 +111,7 @@ class DataManager {
             })
         }
         if (fs.existsSync(profilesJson)) {
-            fs.readFileSync(profilesJson, 'utf8', function (err, data) {
+            fs.readFile(profilesJson, 'utf8', function (err, data) {
                 if (err) {
                     profiles = []
                 } else {
@@ -118,7 +120,7 @@ class DataManager {
             })
         }
         if (fs.existsSync(downloadedJson)) {
-            fs.readFileSync(downloadedJson, 'utf8', function (err, data) {
+            fs.readFile(downloadedJson, 'utf8', function (err, data) {
                 if (err) {
                     downloaded = []
                 } else {
@@ -127,7 +129,7 @@ class DataManager {
             })
         }
         if (fs.existsSync(watchedJson)) {
-            fs.readFileSync(watchedJson, 'utf8', function (err, data) {
+            fs.readFile(watchedJson, 'utf8', function (err, data) {
                 if (err) {
                     watched = []
                 } else {
@@ -136,7 +138,7 @@ class DataManager {
             })
         }
         if (fs.existsSync(ignoredJson)) {
-            fs.readFileSync(ignoredJson, 'utf8', function (err, data) {
+            fs.readFile(ignoredJson, 'utf8', function (err, data) {
                 if (err) {
                     ignored_forever = {}
                 } else {
@@ -148,7 +150,7 @@ class DataManager {
             migrateBlacklist()
         }
         if (fs.existsSync(erroredJson)) {
-            fs.readFileSync(erroredJson, 'utf8', function (err, data) {
+            fs.readFile(erroredJson, 'utf8', function (err, data) {
                 if (err) {
                     errored = []
                 } else {
@@ -157,7 +159,7 @@ class DataManager {
             })
         }
         if (fs.existsSync(queuedJson)) {
-            fs.readFileSync(queuedJson, 'utf8', function (err, data) {
+            fs.readFile(queuedJson, 'utf8', function (err, data) {
                 if (err) {
                     queued = []
                 } else {
@@ -388,7 +390,9 @@ class DataManager {
         return ret
     }
 
-    getAllBookmarks () { return bookmarks }
+    getAllBookmarks () { 
+        return bookmarks 
+    }
 
     getSingleBookmark (userid) {
         let ret = false
