@@ -175,13 +175,13 @@ class DataManager {
         if (isBusy === true) return
         if (canWrite === false) return
 
-        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2), () => { })
-        fs.writeFileSync(profilesJson, JSON.stringify(profiles), () => { })
-        fs.writeFileSync(downloadedJson, JSON.stringify(downloaded), () => { })
-        fs.writeFileSync(watchedJson, JSON.stringify(watched), () => { })
-        fs.writeFileSync(ignoredJson, JSON.stringify(ignored_forever), () => { })
-        fs.writeFileSync(erroredJson, JSON.stringify(errored), () => { })
-        fs.writeFileSync(queuedJson, JSON.stringify(queued), () => { })
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
+        fs.writeFileSync(profilesJson, JSON.stringify(profiles, null, 2))
+        fs.writeFileSync(downloadedJson, JSON.stringify(downloaded, null, 2))
+        fs.writeFileSync(watchedJson, JSON.stringify(watched ,null, 2))
+        fs.writeFileSync(ignoredJson, JSON.stringify(ignored_forever ,null, 2))
+        fs.writeFileSync(erroredJson, JSON.stringify(errored, null, 2))
+        fs.writeFileSync(queuedJson, JSON.stringify(queued, null, 2))
     }
 
     /**
