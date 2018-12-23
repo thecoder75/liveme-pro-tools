@@ -44,6 +44,8 @@ $(function () {
         LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
     }
 
+    healthCheckLoop();
+
     setTimeout(() => {
         initHome()
     }, 5000)
@@ -906,13 +908,22 @@ function performUserLookup (uid) {
                     <th width="70" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
                     </th>
+                    <th width="33" align="right">
+                    <a href="#" class="link text-right" onClick="sortReplays('vpm')" title="Sort by Shares Per Minute (desc)">VPM</a>
+                </th>
                     <th width="70" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
                     </th>
+                    <th width="33" align="right">
+                    <a href="#" class="link text-right" onClick="sortReplays('lpm')" title="Sort by Shares Per Minute (desc)">LPM</a>
+                </th>
                     <th width="70" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
                     </th>
-                    <th width="210">Actions</th>
+                    <th width="33" align="right">
+                        <a href="#" class="link text-right" onClick="sortReplays('spm')" title="Sort by Shares Per Minute (desc)">SPM</a>
+                    </th>
+                    <th width="110">Actions</th>
                 </tr>
             `)
 
@@ -1042,6 +1053,12 @@ function _addReplayEntry (replay, wasSearched) {
     let highlight = $('#search-type').val() === 'video-id' ? ($('#search-query').val() === replay.vid ? 'highlight' : '') : ''
 
     let length = formatDuration(parseInt(replay.videolength) * 1000)
+    
+    // will be set to 1 minute if lower than 1, to prevent spikes and null division 
+    var lengthInMinutes = Math.max(parseFloat(replay.videolength) / 60, 1)
+    let spm = parseInt(replay.sharenum) / (lengthInMinutes)
+    let lpm = parseInt(replay.likenum) / (lengthInMinutes)
+    let vpm = parseInt(replay.playnumber) / (lengthInMinutes)
     let searched = wasSearched ? 'unlisted' : ''
     let unlisted = searched ? '[UNLISTED]' : ''
 
@@ -1066,6 +1083,9 @@ function _addReplayEntry (replay, wasSearched) {
             isLive,
             length,
             ds,
+            lpm : lpm.toFixed(1),
+            vpm : vpm.toFixed(1),
+            spm : spm.toFixed(1),
             inQueue,
             source: replay.videosource || replay.hlsvideosource
         })
@@ -1194,22 +1214,15 @@ function _performHashtagSearch() {
                 let inQueue = $('#download-' + results[i].vid).length > 0 ? '<a id="download-replay-' + results[i].vid + '" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + results[i].vid + '" class="button icon-only" onClick="downloadVideo(\'' + results[i].vid + '\')" title="Download Replay"><i class="icon icon-download"></i></a>'
 
                 $('#list tbody').append(`
-                    <tr data-id="${results[i].vid}" class="user-${results[i].userid}">
+					<tr data-id="${results[i].vid}"  onClick="playVideo('${results[i].vid}')" class="user-${results[i].userid}">
                         <td width="410">${results[i].title}</td>
                         <td width="120" align="center">${ds}</td>
                         <td width="50" align="right">${length}</td>
                         <td width="70" align="right">${results[i].playnumber}</td>
                         <td width="70" align="right">${results[i].likenum}</td>
                         <td width="70" align="right">${results[i].sharenum}</td>
-                        <td width="300" style="padding: 0 16px; text-align: right;">
-                            <a class="button mini icon-small" onClick="copyToClipboard('${results[i].vid}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
-                            &nbsp;
-                            <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/us/v/${results[i].vid}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
-                            &nbsp;
-                            <a class="button mini icon-small" onClick="copyToClipboard('${results[i].videosource || results[i].hlsvideosource}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
-                            &nbsp;&nbsp;&nbsp;
-                            <a class="button icon-only" onClick="playVideo('${results[i].vid}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
-                            <a class="button icon-only" onClick="readComments('${results[i].vid}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
+						<td width="70" align="right">${results[i].sharenum}</td>
+						<td width="100" style="padding: 0 16px; text-align: right;">
                             ${inQueue}
                         </td>
                     </tr>

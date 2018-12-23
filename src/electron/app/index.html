@@ -4,7 +4,7 @@
         <script>
             if (typeof module === 'object') {window.module = module; module = undefined; }
         </script>
-
+        <meta charset='utf-8'>
         <title>LiveMe Pro Tools</title>
 
         <link rel="stylesheet" href="css/style.css" media="all">
@@ -102,23 +102,6 @@
 
             <table id="list" class="results">
                 <thead>
-                    <tr>
-                        <th width="410">Title</th>
-                        <th width="120">
-                            <a href="#" class="link text-center" onClick="sortReplays('date')" title="Sort by Date (desc)">Date</a>
-                        </th>
-                        <th width="50" align="right">Length</th>
-                        <th width="70" align="right">
-                            <a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
-                        </th>
-                        <th width="70" align="right">
-                            <a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
-                        </th>
-                        <th width="70" align="right">
-                            <a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
-                        </th>
-                        <th width="210">Actions</th>
-                    </tr>
                 </thead>
                 <tbody>
                 </tbody>
@@ -126,22 +109,18 @@
             <div class="alert" id="replay-result-alert" style="display:none;"></div>
         </main>
         <script id="replays-list-row" type="text/x-handlebars-template">
-            <tr data-id="{{vid}}" class="{{searched}} {{seen}} user-{{userid}}">
+            <tr data-id="{{vid}}" onClick="playVideo('{{vid}}')" style="cursor: pointer;"  class="link {{searched}} {{seen}} user-{{userid}}">
                 <td width="400" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;{{{downloaded}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
                 <td width="130" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
                 <td width="55" class="{{highlight}}" align="right">{{length}}</td>
                 <td width="75" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
+                <td width="33" class="{{highlight}}" style="color:gray" align="right" data-name="vpm">{{vpm}}</td>
                 <td width="75" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
+                <td width="33" class="{{highlight}}" style="color:gray" align="right" data-name="lpm">{{lpm}}</td>
                 <td width="75" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
-                <td width="280" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
-                    <a class="button mini icon-small" onClick="copyToClipboard('{{vid}}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
-                    &nbsp;
-                    <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid={{vid}}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
-                    &nbsp;
-                    <a class="button mini icon-small" onClick="copyToClipboard('{{source}}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
-                    &nbsp;&nbsp;
-                    <a class="button icon-only" onClick="playVideo('{{vid}}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
-                    <a class="button icon-only" onClick="readComments('{{vid}}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
+                <td width="33" class="{{highlight}}" style="color:gray" align="right" data-name="spm">{{spm}}</td>
+                <td width="80" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
+
                     {{{inQueue}}}
                 </td>
             </tr>

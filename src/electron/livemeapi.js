@@ -215,7 +215,7 @@ class LiveMe {
         return request(url)
     }
 
-    performSearch(query = '', page = 1, pagesize = 10, type, countryCode = '') {
+    performSearch(query = '', page = 1, pagesize = 10, type, countryCode = 'DE') {
         if ([1, 2].indexOf(type) === -1) {
             return Promise.reject('Type must be 1 or 2.')
         }
