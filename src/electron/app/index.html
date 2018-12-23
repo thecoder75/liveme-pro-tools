@@ -1,27 +1,32 @@
 <!doctype html>
 <html>
-    <head>
-        <script>
-            if (typeof module === 'object') {window.module = module; module = undefined; }
-        </script>
 
-        <title>LiveMe Pro Tools</title>
+<head>
+    <script>
+        if (typeof module === 'object') {
+            window.module = module;
+            module = undefined;
+        }
+    </script>
 
-        <link rel="stylesheet" href="css/style.css" media="all">
-        <link rel="stylesheet" href="css/page_index.css" media="all">
+    <title>LiveMe Pro Tools</title>
 
-        <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
-        <script type="text/javascript" src="js/handlebars-v4.0.11.js"></script>
-        <script type="text/javascript" src="js/index.js"></script>
-    </head>
-    <body>
-        <header>
-            <a class="app-menu" onClick="showMainMenu()">&#9776;</a>
+    <link rel="stylesheet" href="css/style.css" media="all">
+    <link rel="stylesheet" href="css/page_index.css" media="all">
 
-            <div class="search">
-                <i class="icon icon-search"></i>
-                <div class="select">
-                    <select id="search-type" onChange="onTypeChange()">
+    <script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/handlebars-v4.0.11.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+</head>
+
+<body>
+    <header>
+        <a class="app-menu" onClick="showMainMenu()">&#9776;</a>
+
+        <div class="search">
+            <i class="icon icon-search"></i>
+            <div class="select">
+                <select id="search-type" onChange="onTypeChange()">
                         <option value="video-id">Video ID is</option>
                         <option value="video-url">Video URL is</option>
                         <option selected value="user-id">User ID is</option>
@@ -29,227 +34,246 @@
                         <option value="username-like">Username like</option>
                         <option value="hashtag">Hashtag like</option>
                     </select>
-                </div>
-                <input type="text" id="search-query" placeholder="Search" onKeyPress="enterOnSearch(event)" value="" >
-                <button onClick="preSearch()"><i class="icon icon-circle-right"></i></button>
             </div>
+            <input type="text" id="search-query" placeholder="Search" onKeyPress="enterOnSearch(event)" value="">
+            <button onClick="preSearch()"><i class="icon icon-circle-right"></i></button>
+        </div>
 
-            <div class="group">
-                <a class="button icon-only" title="Go Home" onClick="goHome()"><i class="icon icon-home3"></i></a>
-                <a class="button icon-only" title="View Bookmarks" onClick="openBookmarks()"><i class="icon icon-bookmarks"></i></a>
-                <a class="button icon-only" title="Toggle Queue List" onClick="showDownloads()"><i class="icon icon-folder-download"></i></a>
-            </div>
+        <div class="group">
+            <a class="button icon-only" title="Go Home" onClick="goHome()"><i class="icon icon-home3"></i></a>
+            <a class="button icon-only" title="View Bookmarks" onClick="openBookmarks()"><i class="icon icon-bookmarks"></i></a>
+            <a class="button icon-only" title="Toggle Queue List" onClick="showDownloads()"><i class="icon icon-folder-download"></i></a>
+        </div>
 
-            <a class="minimize-button" onClick="minimizeWindow()">&#x1f5d5;</a>
-            <a class="close-button" onClick="closeWindow()">&#x2715;</a>
-        </header>
+        <a class="minimize-button" onClick="minimizeWindow()">&#x1f5d5;</a>
+        <a class="close-button" onClick="closeWindow()">&#x2715;</a>
+    </header>
 
-        <div id="home">
-            <div id="bookmarklist">
+    <div id="home">
+        <div id="bookmarklist">
             <button id="rescan-btn" disabled=true onClick="rescanFeeds()" class="marginHomeElement">Scanning ...</button>
             <h4 class="marginHomeElement">NEW REPLAYS</h4>
-             <div id="newreplays" cl></div> 
+            <div id="newreplays" cl></div>
 
-             <h4 class="marginHomeElement" id="newFollowingsHeader">NEW FOLLOWINGS</h4>
+            <h4 class="marginHomeElement" id="newFollowingsHeader">NEW FOLLOWINGS</h4>
 
-             <div id="newfollowings"></div> 
+            <div id="newfollowings"></div>
 
-             <h4 class="marginHomeElement" id="newFansHeader">NEW FANS</h4>
-             <div id="newfans"></div> 
+            <h4 class="marginHomeElement" id="newFansHeader">NEW FANS</h4>
+            <div id="newfans"></div>
 
+        </div>
+
+        <div class="panel">
+            <div id="lmptUpdateNews"></div>
+            <div class="section">
+                <h3><i class="icon icon-magic-wand"></i> Tipps</h3>
+                <p>
+                    Use the following keyboard shortcuts while playing a replay:
+                </p>
+                <ul style="list-style-type: circle; margin-left: 20px">
+                    <li> j &nbsp;&nbsp;&nbsp;&nbsp; go back 10 seconds</li>
+                    <li> k &nbsp;&nbsp;&nbsp;&nbsp; pause/play toggle</li>
+                    <li> l &nbsp;&nbsp;&nbsp;&nbsp; skip 10 seconds</li>
+                </ul>
             </div>
-          
-            <div class="panel">
-                <div id="lmptUpdateNews"></div>
-                <div class="section">
-                    <h3><i class="icon icon-magic-wand"></i> Tipps</h3>
-                    <p>
-                        Use the following keyboard shortcuts while playing a replay:
-                    </p>
-                    <ul style="list-style-type: circle; margin-left: 20px">
-                        <li> j &nbsp;&nbsp;&nbsp;&nbsp; go back 10 seconds</li>
-                        <li> k &nbsp;&nbsp;&nbsp;&nbsp; pause/play toggle</li>
-                        <li> l &nbsp;&nbsp;&nbsp;&nbsp; skip 10 seconds</li>
-                    </ul>
+        </div>
+    </div>
+
+    <div id="queue-list"></div>
+
+    <main id="view-userinfo-replays" class="has-footer has-details">
+        <div id="user-details" class="details">
+            <div class="avatar">
+                <img class="avatar" src="" onerror="this.src='images/nouser.png'">
+                <a class="save" href="#" onClick="saveAccountFace()"><i class="icon icon-download"></i></a>
+            </div>
+            <div class="info">
+                <h1>
+                    <a href="#" class="button icon-only bookmark" onClick="AddToBookmarks()" title="Add to Bookmarks">&#x2606;</a>
+                    <span id="username" style="-webkit-user-select: text; cursor: text"></span>
+                </h1>
+                <h2 class="id"></h2>
+                <h2 class="shortid"></h2>
+                <h2 class="level"></h2>
+                <h4></h4>
+                <div class="buttons">
+                    <a href="#" class="button following" onClick="showFollowing()"><i class="icon icon-hour-glass"></i></a>
+                    <a href="#" class="button followers" onClick="showFollowers()"><i class="icon icon-hour-glass"></i></a>
+                    <a href="#" class="button" id="userHamburgerMenu">&#9776;</a>
                 </div>
             </div>
         </div>
 
-        <div id="queue-list"></div>
+        <table id="list" class="results">
+            <thead>
+                <tr>
+                    <th width="410">Title</th>
+                    <th width="120">
+                        <a href="#" class="link text-center" onClick="sortReplays('date')" title="Sort by Date (desc)">Date</a>
+                    </th>
+                    <th width="50" align="right">Length</th>
+                    <th width="70" align="right">
+                        <a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
+                    </th>
+                    <th width="70" align="right">
+                        <a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
+                    </th>
+                    <th width="70" align="right">
+                        <a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
+                    </th>
+                    <th width="210">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <div class="alert" id="replay-result-alert" style="display:none;"></div>
+    </main>
+    <script id="replays-list-row" type="text/x-handlebars-template">
+        <tr data-id="{{vid}}" class="{{searched}} {{seen}} user-{{userid}}">
+            <td width="400" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;{{{downloaded}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
+            <td width="130" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
+            <td width="55" class="{{highlight}}" align="right">{{length}}</td>
+            <td width="75" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
+            <td width="75" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
+            <td width="75" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
+            <td width="280" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
+                <a class="button mini icon-small" onClick="copyToClipboard('{{vid}}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a> &nbsp;
+                <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid={{vid}}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a> &nbsp;
+                <a class="button mini icon-small" onClick="copyToClipboard('{{source}}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a> &nbsp;&nbsp;
+                <a class="button icon-only" onClick="playVideo('{{vid}}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
+                <a class="button icon-only" onClick="readComments('{{vid}}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp; {{{inQueue}}}
+            </td>
+        </tr>
+    </script>
 
-        <main id="view-userinfo-replays" class="has-footer has-details">
-            <div id="user-details" class="details">
-                <div class="avatar">
-                    <img class="avatar" src=""  onerror="this.src='images/nouser.png'">
-                    <a class="save" href="#" onClick="saveAccountFace()"><i class="icon icon-download"></i></a>
-                </div>
-                <div class="info">
-                    <h1>
-                        <a href="#" class="button icon-only bookmark" onClick="AddToBookmarks()" title="Add to Bookmarks">&#x2606;</a>
-                        <span id="username" style="-webkit-user-select: text; cursor: text"></span>
-                    </h1>
-                    <h2 class="id"></h2>
-                    <h2 class="shortid"></h2>
-                    <h2 class="level"></h2>
-                    <h4></h4>
-                    <div class="buttons">
-                        <a href="#" class="button following" onClick="showFollowing()"><i class="icon icon-hour-glass"></i></a>
-                        <a href="#" class="button followers" onClick="showFollowers()"><i class="icon icon-hour-glass"></i></a>
-                        <a href="#" class="button" id="userHamburgerMenu">&#9776;</a>
-                    </div>
-                </div>
+    <div id="popup-message"></div>
+
+    <div id="settings">
+        <a class="close-settings" onClick="hideSettings()">&#x2715;</a>
+        <div class="area">
+            <div class="section">
+                <ul>
+                    <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">Authentication</h4>
+                    </li>
+                    <li style="padding-bottom: 5px; display: none;" id="authStatus">
+                        <h5></h5>
+                    </li>
+                    <li style="padding-bottom: 20px;">
+                        Email and password are required to see user replays.<br>
+                        <input type="text" id="authEmail" placeholder="user@example.com" style="width: 100%;margin-bottom:5px;" onBlur="saveSettings()"><br>
+                        <input type="password" id="authPassword" placeholder="Password" style="width: 100%;" onBlur="saveSettings()"><br>
+                    </li>
+                    <button onClick="loginManually()">Check Login</button>
+                    <button onClick="saveLoginManually()">Save</button>
+                    <button onclick="passwordShowToggler(this)" type="button">Show</button>
+
+                </ul>
             </div>
-
-            <table id="list" class="results">
-                <thead>
-                    <tr>
-                        <th width="410">Title</th>
-                        <th width="120">
-                            <a href="#" class="link text-center" onClick="sortReplays('date')" title="Sort by Date (desc)">Date</a>
-                        </th>
-                        <th width="50" align="right">Length</th>
-                        <th width="70" align="right">
-                            <a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
-                        </th>
-                        <th width="70" align="right">
-                            <a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
-                        </th>
-                        <th width="70" align="right">
-                            <a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
-                        </th>
-                        <th width="210">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <div class="alert" id="replay-result-alert" style="display:none;"></div>
-        </main>
-        <script id="replays-list-row" type="text/x-handlebars-template">
-            <tr data-id="{{vid}}" class="{{searched}} {{seen}} user-{{userid}}">
-                <td width="400" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;{{{downloaded}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
-                <td width="130" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
-                <td width="55" class="{{highlight}}" align="right">{{length}}</td>
-                <td width="75" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
-                <td width="75" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
-                <td width="75" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
-                <td width="280" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
-                    <a class="button mini icon-small" onClick="copyToClipboard('{{vid}}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a>
-                    &nbsp;
-                    <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid={{vid}}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a>
-                    &nbsp;
-                    <a class="button mini icon-small" onClick="copyToClipboard('{{source}}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a>
-                    &nbsp;&nbsp;
-                    <a class="button icon-only" onClick="playVideo('{{vid}}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
-                    <a class="button icon-only" onClick="readComments('{{vid}}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp;
-                    {{{inQueue}}}
-                </td>
-            </tr>
-        </script>
-
-        <div id="popup-message"></div>
-
-        <div id="settings">
-            <a class="close-settings" onClick="hideSettings()">&#x2715;</a>
-            <div class="area">
-                <div class="section">
-                    <ul>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Authentication</h4></li>
-                        <li style="padding-bottom: 5px; display: none;" id="authStatus"><h5></h5></li>
-                        <li style="padding-bottom: 20px;">
-                            Email and password are required to see user replays.<br>
-                            <input type="text" id="authEmail" placeholder="user@example.com" style="width: 100%;margin-bottom:5px;" onBlur="saveSettings()"><br>
-                            <input type="password" id="authPassword" placeholder="Password" style="width: 100%;" onBlur="saveSettings()"><br>
-                        </li>
-                        <button onClick="loginManually()">Check Login</button>
-                        <button onClick="saveLoginManually()">Save</button>
-                        <button onclick="passwordShowToggler(this)" type="button">Show</button>
-                        
-                    </ul>
-                </div>
-                <div class="section">
-                    <ul>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Blocked countries</h4></li>
-                        <li style="padding-bottom: 20px;">
-                            <div style="height:15em;">
-                                <select multiple id="countryCode" style="width: 120px;" size="15" onBlur="saveSettings()">
+            <div class="section">
+                <ul>
+                    <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">Blocked countries</h4>
+                    </li>
+                    <li style="padding-bottom: 20px;">
+                        <div style="height:15em;">
+                            <select multiple id="countryCode" style="width: 120px;" size="15" onBlur="saveSettings()">
                                 </select>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="section">
-                    <ul>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Video Player</h4></li>
-                        <li style="padding-bottom: 20px;">
-                            Internal player is used by default unless you specify one in the field below.<br>
-                            <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
-                            <small>You <b>MUST</b> also add <i>%url%</i> to the command to denote where to place the URL to the replay. (Ex: mpv %url%)</small>
-                        </li>
-                    </ul>
-                </div>
-                <div class="section">
-                    <ul>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Downloads</h4></li>
-                        <li style="padding-bottom: 10px;">
-                            <ul style="margin: 16px 0 0; padding: 0;">
-                                <li style="margin: 12px 0; line-height: 16px;">
-                                    Download Location:<br>
-                                    <input type="text" id="downloads-path" style="width: 500px;" onBlur="saveSettings()">
-                                </li>
-                                <li style="margin: 12px 0; line-height: 16px;">
-                                    Filename Template:<br>
-                                    <input type="text" id="downloads-template" style="width: 500px;" onBlur="saveSettings()">
-                                </li>
-                                <li style="margin: 12px 0; font-size: 9pt;">
-                                    You can customize how downloaded replays are named using the variables below in the text box above.<br>
-                                    <table style="width: 560px; margin: 8px auto;">
-                                        <tbody>
-                                            <tr>
-                                                <td width="200">%%broadcaster%%</td><td width="360">Broadcaster's Nickname</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%longid%%</td><td>Broadcaster's Long ID Number</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replayid%%</td><td>ID Number of the Replay</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replayviews%%</td><td>Number of Views</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replaylikes%%</td><td>Number of Likes</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replayshares%%</td><td>Number of Shares</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replaytitle%%</td><td>Title of the Replay</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replayduration%%</td><td>Duration of the Replay</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replaydatepacked%%</td><td>Date the replay was originally recorded in YYYYMMDD</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replaydateus%%</td><td>Date the replay was originally recorded in MM-DD-YYYY</td>
-                                            </tr>
-                                            <tr>
-                                                <td>%%replaydateeu%%</td><td>Date the replay was originally recorded in DD-MM-YYYY</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="section">
+                <ul>
+                    <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">Video Player</h4>
+                    </li>
+                    <li style="padding-bottom: 20px;">
+                        Internal player is used by default unless you specify one in the field below.<br>
+                        <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
+                        <small>You <b>MUST</b> also add <i>%url%</i> to the command to denote where to place the URL to the replay. (Ex: mpv %url%)</small>
+                    </li>
+                </ul>
+            </div>
+            <div class="section">
+                <ul>
+                    <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">Downloads</h4>
+                    </li>
+                    <li style="padding-bottom: 10px;">
+                        <ul style="margin: 16px 0 0; padding: 0;">
+                            <li style="margin: 12px 0; line-height: 16px;">
+                                Download Location:<br>
+                                <input type="text" id="downloads-path" style="width: 500px;" onBlur="saveSettings()">
+                            </li>
+                            <li style="margin: 12px 0; line-height: 16px;">
+                                Filename Template:<br>
+                                <input type="text" id="downloads-template" style="width: 500px;" onBlur="saveSettings()">
+                            </li>
+                            <li style="margin: 12px 0; font-size: 9pt;">
+                                You can customize how downloaded replays are named using the variables below in the text box above.<br>
+                                <table style="width: 560px; margin: 8px auto;">
+                                    <tbody>
+                                        <tr>
+                                            <td width="200">%%broadcaster%%</td>
+                                            <td width="360">Broadcaster's Nickname</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%longid%%</td>
+                                            <td>Broadcaster's Long ID Number</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replayid%%</td>
+                                            <td>ID Number of the Replay</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replayviews%%</td>
+                                            <td>Number of Views</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replaylikes%%</td>
+                                            <td>Number of Likes</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replayshares%%</td>
+                                            <td>Number of Shares</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replaytitle%%</td>
+                                            <td>Title of the Replay</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replayduration%%</td>
+                                            <td>Duration of the Replay</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replaydatepacked%%</td>
+                                            <td>Date the replay was originally recorded in YYYYMMDD</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replaydateus%%</td>
+                                            <td>Date the replay was originally recorded in MM-DD-YYYY</td>
+                                        </tr>
+                                        <tr>
+                                            <td>%%replaydateeu%%</td>
+                                            <td>Date the replay was originally recorded in DD-MM-YYYY</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                                </li>
-                            </ul>
-                        </li>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Download Method</h4></li>
-                        <li>
-                            <ul style="margin: 16px 0 0; padding: 0;">
-                                <li style="margin: 16px 0; line-height: 16px;">
-                                    <input type="radio" name="downloadMethod" value="ffmpeg" id="ffmpeg-method" onClick="saveSettings()">
-                                    <label for="ffmpeg-method" onClick="saveSettings()">Use FFMPEG for downloading
+                            </li>
+                        </ul>
+                    </li>
+                    <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">Download Method</h4>
+                    </li>
+                    <li>
+                        <ul style="margin: 16px 0 0; padding: 0;">
+                            <li style="margin: 16px 0; line-height: 16px;">
+                                <input type="radio" name="downloadMethod" value="ffmpeg" id="ffmpeg-method" onClick="saveSettings()">
+                                <label for="ffmpeg-method" onClick="saveSettings()">Use FFMPEG for downloading
                                 </li>
                                 <li style="margin: 16px 0; line-height: 16px;">
                                     <input type="radio" name="downloadMethod" value="chunk" id="chunk-method" onClick="saveSettings()">
@@ -259,21 +283,24 @@
                                 <li style="margin: 8px 0; line-height: 16px; padding: 0 0 0 25px;">
                                     <input type="checkbox" id="chunk-method-tmp" onClick="saveSettings()">
                                     <label for="chunk-method-tmp" onClick="saveSettings()">Delete temporary files left over by this method (.ts files)</label>
-                                </li>
-                            </ul>
-                        </li>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">Parallel Downloads</h4></li>
-                        <li style="padding-bottom: 10px;">
-                            <input type="number" min="1" max="10" id="downloads-parallel" placeholder="Number" style="margin-right:10px;" onBlur="saveSettings()">
-                            How many replays to download in parallel.
-                        </li>
-                        <li style="padding-bottom: 5px;"><h4 class="titleColor">FFMPEG Settings</h4></li>
-                        <li>
-                            <input type="text" id="ffmpegPath" placeholder="Full path to FFMPEG" style="width: 100%;" onBlur="saveSettings()">
-                            <small style="line-height: 0.8em;">Don't change the path above unless you know what you're doing or were directed by one of the contributors/authors.</small>
-                        </li>
-                        <li style="margin: 16px 0; line-height: 16px;">
-                            <label for="ffmpeg-transcode-setting" onClick="saveSettings()">Transcode Setting:
+                            </li>
+                        </ul>
+                    </li>
+                    <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">Parallel Downloads</h4>
+                    </li>
+                    <li style="padding-bottom: 10px;">
+                        <input type="number" min="1" max="10" id="downloads-parallel" placeholder="Number" style="margin-right:10px;" onBlur="saveSettings()"> How many replays to download in parallel.
+                    </li>
+                    <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">FFMPEG Settings</h4>
+                    </li>
+                    <li>
+                        <input type="text" id="ffmpegPath" placeholder="Full path to FFMPEG" style="width: 100%;" onBlur="saveSettings()">
+                        <small style="line-height: 0.8em;">Don't change the path above unless you know what you're doing or were directed by one of the contributors/authors.</small>
+                    </li>
+                    <li style="margin: 16px 0; line-height: 16px;">
+                        <label for="ffmpeg-transcode-setting" onClick="saveSettings()">Transcode Setting:
                             <div class="select" style="vertical-align: middle; height: 26px;">
                                 <select id="ffmpeg-transcode-setting">
                                     <option value="0">None</option>
@@ -370,11 +397,12 @@
                         </li>
                         <li style="padding-top: 20px;">
                             <h6>Contributors:</h6>
-                            <ul style="font-weight: 300; font-size: 10pt; line-height: 12pt">
+                            <ul style="font-weight: 300; font-size: 10pt; line-height: 13pt">
                                 <li>TheCoder</li>
-                                <li>Tashiketh</li>
-                                <li>zp</li>
                                 <li>Lewdninja</li>
+                                <li>zp</li>
+                                <li>Tashiketh</li>
+                                <li>monstergarden</li>
                             </ul>
                         </li>
                     </ul>
