@@ -697,10 +697,10 @@ ipcMain.on('open-bookmarks', (event, arg) => {
         bookmarksWindow = new BrowserWindow({
             x: winposition[0] > -1 ? winposition[0] : null,
             y: winposition[1] > -1 ? winposition[1] : null,
-            width: 480,
+            width: 440,
             height: winsize[1],
-            minWidth: 400,
-            maxWidth: 400,
+            minWidth: 440,
+            maxWidth: 480,
             minHeight: 480,
             darkTheme: true,
             autoHideMenuBar: false,

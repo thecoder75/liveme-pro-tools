@@ -1,4 +1,3 @@
-
 const { ipcRenderer, remote, clipboard } = require('electron')
 const LiveMe = remote.getGlobal('LiveMe')
 const appSettings = require('electron-settings')
@@ -9,7 +8,7 @@ let list = []
 let index
 let max
 
-$(function () {
+$(function() {
     $('main').show()
 
     list = DataManager.getAllBookmarks()
@@ -19,14 +18,14 @@ $(function () {
     $('#bookmark-list').html('')
     $('footer h1').html(max + ' bookmarks listed.')
 
-    $('#bookmark-search').bind('paste cut keydown', function () {
+    $('#bookmark-search').bind('paste cut keydown', function() {
         setTimeout(() => {
             const value = $(this).val().toLowerCase()
             if (value.trim().length === 0) {
                 $('#bookmark-list tr').show()
                 return
             }
-            $('#bookmark-list tr').each(function () {
+            $('#bookmark-list tr').each(function() {
                 const name = $(this).find('h1').first().text().toLowerCase()
                 if (name.toLowerCase().indexOf(value) !== -1) {
                     $(this).show()
@@ -42,36 +41,44 @@ $(function () {
     })
 })
 
-function minimizeWindow () { remote.BrowserWindow.getFocusedWindow().minimize() }
-function closeWindow () { window.close() }
-function copyToClipboard (i) { clipboard.writeText(i) }
-function showFollowing (u) { ipcRenderer.send('open-followings-window', { userid: u }) }
-function showFollowers (u) { ipcRenderer.send('open-followers-window', { userid: u }) }
-function showUser (u) { ipcRenderer.send('show-user', { userid: u }) }
+function minimizeWindow() { remote.BrowserWindow.getFocusedWindow().minimize() }
 
-function redrawList () {
+function closeWindow() { window.close() }
+
+function copyToClipboard(i) { clipboard.writeText(i) }
+
+function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: u }) }
+
+function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: u }) }
+
+function showUser(u) { ipcRenderer.send('show-user', { userid: u }) }
+
+function redrawList() {
     index = 0
     $('#bookmark-list').html('')
     drawEntry()
 }
 
-function drawEntry () {
+function drawEntry() {
     if (index === max) return
 
     let d1 = prettydate.format(new Date(list[index].newest_replay * 1000))
     let d2 = prettydate.format(new Date(list[index].last_viewed * 1000))
-	let nClass = list[index].newest_replay > list[index].last_viewed ? 'new_replays' : ''
-	let fClass = list[index].counts.changed ? 'new_followings' : ''
-	let sex = list[index].sex < 0 ? '' : (list[index].sex == 0 ? 'female' : 'male')
-	let isNew = nClass.length || fClass.length ? 'isnew' : ''
-	
+    let nClass = list[index].newest_replay > list[index].last_viewed ? 'new_replays' : ''
+    let fClass = list[index].counts.changed ? 'new_followings' : ''
+    let sex = list[index].sex < 0 ? '' : (list[index].sex == 0 ? 'female' : 'male')
+    let isNew = nClass.length || fClass.length ? 'isnew' : ''
+
     $('#bookmark-list').append(`
         <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew} ${nClass} ${fClass}">
             <td width="64">
                 <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).attr('src', 'images/nouser.png')" align="bottom">
             </td>
             <td width="90%" class="main">
-                <h1>${list[index].nickname}</h1>
+                <h1>
+                    ${list[index].nickname}
+                    <div onClick="removeBookmark('${list[index].uid}')"><i class="icon icon-star-full bright yellow"></i></div>
+                </h1>
                 <h3><span>Latest Replay:</span> ${d1}</h3>
                 <h4><span>Last Viewed:</span> ${d2}</h4>
                 <div id="user-${list[index].uid}-buttons" class="buttons">
@@ -88,6 +95,11 @@ function drawEntry () {
     setImmediate(() => { drawEntry() })
 }
 
-function hideNonRecent () {
+function removeBookmark(uid) {
+    DataManager.removeBookmark(uid)
+    $('#entry-' + uid).remove()
+}
+
+function hideNonRecent() {
     $('#bookmark-list tr:not(.isnew)').toggle()
 }

@@ -1,33 +1,63 @@
-#bookmark-list tr:hover { background-color: rgba(0,0,0,0); }
+#bookmark-list tr:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
 
-#bookmark-list tr.male img.avatar { border: solid 4px rgb(80,96,240); }
-#bookmark-list tr.female img.avatar { border: solid 4px rgb(255,160,160); }
+#bookmark-list tr.male img.avatar {
+    border: solid 4px rgb(80, 96, 240);
+}
 
+#bookmark-list tr.female img.avatar {
+    border: solid 4px rgb(255, 160, 160);
+}
 
 #bookmark-list td {
     font-size: 10pt;
     position: relative;
     padding: 4px 0;
     height: 116px;
-    border-bottom: solid 4px rgba(0,0,0,0.6);
+    border-bottom: solid 4px rgba(0, 0, 0, 0.6);
 }
 
-
-#bookmark-list h1, #bookmark-list h2, #bookmark-list h3, #bookmark-list h4 {
+#bookmark-list h1,
+#bookmark-list h2,
+#bookmark-list h3,
+#bookmark-list h4 {
     position: absolute;
     left: 8px;
-
 }
-#bookmark-list h1 { font-size: 14pt; font-weight: 400; line-height: 40px; top: 0px; }
-#bookmark-list h3 { font-size: 9.5pt; line-height: 16px; top: 40px; }
-#bookmark-list h4 { font-size: 9.5pt; line-height: 16px; top: 56px; }
 
-#bookmark-list h3 span, #bookmark-list h4 span {
+#bookmark-list h1 {
+    font-size: 14pt;
+    font-weight: 400;
+    line-height: 40px;
+    top: 0px;
+}
+
+#bookmark-list h3 {
+    font-size: 9.5pt;
+    line-height: 16px;
+    top: 40px;
+}
+
+#bookmark-list h4 {
+    font-size: 9.5pt;
+    line-height: 16px;
+    top: 56px;
+}
+
+#bookmark-list h1 div {
+    float: right;
+    font-size: 16px;
+}
+
+#bookmark-list h3 span,
+#bookmark-list h4 span {
     display: inline-block;
     width: 80px;
     font-size: 8pt;
     font-weight: 600;
 }
+
 #bookmark-list div.buttons {
     position: absolute;
     bottom: 4px;
@@ -35,25 +65,25 @@
 }
 
 #bookmark-list td div.buttons a.button {
-	margin-right: 2px;
-	width: 92px;
-	font-size: 9pt;
-	line-height: 24px;
-	height: 24px;
-	font-weight: 400;
+    margin-right: 2px;
+    width: 92px;
+    font-size: 9pt;
+    line-height: 24px;
+    height: 24px;
+    font-weight: 400;
 }
 
-#bookmark-list td .flag { display: none; }
+#bookmark-list td .flag {
+    display: none;
+}
 
 #bookmark-list td.new .flag {
     display: block;
     width: 120px;
     height: 24px;
-
     position: absolute;
     top: 0;
     right: 0;
-
     font-size: 12pt;
     font-weight: 600;
     line-height: 24px;
@@ -61,14 +91,12 @@
 }
 
 #bookmark-list tr.new_replays {
-	background-color: rgba(0,240,0,0.1);
+    background-color: rgba(0, 240, 0, 0.1);
 }
 
-#bookmark-list tr.new_replays a.button.view, #bookmark-list tr.new_followings a.button.following {
-	background-color: rgba(240,240,0,0.8);
-	color: rgb(0,0,0);
-	font-weight: 600;
+#bookmark-list tr.new_replays a.button.view,
+#bookmark-list tr.new_followings a.button.following {
+    background-color: rgba(240, 240, 0, 0.8);
+    color: rgb(0, 0, 0);
+    font-weight: 600;
 }
-
-
-
