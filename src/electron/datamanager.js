@@ -353,7 +353,6 @@ class DataManager {
         if (add === true) {
             bookmarks.push(user)
         }
-        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
         isBusy = false
     }
 
@@ -364,7 +363,6 @@ class DataManager {
                 bookmarks.splice(i, 1)
             }
         }
-        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
         isBusy = false
     }
 
@@ -377,7 +375,6 @@ class DataManager {
                 break
             }
         }
-        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
         isBusy = false
     }
 
