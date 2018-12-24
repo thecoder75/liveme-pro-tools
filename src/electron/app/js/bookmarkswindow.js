@@ -7,6 +7,7 @@ const DataManager = remote.getGlobal('DataManager')
 let list = []
 let index
 let max
+let deleted = []
 
 $(function() {
     $('main').show()
@@ -76,10 +77,8 @@ function drawEntry() {
                 <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).attr('src', 'images/nouser.png')" align="bottom">
             </td>
             <td width="90%" class="main">
-                <h1>
-                    ${list[index].nickname}
-                    <div onClick="removeBookmark('${list[index].uid}')"><i class="icon icon-star-full bright yellow"></i></div>
-                </h1>
+                <div class="bookmarkicon" onClick="removeBookmark('${list[index].uid}')"><i class="icon icon-star-full bright yellow"></i></div>
+                <h1>${list[index].nickname}</h1>
                 <h3><span>Latest Replay:</span> ${d1}</h3>
                 <h4><span>Last Viewed:</span> ${d2}</h4>
                 <div id="user-${list[index].uid}-buttons" class="buttons">
@@ -97,9 +96,31 @@ function drawEntry() {
 }
 
 function removeBookmark(uid) {
-    DataManager.removeBookmark(uid)
-    $('#entry-' + uid).remove()
-    list = DataManager.getAllBookmarks()
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].uid === uid) {
+            deleted[uid] = list[i]
+            console.log('Deleted:')
+            console.log(deleted[uid])
+        }
+    }
+    $('#entry-' + uid + ' .bookmarkicon').remove()
+    $('#entry-' + uid + ' td.main').append(`
+                    <div class="bookmarkicon" onClick="addBookmark('${uid}')"><i class="icon icon-star-empty bright yellow"></i></div>
+    `)
+    DataManager.removeBookmark(deleted[uid])
+}
+
+function addBookmark(uid) {
+
+    console.log('Add:')
+    console.log(deleted[uid])
+
+    DataManager.addBookmark(deleted[uid])
+    $('#entry-' + uid + ' .bookmarkicon').remove()
+    $('#entry-' + uid + ' td.main').append(`
+                    <div class="bookmarkicon" onClick="removeBookmark('${uid}')"><i class="icon icon-star-full bright yellow"></i></div>
+    `)
+    deleted[uid] = null
 }
 
 function hideNonRecent() {
