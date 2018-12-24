@@ -16,7 +16,6 @@ $(function() {
     max = list.length
 
     $('#bookmark-list').html('')
-    $('footer h1').html(max + ' bookmarks listed.')
 
     $('#bookmark-search').bind('paste cut keydown', function() {
         setTimeout(() => {
@@ -62,6 +61,8 @@ function redrawList() {
 function drawEntry() {
     if (index === max) return
 
+    $('footer h1').html(index + ' bookmarks rendered.')
+
     let d1 = prettydate.format(new Date(list[index].newest_replay * 1000))
     let d2 = prettydate.format(new Date(list[index].last_viewed * 1000))
     let nClass = list[index].newest_replay > list[index].last_viewed ? 'new_replays' : ''
@@ -98,6 +99,7 @@ function drawEntry() {
 function removeBookmark(uid) {
     DataManager.removeBookmark(uid)
     $('#entry-' + uid).remove()
+    list = DataManager.getAllBookmarks()
 }
 
 function hideNonRecent() {
