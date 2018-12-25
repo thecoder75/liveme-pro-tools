@@ -3,6 +3,7 @@ node_modules
 /dist/
 /.vscode/
 
+current_release_notes
 
 package-lock.json
 yarn-error.log
