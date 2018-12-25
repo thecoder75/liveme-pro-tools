@@ -365,7 +365,7 @@ const dlQueue = async.queue((task, done) => {
                 ffmpegOpts = [
                     '-c:v hevc_amf',
                     '-preset superfast',
-                    '-q:v 0',
+                    '-b:v 300k',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc',
                     '-vsync 2',
@@ -377,7 +377,7 @@ const dlQueue = async.queue((task, done) => {
                 ffmpegOpts = [
                     '-c:v hevc_nvenc',
                     '-preset superfast',
-                    '-q:v 0',
+                    '-b:v 300k',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc',
                     '-vsync 2',
@@ -389,7 +389,7 @@ const dlQueue = async.queue((task, done) => {
                 ffmpegOpts = [
                     '-c:v hevc_qsv',
                     '-preset superfast',
-                    '-q:v 0',
+                    '-b:v 300k',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc',
                     '-vsync 2',
@@ -401,7 +401,7 @@ const dlQueue = async.queue((task, done) => {
                 ffmpegOpts = [
                     '-c:v hevc',
                     '-preset superfast',
-                    '-q:v 0',
+                    '-b:v 300k',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc',
                     '-vsync 2',
@@ -413,7 +413,7 @@ const dlQueue = async.queue((task, done) => {
                 ffmpegOpts = [
                     '-c:v h264_amf',
                     '-preset none',
-                    '-q:v 0',
+                    '-b:v 500k',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc',
                     '-vsync 2',
@@ -425,7 +425,7 @@ const dlQueue = async.queue((task, done) => {
                 ffmpegOpts = [
                     '-c:v h264_nvenc',
                     '-preset none',
-                    '-q:v 0',
+                    '-b:v 500k',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc',
                     '-vsync 2',
@@ -437,7 +437,7 @@ const dlQueue = async.queue((task, done) => {
                 ffmpegOpts = [
                     '-c:v h264_qsv',
                     '-preset none',
-                    '-q:v 0',
+                    '-b:v 500k',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc',
                     '-vsync 2',
