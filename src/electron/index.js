@@ -361,6 +361,90 @@ const dlQueue = async.queue((task, done) => {
         })
 
         switch (parseInt(appSettings.get('downloads.ffmpegquality'))) {
+            case 9: // AMD Hardware HEVC/H265 Encoder
+                ffmpegOpts = [
+                    '-c:v hevc_amf',
+                    '-preset superfast',
+                    '-q:v 0',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 8: // nVidia Hardware HEVC/H265 Encoder
+                ffmpegOpts = [
+                    '-c:v hevc_nvenc',
+                    '-preset superfast',
+                    '-q:v 0',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 7: // Intel Hardware HEVC/H265 Encoder
+                ffmpegOpts = [
+                    '-c:v hevc_qsv',
+                    '-preset superfast',
+                    '-q:v 0',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 6: // HEVC/H265 Encoder
+                ffmpegOpts = [
+                    '-c:v hevc',
+                    '-preset superfast',
+                    '-q:v 0',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 5: // AMD AMF Hardware Enabled - Experimental
+                ffmpegOpts = [
+                    '-c:v h264_amf',
+                    '-preset none',
+                    '-q:v 0',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 4: // nVidia Hardware Enabled - Experimental
+                ffmpegOpts = [
+                    '-c:v h264_nvenc',
+                    '-preset none',
+                    '-q:v 0',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 3: // Intel Hardware Enabled - Experimental
+                ffmpegOpts = [
+                    '-c:v h264_qsv',
+                    '-preset none',
+                    '-q:v 0',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
             case 2: // Best
                 ffmpegOpts = [
                     '-c:v h264',
