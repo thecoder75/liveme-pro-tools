@@ -178,8 +178,8 @@
                         <h4 class="titleColor">Blocked countries</h4>
                     </li>
                     <li style="padding-bottom: 20px;">
-                        <div style="height:15em;">
-                            <select multiple id="countryCode" style="width: 120px;" size="15" onBlur="saveSettings()">
+                        <div style="height: auto;">
+                            <select class="multi" multiple id="countryCode" size="10" onBlur="saveSettings()">
                                 </select>
                         </div>
                     </li>
@@ -292,6 +292,12 @@
                     <li style="padding-bottom: 10px;">
                         <input type="number" min="1" max="10" id="downloads-parallel" placeholder="Number" style="margin-right:10px;" onBlur="saveSettings()"> How many replays to download in parallel.
                     </li>
+
+                </ul>
+            </div>
+            <div class="section">
+                <ul>
+
                     <li style="padding-bottom: 5px;">
                         <h4 class="titleColor">FFMPEG Settings</h4>
                     </li>
@@ -301,14 +307,24 @@
                     </li>
                     <li style="margin: 16px 0; line-height: 16px;">
                         <label for="ffmpeg-transcode-setting" onClick="saveSettings()">Transcode Setting:
-                            <div class="select" style="vertical-align: middle; height: 26px;">
+                            <div class="select" style="margin-left: 32px; vertical-align: middle; height: 26px; border: solid 1px rgb(80,80,80)">
                                 <select id="ffmpeg-transcode-setting">
-                                    <option value="0">None</option>
-                                    <option value="1">Fast</option>
-                                    <option value="2">Best</option>
+                                    <option value="0">None (No reprocessing)</option>
+                                    <option value="1">H264 Fast</option>
+                                    <option value="2">H264 Best</option>
+                                    <option value="3">H264 Best (Intel Hardware Accelerated)</option>
+                                    <option value="4">H264 Best (nVIdia Hardware Accelerated)</option>
+                                    <option value="5">H264 Best (AMD Hardware Accelerated)</option>
+                                    <option value="6">HEVC Best</option>
+                                    <option value="7">HEVC Best (Intel Hardware Accelerated)</option>
+                                    <option value="8">HEVC Best (nVidia Hardware Accelerated)</option>
+                                    <option value="9">HEVC Best (AMD Hardware Accelerated)</option>
                                 </select>
                             </div>
                             <br>
+                            <p>
+                                <b>ONLY</b> select Hardware Accelerated transcoding if you are sure your computer supports it.  If your computer does not support it, downloads will fail.
+                            </p>
                             <small>When set to <b>None</b>, the video may be glitchy or contain errors.</small>
                         </li>
 

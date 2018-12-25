@@ -1,39 +1,47 @@
 /*
     Form Fields
 */
+
 input[type=number] {
     width: 15%;
     color: #b389f5;
     padding: 2px 8px;
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 3px;
 }
-input[type=text],input[type=password] {
-    border: solid 1px rgb(96,96,96);
-    background-color: rgb(32,32,32);
-    color: rgb(192,192,192);
+
+input[type=text],
+input[type=password] {
+    border: solid 1px rgb(96, 96, 96);
+    background-color: rgb(32, 32, 32);
+    color: rgb(192, 192, 192);
     font-size: 10pt;
     font-weight: 400;
     letter-spacing: 0.04em;
     height: 24px;
     outline: none;
 }
-input[type=text]:focus,input[type=password]:focus {
-    color: rgb(252,252,252);
+
+input[type=text]:focus,
+input[type=password]:focus {
+    color: rgb(252, 252, 252);
 }
 
-input[type=text]:disabled,input[type=password]:disabled {
-    border-color: rgba(96,96,96,0.4);
-    color: rgba(192,192,192,0.4);
-    background-color: rgba(32,32,32,0.4);
+input[type=text]:disabled,
+input[type=password]:disabled {
+    border-color: rgba(96, 96, 96, 0.4);
+    color: rgba(192, 192, 192, 0.4);
+    background-color: rgba(32, 32, 32, 0.4);
 }
 
-input[type=button], button {
+input[type=button],
+button {
     outline: none;
 }
 
-input[type=radio],input[type=checkbox] {
+input[type=radio],
+input[type=checkbox] {
     vertical-align: middle;
     margin-right: 8px;
 }
@@ -47,14 +55,14 @@ input[type=radio],input[type=checkbox] {
     border-radius: 5px;
 }
 
-.select > select {
+.select>select {
     display: block;
     position: relative;
     height: 24px;
     line-height: 24px;
     margin: 0;
     padding: 0;
-    color: rgb(192,192,192);
+    color: rgb(192, 192, 192);
     background: transparent;
     font-size: 10pt;
     font-weight: 400;
@@ -62,14 +70,30 @@ input[type=radio],input[type=checkbox] {
     outline: none;
 }
 
-.select option { text-shadow: none; background-color: #595b5b; color: #c6c8c8; }
+.select option {
+    text-shadow: none;
+    background-color: #595b5b;
+    color: #c6c8c8;
+}
 
+select.multi {
+    display: block;
+    width: 180px;
+    line-height: 24px;
+    border-color: rgba(96, 96, 96, 0.4);
+    color: rgba(192, 192, 192, 0.4);
+    background-color: rgba(32, 32, 32, 0.4);
+    font-size: 10pt;
+}
 
 
 /*
     Buttons
 */
-a.button, button, input[type=button] {
+
+a.button,
+button,
+input[type=button] {
     display: inline-block;
     height: 24px;
     line-height: 24px;
@@ -79,18 +103,20 @@ a.button, button, input[type=button] {
     font-size: 11pt;
     text-decoration: none;
     text-align: center;
-    background-color: rgb(80,80,80);
+    background-color: rgb(80, 80, 80);
     border-radius: 2px;
     border: none;
-    color: rgb(192,192,192);
+    color: rgb(192, 192, 192);
     vertical-align: middle;
     cursor: pointer;
     outline: none;
 }
+
 a.button:hover {
-    color: rgb(255,255,255);
-    background-color: rgb(64,64,64);
+    color: rgb(255, 255, 255);
+    background-color: rgb(64, 64, 64);
 }
+
 a.button.mini {
     height: 20px;
     line-height: 20px;
@@ -98,19 +124,21 @@ a.button.mini {
     font-size: 10pt;
     padding: 0 4px;
 }
+
 a.button.icon-only {
     padding: 0;
     background-color: none;
     width: 24px;
     font-size: 16px;
     line-height: 20px;
-
 }
+
 a.button i.icon {
     font-size: 12px;
     line-height: 12px;
     vertical-align: middle;
 }
+
 a.button.icon-only i.icon {
     font-size: 16px;
     line-height: 16px;
