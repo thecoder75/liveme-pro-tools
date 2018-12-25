@@ -105,7 +105,7 @@ function removeBookmark(uid) {
     }
     $('#entry-' + uid + ' .bookmarkicon').remove()
     $('#entry-' + uid + ' td.main').append(`
-                    <div class="bookmarkicon" onClick="addBookmark('${uid}')"><i class="icon icon-star-empty bright yellow"></i></div>
+                    <div class="bookmarkicon" onClick="addBookmark('${uid}')"><i class="icon icon-star-empty bright grey"></i></div>
     `)
     DataManager.removeBookmark(deleted[uid])
 }
