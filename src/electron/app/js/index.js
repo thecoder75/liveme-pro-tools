@@ -755,11 +755,11 @@ async function _checkBookmark(b, dispatch) {
     b.nickname = user.user_info.uname
     b.shortid = user.user_info.short_id
 
-    if (b.changed_followings) {
+    if (b.changed_followings && (appSettings.get('general.enableShowFollowings') === true)) {
         dispatch(NEW_FOLLOWINGS, b)
     }
 
-    if (b.changed_followers) {
+    if (b.changed_followers && (appSettings.get('general.enableShowFans') === true)) {
         dispatch(NEW_FANS, b)
     }
 
@@ -774,7 +774,9 @@ async function _checkBookmark(b, dispatch) {
                 b.hasNewReplays = true
                 b.newest_replay = Math.floor(replays[0].vtime)
 
-                dispatch(NEW_REPLAYS, b)
+                if (appSettings.get('general.enableShowReplays') === true) {
+                    dispatch(NEW_REPLAYS, b)
+                }
                 break
             }
         }
@@ -1294,6 +1296,13 @@ function initSettingsPanel() {
     let enableHomeScan = appSettings.get('general.enableHomeScan') || false
     $('#enableHomeScan').prop('checked', enableHomeScan)
 
+    let enableShowReplays = appSettings.get('general.enableShowReplays') || false
+    $('#enableShowReplays').prop('checked', enableShowReplays)
+    let enableShowFans = appSettings.get('general.enableShowFans') || false
+    $('#enableShowFans').prop('checked', enableShowFans)
+    let enableShowFollowings = appSettings.get('general.enableShowFollowings') || false
+    $('#enableShowFollowings').prop('checked', enableShowFollowings)
+
     let blockedCountries = appSettings.get('general.blockedCountries') || []
     $('#countryCode').empty()
     for (let i = 0; i < cclist.length; i++) {
@@ -1352,6 +1361,9 @@ function saveSettings() {
     appSettings.set('general.loadAllResults', $('#loadAllResults').is(':checked'))
 
     appSettings.set('general.enableHomeScan', $('#enableHomeScan').is(':checked'))
+    appSettings.set('general.enableShowReplays', $('#enableShowReplays').is(':checked'))
+    appSettings.set('general.enableShowFans', $('#enableShowFans').is(':checked'))
+    appSettings.set('general.enableShowFollowings', $('#enableShowFollowings').is(':checked'))
 
     appSettings.set('general.homeHideNewFollowers', (!!$('#homeHideNewFollowers').is(':checked')))
     appSettings.set('general.homeHideNewFans', (!!$('#homeHideNewFans').is(':checked')))
