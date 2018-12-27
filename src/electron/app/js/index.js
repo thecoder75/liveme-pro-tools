@@ -629,9 +629,31 @@ function scanLiveme() {
 }
 
 function clearHomeUI() {
-    $('#home #newreplays').empty();
-    $('#home #newfollowings').empty();
-    $('#home #newfans').empty();
+
+    if (appSettings.get('general.enableShowReplays') === true) {
+        $('#home #newReplaysHeader').show()
+        $('#home #newreplays').show().empty()
+    } else {
+        $('#home #newReplaysHeader').show()
+        $('#home #newreplays').show()
+    }
+
+    if (appSettings.get('general.enableShowFollowings') === true) {
+        $('#home #newFollowingsHeader').show()
+        $('#home #newfollowings').show().empty()
+    } else {
+        $('#home #newFollowingsHeader').show()
+        $('#home #newfollowings').show()
+    }
+
+    if (appSettings.get('general.enableShowFans') === true) {
+        $('#home #newFansHeader').show()
+        $('#home #newfans').show().empty()
+    } else {
+        $('#home #newFollownewFansHeaderingsHeader').show()
+        $('#home #newfans').show()
+    }
+
 }
 
 function loadFromCache(bookmarks, dispatch) {
