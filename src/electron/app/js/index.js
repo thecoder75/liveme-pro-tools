@@ -72,6 +72,28 @@ async function loginManually() {
 
 }
 
+function variance(arr) {
+    var len = arr.length;
+    var sum = 0;
+
+    for (var i = 0; i < arr.length; i++) {
+        sum = sum + parseFloat(arr[i]);
+    }
+    var v = 0;
+    if (len > 1) {
+        var mean = sum / len;
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i] == "") {
+            } else {
+                v = v + (arr[i] - mean) * (arr[i] - mean);
+            }
+        }
+        return v / len;
+    } else {
+        return 0;
+    }
+}
+
 function setupContextMenu() {
     const InputMenu = remote.Menu.buildFromTemplate([{
         label: 'Undo',
@@ -937,6 +959,9 @@ function performUserLookup(uid) {
             }
             DataManager.addViewed(user.user_info.uid)
 
+
+      
+
             $('#list thead').html(`
                 <tr>
                     <th width="410">Title</th>
@@ -948,13 +973,13 @@ function performUserLookup(uid) {
                         <a href="#" class="link text-right" onClick="sortReplays('views')" title="Sort by Views (desc)">Views</a>
                     </th>
                     <th width="33" align="right">
-                    <a href="#" class="link text-right" onClick="sortReplays('vpm')" title="Sort by Shares Per Minute (desc)">VPM</a>
+                    <a href="#" class="link text-right" onClick="sortReplays('vpm')" title="Sort by Views Per Minute (desc)">VPM</a>
                 </th>
                     <th width="70" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
                     </th>
                     <th width="33" align="right">
-                    <a href="#" class="link text-right" onClick="sortReplays('lpm')" title="Sort by Shares Per Minute (desc)">LPM</a>
+                    <a href="#" class="link text-right" onClick="sortReplays('lpm')" title="Sort by Likes Per Minute (desc)">LPM</a>
                 </th>
                     <th width="70" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
@@ -962,7 +987,8 @@ function performUserLookup(uid) {
                     <th width="33" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('spm')" title="Sort by Shares Per Minute (desc)">SPM</a>
                     </th>
-                    <th width="110">Actions</th>
+                    <th width="45">DL</th>
+                    <th width="60">Actions</th>
                 </tr>
             `)
 
@@ -973,7 +999,7 @@ function performUserLookup(uid) {
             $('#user-details div.info h1 span').html(user.user_info.uname)
             $('#user-details div.info h2.id').html('<span>ID:</span> ' + user.user_info.uid + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.uid + '\')"><i class="icon icon-copy"></i></a>')
             $('#user-details div.info h2.shortid').html('<span>Short ID:</span> ' + user.user_info.short_id + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.short_id + '\')"><i class="icon icon-copy"></i></a>')
-            $('#user-details div.info h2.level').html('<span>Level:</span><b>' + user.user_info.level + '</b>')
+            $('#user-details div.info h2.level').html('<span>Lvl:</span><b>' + user.user_info.level + '</b>')
             $('#user-details div.info h4').html(`
                 <abbr
                     title="${countryCodes.getFullName(user.user_info.countryCode)}">
@@ -988,7 +1014,7 @@ function performUserLookup(uid) {
             }
 
             $('#user-details div.info a.following').html('Following ' + user.count_info.following_count)
-            $('#user-details div.info a.followers').html(user.count_info.follower_count + ' Followers')
+            $('#user-details div.info a.followers').html(user.count_info.follower_count + ' Fans')
 
             setTimeout(() => {
                 $('#status').hide()
@@ -1015,6 +1041,14 @@ function performUserLookup(uid) {
                 newest_replay: 0
             }
 
+            allReplays = []
+            let accstatsUI = document.getElementById("variance")
+            accstatsUI.style.opacity = 0.5
+            accstatsUI.innerHTML = `
+            <abbr title="Variance">
+                <span>Var:</span><b> - </b>
+            </abbr>` 
+        
             getUsersReplays()
             showProgressBar()
         })
@@ -1030,6 +1064,7 @@ function getUsersReplays() {
     } else {
         $('#replay-result-alert').hide()
     }
+   
     LiveMe.getUserReplays(currentUser.uid, currentPage, MAX_PER_PAGE)
         .then(replays => {
 
@@ -1082,6 +1117,33 @@ function getUsersReplays() {
         })
 }
 
+let allReplays = []
+
+function openReplayContextMenu(vid) {
+    let replay = allReplays.find(r => r.vid === vid)
+    const replayContextMenu = remote.Menu.buildFromTemplate([{
+        label: 'Copy ID to Clipboard',
+        click: () => {copyToClipboard(vid)}
+    }, {
+        label: 'Copy URL to Clipboard',
+        click: () => {copyToClipboard(`https://www.liveme.com/us/v/${vid}`)}
+    
+    }, {
+        label: 'Copy Source to Clipboard (m3u8 or flv)',
+        click: () => copyToClipboard(`${replay.videosource || replay.hlsvideosource}`)
+    }
+    , {
+        label: 'Read Comments',
+        click: () => readComments(replay.vid)
+    }
+
+])
+
+    console.log({vid})
+
+    replayContextMenu.popup(remote.getCurrentWindow())    
+}
+
 function _addReplayEntry(replay, wasSearched) {
     if (replay.userid !== currentUser.uid) return
 
@@ -1111,8 +1173,9 @@ function _addReplayEntry(replay, wasSearched) {
     let inQueue = $('#download-' + replay.vid).length > 0 ? '<a id="download-replay-' + replay.vid + '" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + replay.vid + '" class="button icon-only" onClick="downloadVideo(\'' + replay.vid + '\')" title="Download Replay"><i class="icon icon-download"></i></a>'
 
     const template = Handlebars.compile($('#replays-list-row').html())
-    const html = template(
-        Object.assign(replay, {
+
+
+    let replayData = Object.assign(replay, {
             searched,
             seen,
             highlight,
@@ -1128,7 +1191,42 @@ function _addReplayEntry(replay, wasSearched) {
             inQueue,
             source: replay.videosource || replay.hlsvideosource
         })
-    )
+
+    allReplays.push(replayData)
+
+    if (allReplays.length < 2) {
+        let accstatsUI = document.getElementById("variance")
+        accstatsUI.style.opacity = 0.5
+        accstatsUI.innerHTML = `
+        <abbr title="Variance">
+            <span>Var:</span><b> - </b>
+        </abbr>` 
+    }
+    else{
+    try {
+        var spmVari = variance(allReplays.map(r => r.spm))
+            var visibility = 0.1 + Math.max(0,Math.log(spmVari*5 +1-0.2))
+    
+            let accstatsUI = document.getElementById("variance")
+            accstatsUI.style.opacity = visibility
+            accstatsUI.innerHTML = `
+            <abbr title="Variance">
+                <span>Var:</span><b> ${spmVari.toFixed(2)}</b>
+            </abbr>` 
+    
+
+    } catch (error) {
+        
+    }
+    }
+
+
+   
+
+
+    
+    const html = template(replayData)
+    
 
     const item = $(html).hide().fadeIn(200)
     $('#list tbody').append(item)
