@@ -9,7 +9,7 @@
         "url": "https://notabug.org/thecoder1975/liveme-pro-tools"
     },
     "scripts": {
-        "postinstall": "cd src/electron && npm install",
+        "postinstall": "",
         "start": "./node_modules/.bin/electron ./src/electron/index.js --enable-logging",
         "dev": "NODE_ENV='development' npm run start",
         "release": "build -w && build -l && build -m",
@@ -18,6 +18,32 @@
     },
     "author": "TheCoder75",
     "license": "GPL-3.0",
+    "dependencies": {
+        "async": "^2.6.0",
+        "axios": "^0.17.1",
+        "electron-is-dev": "^0.3.0",
+        "electron-settings": "^3.1.4",
+        "fluent-ffmpeg": "^2.1.2",
+        "format-duration": "^1.0.0",
+        "hlsdownloader": "^2.1.0",
+        "node-fetch": "^2.3.0",
+        "pretty-date": "^0.2.0",
+        "ps-node": "^0.1.6",
+        "request": "^2.83.0",
+        "request-promise-native": "^1.0.5",
+        "shelljs": "^0.8.2",
+        "tar-fs": "^1.16.2"
+    },
+    "devDependencies": {
+        "eslint": "^4.19.1",
+        "eslint-config-standard": "^11.0.0",
+        "eslint-plugin-import": "^2.11.0",
+        "eslint-plugin-node": "^6.0.1",
+        "eslint-plugin-promise": "^3.7.0",
+        "eslint-plugin-standard": "^3.1.0",
+        "electron": "^1.8.6",
+        "electron-builder": "^19.56.0"
+    },
     "build": {
         "appId": "com.thecoderstoolbox.livemeprotools",
         "files": [
@@ -25,8 +51,7 @@
             "node_modules/**/*"
         ],
         "directories": {
-            "output": "./dist",
-            "app": "./src/electron"
+            "output": "./dist"
         },
         "productName": "LiveMe Pro Tools",
         "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
@@ -66,9 +91,5 @@
             "identity": null,
             "icon": "src/electron/build/appicon.icns"
         }
-    },
-    "devDependencies": {
-        "electron": "^1.8.6",
-        "electron-builder": "^19.56.0"
     }
 }
