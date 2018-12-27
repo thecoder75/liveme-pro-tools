@@ -44,8 +44,10 @@ $(function() {
         LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
     }
 
+    $('footer h1').html('').show()
     setTimeout(() => {
         if (appSettings.get('general.enableHomeScan') == true) {
+            $('footer h1').html('Loading Home').show()
             initHome()
         }
     }, 5000)
