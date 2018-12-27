@@ -26,6 +26,8 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - macOS v10.11 or higher (64-bit only!)
 - Windows 7 or higher (32 and 64-bit!)
 
+** Please note support for 32-bit will be dropped in the near future of the main branch and a special branch supporting it will be created instead but may not be updated as often as the main branch.**
+
 ### What about FFMPEG?
 Unfortunately at this time, every way I've looked at removing it has caused major breakage in the ability to download non-broken replays.
 

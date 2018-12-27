@@ -11,7 +11,7 @@ const fs = require('fs')
 const path = require('path')
 const request = require('request')
 const tarfs = require('tar-fs')
-const DataManager = new (require('./datamanager').DataManager)()
+const DataManager = new(require('./datamanager').DataManager)()
 const LivemeAPI = require('./livemeapi')
 const LiveMe = new LivemeAPI({})
 const isDev = require('electron-is-dev')
@@ -27,7 +27,7 @@ let homeWindow = null
 let menu = null
 let appSettings = require('electron-settings')
 
-function createWindow () {
+function createWindow() {
     let isFreshInstall = appSettings.get('general.fresh_install') == null
 
     if (isFreshInstall === true) {
@@ -35,7 +35,8 @@ function createWindow () {
             fresh_install: true,
             playerpath: '',
             hide_zeroreplay_fans: false,
-            hide_zeroreplay_followings: true
+            hide_zeroreplay_followings: true,
+            enableHomeScan: true
         })
         appSettings.set('position', {
             mainWindow: [-1, -1],
@@ -75,12 +76,11 @@ function createWindow () {
         appSettings.set('downloads.chunks', 1)
     }
 
-    if (!appSettings.get('lamd.enabled')) {
-        appSettings.set('lamd', {
-            enabled: false,
-            url: 'http://localhost:8280',
-            handle_downloads: false
-        })
+    if (!appSettings.get('general.enableHomeScan')) {
+        appSettings.set('general.enableHomeScan', true)
+        appSettings.set('general.enableShowReplays', true)
+        appSettings.set('general.enableShowFans', true)
+        appSettings.set('general.enableShowFollowings', true)
     }
 
     if (!appSettings.get('history.viewed_maxage')) {
@@ -234,7 +234,7 @@ function createWindow () {
     }
 }
 
-let shouldQuit = app.makeSingleInstance(function (commandLine, workingDirectory) {
+let shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
     if (mainWindow) {
         mainWindow.focus()
     }
@@ -301,34 +301,34 @@ ipcMain.on('open-home-window', (event, arg) => {
 
 
 ipcMain.on('download-replay', (event, arg) => {
-    DataManager.addToQueueList(arg.videoid)
-    dlQueue.push(arg.videoid, err => {
-        if (err) {
-            mainWindow.webContents.send('download-error', err)
-        } else {
-            mainWindow.webContents.send('download-complete', { videoid: arg.videoid })
-        }
+        DataManager.addToQueueList(arg.videoid)
+        dlQueue.push(arg.videoid, err => {
+            if (err) {
+                mainWindow.webContents.send('download-error', err)
+            } else {
+                mainWindow.webContents.send('download-complete', { videoid: arg.videoid })
+            }
+        })
     })
-})
-/**
- * Cannot cancel active download, only remove queued entries.
- */
+    /**
+     * Cannot cancel active download, only remove queued entries.
+     */
 ipcMain.on('download-cancel', (event, arg) => {
-    dlQueue.remove(function (task) {
-        if (task.data === arg.videoid) {
-            DataManager.removeFromQueueList(task.data)
-            return true
-        }
-        return false
+        dlQueue.remove(function(task) {
+            if (task.data === arg.videoid) {
+                DataManager.removeFromQueueList(task.data)
+                return true
+            }
+            return false
+        })
     })
-})
-/**
- * It is done this way in case the API call to jDownloader returns an error or doesn't connect.
- */
+    /**
+     * It is done this way in case the API call to jDownloader returns an error or doesn't connect.
+     */
 const dlQueue = async.queue((task, done) => {
     // Set custom FFMPEG path if defined
     if (appSettings.get('downloads.ffmpeg')) ffmpeg.setFfmpegPath(appSettings.get('downloads.ffmpeg'))
-    // Get video info
+        // Get video info
     LiveMe.getVideoInfo(task).then(video => {
         const path = appSettings.get('downloads.path')
         const dt = new Date(video.vtime * 1000)
@@ -361,6 +361,97 @@ const dlQueue = async.queue((task, done) => {
         })
 
         switch (parseInt(appSettings.get('downloads.ffmpegquality'))) {
+            case 9: // AMD Hardware HEVC/H265 Encoder
+                ffmpegOpts = [
+                    '-c:v hevc_amf',
+                    '-preset superfast',
+                    '-b:v 300k',
+                    '-r 15',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 8: // nVidia Hardware HEVC/H265 Encoder
+                ffmpegOpts = [
+                    '-c:v hevc_nvenc',
+                    '-preset superfast',
+                    '-b:v 300k',
+                    '-r 15',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 7: // Intel Hardware HEVC/H265 Encoder
+                ffmpegOpts = [
+                    '-c:v hevc_qsv',
+                    '-preset superfast',
+                    '-b:v 300k',
+                    '-r 15',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 6: // HEVC/H265 Encoder
+                ffmpegOpts = [
+                    '-c:v hevc',
+                    '-preset superfast',
+                    '-b:v 300k',
+                    '-r 15',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 5: // AMD AMF Hardware Enabled - Experimental
+                ffmpegOpts = [
+                    '-c:v h264_amf',
+                    '-preset none',
+                    '-b:v 500k',
+                    '-r 15',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 4: // nVidia Hardware Enabled - Experimental
+                ffmpegOpts = [
+                    '-c:v h264_nvenc',
+                    '-preset none',
+                    '-b:v 500k',
+                    '-r 15',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
+            case 3: // Intel Hardware Enabled - Experimental
+                ffmpegOpts = [
+                    '-c:v h264_qsv',
+                    '-preset none',
+                    '-b:v 500k',
+                    '-r 15',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
+                break
+
             case 2: // Best
                 ffmpegOpts = [
                     '-c:v h264',
@@ -406,21 +497,21 @@ const dlQueue = async.queue((task, done) => {
                     let concatList = ''
                     const tsList = []
                     body.split('\n').forEach(line => {
-                        if (line.indexOf('.ts') !== -1) {
-                            const tsName = line.split('?')[0]
-                            const tsPath = `${path}/lpt_temp/${video.vid}_${tsName}`
-                            // Check if TS has already been added to array
-                            if (concatList.indexOf(tsPath) === -1) {
-                                // We'll use this later to merge downloaded chunks
-                                concatList += `${tsPath}|`
-                                // Push data to list
-                                tsList.push({ name: tsName, path: tsPath })
+                            if (line.indexOf('.ts') !== -1) {
+                                const tsName = line.split('?')[0]
+                                const tsPath = `${path}/lpt_temp/${video.vid}_${tsName}`
+                                    // Check if TS has already been added to array
+                                if (concatList.indexOf(tsPath) === -1) {
+                                    // We'll use this later to merge downloaded chunks
+                                    concatList += `${tsPath}|`
+                                        // Push data to list
+                                    tsList.push({ name: tsName, path: tsPath })
+                                }
                             }
-                        }
-                    })
-                    // remove last |
+                        })
+                        // remove last |
                     concatList = concatList.slice(0, -1)
-                    // Check if tmp dir exists
+                        // Check if tmp dir exists
                     if (!fs.existsSync(`${path}/lpt_temp`)) {
                         // create temporary dir for ts files
                         fs.mkdirSync(`${path}/lpt_temp`)
@@ -438,7 +529,7 @@ const dlQueue = async.queue((task, done) => {
                             .pipe(
                                 fs.createWriteStream(file.path)
                             )
-                        // Events
+                            // Events
                         stream.on('finish', () => {
                             downloadedChunks += 1
                             mainWindow.webContents.send('download-progress', {
@@ -459,7 +550,7 @@ const dlQueue = async.queue((task, done) => {
                                     percent: 0
                                 })
                             })
-                            .on('progress', function (progress) {
+                            .on('progress', function(progress) {
                                 // FFMPEG doesn't always have this >.<
                                 if (!progress.percent) {
                                     progress.percent = ((progress.targetSize * 1000) / +video.videosize) * 100
@@ -496,11 +587,11 @@ const dlQueue = async.queue((task, done) => {
                 ffmpeg(video.hlsvideosource)
                     .outputOptions(ffmpegOpts)
                     .output(path + '/' + filename)
-                    .on('end', function (stdout, stderr) {
+                    .on('end', function(stdout, stderr) {
                         DataManager.addDownloaded(video.vid)
                         return done()
                     })
-                    .on('progress', function (progress) {
+                    .on('progress', function(progress) {
                         // FFMPEG doesn't always have this >.<
                         if (!progress.percent) {
                             progress.percent = ((progress.targetSize * 1000) / +video.videosize) * 100
@@ -511,14 +602,14 @@ const dlQueue = async.queue((task, done) => {
                             percent: progress.percent
                         })
                     })
-                    .on('start', function (c) {
+                    .on('start', function(c) {
                         console.log('started', c)
                         mainWindow.webContents.send('download-start', {
                             videoid: task,
                             filename: filename
                         })
                     })
-                    .on('error', function (err, stdout, stderr) {
+                    .on('error', function(err, stdout, stderr) {
                         fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify([err, stdout, stderr], null, 2))
                         return done({ videoid: task, error: err })
                     })
@@ -697,10 +788,10 @@ ipcMain.on('open-bookmarks', (event, arg) => {
         bookmarksWindow = new BrowserWindow({
             x: winposition[0] > -1 ? winposition[0] : null,
             y: winposition[1] > -1 ? winposition[1] : null,
-            width: 480,
+            width: 440,
             height: winsize[1],
-            minWidth: 400,
-            maxWidth: 400,
+            minWidth: 440,
+            maxWidth: 480,
             minHeight: 480,
             darkTheme: true,
             autoHideMenuBar: false,
@@ -733,18 +824,15 @@ ipcMain.on('open-bookmarks', (event, arg) => {
 })
 
 ipcMain.on('restore-backup', (event, arg) => {
-    dialog.showOpenDialog(
-        {
+    dialog.showOpenDialog({
             properties: [
                 'openFile'
             ],
             buttonLabel: 'Restore',
-            filters: [
-                {
-                    name: 'TAR files',
-                    extensions: ['tar']
-                }
-            ]
+            filters: [{
+                name: 'TAR files',
+                extensions: ['tar']
+            }]
         },
         (filePath) => {
             if (filePath != null) {
@@ -763,20 +851,19 @@ ipcMain.on('restore-backup', (event, arg) => {
 })
 
 ipcMain.on('create-backup', (event, arg) => {
-    let configPath = path.join(app.getPath('appData'), app.getName()), dt = new Date()
-    let fname = 'liveme_pro_tools_backup-' + dt.getFullYear() + (dt.getMonth() < 10 ? '0' : '') + dt.getMonth() + (dt.getDate() < 10 ? '0' : '') + dt.getDate()
+    let configPath = path.join(app.getPath('appData'), app.getName()),
+        dt = new Date()
+    let fname = 'liveme_pro_tools_backup-' + dt.getFullYear() + (dt.getMonth() < 9 ? '0' : '') + (dt.getMonth() + 1) + (dt.getDate() < 10 ? '0' : '') + dt.getDate()
     let backupFile = path.join(app.getPath('home'), 'Downloads', fname + '.tar')
     tarfs.pack(
-        configPath,
-        {
-            entries: [ 'bookmarks.json', 'downloaded.json', 'profiles.json', 'watched.json', 'ignored.json' ]
+        configPath, {
+            entries: ['bookmarks.json', 'downloaded.json', 'profiles.json', 'watched.json', 'ignored.json']
         }
     ).pipe(fs.createWriteStream(backupFile))
 })
 
-function getMenuTemplate () {
-    let template = [
-        {
+function getMenuTemplate() {
+    let template = [{
             label: 'Edit',
             submenu: [
                 { role: 'undo' },
@@ -807,12 +894,10 @@ function getMenuTemplate () {
         },
         {
             role: 'help',
-            submenu: [
-                {
-                    label: 'LiveMe Pro Tools Page',
-                    click: () => shell.openExternal('https://github.com/lewdninja/liveme-pro-tools/')
-                }
-            ]
+            submenu: [{
+                label: 'LiveMe Pro Tools Page',
+                click: () => shell.openExternal('https://github.com/lewdninja/liveme-pro-tools/')
+            }]
         }
     ]
 
@@ -823,8 +908,7 @@ function getMenuTemplate () {
     if (process.platform === 'darwin') {
         template.unshift({
             label: appName,
-            submenu: [
-                {
+            submenu: [{
                     label: 'About ' + appName,
                     click: () => {}
                 },
@@ -846,9 +930,8 @@ function getMenuTemplate () {
     return template
 }
 
-function getMiniMenuTemplate () {
-    let template = [
-        {
+function getMiniMenuTemplate() {
+    let template = [{
             label: 'Edit',
             submenu: [
                 { role: 'undo' },

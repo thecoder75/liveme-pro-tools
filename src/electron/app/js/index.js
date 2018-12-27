@@ -12,7 +12,7 @@ const DataManager = remote.getGlobal('DataManager')
 const formatDuration = require('format-duration')
 const prettydate = require('pretty-date')
 const request = require('request')
-const countryCodes  = require("./js/countryCodes.js")
+const countryCodes = require("./js/countryCodes.js")
 const cclist = countryCodes.cclist
 
 let currentUser = {}
@@ -29,7 +29,7 @@ const NEW_FOLLOWINGS = "New Following"
 const NEW_REPLAYS = "New Replay"
 
 
-$(function () {
+$(function() {
     document.title = 'LiveMe Pro Tools v' + remote.app.getVersion() // Set Title of Window
 
     setupContextMenu() // Set up the Context Menu for some UI elements
@@ -44,10 +44,12 @@ $(function () {
         LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
     }
 
-    healthCheckLoop();
-
+    $('footer h1').html('').show()
     setTimeout(() => {
-        initHome()
+        if (appSettings.get('general.enableHomeScan') == true) {
+            $('footer h1').html('Loading Home').show()
+            initHome()
+        }
     }, 5000)
 
     // Store Bookmarks, History and more every 5 minutes (300,000ms) in case of a crash or something
@@ -56,10 +58,9 @@ $(function () {
     }, 300000)
 })
 
-async function loginManually(){
+async function loginManually() {
     try {
-        if (appSettings.get('auth.email') && appSettings.get('auth.password'))
-        {
+        if (appSettings.get('auth.email') && appSettings.get('auth.password')) {
             await LiveMe.setAuthDetails(
                 appSettings.get('auth.email').trim(),
                 appSettings.get('auth.password').trim())
@@ -71,7 +72,7 @@ async function loginManually(){
 
 }
 
-function setupContextMenu () {
+function setupContextMenu() {
     const InputMenu = remote.Menu.buildFromTemplate([{
         label: 'Undo',
         role: 'undo'
@@ -94,8 +95,7 @@ function setupContextMenu () {
     }, {
         label: 'Select all',
         role: 'selectall'
-    }
-    ])
+    }])
 
     document.body.addEventListener('contextmenu', (e) => {
         e.preventDefault()
@@ -112,15 +112,13 @@ function setupContextMenu () {
         }
     })
 
-    const CopyableContextMenu = remote.Menu.buildFromTemplate([
-        {
-            label: 'Copy',
-            role: 'copy'
-        }, {
-            label: 'Select all',
-            role: 'selectall'
-        }
-    ])
+    const CopyableContextMenu = remote.Menu.buildFromTemplate([{
+        label: 'Copy',
+        role: 'copy'
+    }, {
+        label: 'Select all',
+        role: 'selectall'
+    }])
 
     document.getElementById("username").addEventListener('contextmenu', (e) => {
         e.preventDefault()
@@ -128,15 +126,13 @@ function setupContextMenu () {
         CopyableContextMenu.popup(remote.getCurrentWindow())
     })
 
-    const UserContextMenu = remote.Menu.buildFromTemplate([
-        {
-            label: 'Ignore user (Forever)',
-            click: () => currentUser !== undefined ? DataManager.addIgnoredForever(currentUser.uid) : _
-        }, {
-            label: 'Ignore user (current Session)',
-            click: () => currentUser !== undefined ? DataManager.addIgnoredSession(currentUser.uid) : _
-}
-    ])
+    const UserContextMenu = remote.Menu.buildFromTemplate([{
+        label: 'Ignore user (Forever)',
+        click: () => currentUser !== undefined ? DataManager.addIgnoredForever(currentUser.uid) : _
+    }, {
+        label: 'Ignore user (current Session)',
+        click: () => currentUser !== undefined ? DataManager.addIgnoredSession(currentUser.uid) : _
+    }])
 
     document.getElementById("userHamburgerMenu").addEventListener('click', (e) => {
         e.preventDefault()
@@ -145,8 +141,8 @@ function setupContextMenu () {
     })
 }
 
-function setupLoadOnScroll () {
-    $('main').scroll(function () {
+function setupLoadOnScroll() {
+    $('main').scroll(function() {
         if (($(this).scrollTop() + $(this).height()) > ($('table').height() - 80)) {
             if (hasMore === false) return
             if (scrollBusy === true) return
@@ -164,7 +160,7 @@ function setupLoadOnScroll () {
     })
 }
 
-function setupIPCListeners () {
+function setupIPCListeners() {
     ipcRenderer.on('show-user', (event, arg) => {
         $('#search-query').val(arg.userid)
         $('#search-type').val('user-id')
@@ -213,7 +209,7 @@ function setupIPCListeners () {
     })
 }
 
-function showMainMenu () {
+function showMainMenu() {
     const MainAppMenu = remote.Menu.buildFromTemplate(
         [
             /*
@@ -241,8 +237,7 @@ function showMainMenu () {
             }, */
             {
                 label: 'Backup/Restore',
-                submenu: [
-                    {
+                submenu: [{
                         label: 'Backup Data',
                         click: () => backupData()
                     },
@@ -264,8 +259,7 @@ function showMainMenu () {
             },
             {
                 label: 'Help',
-                submenu: [
-                    {
+                submenu: [{
                         label: 'NotABug Git Home',
                         click: () => shell.openExternal('https://notabug.org/thecoder1975/liveme-pro-tools/')
                     },
@@ -293,71 +287,83 @@ function showMainMenu () {
     )
 
     MainAppMenu.popup(
-        remote.getCurrentWindow(),
-        {
+        remote.getCurrentWindow(), {
             x: 0,
             y: 40
         }
     )
 }
 
-function onTypeChange () {
+function onTypeChange() {
     let t = $('#search-type').val()
     switch (t) {
-    case 'user-id':
-        $('#search-query').attr('placeholder', 'User ID')
-        break
-    case 'short-id':
-        $('#search-query').attr('placeholder', 'Short ID')
-        break
-    case 'video-id':
-        $('#search-query').attr('placeholder', 'Video ID')
-        break
-    case 'video-url':
-        $('#search-query').attr('placeholder', 'Video URL')
-        break
-    case 'hashtag':
-        $('#search-query').attr('placeholder', 'Enter a hashtag')
-        break
-    case 'username-like':
-        $('#search-query').attr('placeholder', 'Partial or Full Username')
-        break
+        case 'user-id':
+            $('#search-query').attr('placeholder', 'User ID')
+            break
+        case 'short-id':
+            $('#search-query').attr('placeholder', 'Short ID')
+            break
+        case 'video-id':
+            $('#search-query').attr('placeholder', 'Video ID')
+            break
+        case 'video-url':
+            $('#search-query').attr('placeholder', 'Video URL')
+            break
+        case 'hashtag':
+            $('#search-query').attr('placeholder', 'Enter a hashtag')
+            break
+        case 'username-like':
+            $('#search-query').attr('placeholder', 'Partial or Full Username')
+            break
     }
 }
 
-function closeOverlay () {
+function closeOverlay() {
     if ($('#queue-list').is(':visible')) {
         $('#queue-list').hide()
         $('overlay').hide()
     }
 }
-function enterOnSearch (e) { if (e.keyCode === 13) preSearch() }
-function copyToClipboard (i) { clipboard.writeText(i) }
-function showSettings () { $('#settings').show() }
-function hideSettings () { 
-    $('#settings').hide() 
+
+function enterOnSearch(e) { if (e.keyCode === 13) preSearch() }
+
+function copyToClipboard(i) { clipboard.writeText(i) }
+
+function showSettings() { $('#settings').show() }
+
+function hideSettings() {
+    $('#settings').hide()
     initHome()
 }
-function closeWindow () { window.close() }
-function minimizeWindow () { remote.BrowserWindow.getFocusedWindow().minimize() }
-function showProgressBar () { $('#footer-progressbar').show() }
-function hideProgressBar () { $('#footer-progressbar').hide() }
-function setProgressBarValue (v) { $('#footer-progressbar div').css({ width: v + '%' }) }
 
-function showUser (u) {
+function closeWindow() { window.close() }
+
+function minimizeWindow() { remote.BrowserWindow.getFocusedWindow().minimize() }
+
+function showProgressBar() { $('#footer-progressbar').show() }
+
+function hideProgressBar() { $('#footer-progressbar').hide() }
+
+function setProgressBarValue(v) { $('#footer-progressbar div').css({ width: v + '%' }) }
+
+function showUser(u) {
     $('#search-type').val('user-id')
     $('#search-query').val(u)
     $('overlay').show()
 
-    setTimeout(function () { preSearch() }, 500)
+    setTimeout(function() { preSearch() }, 500)
 }
 
-function openBookmarks () { ipcRenderer.send('open-bookmarks') }
-function showFollowing (u) { ipcRenderer.send('open-followings-window', { userid: u === undefined ? currentUser.uid : u }) }
-function showFollowers (u) { ipcRenderer.send('open-followers-window', { userid: u === undefined ? currentUser.uid : u }) }
-function playVideo (vid) { ipcRenderer.send('watch-replay', { videoid: vid }) }
-function sortReplays (name) {
-    $('table#list tbody tr').sort(function (a, b) {
+function openBookmarks() { ipcRenderer.send('open-bookmarks') }
+
+function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: u === undefined ? currentUser.uid : u }) }
+
+function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: u === undefined ? currentUser.uid : u }) }
+
+function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }) }
+
+function sortReplays(name) {
+    $('table#list tbody tr').sort(function(a, b) {
         var aValue = $(a).find('td[data-name="' + name + '"]').text()
         var bValue = $(b).find('td[data-name="' + name + '"]').text()
         if (name === 'date') {
@@ -370,7 +376,8 @@ function sortReplays (name) {
         setTimeout(() => sortReplays(name), 500)
     }
 }
-function downloadVideo (vid) {
+
+function downloadVideo(vid) {
     $('#download-replay-' + vid).html('<i class="icon icon-download dim"></i>')
     $('#download-replay-' + vid).unbind()
 
@@ -392,11 +399,13 @@ function downloadVideo (vid) {
         `)
     }
 }
-function cancelDownload (i) {
+
+function cancelDownload(i) {
     ipcRenderer.send('download-cancel', { videoid: i })
     $('#download-' + i).remove()
 }
-function showDownloads () {
+
+function showDownloads() {
     if ($('#queue-list').is(':visible')) {
         $('overlay').hide()
         $('#queue-list').hide()
@@ -405,14 +414,18 @@ function showDownloads () {
         $('#queue-list').show()
     }
 }
-function importReplayIDList () { ipcRenderer.send('import-queue') }
-function importUserIDList () { ipcRenderer.send('import-users') }
-function ExportFavorites () { ipcRenderer.send('export-users') }
 
-function openURL (u) { shell.openExternal(u) }
-function readComments (u) { ipcRenderer.send('read-comments', { userid: u }) }
+function importReplayIDList() { ipcRenderer.send('import-queue') }
 
-function goHome () {
+function importUserIDList() { ipcRenderer.send('import-users') }
+
+function ExportFavorites() { ipcRenderer.send('export-users') }
+
+function openURL(u) { shell.openExternal(u) }
+
+function readComments(u) { ipcRenderer.send('read-comments', { userid: u }) }
+
+function goHome() {
     $('main').hide()
     $('#home').show()
     $('footer h1').html('Loading Home').show()
@@ -428,7 +441,7 @@ function goHome () {
 
 }
 
-function preSearch (q) {
+function preSearch(q) {
     let u = $('#search-query').val()
     let isnum = /^\d+$/.test(u)
 
@@ -472,7 +485,7 @@ function preSearch (q) {
     doSearch()
 }
 
-function AddToBookmarks () {
+function AddToBookmarks() {
     if (DataManager.isBookmarked(currentUser) === true) {
         DataManager.removeBookmark(currentUser)
         $('a.bookmark').attr('title', 'Add to Bookmarks').html('<i class="icon icon-star-empty"></i>')
@@ -482,7 +495,7 @@ function AddToBookmarks () {
     }
 }
 
-function backupData () {
+function backupData() {
     ipcRenderer.send('create-backup')
 
     let p = $('#popup-message')
@@ -490,7 +503,7 @@ function backupData () {
     p.html(m).animate({ top: 40 }, 400).delay(3000).animate({ top: 0 - p.height() - 20 }, 400)
 }
 
-function restoreData () {
+function restoreData() {
     ipcRenderer.send('restore-backup')
 }
 
@@ -534,8 +547,8 @@ function initHome() {
     $('#lmptUpdateNews').html('')
     $('#home').show()
 
-        checkForUpdatesOfLiveMeProTools()
-        loadBookmarkFeeds()
+    checkForUpdatesOfLiveMeProTools()
+    loadBookmarkFeeds()
 
 
 }
@@ -548,13 +561,13 @@ function refreshFeedHeaders() {
     if (hideFollowers)
         document.getElementById("newFollowingsHeader").style.color = "black";
     else
-        document.getElementById("newFollowingsHeader").style.color = null; 
+        document.getElementById("newFollowingsHeader").style.color = null;
 
     let hideFans = appSettings.get("general.homeHideNewFans");
     if (hideFans)
         document.getElementById("newFansHeader").style.color = "black";
     else
-        document.getElementById("newFansHeader").style.color = null; 
+        document.getElementById("newFansHeader").style.color = null;
 }
 
 function passwordShowToggler(e) {
@@ -602,6 +615,7 @@ function loadBookmarkFeeds() {
         scanLiveme()
     }
 }
+
 function scanLiveme() {
     bookmarksFromJson = DataManager.getAllBookmarks()
     if (bookmarksFromJson.length === 0)
@@ -613,10 +627,33 @@ function scanLiveme() {
         _scanThread(0)
     })
 }
+
 function clearHomeUI() {
-    $('#home #newreplays').empty();
-    $('#home #newfollowings').empty();
-    $('#home #newfans').empty();
+
+    if (appSettings.get('general.enableShowReplays') === true) {
+        $('#home #newReplaysHeader').show()
+        $('#home #newreplays').show().empty()
+    } else {
+        $('#home #newReplaysHeader').hide()
+        $('#home #newreplays').hide()
+    }
+
+    if (appSettings.get('general.enableShowFollowings') === true) {
+        $('#home #newFollowingsHeader').show()
+        $('#home #newfollowings').show().empty()
+    } else {
+        $('#home #newFollowingsHeader').hide()
+        $('#home #newfollowings').hide()
+    }
+
+    if (appSettings.get('general.enableShowFans') === true) {
+        $('#home #newFansHeader').show()
+        $('#home #newfans').show().empty()
+    } else {
+        $('#home #newFansHeader').hide()
+        $('#home #newfans').hide()
+    }
+
 }
 
 function loadFromCache(bookmarks, dispatch) {
@@ -636,7 +673,7 @@ function loadFromCache(bookmarks, dispatch) {
 }
 
 function _scanThread(id) {
-    setImmediate(async () => {
+    setImmediate(async() => {
         if (id < bookmarksFromJson.length - 1) {
             // Iterate over bookmarks but start each recursive call with a delay.
             // Each bookmark entry scan is delayed by 50 ms.
@@ -673,7 +710,7 @@ function addToHome(type, bookmark) {
 
     switch (type) {
         case NEW_FOLLOWINGS:
-            if(hideFollowers) return
+            if (hideFollowers) return
             $('#home #newfollowings').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -686,7 +723,7 @@ function addToHome(type, bookmark) {
         `)
             break;
         case NEW_FANS:
-            if(hideFans) return
+            if (hideFans) return
             $('#home #newfans').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -720,7 +757,7 @@ async function _checkBookmark(b, dispatch) {
     let uid = b.uid
     if (uid === undefined) return
     if (!LiveMe.user) {
-        return setTimeout(async () => await _checkBookmark(), 5000)
+        return setTimeout(async() => await _checkBookmark(), 5000)
     }
 
     let user = await LiveMe.getUserInfo(uid)
@@ -740,11 +777,11 @@ async function _checkBookmark(b, dispatch) {
     b.nickname = user.user_info.uname
     b.shortid = user.user_info.short_id
 
-    if (b.changed_followings) {
+    if (b.changed_followings && (appSettings.get('general.enableShowFollowings') === true)) {
         dispatch(NEW_FOLLOWINGS, b)
     }
 
-    if (b.changed_followers) {
+    if (b.changed_followers && (appSettings.get('general.enableShowFans') === true)) {
         dispatch(NEW_FANS, b)
     }
 
@@ -759,7 +796,9 @@ async function _checkBookmark(b, dispatch) {
                 b.hasNewReplays = true
                 b.newest_replay = Math.floor(replays[0].vtime)
 
-                dispatch(NEW_REPLAYS, b)
+                if (appSettings.get('general.enableShowReplays') === true) {
+                    dispatch(NEW_REPLAYS, b)
+                }
                 break
             }
         }
@@ -769,17 +808,17 @@ async function _checkBookmark(b, dispatch) {
     return b;
 }
 
-function saveAccountFace () {
+function saveAccountFace() {
     let u = appSettings.get('downloads.path')
 
     request.get(currentUser.face)
-        .on('error', () => { })
+        .on('error', () => {})
         .pipe(fs.createWriteStream(`${u}/${currentUser.uid}.jpg`))
 
     $('#popup-message').html('Image saved to downloads.').animate({ top: 40 }, 400).delay(2000).animate({ top: 0 - $('#popup-message').height() }, 400)
 }
 
-function doSearch () {
+function doSearch() {
     let query = ''
     let q = $('#search-query').val()
 
@@ -795,73 +834,73 @@ function doSearch () {
     $('#list tbody').html('')
 
     switch ($('#search-type').val()) {
-    case 'video-url':
-        let t = q.split('/')
-        if (q.indexOf('/live/') > -1) {
-            query = q[3]
-            performVideoLookup(query)
-        } else if (q[q.length - 1].indexof('yolo') > -1) {
-            let a = q[q.length - 1].split('-')
-            $('#search-query').val(a[1])
-            $('#search-type').val('video-id')
-            query = a[1]
-            performVideoLookup(query)
-        } else if (q.indexOf('videoid') > -1) {
-            let a = t[t.length - 1].split('?')
-            let b = a[1].split('&')
-            for (let i = 0; i < b.length; i++) {
-                if (b[i].indexOf('videoid') > -1) {
-                    let c = b[i].split('=')
-                    query = c[1]
-                    $('#search-query').val(c[1])
-                    $('#search-type').val('video-id')
+        case 'video-url':
+            let t = q.split('/')
+            if (q.indexOf('/live/') > -1) {
+                query = q[3]
+                performVideoLookup(query)
+            } else if (q[q.length - 1].indexof('yolo') > -1) {
+                let a = q[q.length - 1].split('-')
+                $('#search-query').val(a[1])
+                $('#search-type').val('video-id')
+                query = a[1]
+                performVideoLookup(query)
+            } else if (q.indexOf('videoid') > -1) {
+                let a = t[t.length - 1].split('?')
+                let b = a[1].split('&')
+                for (let i = 0; i < b.length; i++) {
+                    if (b[i].indexOf('videoid') > -1) {
+                        let c = b[i].split('=')
+                        query = c[1]
+                        $('#search-query').val(c[1])
+                        $('#search-type').val('video-id')
+                    }
                 }
-            }
-            performVideoLookup(query)
-        } else if (q.indexOf('userid') > -1) {
-            let a = t[t.length - 1].split('?')
-            let b = a[1].split('&')
-            for (let i = 0; i < b.length; i++) {
-                if (b[i].indexOf('userid') > -1) {
-                    let c = b[i].split('=')
-                    query = c[1]
-                    $('#search-query').val(c[1])
-                    $('#search-type').val('user-id')
+                performVideoLookup(query)
+            } else if (q.indexOf('userid') > -1) {
+                let a = t[t.length - 1].split('?')
+                let b = a[1].split('&')
+                for (let i = 0; i < b.length; i++) {
+                    if (b[i].indexOf('userid') > -1) {
+                        let c = b[i].split('=')
+                        query = c[1]
+                        $('#search-query').val(c[1])
+                        $('#search-type').val('user-id')
+                    }
                 }
+                performUserLookup(query)
             }
-            performUserLookup(query)
-        }
-        break
+            break
 
-    case 'video-id':
-        performVideoLookup($('#search-query').val())
-        break
+        case 'video-id':
+            performVideoLookup($('#search-query').val())
+            break
 
-    case 'user-id':
-        performUserLookup($('#search-query').val())
-        break
+        case 'user-id':
+            performUserLookup($('#search-query').val())
+            break
 
-    case 'short-id':
-        performShortIDSearch()
-        break
+        case 'short-id':
+            performShortIDSearch()
+            break
 
-    case 'hashtag':
-        $('main').show().removeClass('has-details')
-        $('#user-details').hide()
-        $('#list').show()
-        $('#list thead').html('')
-        performHashtagSearch()
-        break
+        case 'hashtag':
+            $('main').show().removeClass('has-details')
+            $('#user-details').hide()
+            $('#list').show()
+            $('#list thead').html('')
+            performHashtagSearch()
+            break
 
-    case 'username-like':
-        $('main').show().removeClass('has-details')
-        $('#list thead').html('')
-        performUsernameSearch()
-        break
+        case 'username-like':
+            $('main').show().removeClass('has-details')
+            $('#list thead').html('')
+            performUsernameSearch()
+            break
     }
 }
 
-function performShortIDSearch () {
+function performShortIDSearch() {
     LiveMe.performSearch($('#search-query').val(), 1, 1, 1).then(results => {
         if (results.length > 0) {
             performUserLookup(results[0].user_id)
@@ -869,7 +908,7 @@ function performShortIDSearch () {
     })
 }
 
-function performVideoLookup (q) {
+function performVideoLookup(q) {
     LiveMe.getVideoInfo(q)
         .then(video => {
             if (video.videosource.length < 1) {
@@ -887,7 +926,7 @@ function performVideoLookup (q) {
         })
 }
 
-function performUserLookup (uid) {
+function performUserLookup(uid) {
     LiveMe.getUserInfo(uid)
         .then(user => {
             let bookmark = DataManager.getSingleBookmark(user.user_info.uid)
@@ -984,7 +1023,7 @@ function performUserLookup (uid) {
         })
 }
 
-function getUsersReplays () {
+function getUsersReplays() {
     if (!LiveMe.user) {
         $('#replay-result-alert').html('<span>Error!</span> You are not authenticated, please enter your login details under Settings.').fadeIn(200)
         return setTimeout(() => getUsersReplays(), 5000)
@@ -1043,7 +1082,7 @@ function getUsersReplays () {
         })
 }
 
-function _addReplayEntry (replay, wasSearched) {
+function _addReplayEntry(replay, wasSearched) {
     if (replay.userid !== currentUser.uid) return
 
     if (replay.vtime > currentUser.newest_replay) currentUser.newest_replay = replay.vtime
@@ -1095,19 +1134,19 @@ function _addReplayEntry (replay, wasSearched) {
     $('#list tbody').append(item)
 }
 
-function performUsernameSearch () {
+function performUsernameSearch() {
     LiveMe.performSearch($('#search-query').val(), currentPage, MAX_PER_PAGE, 1)
         .then(results => {
 
             currentSearch = 'performUsernameSearch'
             hasMore = results.length >= MAX_PER_PAGE
-            setTimeout(function () { scrollBusy = false }, 250)
+            setTimeout(function() { scrollBusy = false }, 250)
 
             for (var i = 0; i < results.length; i++) {
                 let bookmarked = DataManager.isBookmarked(results[i].user_id) ? '<i class="icon icon-star-full bright yellow"></i>' : '<i class="icon icon-star-full dim"></i>'
-                let viewed = DataManager.wasProfileViewed(results[i].user_id)
-                    ? '<i class="icon icon-eye bright blue" title="Last viewed ' + prettydate.format(DataManager.wasProfileViewed(results[i].user_id)) + '"></i>'
-                    : '<i class="icon icon-eye dim"></i>'
+                let viewed = DataManager.wasProfileViewed(results[i].user_id) ?
+                    '<i class="icon icon-eye bright blue" title="Last viewed ' + prettydate.format(DataManager.wasProfileViewed(results[i].user_id)) + '"></i>' :
+                    '<i class="icon icon-eye dim"></i>'
                 var sex = results[i].sex < 0 ? '' : (results[i].sex == 0 ? 'female' : 'male');
 
                 $('#list tbody').append(`
@@ -1195,7 +1234,7 @@ function _performHashtagSearch() {
 
             currentSearch = 'performHashtagSearch'
             hasMore = results.length >= MAX_PER_PAGE
-            setTimeout(function () { scrollBusy = false }, 250)
+            setTimeout(function() { scrollBusy = false }, 250)
 
             for (var i = 0; i < results.length; i++) {
 
@@ -1238,14 +1277,14 @@ function _performHashtagSearch() {
             }
 
 
-    });
+        });
 
 
 
 
 }
 
-function initSettingsPanel () {
+function initSettingsPanel() {
     $('#authEmail').val(appSettings.get('auth.email'))
     $('#authPassword').val(appSettings.get('auth.password'))
 
@@ -1261,10 +1300,10 @@ function initSettingsPanel () {
 
     $('#downloads-path').val(appSettings.get('downloads.path'))
     $('#downloads-template').val(appSettings.get('downloads.template'))
-    // DL Method val
+        // DL Method val
     const dlMethod = appSettings.get('downloads.method') || 'ffmpeg'
     $(`input[name="downloadMethod"][value="${dlMethod}"]`).prop('checked', true)
-    // DL delete tmp val
+        // DL delete tmp val
     if (appSettings.get('downloads.deltmp') === undefined) {
         appSettings.set('downloads.deltmp', true)
     }
@@ -1287,6 +1326,16 @@ function initSettingsPanel () {
     let loadAllResults = appSettings.get('general.loadAllResults') || false
     $('#loadAllResults').prop('checked', loadAllResults)
 
+    let enableHomeScan = appSettings.get('general.enableHomeScan') || false
+    $('#enableHomeScan').prop('checked', enableHomeScan)
+
+    let enableShowReplays = appSettings.get('general.enableShowReplays') || false
+    $('#enableShowReplays').prop('checked', enableShowReplays)
+    let enableShowFans = appSettings.get('general.enableShowFans') || false
+    $('#enableShowFans').prop('checked', enableShowFans)
+    let enableShowFollowings = appSettings.get('general.enableShowFollowings') || false
+    $('#enableShowFollowings').prop('checked', enableShowFollowings)
+
     let blockedCountries = appSettings.get('general.blockedCountries') || []
     $('#countryCode').empty()
     for (let i = 0; i < cclist.length; i++) {
@@ -1302,19 +1351,19 @@ function initSettingsPanel () {
 
 }
 
-function saveLoginManually(){
+function saveLoginManually() {
     const authEmail = $('#authEmail').val().trim()
     const authPass = $('#authPassword').val().trim()
     appSettings.set('auth.email', authEmail)
     appSettings.set('auth.password', authPass)
 }
 
-function saveSettings () {
+function saveSettings() {
     const authEmail = $('#authEmail').val().trim()
     const authPass = $('#authPassword').val().trim()
     const savedEmail = appSettings.get('auth.email')
     const savedPass = appSettings.get('auth.password')
-    // Check if inputs contain value and that the values are changed (avoid unecessary auths)
+        // Check if inputs contain value and that the values are changed (avoid unecessary auths)
     if (authEmail && authPass && (authEmail !== savedEmail || authPass !== savedPass)) {
         appSettings.set('auth.email', authEmail)
         appSettings.set('auth.password', authPass)
@@ -1344,13 +1393,18 @@ function saveSettings () {
     appSettings.set('general.blockedCountries', $('#countryCode').val())
     appSettings.set('general.loadAllResults', $('#loadAllResults').is(':checked'))
 
+    appSettings.set('general.enableHomeScan', $('#enableHomeScan').is(':checked'))
+    appSettings.set('general.enableShowReplays', $('#enableShowReplays').is(':checked'))
+    appSettings.set('general.enableShowFans', $('#enableShowFans').is(':checked'))
+    appSettings.set('general.enableShowFollowings', $('#enableShowFollowings').is(':checked'))
+
     appSettings.set('general.homeHideNewFollowers', (!!$('#homeHideNewFollowers').is(':checked')))
     appSettings.set('general.homeHideNewFans', (!!$('#homeHideNewFans').is(':checked')))
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
 }
 
-function resetSettings () {
+function resetSettings() {
     appSettings.set('general', {
         fresh_install: true,
         playerpath: '',
