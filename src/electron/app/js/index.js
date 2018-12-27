@@ -634,24 +634,24 @@ function clearHomeUI() {
         $('#home #newReplaysHeader').show()
         $('#home #newreplays').show().empty()
     } else {
-        $('#home #newReplaysHeader').show()
-        $('#home #newreplays').show()
+        $('#home #newReplaysHeader').hide()
+        $('#home #newreplays').hide()
     }
 
     if (appSettings.get('general.enableShowFollowings') === true) {
         $('#home #newFollowingsHeader').show()
         $('#home #newfollowings').show().empty()
     } else {
-        $('#home #newFollowingsHeader').show()
-        $('#home #newfollowings').show()
+        $('#home #newFollowingsHeader').hide()
+        $('#home #newfollowings').hide()
     }
 
     if (appSettings.get('general.enableShowFans') === true) {
         $('#home #newFansHeader').show()
         $('#home #newfans').show().empty()
     } else {
-        $('#home #newFollownewFansHeaderingsHeader').show()
-        $('#home #newfans').show()
+        $('#home #newFansHeader').hide()
+        $('#home #newfans').hide()
     }
 
 }
