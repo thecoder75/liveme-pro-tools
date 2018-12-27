@@ -35,7 +35,8 @@ function createWindow() {
             fresh_install: true,
             playerpath: '',
             hide_zeroreplay_fans: false,
-            hide_zeroreplay_followings: true
+            hide_zeroreplay_followings: true,
+            enableHomeScan: true
         })
         appSettings.set('position', {
             mainWindow: [-1, -1],
@@ -75,12 +76,8 @@ function createWindow() {
         appSettings.set('downloads.chunks', 1)
     }
 
-    if (!appSettings.get('lamd.enabled')) {
-        appSettings.set('lamd', {
-            enabled: false,
-            url: 'http://localhost:8280',
-            handle_downloads: false
-        })
+    if (!appSettings.get('general.enableHomeScan')) {
+        appSettings.set('general.enableHomeScan', true)
     }
 
     if (!appSettings.get('history.viewed_maxage')) {
