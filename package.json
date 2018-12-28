@@ -6,7 +6,7 @@
     "main": "src/electron/index.js",
     "repository": {
         "type": "git",
-        "url": "https://notabug.org/thecoder1975/liveme-pro-tools"
+        "url": "https://github.com/thecoder1975/liveme-pro-tools"
     },
     "scripts": {
         "postinstall": "",
