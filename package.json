@@ -1,6 +1,6 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.225.20181228",
+    "version": "1.226.20181228",
     "description": "Tools for Live.me video network",
     "homepage": "https://notabug.org/thecoder1975/liveme-pro-tools",
     "main": "src/electron/index.js",
