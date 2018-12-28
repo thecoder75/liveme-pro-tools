@@ -60,8 +60,7 @@
             "target": [{
                 "target": "tar.gz",
                 "arch": [
-                    "x64",
-                    "ia32"
+                    "x64"
                 ]
             }],
             "category": "Network",
@@ -72,8 +71,7 @@
             "target": [{
                 "target": "zip",
                 "arch": [
-                    "x64",
-                    "ia32"
+                    "x64"
                 ]
             }],
             "icon": "src/electron/build/appicon.ico"
