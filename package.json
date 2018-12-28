@@ -13,8 +13,8 @@
         "start": "./node_modules/.bin/electron ./src/electron/index.js --enable-logging",
         "dev": "NODE_ENV='development' npm run start",
         "release": "build -w && build -l && build -m",
-        "release-win": "build -w",
-        "release-linux": "build -ml"
+        "release-win": "build -w --publish always",
+        "release-linux": "build -ml --publish always"
     },
     "author": "TheCoder75",
     "license": "GPL-3.0",
@@ -88,6 +88,11 @@
             ],
             "identity": null,
             "icon": "src/electron/build/appicon.icns"
-        }
+        },
+        "publish": [{
+            "provider": "github",
+            "vPrefixedTagName": false,
+            "releaseType": "release"
+        }]
     }
 }
