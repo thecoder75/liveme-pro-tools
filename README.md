@@ -18,8 +18,12 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - Allows downloading of replays using FFMPEG
 - Supports [LAMD](https://notabug.org/thecoder75/lamd)
 
-### Prebuilt Releases
-**Releases will now be built by TheCoder and added as updates warrant them.
+### Prebuilt Releases (64-bit only!)
+[![Build Status](https://travis-ci.org/thecoder75/liveme-pro-tools.svg?branch=master)](https://travis-ci.org/thecoder75/liveme-pro-tools)
+[![Build status](https://ci.appveyor.com/api/projects/status/kbgedvumij2fabrp/branch/master?svg=true)](https://ci.appveyor.com/project/TheCoder/liveme-pro-tools/branch/master)
+
+To download the latest prebuilt versions, [click here](releases).
+
 
 **Planned Supported Platforms:**
 - Ubuntu-based Linux and Debian Distributions (32 and 64-bit)
