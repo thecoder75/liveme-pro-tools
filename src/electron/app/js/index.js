@@ -83,8 +83,7 @@ function variance(arr) {
     if (len > 1) {
         var mean = sum / len;
         for (var i = 0; i < arr.length; i++) {
-            if (arr[i] == "") {
-            } else {
+            if (arr[i] == "") {} else {
                 v = v + (arr[i] - mean) * (arr[i] - mean);
             }
         }
@@ -960,7 +959,7 @@ function performUserLookup(uid) {
             DataManager.addViewed(user.user_info.uid)
 
 
-      
+
 
             $('#list thead').html(`
                 <tr>
@@ -1047,8 +1046,8 @@ function performUserLookup(uid) {
             accstatsUI.innerHTML = `
             <abbr title="Variance">
                 <span>Var:</span><b> - </b>
-            </abbr>` 
-        
+            </abbr>`
+
             getUsersReplays()
             showProgressBar()
         })
@@ -1064,7 +1063,7 @@ function getUsersReplays() {
     } else {
         $('#replay-result-alert').hide()
     }
-   
+
     LiveMe.getUserReplays(currentUser.uid, currentPage, MAX_PER_PAGE)
         .then(replays => {
 
@@ -1122,26 +1121,25 @@ let allReplays = []
 function openReplayContextMenu(vid) {
     let replay = allReplays.find(r => r.vid === vid)
     const replayContextMenu = remote.Menu.buildFromTemplate([{
-        label: 'Copy ID to Clipboard',
-        click: () => {copyToClipboard(vid)}
-    }, {
-        label: 'Copy URL to Clipboard',
-        click: () => {copyToClipboard(`https://www.liveme.com/us/v/${vid}`)}
-    
-    }, {
-        label: 'Copy Source to Clipboard (m3u8 or flv)',
-        click: () => copyToClipboard(`${replay.videosource || replay.hlsvideosource}`)
-    }
-    , {
-        label: 'Read Comments',
-        click: () => readComments(replay.vid)
-    }
+            label: 'Copy ID to Clipboard',
+            click: () => { copyToClipboard(vid) }
+        }, {
+            label: 'Copy URL to Clipboard',
+            click: () => { copyToClipboard(`https://www.liveme.com/us/v/${vid}`) }
 
-])
+        }, {
+            label: 'Copy Source to Clipboard (m3u8 or flv)',
+            click: () => copyToClipboard(`${replay.videosource || replay.hlsvideosource}`)
+        }, {
+            label: 'Read Comments',
+            click: () => readComments(replay.vid)
+        }
 
-    console.log({vid})
+    ])
 
-    replayContextMenu.popup(remote.getCurrentWindow())    
+    console.log({ vid })
+
+    replayContextMenu.popup(remote.getCurrentWindow())
 }
 
 function _addReplayEntry(replay, wasSearched) {
@@ -1154,7 +1152,7 @@ function _addReplayEntry(replay, wasSearched) {
     let highlight = $('#search-type').val() === 'video-id' ? ($('#search-query').val() === replay.vid ? 'highlight' : '') : ''
 
     let length = formatDuration(parseInt(replay.videolength) * 1000)
-    
+
     // will be set to 1 minute if lower than 1, to prevent spikes and null division 
     var lengthInMinutes = Math.max(parseFloat(replay.videolength) / 60, 1)
     let spm = parseInt(replay.sharenum) / (lengthInMinutes)
@@ -1165,32 +1163,32 @@ function _addReplayEntry(replay, wasSearched) {
 
     let downloadDate = DataManager.wasDownloaded(replay.vid)
     let watchDate = DataManager.wasWatched(replay.vid)
-    let downloaded = downloadDate === false ? '<i class="icon icon-floppy-disk dim"></i>' : '<i class="icon icon-floppy-disk bright blue" title="Downloaded ' + prettydate.format(downloadDate) + '"></i>'
+    let downloaded = downloadDate === false ? '<i class="icon icon-download dim" title="Click to download replay."></i>' : '<i class="icon icon-download bright green" title="Replay was previously downloaded."></i>'
     let watched = watchDate === false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched ' + prettydate.format(watchDate) + '"></i>'
     let seen = watchDate === false ? '' : 'watched'
 
     let isLive = replay.hlsvideosource.endsWith('flv') || replay.hlsvideosource.indexOf('liveplay') > 0 ? '<b style="color:limegreen;">[LIVE]</b>' : ''
-    let inQueue = $('#download-' + replay.vid).length > 0 ? '<a id="download-replay-' + replay.vid + '" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + replay.vid + '" class="button icon-only" onClick="downloadVideo(\'' + replay.vid + '\')" title="Download Replay"><i class="icon icon-download"></i></a>'
+    let inQueue = $('#download-' + replay.vid).length > 0 ? '<a id="download-replay-' + replay.vid + '" class="button icon-only"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + replay.vid + '" class="button icon-only" onClick="downloadVideo(\'' + replay.vid + '\')"">' + downloaded + '</a>'
 
     const template = Handlebars.compile($('#replays-list-row').html())
 
 
     let replayData = Object.assign(replay, {
-            searched,
-            seen,
-            highlight,
-            watched,
-            downloaded,
-            unlisted,
-            isLive,
-            length,
-            ds,
-            lpm : lpm.toFixed(1),
-            vpm : vpm.toFixed(1),
-            spm : spm.toFixed(1),
-            inQueue,
-            source: replay.videosource || replay.hlsvideosource
-        })
+        searched,
+        seen,
+        highlight,
+        watched,
+        downloaded,
+        unlisted,
+        isLive,
+        length,
+        ds,
+        lpm: lpm.toFixed(1),
+        vpm: vpm.toFixed(1),
+        spm: spm.toFixed(1),
+        inQueue,
+        source: replay.videosource || replay.hlsvideosource
+    })
 
     allReplays.push(replayData)
 
@@ -1200,33 +1198,32 @@ function _addReplayEntry(replay, wasSearched) {
         accstatsUI.innerHTML = `
         <abbr title="Variance">
             <span>Var:</span><b> - </b>
-        </abbr>` 
-    }
-    else{
-    try {
-        var spmVari = variance(allReplays.map(r => r.spm))
-            var visibility = 0.1 + Math.max(0,Math.log(spmVari*5 +1-0.2))
-    
+        </abbr>`
+    } else {
+        try {
+            var spmVari = variance(allReplays.map(r => r.spm))
+            var visibility = 0.1 + Math.max(0, Math.log(spmVari * 5 + 1 - 0.2))
+
             let accstatsUI = document.getElementById("variance")
             accstatsUI.style.opacity = visibility
             accstatsUI.innerHTML = `
             <abbr title="Variance">
                 <span>Var:</span><b> ${spmVari.toFixed(2)}</b>
-            </abbr>` 
-    
+            </abbr>`
 
-    } catch (error) {
-        
+
+        } catch (error) {
+
+        }
     }
-    }
 
 
-   
 
 
-    
+
+
     const html = template(replayData)
-    
+
 
     const item = $(html).hide().fadeIn(200)
     $('#list tbody').append(item)
