@@ -417,8 +417,9 @@
     text-align: right;
 }
 .details > div.info h2.id { padding-right: 4px; left: 12px;}
-.details > div.info h2.shortid { padding-right: 4px; left: 248px;}
-.details > div.info h2.level { left: 448px;}
+.details > div.info h2.shortid { padding-right: 4px; left: 228px;}
+.details > div.info h2.level { left: 418px;}
+.details > div.info h2.variance { left: 508px;}
 
 .details > div.info h2 span, .details > div.info h2 span {
     font-size: 10pt;
@@ -428,8 +429,9 @@
 }
 
 .details > div.info h2.id { width: 212px; }
-.details > div.info h2.shortid { width: 176px; }
-.details > div.info h2.level { width: 96px; }
+.details > div.info h2.shortid { width: 166px; }
+.details > div.info h2.level { width: 66px; }
+.details > div.info h2.variance { width: 86px; }
 .details > div.info h2.stars, .details > div.info h2.stars  { width: 96px; }
 
 .details > div.info h4 {

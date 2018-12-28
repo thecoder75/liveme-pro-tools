@@ -96,6 +96,11 @@
                 <h2 class="id"></h2>
                 <h2 class="shortid"></h2>
                 <h2 class="level"></h2>
+                <h2 class="variance" id="variance">
+                        <abbr title="Variance">
+                                <span>Var:</span><b> - </b>
+                        </abbr> 
+                </h2>
                 <h4></h4>
                 <div class="buttons">
                     <a href="#" class="button following" onClick="showFollowing()"><i class="icon icon-hour-glass"></i></a>
@@ -104,7 +109,7 @@
                 </div>
             </div>
         </div>
-
+       
         <table id="list" class="results">
             <thead>
                 <tr>
@@ -129,22 +134,25 @@
             </tbody>
         </table>
         <div class="alert" id="replay-result-alert" style="display:none;"></div>
+        
     </main>
     <script id="replays-list-row" type="text/x-handlebars-template">
-        <tr data-id="{{vid}}" class="{{searched}} {{seen}} user-{{userid}}">
-            <td width="400" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;{{{downloaded}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
-            <td width="130" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
-            <td width="55" class="{{highlight}}" align="right">{{length}}</td>
-            <td width="75" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
-            <td width="75" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
-            <td width="75" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
-            <td width="280" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
-                <a class="button mini icon-small" onClick="copyToClipboard('{{vid}}')" style="font-size: 10pt;" title="Copy ID to Clipboard">ID</a> &nbsp;
-                <a class="button mini icon-small" onClick="copyToClipboard('https://www.liveme.com/live.html?videoid={{vid}}')" href="#" style="font-size: 10pt;" title="Copy URL to Clipboard">URL</a> &nbsp;
-                <a class="button mini icon-small" onClick="copyToClipboard('{{source}}')" style="font-size: 10pt;" title="Copy Source to Clipboard (m3u8 or flv)">Source</a> &nbsp;&nbsp;
-                <a class="button icon-only" onClick="playVideo('{{vid}}')" title="Watch Replay"><i class="icon icon-play"></i></a>&nbsp;&nbsp;
-                <a class="button icon-only" onClick="readComments('{{vid}}')" title="Read Comments"><i class="icon icon-bubbles3"></i></a>&nbsp;&nbsp; {{{inQueue}}}
+        <tr data-id="{{vid}}"    class="link {{searched}} {{seen}} user-{{userid}}">
+            <td width="400" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;{{{downloaded}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
+            <td width="130" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
+            <td width="55"  oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right">{{length}}</td>
+            <td width="75"  oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
+            <td width="33"  oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="vpm">{{vpm}}</td>
+            <td width="75"  oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
+            <td width="33"  oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="lpm">{{lpm}}</td>
+            <td width="75"  oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
+            <td width="33"  oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="spm">{{spm}}</td>     
+            <td width="35"  class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
+                {{{inQueue}}}
             </td>
+            <td width="40"  class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
+                    <a class="button " onClick="openReplayContextMenu('{{vid}}')" title="menu">...</a>
+                </td>
         </tr>
     </script>
 
@@ -457,6 +465,7 @@
         <overlay onClick="closeOverlay()">&nbsp;</overlay>
 
         <footer>
+           
             <div id="footer-progressbar">
                 <div></div>
             </div>
