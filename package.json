@@ -1,20 +1,20 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.225.20181228",
+    "version": "1.226.20181228",
     "description": "Tools for Live.me video network",
     "homepage": "https://notabug.org/thecoder1975/liveme-pro-tools",
     "main": "src/electron/index.js",
     "repository": {
         "type": "git",
-        "url": "https://notabug.org/thecoder1975/liveme-pro-tools"
+        "url": "https://github.com/thecoder1975/liveme-pro-tools"
     },
     "scripts": {
         "postinstall": "",
         "start": "./node_modules/.bin/electron ./src/electron/index.js --enable-logging",
         "dev": "NODE_ENV='development' npm run start",
         "release": "build -w && build -l && build -m",
-        "release-win": "build -w",
-        "release-linux": "build -m"
+        "release-win": "build -w --publish always",
+        "release-linux": "build -ml --publish always"
     },
     "author": "TheCoder75",
     "license": "GPL-3.0",
@@ -57,29 +57,23 @@
         "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
         "asar": true,
         "linux": {
-            "target": [
-                {
+            "target": [{
                 "target": "tar.gz",
                 "arch": [
-                    "x64",
-                    "ia32"
+                    "x64"
                 ]
-                }
-            ],
+            }],
             "category": "Network",
             "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
             "maintainer": "thecoder1975@gmail.com"
         },
         "win": {
-            "target": [
-                {
+            "target": [{
                 "target": "zip",
                 "arch": [
-                    "x64",
-                    "ia32"
+                    "x64"
                 ]
-                }
-            ],
+            }],
             "icon": "src/electron/build/appicon.ico"
         },
         "nsis": {
@@ -94,6 +88,11 @@
             ],
             "identity": null,
             "icon": "src/electron/build/appicon.icns"
-        }
+        },
+        "publish": [{
+            "provider": "github",
+            "vPrefixedTagName": false,
+            "releaseType": "release"
+        }]
     }
 }
