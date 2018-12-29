@@ -499,23 +499,30 @@ const dlQueue = async.queue((task, done) => {
                     body.split('\n').forEach(line => {
                             if (line.indexOf('.ts') !== -1) {
                                 const tsName = line.split('?')[0]
-                                const tsPath = `${path}/lpt_temp/${video.vid}_${tsName}`
-                                    // Check if TS has already been added to array
+                                let tsPath = `${path}/lpt_temp/${video.vid}_${tsName}`
+
+                                if (process.platform == 'win32') {
+                                    tsPath = tsPath.replace(/\\/g, '/');
+                                }
+
+                                // Check if TS has already been added to array
                                 if (concatList.indexOf(tsPath) === -1) {
                                     // We'll use this later to merge downloaded chunks
-                                    concatList += `${tsPath}|`
+                                    concatList += 'file ' + video.vid + '_' + tsName + '\n'
                                         // Push data to list
                                     tsList.push({ name: tsName, path: tsPath })
                                 }
                             }
                         })
                         // remove last |
-                    concatList = concatList.slice(0, -1)
+                        //concatList = concatList.slice(0, -1)
                         // Check if tmp dir exists
                     if (!fs.existsSync(`${path}/lpt_temp`)) {
                         // create temporary dir for ts files
                         fs.mkdirSync(`${path}/lpt_temp`)
                     }
+                    fs.writeFileSync(`${path}/lpt_temp/${video.vid}.txt`, concatList)
+
                     // Download chunks
                     let downloadedChunks = 0
 
@@ -542,6 +549,7 @@ const dlQueue = async.queue((task, done) => {
 
                     }, () => {
                         // Chunks downloaded
+                        let cfile = path + '/lpt_temp/' + video.vid + '.txt'
                         ffmpeg()
                             .on('start', c => {
                                 mainWindow.webContents.send('download-progress', {
@@ -552,32 +560,30 @@ const dlQueue = async.queue((task, done) => {
                             })
                             .on('progress', function(progress) {
                                 // FFMPEG doesn't always have this >.<
-                                if (!progress.percent) {
-                                    progress.percent = ((progress.targetSize * 1000) / +video.videosize) * 100
-                                }
                                 mainWindow.webContents.send('download-progress', {
                                     videoid: task,
-                                    state: `Converting to MP4 file (${Math.round(progress.percent)}%)`,
+                                    state: `Combining and converting to MP4 file, please wait...`,
                                     percent: progress.percent
                                 })
                             })
                             .on('end', (stdout, stderr) => {
-
                                 DataManager.addDownloaded(video.vid)
                                 if (appSettings.get('downloads.deltmp')) {
                                     tsList.forEach(file => fs.unlinkSync(file.path))
                                 }
                                 return done()
                             })
-                            .on('error', (err, stdout, stderr) => {
-                                fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify([err, stdout, stderr], null, 2))
-                                if (appSettings.get('downloads.deltmp')) {
-                                    //tsList.forEach(file => fs.unlinkSync(file.path))
-                                }
+                            .on('error', (err) => {
+                                fs.writeFileSync(`${path}/${filename}-error.log`, err)
                                 return done({ videoid: task, error: err })
                             })
-                            .input(`concat:${concatList}`)
+                            .input(cfile.replace(/\\/g, '/'))
+                            .inputFormat('concat')
                             .output(`${path}/${filename}`)
+                            .inputOptions([
+                                '-safe 0',
+                                '-f concat'
+                            ])
                             .outputOptions(ffmpegOpts)
                             .run()
                     })
