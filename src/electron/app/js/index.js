@@ -456,10 +456,6 @@ function goHome() {
 
     currentView = 'home'
     initHome()
-
-
-    // ipcRenderer.send('open-home-window', { videoid: vid })
-
 }
 
 function preSearch(q) {
@@ -529,7 +525,6 @@ function restoreData() {
 }
 
 function checkForUpdatesOfLiveMeProTools() {
-
     request({
         url: 'https://api.github.com/repos/thecoder75/liveme-pro-tools/releases/latest',
         method: 'get',
@@ -572,7 +567,6 @@ function checkForUpdatesOfLiveMeProTools() {
 }
 
 function initHome() {
-
     refreshFeedHeaders();
 
     $('#lmptUpdateNews').html('')
@@ -580,12 +574,7 @@ function initHome() {
 
     checkForUpdatesOfLiveMeProTools()
     loadBookmarkFeeds()
-
-
 }
-
-
-
 
 function refreshFeedHeaders() {
     let hideFollowers = appSettings.get("general.homeHideNewFollowers");
@@ -617,8 +606,6 @@ function rescanFeeds() {
     DataManager.loadFromDisk()
     loadBookmarkFeeds()
 }
-
-
 
 function loadBookmarkFeeds() {
     if (!LiveMe.token) //  delay loop until successful login
@@ -731,8 +718,6 @@ function _scanThread(id) {
     })
 }
 
-
-
 function addToHome(type, bookmark) {
     if (currentView !== 'home') return
 
@@ -794,7 +779,6 @@ async function _checkBookmark(b, dispatch) {
     let user = await LiveMe.getUserInfo(uid)
     if (user === undefined) return
 
-
     b.changed_followings = b.counts.followings != user.count_info.following_count
     b.changed_followers = b.counts.followers != user.count_info.follower_count
 
@@ -843,8 +827,11 @@ function saveAccountFace() {
     let u = appSettings.get('downloads.path')
 
     request.get(currentUser.face)
-        .on('error', () => {})
-        .pipe(fs.createWriteStream(`${u}/${currentUser.uid}.jpg`))
+        .on('error', () => {
+
+        }).pipe(
+            fs.createWriteStream(`${u}/${currentUser.uid}.jpg`)
+        )
 
     $('#popup-message').html('Image saved to downloads.').animate({ top: 40 }, 400).delay(2000).animate({ top: 0 - $('#popup-message').height() }, 400)
 }
@@ -967,9 +954,6 @@ function performUserLookup(uid) {
                 DataManager.updateBookmark(bookmark)
             }
             DataManager.addViewed(user.user_info.uid)
-
-
-
 
             $('#list thead').html(`
                 <tr>
