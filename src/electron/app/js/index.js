@@ -50,7 +50,7 @@ $(function() {
             $('footer h1').html('Loading Home').show()
             initHome()
         }
-    }, 5000)
+    }, 2000)
 
     // Store Bookmarks, History and more every 5 minutes (300,000ms) in case of a crash or something
     setInterval(() => {
@@ -282,7 +282,7 @@ function showMainMenu() {
                 label: 'Help',
                 submenu: [{
                         label: 'NotABug Git Home',
-                        click: () => shell.openExternal('https://notabug.org/thecoder1975/liveme-pro-tools/')
+                        click: () => shell.openExternal('https://github.com/thecoder75/liveme-pro-tools/')
                     },
                     {
                         label: 'Discord Chat Rooms for Support',
@@ -529,33 +529,49 @@ function restoreData() {
 }
 
 function checkForUpdatesOfLiveMeProTools() {
+
     request({
-        url: 'https://notabug.org/thecoder1975/liveme-pro-tools/raw/master/package.json',
-        method: 'get'
+        url: 'https://api.github.com/repos/thecoder75/liveme-pro-tools/releases/latest',
+        method: 'get',
+        headers: {
+            'User-Agent' : 'LiveMe Pro Tools Updater Check'
+        }
     }, (err, httpResponse, body) => {
         if (!err) {
-            let ghversion = JSON.parse(body).version
-            let lversion = remote.app.getVersion()
-            let g = ghversion.split('.')
-            let ghv = g[0] + '' + g[1]
-            let l = lversion.split('.')
-            let lv = l[0] + '' + l[1]
-            let upgrade = (g[0] - l[0]) + (g[1] - l[1])
+            let data = JSON.parse(body)
+            let lv = parseFloat(window.require('electron').remote.app.getVersion())
+            let rv = parseFloat(data.name)
+            let pr = data.prerelease
+            let pd = data.published_at
+            let ub = data.body
 
-            if (upgrade > 0) {
-                if ($('#lmptUpdateNews').length < 1) {
-                    $('#lmptUpdateNews').empty()
-                }
+            console.log(data)
 
-                $('#lmptUpdateNews').append(`
+            console.log('LV: ' + lv)
+            console.log('RV: ' + rv)
+            console.log('PR: ' + pr)
+            console.log('pd: ' + pd)
+            console.log('UB: ' + ub)
+            
+            const rd = (new Date(data.published_at)).toLocaleDateString()
+            if (data.prerelease !== true) {
+
+                if (rv != lv) {
+                    if ($('#lmptUpdateNews').length < 1) {
+                        $('#lmptUpdateNews').empty()
+                    }
+
+                    $('#lmptUpdateNews').append(`
                     <div class="section">
-                        <h3><i class="icon icon-download"></i> Update Available</h3>
-                        <p>
-                            An updated release of LiveMe Pro Tools is available.
-                        </p>
-                        <button onClick="openURL('https://notabug.org/thecoder1975/liveme-pro-tools/releases/')">Download</button>
+                        <h3><i class="icon icon-download"></i> Update v${rv} available!</h3>
+                        <h4>Release Date: ${rd} - Released By: ${data.author.login}</h4>
+                        <h5>Details:</h5>
+                        <p>${data.body}</p>
+                        <button onClick="openURL('${data.html_url}')">Download</button>
                     </div>
-                `)
+                    `)
+
+                }
             }
         }
     })
