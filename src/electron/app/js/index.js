@@ -1134,9 +1134,9 @@ function openReplayContextMenu(vid) {
             label: 'Copy ID to Clipboard',
             click: () => { copyToClipboard(vid) }
         }, {
-            label: 'Copy URL to Clipboard',
-            click: () => { copyToClipboard(`https://www.liveme.com/us/v/${vid}`) }
-
+            label: 'Copy Web URL to Clipboard',
+            click: () => { copyToClipboard(`https://www.liveme.com/live.html?videoid=${vid}`) }
+        
         }, {
             label: 'Copy Source to Clipboard (m3u8 or flv)',
             click: () => copyToClipboard(`${replay.videosource || replay.hlsvideosource}`)
@@ -1182,6 +1182,7 @@ function _addReplayEntry(replay, wasSearched) {
 
     const template = Handlebars.compile($('#replays-list-row').html())
 
+    // https://www.liveme.com/live.html?videoid=${results[i].vid}
 
     let replayData = Object.assign(replay, {
         searched,
