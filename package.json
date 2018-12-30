@@ -93,13 +93,6 @@
             ],
             "identity": null,
             "icon": "src/electron/build/appicon.icns"
-        },
-        "publish": [
-            {
-                "provider": "github",
-                "vPrefixedTagName": false,
-                "releaseType": "release"
-            }
-        ]
+        }
     }
 }
