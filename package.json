@@ -1,8 +1,8 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.226.20181228",
+    "version": "1.227.20181230",
     "description": "Tools for Live.me video network",
-    "homepage": "https://notabug.org/thecoder1975/liveme-pro-tools",
+    "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
     "repository": {
         "type": "git",
@@ -12,9 +12,9 @@
         "postinstall": "",
         "start": "./node_modules/.bin/electron ./src/electron/index.js --enable-logging",
         "dev": "NODE_ENV='development' npm run start",
-        "release": "build -w && build -l && build -m",
-        "release-win": "build -w --publish always",
-        "release-linux": "build -ml --publish always"
+        "release": "build -wp always && build -lp always && build -mp always",
+        "release-win": "build -w -p always",
+        "release-linux": "build -ml --p always"
     },
     "author": "TheCoder75",
     "license": "GPL-3.0",
