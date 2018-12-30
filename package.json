@@ -57,23 +57,27 @@
         "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
         "asar": true,
         "linux": {
-            "target": [{
-                "target": "tar.gz",
-                "arch": [
-                    "x64"
-                ]
-            }],
+            "target": [
+                {
+                    "target": "tar.gz",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ],
             "category": "Network",
             "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
             "maintainer": "thecoder1975@gmail.com"
         },
         "win": {
-            "target": [{
-                "target": "zip",
-                "arch": [
-                    "x64"
-                ]
-            }],
+            "target": [
+                {
+                    "target": "zip",
+                    "arch": [
+                        "x64"
+                    ]
+                }
+            ],
             "icon": "src/electron/build/appicon.ico"
         },
         "nsis": {
@@ -89,10 +93,12 @@
             "identity": null,
             "icon": "src/electron/build/appicon.icns"
         },
-        "publish": [{
-            "provider": "github",
-            "vPrefixedTagName": false,
-            "releaseType": "release"
-        }]
+        "publish": [
+            {
+                "provider": "github",
+                "vPrefixedTagName": false,
+                "releaseType": "release"
+            }
+        ]
     }
 }
