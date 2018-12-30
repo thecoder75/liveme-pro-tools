@@ -539,24 +539,19 @@ function checkForUpdatesOfLiveMeProTools() {
     }, (err, httpResponse, body) => {
         if (!err) {
             let data = JSON.parse(body)
-            let lv = parseFloat(window.require('electron').remote.app.getVersion())
-            let rv = parseFloat(data.name)
-            let pr = data.prerelease
-            let pd = data.published_at
-            let ub = data.body
-
-            console.log(data)
-
-            console.log('LV: ' + lv)
-            console.log('RV: ' + rv)
-            console.log('PR: ' + pr)
-            console.log('pd: ' + pd)
-            console.log('UB: ' + ub)
             
+            const remarkable = require('remarkable')
+            const md = new remarkable()
+
+            const ub = md.render(data.body);
             const rd = (new Date(data.published_at)).toLocaleDateString()
+            const rv = parseFloat(data.name)
+
+            console.log(ub)
+
             if (data.prerelease !== true) {
 
-                if (rv != lv) {
+                if (rv != parseFloat(window.require('electron').remote.app.getVersion())) {
                     if ($('#lmptUpdateNews').length < 1) {
                         $('#lmptUpdateNews').empty()
                     }
@@ -565,8 +560,7 @@ function checkForUpdatesOfLiveMeProTools() {
                     <div class="section">
                         <h3><i class="icon icon-download"></i> Update v${rv} available!</h3>
                         <h4>Release Date: ${rd} - Released By: ${data.author.login}</h4>
-                        <h5>Details:</h5>
-                        <p>${data.body}</p>
+                        <div class="body">${ub}</div>
                         <button onClick="openURL('${data.html_url}')">Download</button>
                     </div>
                     `)
