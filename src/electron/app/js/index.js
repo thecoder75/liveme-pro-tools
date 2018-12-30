@@ -1068,7 +1068,7 @@ function performUserLookup(uid) {
 
 function getUsersReplays() {
     if (!LiveMe.user) {
-        $('#replay-result-alert').html('<span>Error!</span> You are not authenticated, please enter your login details under Settings.').fadeIn(200)
+        $('#replay-result-alert').html('<span>Error!</span> You are not authenticated, please enter your login details under Settings.').fadeIn(400)
         return setTimeout(() => getUsersReplays(), 5000)
     } else {
         $('#replay-result-alert').hide()
@@ -1079,7 +1079,7 @@ function getUsersReplays() {
 
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
-                    $('#replay-result-alert').html('<span>No replays!</span> There is no publicly listed replays available.').fadeIn(200)
+                    $('#replay-result-alert').html('<span>No replays!</span> There is no publicly listed replays available.').fadeIn(400)
                     $('footer h1').html('No publicly listed replays available.')
                     hideProgressBar()
                 }
@@ -1181,8 +1181,6 @@ function _addReplayEntry(replay, wasSearched) {
     let inQueue = $('#download-' + replay.vid).length > 0 ? '<a id="download-replay-' + replay.vid + '" class="button icon-only"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + replay.vid + '" class="button icon-only" onClick="downloadVideo(\'' + replay.vid + '\')"">' + downloaded + '</a>'
 
     const template = Handlebars.compile($('#replays-list-row').html())
-
-    // https://www.liveme.com/live.html?videoid=${results[i].vid}
 
     let replayData = Object.assign(replay, {
         searched,
