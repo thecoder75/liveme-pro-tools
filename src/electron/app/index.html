@@ -183,6 +183,27 @@
             <div class="section">
                 <ul>
                     <li style="padding-bottom: 5px;">
+                        <h4>LiveMe API Tweaks</h4>
+                    </li>
+                    <li style="padding-bottom: 5px;">
+                        <label for="max-page-size" onClick="saveSettings()">Transcode Setting:</label>
+                        <div class="select" style="margin-left: 32px; vertical-align: middle; height: 26px; border: solid 1px rgb(80,80,80)">
+                            <select id="max-page-size">
+                                <option value="5">5 entries at a time</option>
+                                <option value="10">10 entries at a time</option>
+                                <option value="15">15 entries at a time</option>
+                                <option value="20">20 entries at a time</option>
+                            </select>
+                        </div>
+                        <p>
+                            The higher the value, the faster lists will render but also the greater the chance of issues.
+                        </p>
+                    </li>
+                </ul>
+            </div>
+            <div class="section">
+                <ul>
+                    <li style="padding-bottom: 5px;">
                         <h4 class="titleColor">Blocked countries</h4>
                     </li>
                     <li style="padding-bottom: 20px;">

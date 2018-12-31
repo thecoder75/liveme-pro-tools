@@ -1379,6 +1379,7 @@ function initSettingsPanel() {
     $('#homeHideNewFollowers').prop('checked', appSettings.get('general.homeHideNewFollowers'))
 
     $('#playerpath').val(appSettings.get('general.playerpath'))
+    $('#max-page-size').val(appSettings.get('general.pagesize'))
 
     $('#cleanup-duration').val(appSettings.get('history.viewed_maxage'))
 
@@ -1463,6 +1464,7 @@ function saveSettings() {
     appSettings.set('general.hide_zeroreplay_fans', (!!$('#viewmode-followers').is(':checked')))
     appSettings.set('general.hide_zeroreplay_followings', (!!$('#viewmode-followings').is(':checked')))
     appSettings.set('general.playerpath', $('#playerpath').val())
+    appSettings.set('general.pagesize', $('#max-page-size').val())
 
     appSettings.set('history.viewed_maxage', $('#cleanup-duration').val())
 
