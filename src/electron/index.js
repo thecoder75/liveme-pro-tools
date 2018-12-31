@@ -560,10 +560,12 @@ const dlQueue = async.queue((task, done) => {
                             })
                             .on('progress', function(progress) {
                                 // FFMPEG doesn't always have this >.<
+                                let p = progress.percent
+                                if (p > 100) p = 100
                                 mainWindow.webContents.send('download-progress', {
                                     videoid: task,
                                     state: `Combining and converting to MP4 file, please wait...`,
-                                    percent: progress.percent
+                                    percent: p
                                 })
                             })
                             .on('end', (stdout, stderr) => {
