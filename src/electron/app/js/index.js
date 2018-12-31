@@ -1364,10 +1364,6 @@ function _performHashtagSearch() {
 
 
         });
-
-
-
-
 }
 
 function initSettingsPanel() {
@@ -1376,9 +1372,6 @@ function initSettingsPanel() {
 
     $('#viewmode-followers').prop('checked', appSettings.get('general.hide_zeroreplay_fans'))
     $('#viewmode-followings').prop('checked', appSettings.get('general.hide_zeroreplay_followings'))
-
-    $('#homeHideNewFans').prop('checked', appSettings.get('general.homeHideNewFans'))
-    $('#homeHideNewFollowers').prop('checked', appSettings.get('general.homeHideNewFollowers'))
 
     $('#playerpath').val(appSettings.get('general.playerpath'))
 
@@ -1483,9 +1476,6 @@ function saveSettings() {
     appSettings.set('general.enableShowReplays', $('#enableShowReplays').is(':checked'))
     appSettings.set('general.enableShowFans', $('#enableShowFans').is(':checked'))
     appSettings.set('general.enableShowFollowings', $('#enableShowFollowings').is(':checked'))
-
-    appSettings.set('general.homeHideNewFollowers', (!!$('#homeHideNewFollowers').is(':checked')))
-    appSettings.set('general.homeHideNewFans', (!!$('#homeHideNewFans').is(':checked')))
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
 }
