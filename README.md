@@ -18,35 +18,38 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - Allows downloading of replays using FFMPEG
 - Supports [LAMD](https://notabug.org/thecoder75/lamd)
 
+### Building LiveMe Pro Tools
+
+**Instructions can be found in the DOCS folder on building the various branches of this project.**
+
 ### Prebuilt Releases (64-bit only!)
-[![Build Status](https://travis-ci.org/thecoder75/liveme-pro-tools.svg?branch=master)](https://travis-ci.org/thecoder75/liveme-pro-tools)
-[![Build status](https://ci.appveyor.com/api/projects/status/kbgedvumij2fabrp/branch/master?svg=true)](https://ci.appveyor.com/project/TheCoder/liveme-pro-tools/branch/master)
 
 To download the latest prebuilt versions, [click here](releases).
 
-
-**Planned Supported Platforms:**
-- Ubuntu-based Linux and Debian Distributions (32 and 64-bit)
+**Current Supported Platforms:**
+- Ubuntu-based Linux and Debian Distributions (64-bit)
 - macOS v10.11 or higher (64-bit only!)
-- Windows 7 or higher (32 and 64-bit!)
+- Windows 7 or higher (64-bit!)
 
-** Please note support for 32-bit will be dropped in the near future of the main branch and a special branch supporting it will be created instead but may not be updated as often as the main branch.**
+** This project no longer supports 32-bit operating systems.**
 
-### What about FFMPEG?
-Unfortunately at this time, every way I've looked at removing it has caused major breakage in the ability to download non-broken replays.
+We are planning on migrating most of the core over to the .NET/MONO project for better control, flexability and additional functionality in the future.  We found that 32-bit versions will be harder to maintain or build though.
 
-### A Desktop Version?
-A long time ago, TheCoder wanted to release an actual desktop app that wasn't built using NodeJS and ElectronJS.  This was being researched and planned but due to him getting a promotion at work, his available time for this project disappeared.  Now with what little time he has, he will try to maintain and perform minor updates as he is able to.
+### FFMPEG Required?
+FFMPEG is required to combined the downloaded playlist chunks and if transcoding of the downloaded replays are preferred.  There is no way at this time to download replays without having FFMPEG installed.
+
+We are looking into building/rewriting the chunk downloader and removing the dependancy on FFMPEG in future versions.
 
 ### Current Releases Built With
-* [Electron](http://electron.atom.io)
+* [Electron](http://electronjs.org)
 * [NodeJS](http://nodejs.org)
 * LiveMe-API - *now integrated into the project*
 
 ### Contributing
-If you find any bugs or would like to help add features or additional functions, please create a pull request for review and I'll add them if they don't break anything.
+If you find any bugs or would like to help add features or additional functions, please create a pull request for review and the current contributors will review it.  No guarantees are provided on if your pull request will be integrated or not. 
 
-### Contributors
+### Project Contributors
+#### In no special order:
 * [thecoder75](https://notabug.com/thecoder75)
 * [zp](https://github.com/zp)
 * [polydragon](https://github.com/polydragon)
@@ -57,3 +60,6 @@ If you find any bugs or would like to help add features or additional functions,
 ### License
 This project is licensed under the GPL-3 License - see the [LICENSE](LICENSE) file for details
 
+### Donations
+**Please help keep this project alive!**
+We appreciate those who wish to donate, but at this time we're not requiring or accepting them.  In the future, who knows.
