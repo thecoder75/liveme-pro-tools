@@ -89,6 +89,12 @@ function createWindow() {
         })
     }
 
+    if (!appSettings.get('history.viewed_maxage')) {
+        appSettings.set('history', {
+            viewed_maxage: 1
+        })
+    }
+
     let test = appSettings.get('position')
     if (test.mainWindow[1] === undefined) {
         appSettings.set('position', {
