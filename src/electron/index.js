@@ -89,15 +89,9 @@ function createWindow() {
         })
     }
 
-<<<<<<< HEAD
-    if (!appSettings.get('history.viewed_maxage')) {
-        appSettings.set('history', {
-            viewed_maxage: 1
-=======
     if (!appSettings.get('general.pagesize')) {
         appSettings.set('general', {
             pagesize: 5
->>>>>>> c0fa491f85f62061c51249e2be8bb7e591736f2c
         })
     }
 

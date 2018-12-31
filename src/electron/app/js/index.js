@@ -1,9 +1,4 @@
 /* global $ */
-<<<<<<< HEAD
-const MAX_PER_PAGE = 20
-
-=======
->>>>>>> c0fa491f85f62061c51249e2be8bb7e591736f2c
 const { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard } = require('electron')
 const fs = require('fs')
 const path = require('path')
