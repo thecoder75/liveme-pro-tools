@@ -74,12 +74,6 @@
             window.close();
         }
 
-        function downloadVideo() {
-            ipcRenderer.send('download-replay', {
-                videoid: videoid
-            });
-        }
-
         function showUser() {
             ipcRenderer.send('show-user', {
                 userid: userid
@@ -95,24 +89,20 @@
             z-index: 1000;
             top: 8px;
             display: block;
-            width: 48px;
-            height: 48px;
-            line-height: 48px;
-            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 16px;
             text-align: center;
-            border-radius: 24px;
+            border-radius: 20px;
             background-color: rgba(0, 0, 0, 0.6);
             color: rgb(255, 255, 255);
             opacity: 0.1;
             cursor: pointer;
         }
         
-        main a.download {
-            right: 12px;
-        }
-        
         main a.info {
-            right: 64px;
+            right: 16px;
         }
         
         main a:hover {
@@ -132,10 +122,7 @@
     </header>
     <main class="has-small-header" style="display: block; overflow: hidden;">
         <video id="video" controls></video>
-
-        <a class="download" onClick="downloadVideo()"><i class="icon icon-download"></i></a>
         <a class="info" onClick="showUser()"><i class="icon icon-info"></i></a>
-
     </main>
 </body>
 

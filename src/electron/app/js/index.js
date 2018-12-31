@@ -1,4 +1,6 @@
 /* global $ */
+const MAX_PER_PAGE = 20
+
 const { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard } = require('electron')
 const fs = require('fs')
 const path = require('path')
@@ -1054,7 +1056,7 @@ function getUsersReplays() {
         $('#replay-result-alert').hide()
     }
 
-    LiveMe.getUserReplays(currentUser.uid, currentPage, parseInt(appSettings.get('general.pagesize')))
+    LiveMe.getUserReplays(currentUser.uid, currentPage, MAX_PER_PAGE)
         .then(replays => {
 
             if ((typeof replays === 'undefined') || (replays == null)) {
@@ -1077,7 +1079,7 @@ function getUsersReplays() {
 
             $('footer h1').html($('#list tbody tr').length + ' visible of ' + currentUser.counts.replays + ' total replays loaded.')
             setProgressBarValue(($('#list tbody tr').length / currentUser.counts.replays) * 100)
-            hasMore = replays.length === parseInt(appSettings.get('general.pagesize'))
+            hasMore = replays.length === MAX_PER_PAGE
 
             currentSearch = 'getUsersReplays'
 
@@ -1219,11 +1221,11 @@ function _addReplayEntry(replay, wasSearched) {
 }
 
 function performUsernameSearch() {
-    LiveMe.performSearch($('#search-query').val(), currentPage, parseInt(appSettings.get('general.pagesize')), 1)
+    LiveMe.performSearch($('#search-query').val(), currentPage, MAX_PER_PAGE, 1)
         .then(results => {
 
             currentSearch = 'performUsernameSearch'
-            hasMore = results.length >= parseInt(appSettings.get('general.pagesize'))
+            hasMore = results.length >= MAX_PER_PAGE
             setTimeout(function() { scrollBusy = false }, 250)
 
             for (var i = 0; i < results.length; i++) {
@@ -1313,11 +1315,11 @@ function performHashtagSearch() {
 }
 
 function _performHashtagSearch() {
-    LiveMe.performSearch($('#search-query').val(), currentPage, parseInt(appSettings.get('general.pagesize')), 2)
+    LiveMe.performSearch($('#search-query').val(), currentPage, MAX_PER_PAGE, 2)
         .then(results => {
 
             currentSearch = 'performHashtagSearch'
-            hasMore = results.length >= parseInt(appSettings.get('general.pagesize'))
+            hasMore = results.length >= MAX_PER_PAGE
             setTimeout(function() { scrollBusy = false }, 250)
 
             for (var i = 0; i < results.length; i++) {
@@ -1362,10 +1364,6 @@ function _performHashtagSearch() {
 
 
         });
-
-
-
-
 }
 
 function initSettingsPanel() {
@@ -1376,7 +1374,6 @@ function initSettingsPanel() {
     $('#viewmode-followings').prop('checked', appSettings.get('general.hide_zeroreplay_followings'))
 
     $('#playerpath').val(appSettings.get('general.playerpath'))
-    $('#max-page-size').val(appSettings.get('general.pagesize'))
 
     $('#cleanup-duration').val(appSettings.get('history.viewed_maxage'))
 
@@ -1408,14 +1405,14 @@ function initSettingsPanel() {
     let loadAllResults = appSettings.get('general.loadAllResults') || false
     $('#loadAllResults').prop('checked', loadAllResults)
 
-    let enableHomeScan = appSettings.get('general.enableHomeScan') || true
+    let enableHomeScan = appSettings.get('general.enableHomeScan') || false
     $('#enableHomeScan').prop('checked', enableHomeScan)
 
-    let enableShowReplays = appSettings.get('general.enableShowReplays') || true
+    let enableShowReplays = appSettings.get('general.enableShowReplays') || false
     $('#enableShowReplays').prop('checked', enableShowReplays)
-    let enableShowFans = appSettings.get('general.enableShowFans') || true
+    let enableShowFans = appSettings.get('general.enableShowFans') || false
     $('#enableShowFans').prop('checked', enableShowFans)
-    let enableShowFollowings = appSettings.get('general.enableShowFollowings') || true
+    let enableShowFollowings = appSettings.get('general.enableShowFollowings') || false
     $('#enableShowFollowings').prop('checked', enableShowFollowings)
 
     let blockedCountries = appSettings.get('general.blockedCountries') || []
@@ -1461,7 +1458,6 @@ function saveSettings() {
     appSettings.set('general.hide_zeroreplay_fans', (!!$('#viewmode-followers').is(':checked')))
     appSettings.set('general.hide_zeroreplay_followings', (!!$('#viewmode-followings').is(':checked')))
     appSettings.set('general.playerpath', $('#playerpath').val())
-    appSettings.set('general.pagesize', $('#max-page-size').val())
 
     appSettings.set('history.viewed_maxage', $('#cleanup-duration').val())
 
