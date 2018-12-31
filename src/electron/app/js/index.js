@@ -1375,9 +1375,6 @@ function initSettingsPanel() {
     $('#viewmode-followers').prop('checked', appSettings.get('general.hide_zeroreplay_fans'))
     $('#viewmode-followings').prop('checked', appSettings.get('general.hide_zeroreplay_followings'))
 
-    $('#homeHideNewFans').prop('checked', appSettings.get('general.homeHideNewFans'))
-    $('#homeHideNewFollowers').prop('checked', appSettings.get('general.homeHideNewFollowers'))
-
     $('#playerpath').val(appSettings.get('general.playerpath'))
     $('#max-page-size').val(appSettings.get('general.pagesize'))
 
@@ -1411,14 +1408,14 @@ function initSettingsPanel() {
     let loadAllResults = appSettings.get('general.loadAllResults') || false
     $('#loadAllResults').prop('checked', loadAllResults)
 
-    let enableHomeScan = appSettings.get('general.enableHomeScan') || false
+    let enableHomeScan = appSettings.get('general.enableHomeScan') || true
     $('#enableHomeScan').prop('checked', enableHomeScan)
 
-    let enableShowReplays = appSettings.get('general.enableShowReplays') || false
+    let enableShowReplays = appSettings.get('general.enableShowReplays') || true
     $('#enableShowReplays').prop('checked', enableShowReplays)
-    let enableShowFans = appSettings.get('general.enableShowFans') || false
+    let enableShowFans = appSettings.get('general.enableShowFans') || true
     $('#enableShowFans').prop('checked', enableShowFans)
-    let enableShowFollowings = appSettings.get('general.enableShowFollowings') || false
+    let enableShowFollowings = appSettings.get('general.enableShowFollowings') || true
     $('#enableShowFollowings').prop('checked', enableShowFollowings)
 
     let blockedCountries = appSettings.get('general.blockedCountries') || []
@@ -1483,9 +1480,6 @@ function saveSettings() {
     appSettings.set('general.enableShowReplays', $('#enableShowReplays').is(':checked'))
     appSettings.set('general.enableShowFans', $('#enableShowFans').is(':checked'))
     appSettings.set('general.enableShowFollowings', $('#enableShowFollowings').is(':checked'))
-
-    appSettings.set('general.homeHideNewFollowers', (!!$('#homeHideNewFollowers').is(':checked')))
-    appSettings.set('general.homeHideNewFans', (!!$('#homeHideNewFans').is(':checked')))
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
 }
