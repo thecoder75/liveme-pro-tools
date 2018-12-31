@@ -1,5 +1,5 @@
 /* global $ */
-const MAX_PER_PAGE = 5
+const MAX_PER_PAGE = 20
 
 const { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard } = require('electron')
 const fs = require('fs')

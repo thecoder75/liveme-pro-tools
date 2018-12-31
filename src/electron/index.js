@@ -28,7 +28,7 @@ let menu = null
 let appSettings = require('electron-settings')
 
 function createWindow() {
-    let isFreshInstall = appSettings.get('general.fresh_install') == null
+    let isFreshInstall = appSettings.get('general.fresh_install') == false
 
     if (isFreshInstall === true) {
         appSettings.set('general', {
@@ -54,26 +54,9 @@ function createWindow() {
             path: path.join(app.getPath('home'), 'Downloads'),
             template: '%%replayid%%',
             chunkthreads: 1,
+            chunks: 1,
             ffmpegquality: 1
         })
-        appSettings.set('lamd', {
-            enabled: false,
-            url: 'http://localhost:8280',
-            handle_downloads: false
-        })
-    }
-
-    if (!appSettings.get('downloads.path')) {
-        appSettings.set('downloads', {
-            path: path.join(app.getPath('home'), 'Downloads'),
-            template: '%%replayid%%',
-            chunkthreads: 1,
-            ffmpegquality: 1
-        })
-    }
-
-    if (!appSettings.get('downloads.chunks')) {
-        appSettings.set('downloads.chunks', 1)
     }
 
     if (!appSettings.get('general.enableHomeScan')) {
@@ -636,8 +619,7 @@ ipcMain.on('watch-replay', (event, arg) => {
 
     LiveMe.getVideoInfo(arg.videoid)
         .then(video => {
-            let internalplayer = appSettings.get('general.playerpath')
-            let playerpath = internalplayer
+            let playerpath = appSettings.get('general.playerpath')
 
             if (playerpath.length > 5) {
                 exec(playerpath.replace('%url%', video.hlsvideosource))
