@@ -27,7 +27,6 @@ const NEW_FANS = "New Fans"
 const NEW_FOLLOWINGS = "New Following"
 const NEW_REPLAYS = "New Replay"
 
-
 $(function() {
     document.title = 'LiveMe Pro Tools v' + remote.app.getVersion() // Set Title of Window
 
