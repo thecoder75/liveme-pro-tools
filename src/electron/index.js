@@ -89,6 +89,12 @@ function createWindow() {
         })
     }
 
+    if (!appSettings.get('general.pagesize')) {
+        appSettings.set('general', {
+            pagesize: 5
+        })
+    }
+
     let test = appSettings.get('position')
     if (test.mainWindow[1] === undefined) {
         appSettings.set('position', {
