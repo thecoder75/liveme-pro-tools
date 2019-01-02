@@ -305,10 +305,8 @@ ipcMain.on('download-cancel', (event, arg) => {
             return false
         })
     })
-    /**
-     * It is done this way in case the API call to jDownloader returns an error or doesn't connect.
-     */
-const dlQueue = async.queue((task, done) => {
+
+    const dlQueue = async.queue((task, done) => {
     // Set custom FFMPEG path if defined
     if (appSettings.get('downloads.ffmpeg')) ffmpeg.setFfmpegPath(appSettings.get('downloads.ffmpeg'))
         // Get video info
@@ -509,7 +507,7 @@ const dlQueue = async.queue((task, done) => {
                     // Download chunks
                     let downloadedChunks = 0
 
-                    async.eachLimit(tsList, 3, (file, next) => {
+                    async.eachLimit(tsList, 4, (file, next) => {
 
                         const stream = request(`${video.hlsvideosource.split('/').slice(0, -1).join('/')}/${file.name}`)
                             .on('error', err => {
@@ -619,7 +617,7 @@ ipcMain.on('watch-replay', (event, arg) => {
 
     LiveMe.getVideoInfo(arg.videoid)
         .then(video => {
-            let playerpath = appSettings.get('general.playerpath')
+            let playerpath = appSettings.get('general.playerpath') || ' '
 
             if (playerpath.length > 5) {
                 exec(playerpath.replace('%url%', video.hlsvideosource))
@@ -745,11 +743,10 @@ ipcMain.on('open-followers-window', (event, arg) => {
 ipcMain.on('read-comments', (event, arg) => {
     let win = new BrowserWindow({
         width: 400,
-        width: 400,
         minWidth: 400,
         maxWidth: 400,
-        height: 600,
-        minHeight: 600,
+        height: 480,
+        minHeight: 480,
         resizable: true,
         darkTheme: false,
         autoHideMenuBar: true,
