@@ -1,0 +1,104 @@
+@using LMPT.Core.BlazorApp.Models
+<style>
+    
+    .homecard-wrapper {
+        background-color: rgb(48, 48, 48);
+        box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.5);
+        cursor: pointer;
+        display: grid;
+        grid-gap: 0px 12px;
+        grid-template-columns: 64px auto;
+        grid-auto-rows: minmax(64px, 64px);
+        margin: 12px 0px 0;
+    }
+
+    .homecard-wrapper div { overflow: hidden; }
+
+    .homecard-img {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .homecard-body {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .homecard-new-found {
+        color: rgb(240, 240, 0);
+        font-size: 14pt;
+        font-weight: 600;
+        grid-column: 2;
+        grid-row: 1;
+        line-height: 16px;
+        margin: 6px 12px;
+
+        text-align: right;
+    }
+
+    
+    .homecard-body h1 {
+
+        font-size: 14pt;
+        font-weight: 300;
+        line-height: 26px;
+        margin-top: 4px;
+    }
+
+
+
+    .homecard-body a { margin-right: 6px; }
+    
+</style>
+
+
+<div class="homecard-wrapper"
+     onClick="@OnBodyClick">
+
+    <div class="homecard-img">
+        <img width="64px" height="64px" src="@Bookmark.Face" onError="$(this).hide()" alt="face"/>
+
+    </div>
+
+
+    <div class="homecard-body" style="position: relative;">
+        <h1>@Bookmark.Nickname</h1>
+        <div style="margin:6px 0">
+            @Info
+        </div>
+       
+        <div class="buttons" style="bottom: 8px; position: absolute; right:6px">
+            <a class="button" onClick=@($"event.stopPropagation(); showUser('{Bookmark.Uid}')")>
+                @($"{Bookmark.Counts.Replays} replays")
+            </a>
+            <a class="button" onClick=@($"event.stopPropagation(); showFollowers('{Bookmark.Uid}')")>
+                @($"{Bookmark.Counts.Followers} Fans")
+            </a>
+            <a class="button" onClick=@($"event.stopPropagation(); showFollowing('{Bookmark.Uid}')")>
+                @($"Following {Bookmark.Counts.Followings}")
+            </a>
+        </div>
+    </div>
+    
+    <div class="homecard-new-found">@Type</div>
+
+
+</div>
+
+@functions
+{
+
+    [Parameter]
+    Bookmark Bookmark { get; set; }
+
+    [Parameter]
+    string OnBodyClick { get; set; }
+
+    [Parameter]
+    string Type { get; set; }
+
+    [Parameter]
+    string Info { get; set; }
+
+
+}

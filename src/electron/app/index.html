@@ -8,8 +8,10 @@
             module = undefined;
         }
     </script>
-
+        <meta charset='utf-8'>
     <title>LiveMe Pro Tools</title>
+
+        <script src="_framework/blazor.server.js"></script>
 
     <link rel="stylesheet" href="css/style.css" media="all">
     <link rel="stylesheet" href="css/page_index.css" media="all">
@@ -49,20 +51,11 @@
         <a class="close-button" onClick="closeWindow()">&#x2715;</a>
     </header>
 
+        
     <div id="home">
-        <div id="bookmarklist">
-            <button id="rescan-btn" disabled=true onClick="rescanFeeds()" class="marginHomeElement">Scanning ...</button>
-
-            <h4 class="marginHomeElement" id="newReplaysHeader">NEW REPLAYS</h4>
-            <div id="newreplays"></div>
-
-            <h4 class="marginHomeElement" id="newFollowingsHeader">NEW FOLLOWINGS</h4>
-            <div id="newfollowings"></div>
-
-            <h4 class="marginHomeElement" id="newFansHeader">NEW FANS</h4>
-            <div id="newfans"></div>
-
-        </div>
+             <BookmarkFeed></BookmarkFeed>
+             <!-- <SurveyPrompt title="hello"></SurveyPrompt> -->
+             <!-- <HistoryFeed></HistoryFeed> -->
 
         <div class="panel">
             <div id="lmptUpdateNews"></div>
@@ -448,18 +441,30 @@
             </div>
         </div>
 
+        <div 
+            id="coreConsole" 
+            style="position:absolute; 
+              background-color: rgb(40,40,40); height:50px; top:-400px; left:00px; z-index: 100;"
+            >
 
+            <ul id="redbutton" class="marginHomeElement" style="margin-right: 40px;">
+                    <!-- <li ><button onclick="triggerCoreStart()" style="width:100px" >Start</button></li> -->
+                    <li><button onclick="shutdownCore()" style="width:100px">Shutdown</button></li>
+            </ul>
+            <button class="button" onclick="toggleCoreConsole()" style="position:absolute; right:0px; top:0px;">x</button>
+        </div>
         <div id="status">
 
         </div>
         <overlay onClick="closeOverlay()">&nbsp;</overlay>
 
         <footer>
-           
+            <span style="margin:2px 6px; padding: 1px 10px" id="coreStatus" onclick="triggerCoreStart()">Core Status</span>
+            <button class="button" onclick="toggleCoreConsole()">Core Console</button>
             <div id="footer-progressbar">
                 <div></div>
             </div>
-            <h1>&nbsp;</h1>
+            <h1>Loading Home</h1>
         </footer>
     </body>
 </html>

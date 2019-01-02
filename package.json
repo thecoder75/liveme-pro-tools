@@ -1,6 +1,6 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.231.20181231",
+    "version": "1.500.20190102",
     "description": "Tools for Live.me video network",
     "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
@@ -12,9 +12,14 @@
         "postinstall": "",
         "start": "./node_modules/.bin/electron ./src/electron/index.js --enable-logging",
         "dev": "NODE_ENV='development' npm run start",
-        "release": "build -w && build -l && build -m",
-        "release-win": "build -w",
-        "release-linux": "build -ml"
+        "watch": "dotnet watch  --project ./src/core/LMPT.Core.Server  run",
+        "release-core-mac": "dotnet publish  ./src/core/LMPT.Core.Server -r osx.10.11-x64 --output bin/dist/mac -c release /p:TrimUnusedDependencies=true",
+        "release-core-win": "dotnet publish  ./src/core/LMPT.Core.Server -r win-x64 --output bin/dist/win -c release /p:TrimUnusedDependencies=true",
+        "release-core-linux": "dotnet publish  ./src/core/LMPT.Core.Server -r linux-x64 --output bin/dist/linux -c release /p:TrimUnusedDependencies=true",
+        "release-win": "npm run release-core-win && build -w",
+        "release-linux": "npm run release-core-linux && build -l",
+        "release-mac": "npm run release-core-mac && build -m",
+        "release": "npm run release-mac && npm run release-win && npm run release-linux"
     },
     "author": "TheCoder75",
     "license": "GPL-3.0",
@@ -48,7 +53,7 @@
     "build": {
         "appId": "com.thecoderstoolbox.livemeprotools",
         "files": [
-            "**/*",
+            "src/electron",
             "node_modules/**/*"
         ],
         "directories": {
@@ -56,13 +61,22 @@
         },
         "productName": "LiveMe Pro Tools",
         "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
-        "asar": true,
+        "asar": false,
         "linux": {
             "target": [
                 {
                     "target": "tar.gz",
                     "arch": [
                         "x64"
+                    ]
+                }
+            ],
+            "extraResources": [
+                {
+                    "from": "src/core/LMPT.Core.Server/bin/dist/linux",
+                    "to": "app/src/core/LMPT.Core.Server/bin/dist/linux",
+                    "filter": [
+                        "**/*"
                     ]
                 }
             ],
@@ -79,6 +93,15 @@
                     ]
                 }
             ],
+            "extraResources": [
+                {
+                    "from": "src/core/LMPT.Core.Server/bin/dist/win",
+                    "to": "app/src/core/LMPT.Core.Server/bin/dist/win",
+                    "filter": [
+                        "**/*"
+                    ]
+                }
+            ],
             "icon": "src/electron/build/appicon.ico"
         },
         "nsis": {
@@ -90,6 +113,15 @@
             "category": "public.app-category.video",
             "target": [
                 "zip"
+            ],
+            "extraResources": [
+                {
+                    "from": "src/core/LMPT.Core.Server/bin/dist/mac",
+                    "to": "app/src/core/LMPT.Core.Server/bin/dist/mac",
+                    "filter": [
+                        "**/*"
+                    ]
+                }
             ],
             "identity": null,
             "icon": "src/electron/build/appicon.icns"

@@ -2,7 +2,7 @@
 
 const { ipcRenderer, remote, clipboard } = require('electron')
 const LiveMe = remote.getGlobal('LiveMe')
-const appSettings = require('electron-settings')
+const appSettings = remote.require('electron-settings')
 const DataManager = remote.getGlobal('DataManager')
 
 
@@ -18,7 +18,7 @@ let filters = { countryCode: '', seen: true, active: false }
 let MAX_PAGE_SIZE = 50
 let loadAllResults = appSettings.get('general.loadAllResults') || false
 let blockedCountries = appSettings.get('general.blockedCountries') || []
-const countryCodes  = require("./js/countryCodes.js")
+const countryCodes  = remote.require("./countryCodes.js")
 const cclist = countryCodes.cclist
 
 $(function () {
@@ -250,7 +250,7 @@ function doFans () {
 }
 
 function addEntry (entry) {
-    let prettydate = require('pretty-date')
+    let prettydate = remote.require('pretty-date')
     let sex = entry.sex < 0 ? '' : (entry.sex == 0 ? 'is-female' : 'is-male')
     let seenRaw = DataManager.wasProfileViewed(entry.uid)
     let seenDate = seenRaw !== false ? prettydate.format(seenRaw) : ''

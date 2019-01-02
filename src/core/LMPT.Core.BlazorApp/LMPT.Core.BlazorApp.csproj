@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <!-- The linker is not beneficial for server-side execution. Re-enable this if you switch to WebAssembly execution. -->
+    <BlazorLinkOnBuild>false</BlazorLinkOnBuild>
+    <RootNamespace>LMPT.Core.BlazorApp</RootNamespace>
+  </PropertyGroup>
+<ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.7.0" PrivateAssets="all" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Packaging.Tools.Trimming" Version="1.1.0-preview1-26619-01" />
+  </ItemGroup>
+
+
+</Project>
+

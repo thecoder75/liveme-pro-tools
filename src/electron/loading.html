@@ -1,0 +1,40 @@
+<html>
+        <head>
+                <script>
+                    if (typeof module === 'object') {window.module = module; module = undefined; }
+                </script>
+                <meta charset='utf-8'>
+                <title>LiveMe Pro Tools</title>
+                <link rel="stylesheet" href="app/css/style.css" media="all">
+                <link rel="stylesheet" href="app/css/page_index.css" media="all">
+                <script type="text/javascript" src="app/js/jquery-3.2.1.min.js"></script>
+                <script type="text/javascript" src="app/js/handlebars-v4.0.11.js"></script>
+                <script type="text/javascript" src="app/js/loading.js"></script>
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+            </head>
+            <body>
+                <header>
+                    <h5>Live Me Pro Tools - Offline Landing Page</h5>
+                    <a class="minimize-button" onClick="minimizeWindow()">&#x1f5d5;</a>
+                    <a class="close-button" onClick="closeWindow()">&#x2715;</a>
+                </header>
+                <br>
+                <br>
+                <br>
+
+                <div id="home">
+                    <div style="margin:12px">
+                            <h1 style="color:grey">Waiting for Core ...</h1>
+                            <button onClick="CoreGateway.start()">Load Core</button>
+                            <div id="consoleOutput" style="background:black; overflow: auto;padding:12px; margin-top: 12px; height: 200px;">
+                                    <div id="content" >
+                                            Console Output ...
+                                            
+                                        </div>
+                            </div>
+                            
+                    </div>
+                </div>
+
+</body>
+</html>

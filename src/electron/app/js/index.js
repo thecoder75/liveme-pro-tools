@@ -8,10 +8,11 @@ const appSettings = remote.require('electron-settings')
 const isDev = remote.getGlobal('isDev')
 const LiveMe = remote.getGlobal('LiveMe')
 const DataManager = remote.getGlobal('DataManager')
-const formatDuration = require('format-duration')
-const prettydate = require('pretty-date')
-const request = require('request')
-const countryCodes = require("./js/countryCodes.js")
+const CoreGateway = remote.getGlobal('CoreGateway')
+const formatDuration = remote.require('format-duration')
+const prettydate = remote.require('pretty-date')
+const request =  remote.require('request')
+const countryCodes  = remote.require("./countryCodes.js")
 const cclist = countryCodes.cclist
 
 let currentUser = {}
@@ -27,7 +28,71 @@ const NEW_FANS = "New Fans"
 const NEW_FOLLOWINGS = "New Following"
 const NEW_REPLAYS = "New Replay"
 
-$(function() {
+// needed to store variables in window for dotnet interop
+window.DataManager = DataManager
+window.LiveMe = LiveMe
+
+
+CoreGateway.LogEmitter.on("event", (info) => {
+   // console.log({info})
+    //document.getElementById("content").innerHTML += ("<br>" + info);
+})
+
+let consoleIsClosed = true
+
+function toggleCoreConsole( ) {
+
+        
+    
+        var uiElement = document.getElementById("coreStatus");
+        var rect = uiElement.getBoundingClientRect();
+        let consoleUi = $('#coreConsole')
+
+        if(consoleIsClosed)
+        {
+            consoleUi
+            .animate({ top: rect.top - consoleUi.height(), left:-400 }, 0)
+            .animate({ top: rect.top - consoleUi.height(), left:00 }, 200)
+            consoleIsClosed = false;
+        }else{
+            consoleUi
+            .animate({ top: rect.top - consoleUi.height(), left:-400 }, 200)
+            consoleIsClosed = true
+        }
+
+
+}
+
+async function healthCheckLoop() { 
+    try {
+        var healthy = await DotNet.invokeMethodAsync('LMPT.Core.BlazorApp', 'HealthCheck')
+        //console.log({healthy})
+        updateCoreStatusUI(healthy); 
+    } catch (error) { }   
+    setTimeout(() => healthCheckLoop(), 1000) 
+}
+
+function updateCoreStatusUI(healthy) {
+    var uiElement = document.getElementById("coreStatus");
+    if (healthy) {
+        uiElement.innerHTML = "Core: Is healthy 🍏";
+        uiElement.style.color = "GreenYellow";
+    }
+    else {
+        uiElement.innerHTML = "Core: Not found ⛔️";
+        uiElement.style.color = "red";
+    }
+}
+
+async function triggerCoreStart(){
+    CoreGateway.start();
+}
+
+async function shutdownCore(){
+    let res = await DotNet.invokeMethodAsync('LMPT.Core.BlazorApp', 'ShutDown')
+}
+
+$(function () {
     document.title = 'LiveMe Pro Tools v' + remote.app.getVersion() // Set Title of Window
 
     setupContextMenu() // Set up the Context Menu for some UI elements
@@ -42,7 +107,8 @@ $(function() {
         LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
     }
 
-    $('footer h1').html('').show()
+    healthCheckLoop();
+
     setTimeout(() => {
         if (appSettings.get('general.enableHomeScan') == true) {
             $('footer h1').html('Loading Home').show()
@@ -533,7 +599,7 @@ function checkForUpdatesOfLiveMeProTools() {
         if (!err) {
             let data = JSON.parse(body)
             
-            const remarkable = require('remarkable')
+            const remarkable = remote.require('remarkable')
             const md = new remarkable()
 
             const ub = md.render(data.body);
@@ -565,27 +631,13 @@ function checkForUpdatesOfLiveMeProTools() {
 }
 
 function initHome() {
-    refreshFeedHeaders();
 
     $('#lmptUpdateNews').html('')
     $('#home').show()
 
     checkForUpdatesOfLiveMeProTools()
-    loadBookmarkFeeds()
-}
 
-function refreshFeedHeaders() {
-    let hideFollowers = appSettings.get("general.homeHideNewFollowers");
-    if (hideFollowers)
-        document.getElementById("newFollowingsHeader").style.color = "black";
-    else
-        document.getElementById("newFollowingsHeader").style.color = null;
 
-    let hideFans = appSettings.get("general.homeHideNewFans");
-    if (hideFans)
-        document.getElementById("newFansHeader").style.color = "black";
-    else
-        document.getElementById("newFansHeader").style.color = null;
 }
 
 function passwordShowToggler(e) {
@@ -644,33 +696,6 @@ function scanLiveme() {
     })
 }
 
-function clearHomeUI() {
-
-    if (appSettings.get('general.enableShowReplays') === true) {
-        $('#home #newReplaysHeader').show()
-        $('#home #newreplays').show().empty()
-    } else {
-        $('#home #newReplaysHeader').hide()
-        $('#home #newreplays').hide()
-    }
-
-    if (appSettings.get('general.enableShowFollowings') === true) {
-        $('#home #newFollowingsHeader').show()
-        $('#home #newfollowings').show().empty()
-    } else {
-        $('#home #newFollowingsHeader').hide()
-        $('#home #newfollowings').hide()
-    }
-
-    if (appSettings.get('general.enableShowFans') === true) {
-        $('#home #newFansHeader').show()
-        $('#home #newfans').show().empty()
-    } else {
-        $('#home #newFansHeader').hide()
-        $('#home #newfans').hide()
-    }
-
-}
 
 function loadFromCache(bookmarks, dispatch) {
     setImmediate(() => {
@@ -686,6 +711,17 @@ function loadFromCache(bookmarks, dispatch) {
             }
         })
     })
+}
+
+function scanFooterInfo(current, fromTotal ){
+    showProgressBar()
+    $('footer h1').html('Checking ' + current + ' of ' + fromTotal + ' bookmarks.')
+    setProgressBarValue((current / fromTotal) * 100)
+}
+
+function scanFooterDone(current, fromTotal ){
+    hideProgressBar()
+    $('footer h1').html('Bookmarks scan complete.')
 }
 
 function _scanThread(id) {

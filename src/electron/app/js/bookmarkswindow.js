@@ -1,7 +1,7 @@
 const { ipcRenderer, remote, clipboard } = require('electron')
 const LiveMe = remote.getGlobal('LiveMe')
-const appSettings = require('electron-settings')
-const prettydate = require('pretty-date')
+const appSettings = remote.require('electron-settings')
+const prettydate = remote.require('pretty-date')
 const DataManager = remote.getGlobal('DataManager')
 
 let list = []

@@ -10,6 +10,7 @@ const os = require('os')
 const fs = require('fs')
 const path = require('path')
 const request = require('request')
+const fetch = require("node-fetch");
 const tarfs = require('tar-fs')
 const DataManager = new(require('./datamanager').DataManager)()
 const LivemeAPI = require('./livemeapi')
@@ -26,9 +27,27 @@ let wizardWindow = null
 let homeWindow = null
 let menu = null
 let appSettings = require('electron-settings')
+const coregateway = require("./coreGateway")
+let startedcore = coregateway.start()
 
-function createWindow() {
-    let isFreshInstall = appSettings.get('general.fresh_install') == false
+let lastHealthState = false;
+
+async function  coreDetection() {
+    let healthy = await coregateway.healthCheck()
+    if(lastHealthState != healthy){
+        lastHealthState = healthy
+        if(healthy){
+            mainWindow.loadURL("http://localhost:5000/index.html")
+        }else{
+            mainWindow.loadURL(`file://${__dirname}/loading.html`)
+        }
+    }
+    setTimeout(async () => coreDetection(), 1000); 
+}
+coreDetection();
+
+function createWindow () {
+    let isFreshInstall = appSettings.get('general.fresh_install') == null
 
     if (isFreshInstall === true) {
         appSettings.set('general', {
@@ -102,7 +121,7 @@ function createWindow() {
         maximizable: false,
         frame: false,
         show: false,
-        backgroundColor: '#000000',
+        backgroundColor: '#999999',
         webPreferences: {
             webSecurity: false,
             textAreasAreResizable: false,
@@ -192,6 +211,7 @@ function createWindow() {
     global.isDev = isDev
     global.LiveMe = LiveMe
     global.DataManager = DataManager
+    global.CoreGateway = coregateway
 
 
     DataManager.loadFromDisk()
@@ -205,10 +225,16 @@ function createWindow() {
 
     if (isFreshInstall) {
         DataManager.disableWrites()
-        wizardWindow.loadURL(`file://${__dirname}/app/wizard.html`)
+        wizardWindow.loadURL(`http://localhost:5000/wizard.html`)
         wizardWindow.show()
     } else {
         mainWindow.show()
+        mainWindow.loadURL(`file://${__dirname}/loading.html`)
+        setTimeout(async () => {
+            let rs = await startedcore;
+            mainWindow.webContents.send('popup-message',{text: "LMPT Core: " + rs } )
+
+        }, 2000)
 
         let pos = appSettings.get('position.mainWindow').length > 1 ? appSettings.get('position.mainWindow') : [null, null]
         if (pos[0] != null) {
@@ -279,7 +305,7 @@ ipcMain.on('open-home-window', (event, arg) => {
 
     homeWindow.on('ready-to-show', () => {
         homeWindow.show()
-    }).loadURL(`file://${__dirname}/app/newhome.html`)
+    }).loadURL(`http://localhost:5000/newhome.html`)
 })
 
 
@@ -662,7 +688,7 @@ ipcMain.on('watch-replay', (event, arg) => {
                         playerWindow = null
                     })
                 }
-                playerWindow.loadURL(`file://${__dirname}/app/player.html?${video.vid}`)
+                playerWindow.loadURL(`http://localhost:5000/player.html?${video.vid}`)
             }
         })
         .catch(err => {
@@ -706,7 +732,7 @@ ipcMain.on('open-followings-window', (event, arg) => {
         win.show()
     }).on('close', () => {
         appSettings.set('position.followingsWindow', win.getPosition())
-    }).loadURL(`file://${__dirname}/app/listwindow.html?1&` + arg.userid)
+    }).loadURL(`http://localhost:5000/listwindow.html?1&` + arg.userid)
 })
 
 ipcMain.on('open-followers-window', (event, arg) => {
@@ -739,7 +765,7 @@ ipcMain.on('open-followers-window', (event, arg) => {
         win.show()
     }).on('close', () => {
         appSettings.set('position.fansWindow', win.getPosition())
-    }).loadURL(`file://${__dirname}/app/listwindow.html?0&` + arg.userid)
+    }).loadURL(`http://localhost:5000/listwindow.html?0&` + arg.userid)
 })
 
 ipcMain.on('read-comments', (event, arg) => {
@@ -767,7 +793,7 @@ ipcMain.on('read-comments', (event, arg) => {
 
     win.on('ready-to-show', () => {
         win.showInactive()
-    }).loadURL(`file://${__dirname}/app/comments.html?` + arg.userid)
+    }).loadURL(`http://localhost:5000/comments.html?` + arg.userid)
 })
 
 ipcMain.on('open-bookmarks', (event, arg) => {

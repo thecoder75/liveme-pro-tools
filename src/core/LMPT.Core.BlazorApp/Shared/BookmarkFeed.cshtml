@@ -1,0 +1,177 @@
+﻿@using Newtonsoft.Json
+@using Microsoft.JSInterop
+@using System;
+@using System.Collections.Generic;
+@using System.Globalization;
+@using System.Linq
+@using System.Threading.Tasks
+@using global::LMPT.Core.BlazorApp.Models;
+@using System.Diagnostics;
+@using Newtonsoft.Json.Converters;
+@using LMPT.Core.BlazorApp.Services;
+
+@inject DataManagerService DataManager;
+@inject LiveMeService LiveMe;
+
+<div id="bookmarklist" class="marginHomeElement">
+    <h2>Home</h2>
+    <h4 style="color:grey">Bookmark Feeds</h4>
+    <button id="rescan-btn" disabled=@ButtonDisabled onclick="@Rescan">@ButtonText</button>
+    <button onclick="alert('This is just a button to try out if you can interact with the blazor component')">Test blazor</button>
+    <br/>
+    <br/>
+
+@if (_newReplays.Count != 0)
+    {
+    <h4 >NEW REPLAYS</h4>
+    <div id="newreplays" cl>
+        @foreach (var tuple in _newReplays)
+        {
+            <HomeCard 
+                Info=@tuple.info  
+                Bookmark=@tuple.bookmark 
+                Type="New Replays" 
+                OnBodyClick=@($"showUser('{tuple.bookmark.Uid}')")>
+            </HomeCard>
+        }
+
+    </div>
+    <br/>
+    }
+
+@if (_newFollowings.Count != 0)
+    {
+    <h4 >NEW FOLLOWINGS</h4>
+
+    <div id="newfollowings">
+        @foreach (var tuple in _newFollowings)
+        {
+            <HomeCard 
+                Info=@tuple.info  
+                Bookmark=@tuple.bookmark 
+                Type="New Followings"
+                OnBodyClick=@($"showFollowing('{tuple.bookmark.Uid}')")>
+            
+            </HomeCard>
+        }
+    </div>
+<br/>
+
+    }
+    @if (_newFans.Count != 0)
+    {
+        <h4>NEW FANS</h4>
+    <div id="newfans">
+        @foreach (var tuple in _newFans)
+        {
+            <HomeCard 
+                Info=@tuple.info  
+                Bookmark=@tuple.bookmark 
+                Type="New Fans" 
+                OnBodyClick=@($"showFollowers('{tuple.bookmark.Uid}')")>
+            </HomeCard>
+        }
+    </div>
+    }
+    <br/>
+    <br/>
+    
+
+</div>
+
+@functions {
+    readonly List<(string info, Bookmark bookmark)> _newReplays = new List<(string info, Bookmark bookmark)>();
+    readonly List<(string info, Bookmark bookmark)> _newFollowings = new List<(string info, Bookmark bookmark)>();
+    readonly List<(string info, Bookmark bookmark)> _newFans = new List<(string info, Bookmark bookmark)>();
+    string ButtonText = "Scan";
+    bool ButtonDisabled = false;
+
+    readonly TimeSpan DelayBetweenScan = TimeSpan.FromMilliseconds(50);
+    
+    
+   
+
+    async Task Rescan()
+    {
+        try
+        {
+            ButtonText = "Scanning ...";
+            ButtonDisabled = true;
+            _newFollowings.Clear();
+            _newFans.Clear();
+            _newReplays.Clear();
+
+            var allBookmarks = await DataManager.GetAllBookmarks();
+
+            var current = 0;
+            var tasks = new List<Task>();        
+            foreach (var bookmark in allBookmarks)
+            {
+                await Task.Delay(DelayBetweenScan);
+                var task = ScanBookmark(bookmark, current++, allBookmarks.Count);
+                tasks.Add(task);
+            }
+
+            await Task.WhenAll(tasks);
+            ButtonDisabled = false;
+            ButtonText = "Rescan";
+            await JSRuntime.Current.InvokeAsync<object>(
+                    "scanFooterDone");
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
+    }
+
+    async Task ScanBookmark(Bookmark bookmark, int current, int totalLength)
+    {
+        await JsInteropHelper.CallAndGet<object>("scanFooterInfo", current, totalLength);
+
+        var liveMeUser = await LiveMe.GetUserInfo(bookmark.Uid);
+
+        var newReplays = bookmark.Counts.Replays < liveMeUser.CountInfo.VideoCount;
+        var newFans = bookmark.Counts.Followers < liveMeUser.CountInfo.FollowerCount;
+        var newFollowings = bookmark.Counts.Followings < liveMeUser.CountInfo.FollowingCount;
+
+        if (newReplays){
+            var info = $"User has { liveMeUser.CountInfo.VideoCount - bookmark.Counts.Replays} more replays";
+            _newReplays.Add((info , bookmark));
+        } 
+        if (newFollowings){
+            var info = $"User is following { liveMeUser.CountInfo.FollowingCount - bookmark.Counts.Followings} more accounts";
+            _newFollowings.Add((info , bookmark));
+        } 
+        if (newFans){
+            var info = $"User has { liveMeUser.CountInfo.FollowerCount - bookmark.Counts.Followers} more fans";
+            _newFans.Add((info , bookmark));
+        } 
+
+
+        await UpdateBookmark(bookmark, liveMeUser);
+        this.StateHasChanged();
+    }
+
+    async Task UpdateBookmark(Bookmark bookmark, LiveMeUser liveMeUser){
+        bookmark.Counts.Replays = liveMeUser.CountInfo.ReplayCount;
+        bookmark.Counts.Friends = liveMeUser.CountInfo.FriendsCount;
+        bookmark.Counts.Followers = liveMeUser.CountInfo.FollowerCount;
+        bookmark.Counts.Followings = liveMeUser.CountInfo.FollowingCount;
+        try
+        {
+            bookmark.Signature = liveMeUser.UserInfo["usign"];
+            bookmark.Face = new Uri(liveMeUser.UserInfo["face"]);
+            bookmark.Nickname = liveMeUser.UserInfo["uname"];
+            bookmark.Shortid = long.Parse(liveMeUser.UserInfo["short_id"]);
+        }
+        catch (Exception)
+        {
+            // ignore exception if something went wrong in updting the above UserInfo,
+            // because this is not that important and should not break the scan.
+        }
+
+        await DataManager.UpdateBookmark(bookmark);
+    }
+
+}
