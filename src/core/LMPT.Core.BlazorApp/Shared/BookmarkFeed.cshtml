@@ -1,14 +1,6 @@
-﻿@using Newtonsoft.Json
-@using Microsoft.JSInterop
-@using System;
-@using System.Collections.Generic;
-@using System.Globalization;
-@using System.Linq
-@using System.Threading.Tasks
+@using System.Diagnostics
 @using global::LMPT.Core.BlazorApp.Models;
-@using System.Diagnostics;
-@using Newtonsoft.Json.Converters;
-@using LMPT.Core.BlazorApp.Services;
+@using global::LMPT.Core.BlazorApp.Services
 
 @inject DataManagerService DataManager;
 @inject LiveMeService LiveMe;
@@ -88,11 +80,9 @@
 
 
  
-    string Version {
-         get {
-           return Program.GetVersion();
-    }}
-    readonly TimeSpan DelayBetweenScan = TimeSpan.FromMilliseconds(50);
+    string Version => Program.GetVersion();
+    
+    readonly TimeSpan DelayBetweenEachScan = TimeSpan.FromMilliseconds(50);
     
     
 
@@ -118,7 +108,7 @@
             var tasks = new List<Task>();        
             foreach (var bookmark in allBookmarks)
             {
-                await Task.Delay(DelayBetweenScan);
+                await Task.Delay(DelayBetweenEachScan);
                 var task = ScanBookmark(bookmark, current++, allBookmarks.Count);
                 tasks.Add(task);
             }
