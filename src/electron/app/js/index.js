@@ -642,7 +642,7 @@ function initHome() {
     $('#lmptUpdateNews').html('')
     $('#home').show()
 
-    checkForUpdatesOfLiveMeProTools()
+    //checkForUpdatesOfLiveMeProTools()
 
 
 }
