@@ -724,6 +724,10 @@ function scanFooterDone(current, fromTotal ){
     $('footer h1').html('Bookmarks scan complete.')
 }
 
+function displayInFooter(text){
+    $('footer h1').html(text)
+}
+
 function _scanThread(id) {
     setImmediate(async() => {
         if (id < bookmarksFromJson.length - 1) {

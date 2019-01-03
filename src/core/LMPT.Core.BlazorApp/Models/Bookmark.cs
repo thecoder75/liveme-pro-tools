@@ -15,7 +15,7 @@ namespace LMPT.Core.BlazorApp.Models
         public string Signature { get; set; }
 
         [JsonProperty("sex")]
-        public long Sex { get; set; }
+        public string Sex { get; set; }
 
         [JsonProperty("face")]
         public Uri Face { get; set; }

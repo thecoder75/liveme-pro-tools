@@ -121,6 +121,11 @@
         }
         catch (Exception ex)
         {
+            ButtonText = "Rescan";
+            ButtonDisabled = false;
+            await JSRuntime.Current.InvokeAsync<object>(
+                    "displayInFooter", $"Scan failed with: {ex.Message}");
+
             Console.WriteLine(ex.ToString());
         }
     }
