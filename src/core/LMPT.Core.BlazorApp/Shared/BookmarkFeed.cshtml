@@ -81,6 +81,9 @@
 
  
     string Version => Program.GetVersion();
+
+    Task SetFooterText(string text) => 
+        JSRuntime.Current.InvokeAsync<object>("displayInFooter", text);
     
     readonly TimeSpan DelayBetweenEachScan = TimeSpan.FromMilliseconds(50);
     
@@ -89,19 +92,19 @@
 
     async Task Rescan()
     {
-
-
         try
-        {
-         
-
+        {      
             ButtonText = "Scanning ...";
             ButtonDisabled = true;
             _newFollowings.Clear();
             _newFans.Clear();
             _newReplays.Clear();
 
+            await SetFooterText($"Calling DataManager.GetAllBookmarks ...");
+
             var allBookmarks = await DataManager.GetAllBookmarks();
+
+            await SetFooterText($"Retrieved {allBookmarks.Count} bookmarks.");
 
             var current = 0;
 
@@ -124,8 +127,7 @@
         {
             ButtonText = "Rescan";
             ButtonDisabled = false;
-            await JSRuntime.Current.InvokeAsync<object>(
-                    "displayInFooter", $"Scan failed with: {ex.Message}");
+            await SetFooterText($"Scan failed with: {ex.Message}");
 
             Console.WriteLine(ex.ToString());
         }
