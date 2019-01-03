@@ -56,11 +56,11 @@ namespace LMPT.Core.Server
             
             app.UseSignalR(route => route.MapHub<BlazorHub>(BlazorHub.DefaultPath, o =>
             {
-                o.ApplicationMaxBufferSize = 131072; // larger size
-                o.TransportMaxBufferSize = 131072; // larger size
+                o.ApplicationMaxBufferSize = 0; // disable size limit
+                o.TransportMaxBufferSize = 0; // disable size limit
             }));
             app.UseBlazor<global::LMPT.Core.BlazorApp.Startup>();
-            // app.UseServerSideBlazor<global::LMPT.Core.BlazorApp.Startup>();
+            //app.UseServerSideBlazor<global::LMPT.Core.BlazorApp.Startup>();
 
         }
     }
