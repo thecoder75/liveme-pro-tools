@@ -40,11 +40,12 @@ CoreGateway.LogEmitter.on("event", (info) => {
 
 let consoleIsClosed = true
 
-function toggleCoreConsole( ) {
+async function toggleCoreConsole( ) {
 
-        
-    
         var uiElement = document.getElementById("coreStatus");
+        var uiElementVersion = document.getElementById("coreVersion");
+        var v = await GetCoreVersion();
+        uiElementVersion.innerHTML = "Core version: " + v
         var rect = uiElement.getBoundingClientRect();
         let consoleUi = $('#coreConsole')
 
@@ -72,6 +73,11 @@ async function healthCheckLoop() {
     setTimeout(() => healthCheckLoop(), 1000) 
 }
 
+async function GetCoreVersion(){
+    var version = await DotNet.invokeMethodAsync('LMPT.Core.BlazorApp', 'GetVersion')
+    return version;
+}
+
 function updateCoreStatusUI(healthy) {
     var uiElement = document.getElementById("coreStatus");
     if (healthy) {
@@ -80,6 +86,7 @@ function updateCoreStatusUI(healthy) {
     }
     else {
         uiElement.innerHTML = "Core: Not found ⛔️";
+        uiElement.style.color = "red";
         uiElement.style.color = "red";
     }
 }

@@ -17,7 +17,7 @@
     <h2>Home</h2>
     <h4 style="color:grey">Bookmark Feeds</h4>
     <button id="rescan-btn" disabled=@ButtonDisabled onclick="@Rescan">@ButtonText</button>
-    <button onclick="alert('This is just a button to try out if you can interact with the blazor component')">Test blazor</button>
+    <button onclick=@($"alert('Version is: {Version}')")>Check Version</button>
     <br/>
     <br/>
 
@@ -86,15 +86,25 @@
     string ButtonText = "Scan";
     bool ButtonDisabled = false;
 
+
+ 
+    string Version {
+         get {
+           return Program.GetVersion();
+    }}
     readonly TimeSpan DelayBetweenScan = TimeSpan.FromMilliseconds(50);
     
     
-   
+
 
     async Task Rescan()
     {
+
+
         try
         {
+         
+
             ButtonText = "Scanning ...";
             ButtonDisabled = true;
             _newFollowings.Clear();
@@ -104,6 +114,7 @@
             var allBookmarks = await DataManager.GetAllBookmarks();
 
             var current = 0;
+
             var tasks = new List<Task>();        
             foreach (var bookmark in allBookmarks)
             {
