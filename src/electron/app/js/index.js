@@ -1402,18 +1402,23 @@ function initSettingsPanel() {
     $('#counts-downloaded').html(stats.downloaded)
     $('#counts-watched').html(stats.watched)
 
-    let loadAllResults = appSettings.get('general.loadAllResults') || false
+    let loadAllResults = appSettings.get('general.loadAllResults')
     $('#loadAllResults').prop('checked', loadAllResults)
 
-    let enableHomeScan = appSettings.get('general.enableHomeScan') || false
+    let enableHomeScan = appSettings.get('general.enableHomeScan')
     $('#enableHomeScan').prop('checked', enableHomeScan)
 
-    let enableShowReplays = appSettings.get('general.enableShowReplays') || false
+    let enableShowReplays = appSettings.get('general.enableShowReplays') 
     $('#enableShowReplays').prop('checked', enableShowReplays)
-    let enableShowFans = appSettings.get('general.enableShowFans') || false
+    let enableShowFans = appSettings.get('general.enableShowFans')
     $('#enableShowFans').prop('checked', enableShowFans)
-    let enableShowFollowings = appSettings.get('general.enableShowFollowings') || false
+    let enableShowFollowings = appSettings.get('general.enableShowFollowings')
     $('#enableShowFollowings').prop('checked', enableShowFollowings)
+
+    let hideHighFanCount = appSettings.get('general.hide_high_fan_count')
+    $('#hide-many-fans').prop('checked', hideHighFanCount)
+    $('#hide-many-fans-count').val(appSettings.get('general.hide_high_fan_count_value'))
+
 
     let blockedCountries = appSettings.get('general.blockedCountries') || []
     $('#countryCode').empty()
@@ -1457,6 +1462,10 @@ function saveSettings() {
 
     appSettings.set('general.hide_zeroreplay_fans', (!!$('#viewmode-followers').is(':checked')))
     appSettings.set('general.hide_zeroreplay_followings', (!!$('#viewmode-followings').is(':checked')))
+    
+    appSettings.set('general.hide_high_fan_count', (!!$('#hide-many-fans').is(':checked')))
+    appSettings.set('general.hide_high_fan_count_value', $('#hide-many-fans-count').value())
+            
     appSettings.set('general.playerpath', $('#playerpath').val())
 
     appSettings.set('history.viewed_maxage', $('#cleanup-duration').val())
@@ -1470,12 +1479,12 @@ function saveSettings() {
     appSettings.set('downloads.ffmpegquality', $('#ffmpeg-transcode-setting').val())
 
     appSettings.set('general.blockedCountries', $('#countryCode').val())
-    appSettings.set('general.loadAllResults', $('#loadAllResults').is(':checked'))
+    appSettings.set('general.loadAllResults', (!!$('#loadAllResults').is(':checked')))
 
-    appSettings.set('general.enableHomeScan', $('#enableHomeScan').is(':checked'))
-    appSettings.set('general.enableShowReplays', $('#enableShowReplays').is(':checked'))
-    appSettings.set('general.enableShowFans', $('#enableShowFans').is(':checked'))
-    appSettings.set('general.enableShowFollowings', $('#enableShowFollowings').is(':checked'))
+    appSettings.set('general.enableHomeScan', (!!$('#enableHomeScan').is(':checked')))
+    appSettings.set('general.enableShowReplays', (!!$('#enableShowReplays').is(':checked')))
+    appSettings.set('general.enableShowFans', (!!$('#enableShowFans').is(':checked')))
+    appSettings.set('general.enableShowFollowings', (!!$('#enableShowFollowings').is(':checked')))
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
 }

@@ -350,6 +350,10 @@
                             <br>
                             <input type="checkbox" onChange="saveSettings()" id="viewmode-followings"> Hide followings with no replays.<br>
                             <input type="checkbox" onchange="saveSettings()" id="viewmode-followers"> Hide followers with no replays.<br>
+                            <br>
+                            <input type="checkbox" onChange="saveSettings()" id="hide-many-fans"> Hide followings with fan counts greater than:
+                            <input type="text" id="hide-many-fans-count" placeholder="5000" value="5000" style="width: 100px; text-align: right;">
+                            <br>
                             <input type="checkbox" onchange="saveSettings()" id="loadAllResults"> Load ALL possible results (WARNING: Can be slow!)
                         </li>
                     </ul>
