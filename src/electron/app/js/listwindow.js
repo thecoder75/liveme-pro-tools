@@ -250,6 +250,7 @@ function doFans () {
 }
 
 function addEntry (entry) {
+
     let prettydate = require('pretty-date')
     let sex = entry.sex < 0 ? '' : (entry.sex == 0 ? 'is-female' : 'is-male')
     let seenRaw = DataManager.wasProfileViewed(entry.uid)
@@ -297,7 +298,9 @@ function addEntry (entry) {
             $('#entry-' + user.user_info.uid).remove()
         } else if ((user.count_info.replay_count < 1) && (appSettings.get('general.hide_zeroreplay_fans') === true) && (winType === 0)) {
             $('#entry-' + user.user_info.uid).remove()
-        } else {
+        } else if ((user.count_info.follower_count > appSettings.get('general.hide_high_fan_count_value')) && (appSettings('general.hide_high_fan_count') && (winType == 0))
+            $('#entry-' + user.user_info.uid).remove()
+    } else {
             $('#entry-' + user.user_info.uid).addClass('entry-' + user.user_info.short_id)
             $('#user-' + user.user_info.uid + '-buttons a.view').html(user.count_info.replay_count + ' Replays')
             $('#user-' + user.user_info.uid + '-buttons a.fans').html(user.count_info.follower_count + ' Fans')
