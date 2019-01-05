@@ -84,7 +84,6 @@ function createWindow() {
     /**
      * Create our window definitions
      */
-    // let winposition = appSettings.get('position.mainWindow')
     let winsize = appSettings.get('size.mainWindow')
 
     mainWindow = new BrowserWindow({
