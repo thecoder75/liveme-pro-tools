@@ -1417,8 +1417,7 @@ function initSettingsPanel() {
 
     let hideHighFanCount = appSettings.get('general.hide_high_fan_count')
     $('#hide-many-fans').prop('checked', hideHighFanCount)
-    $('#hide-many-fans-count').val(appSettings.get('general.hide_high_fan_count_value'))
-
+    $('#hide-many-fans-count').val(appSettings.get('general.hide_high_fan_count_value') || 5000)
 
     let blockedCountries = appSettings.get('general.blockedCountries') || []
     $('#countryCode').empty()
@@ -1464,7 +1463,7 @@ function saveSettings() {
     appSettings.set('general.hide_zeroreplay_followings', (!!$('#viewmode-followings').is(':checked')))
     
     appSettings.set('general.hide_high_fan_count', (!!$('#hide-many-fans').is(':checked')))
-    appSettings.set('general.hide_high_fan_count_value', $('#hide-many-fans-count').value())
+    appSettings.set('general.hide_high_fan_count_value', parseInt($('#hide-many-fans-count').val()))
             
     appSettings.set('general.playerpath', $('#playerpath').val())
 
