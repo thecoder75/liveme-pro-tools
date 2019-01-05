@@ -298,14 +298,16 @@ function addEntry (entry) {
             $('#entry-' + user.user_info.uid).remove()
         } else if ((user.count_info.replay_count < 1) && (appSettings.get('general.hide_zeroreplay_fans') === true) && (winType === 0)) {
             $('#entry-' + user.user_info.uid).remove()
-        } else if ((user.count_info.follower_count > appSettings.get('general.hide_high_fan_count_value')) && (appSettings('general.hide_high_fan_count') && (winType == 0))
-            $('#entry-' + user.user_info.uid).remove()
-    } else {
+        } else {
             $('#entry-' + user.user_info.uid).addClass('entry-' + user.user_info.short_id)
             $('#user-' + user.user_info.uid + '-buttons a.view').html(user.count_info.replay_count + ' Replays')
             $('#user-' + user.user_info.uid + '-buttons a.fans').html(user.count_info.follower_count + ' Fans')
             $('#user-' + user.user_info.uid + '-buttons a.following').html('Following ' + user.count_info.following_count)
         }
+
+        if (appSettings.get('general.hide_high_fan_count') == false) return;
+        if ((user.count_info.follower_count > parseInt(appSettings.get('general.hide_high_fan_count_value'))) && (winType == 1))
+            $('#entry-' + user.user_info.uid).remove()        
     })
 }
 
