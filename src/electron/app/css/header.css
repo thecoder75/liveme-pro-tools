@@ -35,7 +35,7 @@ header a.minimize-button, header a.close-button {
     font-size: 16px;
     cursor:  pointer;
 }
-header a svg { width: 14px; height: 14px; }
+header a svg { width: 14px; height: 14px; shape-rendering: crispEdges; }
 header a.close-button { right: 0; }
 header a.minimize-button { right: 36px; }
 header a.minimize-button svg { position: relative; top: 1px; }
