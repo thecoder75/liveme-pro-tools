@@ -118,8 +118,12 @@
 <body>
     <header class="small">
         <h1></h1>
-        <a class="close-button" onClick="closeWindow()">&#x2715;</a>
-    </header>
+        <a class="close-button" onClick="closeWindow()">
+            <svg x="0px" y="0px" viewBox="0 0 10 10">
+                <polygon fill="#ffffff" points="10,1 9,0 5,4 1,0 0,1 4,5 0,9 1,10 5,6 9,10 10,9 6,5"></polygon>
+            </svg>
+        </a>
+</header>
     <main class="has-small-header" style="display: block; overflow: hidden;">
         <video id="video" controls></video>
         <a class="info" onClick="showUser()"><i class="icon icon-info"></i></a>

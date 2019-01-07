@@ -13,8 +13,16 @@
     <body>
         <header class="two-lines">
             <h1>Bookmarks</h1>
-            <a class="minimize-button" onClick="minimizeWindow()">&#x1f5d5;</a>
-            <a class="close-button" onClick="closeWindow()">&#x2715;</a>
+            <a class="minimize-button" onClick="minimizeWindow()">
+                <svg x="0px" y="0px" viewBox="0 0 10 1">
+                    <rect fill="#ffffff" width="10" height="1px"></rect>
+                </svg>
+            </a>
+            <a class="close-button" onClick="closeWindow()">
+                <svg x="0px" y="0px" viewBox="0 0 10 10">
+                    <polygon fill="#ffffff" points="10,1 9,0 5,4 1,0 0,1 4,5 0,9 1,10 5,6 9,10 10,9 6,5"></polygon>
+                </svg>
+            </a>
             <div class="buttons-row">
                 <a class="button" onClick="redrawList()"><i class="icon icon-loop2"></i></a>
                 <a class="button" onClick="hideNonRecent()"><i class="icon icon-eye"></i></a>

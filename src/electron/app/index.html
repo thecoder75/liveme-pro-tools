@@ -45,8 +45,16 @@
             <a class="button icon-only" title="Toggle Queue List" onClick="showDownloads()"><i class="icon icon-folder-download"></i></a>
         </div>
 
-        <a class="minimize-button" onClick="minimizeWindow()">&#x1f5d5;</a>
-        <a class="close-button" onClick="closeWindow()">&#x2715;</a>
+        <a class="minimize-button" onClick="minimizeWindow()">
+            <svg x="0px" y="0px" viewBox="0 0 10 1">
+                <rect fill="#ffffff" width="10" height="1px"></rect>
+            </svg>
+        </a>
+        <a class="close-button" onClick="closeWindow()">
+            <svg x="0px" y="0px" viewBox="0 0 10 10">
+                <polygon fill="#ffffff" points="10,1 9,0 5,4 1,0 0,1 4,5 0,9 1,10 5,6 9,10 10,9 6,5"></polygon>
+            </svg>
+        </a>
     </header>
 
     <div id="home">
