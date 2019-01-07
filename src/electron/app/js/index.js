@@ -397,7 +397,7 @@ function sortReplays(name) {
 }
 
 function downloadVideo(vid) {
-    $('#download-replay-' + vid).html('<i class="icon icon-download dim"></i>')
+    $('#download-replay-' + vid).html('<i class="icon icon-download bright"></i>')
     $('#download-replay-' + vid).unbind()
 
     if (appSettings.get('lamd.handle_downloads') === true) {
