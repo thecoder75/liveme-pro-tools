@@ -308,7 +308,7 @@ function showMainMenu() {
     MainAppMenu.popup(
         remote.getCurrentWindow(), {
             x: 0,
-            y: 40
+            y: 30
         }
     )
 }
