@@ -43,12 +43,13 @@ $(function() {
     }
 
     $('footer h1').html('').show()
+    $('#bookmarklist').hide()
     setTimeout(() => {
         if (appSettings.get('general.enableHomeScan') == true) {
             $('footer h1').html('Loading Home').show()
             initHome()
         }
-    }, 2000)
+    }, 2500)
 
     // Store Bookmarks, History and more every 5 minutes (300,000ms) in case of a crash or something
     setInterval(() => {
@@ -571,7 +572,10 @@ function initHome() {
     $('#home').show()
 
     checkForUpdatesOfLiveMeProTools()
-    loadBookmarkFeeds()
+    if (appSettings.get('general.enableHomeScan') == true) {
+        $('#bookmarklist').show();    
+        loadBookmarkFeeds()
+    }
 }
 
 function refreshFeedHeaders() {
