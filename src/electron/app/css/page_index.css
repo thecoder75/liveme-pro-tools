@@ -272,6 +272,12 @@
     padding: 0;
 }
 
+#settings h1 { 
+    font-size: 14pt; 
+    line-height: 30px;
+    padding: 0 16px;
+}
+
 #settings input[type=text] {
     padding: 0 4px;
     background: transparent;
@@ -280,24 +286,27 @@
 
 #settings a.close-settings {
     position: absolute;
-    top: 4px;
-    right: 24px;
+    top: 0;
+    right: 0;
     display: block;
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
+    width: 48px;
+    height: 30px;
+    line-height: 30px;
     text-align: center;
     cursor:  pointer;
 }
 #settings a.close-settings:hover { background-color: rgba(255,255,255,0.1); }
-#settings a.close-settings i.icon { font-size: 24px; line-height: 32px; vertical-align: middle; }
 
 #settings div.area {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: block;
-    height: 100vh;
     overflow-x: hidden;
     overflow-y: scroll;
-    padding: 0 0 40px;
+    padding: 20px 0 40px;
 }
 
 #settings div.area div.section {
