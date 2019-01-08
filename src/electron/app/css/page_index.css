@@ -9,9 +9,9 @@
 
     position: absolute;
     z-index: 1;
-    top: 40px;
-    left: 4px;
-    right: 4px;
+    top: 30px;
+    left: 1px;
+    right: 1px;
     bottom: 24px;
 
     background-color: rgb(32,32,32);
@@ -173,7 +173,7 @@
     position:  absolute;
     z-index: 1000;
     left: 590px;
-    top: 40px;
+    top: 30px;
     padding: 0;
 
     color: rgb(128,128,128);
@@ -185,7 +185,7 @@
     max-width: 400px;
     margin: 0;
     position:  relative;
-    background-color: rgb(64,64,64);
+    background-color: rgb(51,51,51);
     border-bottom: solid 2px rgb(32,32,32);
 }
 
@@ -335,25 +335,6 @@
     padding: 4px 40px;
 }
 
-
-/*
-
-*/
-.app-menu {
-    cursor:  pointer;
-
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    font-size: 16px;
-    display: block;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-
-    text-align: center;
-}
 
 
 

@@ -8,10 +8,10 @@ header {
     top: 0;
     left: 0;
     right: 0;
-    height: 40px;
-    line-height: 40px;
-    background-color: rgb(48,48,48);
-    padding: 0 40px;
+    height: 30px;
+    line-height: 30px;
+    background-color: rgb(51,51,51);
+    padding: 0 48px;
     -webkit-app-region: drag;
 }
 header.small { height: 24px; line-height: 24px; padding: 0 24px; }
@@ -23,38 +23,41 @@ header div.group {
 }
 header div.group a { margin-left: 8px; }
 
-header a.minimize-button, header a.close-button {
+header a.minimize-button, header a.close-button, header a.app-menu, header a.info-button {
     position: absolute;
     top: 0;
     display: block;
-    width: 40px;
-    height: 40px;
+    width: 46px;
+    height: 30px;
     text-align: center;
     text-decoration:  none;
-    color: rgba(255,255,255,0.8);
-    font-size: 16px;
-    cursor:  pointer;
+    cursor:  default;
 }
-header a svg { width: 14px; height: 14px; shape-rendering: crispEdges; }
-header a.close-button { right: 0; }
-header a.minimize-button { right: 36px; }
-header a.minimize-button svg { position: relative; top: 1px; }
 
-header.small a svg, header.two-lines a svg { width: 10px; height: 10px; }
-header.small a.minimize-button { right: 24px; }
-header.small a.minimize-button svg { top: 2px; }
+header svg { 
+    width: 11px;
+    height: 11px;
+    stroke-width: 1px; 
+    stroke: rgb(142,142,142); 
+    /* shape-rendering: crispEdges; */
+}
+
+header a.app-menu { left: 0; }
+header a.close-button { right: 0; }
+header a.minimize-button { right: 48px; }
+
 header.small a.minimize-button, header.two-lines a.minimize-button,
-header.small a.close-button, header.two-lines a.close-button {
-	width: 24px;
+header.small a.close-button, header.two-lines a.close-button, header.small a.info-button {
+	width: 32px;
 	height: 24px;
 	line-height: 24px;
 }
-header.small a.minimize-button, header.two-lines a.minimize-button { right: 24px; }
+header.small a.minimize-button, header.two-lines a.minimize-button, header.small a.info-button { right: 32px; }
 
-header a.minimize-button:hover, header a.close-button:hover { background-color: rgba(255,255,255,0.1); }
+header a.minimize-button:hover, header a.close-button:hover, header a.info-button:hover { background-color: rgba(255,255,255,0.1); }
 
 header h1 {
-    line-height: 40px;
+    line-height: 30px;
     font-size: 12pt;
     font-weight: 400;
     position: absolute;
@@ -62,7 +65,7 @@ header h1 {
     right: 48px;
     top: 0;
 }
-header.small h1 { line-height: 24px; left: 24px; right: 24px; font-size: 10pt; }
+header.small h1 { line-height: 24px; left: 64px; right: 64px; font-size: 10pt; }
 
 header.two-lines {
     height: 64px;
@@ -109,7 +112,7 @@ header.two-lines .search input[type=text] {
 .search {
     display: inline-block;
     height: 24px;
-    border-radius: 12px;
+    border-radius: 3px;
     background-color: rgb(64,64,64);
     vertical-align: middle;
     -webkit-app-region: no-drag;

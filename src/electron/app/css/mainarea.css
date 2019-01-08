@@ -5,13 +5,13 @@ main {
     display: none;
     position: absolute;
     z-index: 1;
-    top: 40px;
-    left: 4px;
-    right: 4px;
-    bottom: 4px;
+    top: 31px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
     overflow-x: hidden;
     overflow-y: scroll;
-    background-color: rgb(32,32,32);
+    background-color: rgb(30,30,30);
 }
 main.has-footer {
     bottom: 24px;
