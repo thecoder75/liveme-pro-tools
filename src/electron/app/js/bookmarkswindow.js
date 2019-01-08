@@ -101,8 +101,6 @@ function removeBookmark(uid) {
     for (let i = 0; i < list.length; i++) {
         if (list[i].uid === uid) {
             deleted[uid] = list[i]
-            console.log('Deleted:')
-            console.log(deleted[uid])
         }
     }
     $('#entry-' + uid + ' .bookmarkicon').remove()
@@ -114,9 +112,6 @@ function removeBookmark(uid) {
 
 function addBookmark(uid) {
 
-    console.log('Add:')
-    console.log(deleted[uid])
-
     DataManager.addBookmark(deleted[uid])
     $('#entry-' + uid + ' .bookmarkicon').remove()
     $('#entry-' + uid + ' td.main').append(`
@@ -127,4 +122,16 @@ function addBookmark(uid) {
 
 function hideNonRecent() {
     $('#bookmark-list tr:not(.isnew)').toggle()
+}
+
+function toggleMonitoringFlag(uid) {
+    let bookmark = DataManager.getSingleBookmark(uid)
+    bookmark.monitored = !bookmark.monitored || false;
+    DataManager.updateBookmark(bookmark)
+
+    if (bookmark.monitored)
+        $('#entry-'+uid).addClass('monitored')
+    else
+        $('#entry-'+uid).removeClass('monitored')
+
 }
