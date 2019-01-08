@@ -107,3 +107,6 @@
     color: rgb(0, 0, 0);
     font-weight: 600;
 }
+
+#bookmark-list tr td .monitor-flag { color: darkgray; }
+#bookmark-list tr.monitored td .monitor-flag { color: blue; }
