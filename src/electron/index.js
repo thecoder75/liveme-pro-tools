@@ -59,13 +59,6 @@ function createWindow() {
         })
     }
 
-    if (!appSettings.get('general.enableHomeScan')) {
-        appSettings.set('general.enableHomeScan', true)
-        appSettings.set('general.enableShowReplays', true)
-        appSettings.set('general.enableShowFans', true)
-        appSettings.set('general.enableShowFollowings', true)
-    }
-
     if (!appSettings.get('history.viewed_maxage')) {
         appSettings.set('history', {
             viewed_maxage: 1
