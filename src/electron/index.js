@@ -80,7 +80,7 @@ function createWindow() {
     let winsize = appSettings.get('size.mainWindow')
 
     mainWindow = new BrowserWindow({
-        icon: path.join(__dirname, 'appicon.ico'),
+        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
         width: winsize[0],
         height: winsize[1],
         minWidth: 1024,
@@ -103,7 +103,7 @@ function createWindow() {
     })
 
     wizardWindow = new BrowserWindow({
-        icon: path.join(__dirname, 'appicon.ico'),
+        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
         width: 520,
         height: 300,
         darkTheme: true,
@@ -249,6 +249,7 @@ ipcMain.on('downloads-parallel', (event, arg) => {
 ipcMain.on('open-home-window', (event, arg) => {
 
     var homeWindow = new BrowserWindow({
+        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
         width: 400,
         minWidth: 400,
         maxWidth: 400,
@@ -620,7 +621,7 @@ ipcMain.on('watch-replay', (event, arg) => {
                     let winsize = appSettings.get('size.playerWindow')
 
                     playerWindow = new BrowserWindow({
-                        icon: path.join(__dirname, 'appicon.ico'),
+                        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
                         width: winsize[0],
                         height: winsize[1],
                         x: winposition[0] !== -1 ? winposition[0] : null,
@@ -670,6 +671,7 @@ ipcMain.on('open-followings-window', (event, arg) => {
     let winposition = appSettings.get('position.followingsWindow') ? appSettings.get('position.followingsWindow') : [-1, -1]
 
     let win = new BrowserWindow({
+        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
         x: winposition[0] !== -1 ? winposition[0] : null,
         y: winposition[1] !== -1 ? winposition[1] : null,
         width: 420,
@@ -703,6 +705,7 @@ ipcMain.on('open-followers-window', (event, arg) => {
     let winposition = appSettings.get('position.fansWindow') ? appSettings.get('position.fansWindow') : [-1, -1]
 
     var win = new BrowserWindow({
+        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
         x: winposition[0] !== -1 ? winposition[0] : null,
         y: winposition[1] !== -1 ? winposition[1] : null,
         width: 420,
@@ -734,6 +737,7 @@ ipcMain.on('open-followers-window', (event, arg) => {
 
 ipcMain.on('read-comments', (event, arg) => {
     let win = new BrowserWindow({
+        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
         width: 400,
         minWidth: 400,
         maxWidth: 400,
@@ -765,6 +769,7 @@ ipcMain.on('open-bookmarks', (event, arg) => {
         let winsize = appSettings.get('size.bookmarksWindow')
 
         bookmarksWindow = new BrowserWindow({
+            icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
             x: winposition[0] > -1 ? winposition[0] : null,
             y: winposition[1] > -1 ? winposition[1] : null,
             width: 440,
