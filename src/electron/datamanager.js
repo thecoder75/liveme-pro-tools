@@ -93,19 +93,16 @@ class DataManager {
 
                     if (bookmarks.length == 0) return
 
-                    if (bookmarks[0].counts.changed == undefined) {
-                        // Upgrade to new format
+                    if (bookmarks[0].lamd == undefined) {
 
                         for (var i = 0; i < bookmarks.length; i++)
-                            bookmarks[i].counts = {
-                                replays: bookmarks[i].counts.replays,
-                                friends: bookmarks[i].counts.friends,
-                                followers: bookmarks[i].counts.followers,
-                                followings: bookmarks[i].counts.followings,
-                                changed: false
+                            bookmarks[i].lamd = {
+                                monitored: false,
+                                last_checked: 0
                             }
 
                         fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2), () => {})
+                        
                     }
                 }
             })
@@ -346,13 +343,23 @@ class DataManager {
      */
     addBookmark(user) {
         isBusy = true
+
+        let bookmarks_new = fs.readFileSync(bookmarksJson, 'utf8')
+
         let add = true
         for (let i = 0; i < bookmarks.length; i++) {
             if (bookmarks[i].uid === user.uid) add = false
         }
         if (add === true) {
-            bookmarks.push(user)
+            if (!user.lamd) 
+                user.lamd = {
+                    monitored: false,
+                    last_checked: 0
+                }
+            bookmarks_new.push(user)
         }
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks_new, null, 2))
+        bookmarks = bookmarks_new
         isBusy = false
     }
 
@@ -375,6 +382,7 @@ class DataManager {
                 break
             }
         }
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
         isBusy = false
     }
 
