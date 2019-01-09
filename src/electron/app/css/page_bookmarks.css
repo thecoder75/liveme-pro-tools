@@ -72,7 +72,7 @@
     display: none;
 }
 
-#bookmark-list td .bookmarkicon {
+#bookmark-list td .bookmarkicon, #bookmark-list td .monitoricon {
     position: absolute;
     top: 4px;
     right: 8px;
@@ -83,6 +83,9 @@
     z-index: 1000;
     cursor: pointer;
 }
+
+#bookmark-list td .bookmarkicon { right: 8px; }
+#bookmark-list td .monitoricon { right: 32px; }
 
 #bookmark-list td.new .flag {
     display: block;

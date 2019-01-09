@@ -72,6 +72,7 @@ function drawEntry() {
     let fClass = list[index].counts.changed ? 'new_followings' : ''
     let sex = parseInt(list[index].sex) < 0 ? '' : (parseInt(list[index].sex) == 0 ? 'female' : 'male')
     let isNew = nClass.length || fClass.length ? 'isnew' : ''
+    let monitored = list[index].lamd.monitor ? 'bright yellow' : 'dim'
 
     $('#bookmark-list').append(`
         <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew} ${nClass} ${fClass}">
@@ -79,8 +80,9 @@ function drawEntry() {
                 <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).attr('src', 'images/nouser.png')" align="bottom">
             </td>
             <td width="90%" class="main">
-                <div class="bookmarkicon" onClick="removeBookmark('${list[index].uid}')"><i class="icon icon-star-full bright yellow"></i></div>
-                <h1>${list[index].nickname}</h1>
+            <div class="bookmarkicon" onClick="removeBookmark('${list[index].uid}')"><i class="icon icon-star-full bright yellow"></i></div>
+            <div class="monitoricon" onClick="toggleMonitoringFlag('${list[index].uid}')" title="Toggle LAMD monitoring of this account."><i class="icon icon-eye ${monitored}"></i></div>
+            <h1>${list[index].nickname}</h1>
                 <h3><span>Latest Replay:</span> ${d1}</h3>
                 <h4><span>Last Viewed:</span> ${d2}</h4>
                 <div id="user-${list[index].uid}-buttons" class="buttons">
@@ -125,13 +127,14 @@ function hideNonRecent() {
 }
 
 function toggleMonitoringFlag(uid) {
+
     let bookmark = DataManager.getSingleBookmark(uid)
-    bookmark.monitored = !bookmark.monitored || false;
+    bookmark.lamd.monitor = !bookmark.lamd.monitor;
     DataManager.updateBookmark(bookmark)
 
-    if (bookmark.monitored)
-        $('#entry-'+uid).addClass('monitored')
+    if (bookmark.lamd.monitor)
+        $('#entry-'+uid+' .monitoricon i').addClass('bright').addClass('yellow').removeClass('dim')
     else
-        $('#entry-'+uid).removeClass('monitored')
+        $('#entry-'+uid+' .monitoricon i').removeClass('bright').removeClass('yellow').addClass('dim')
 
 }
