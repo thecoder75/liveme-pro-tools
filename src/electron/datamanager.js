@@ -102,7 +102,7 @@ class DataManager {
                             }
 
                         fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2), () => {})
-                        
+
                     }
                 }
             })
@@ -365,23 +365,27 @@ class DataManager {
 
     removeBookmark(user) {
         isBusy = true
-        for (let i = 0; i < bookmarks.length; i++) {
-            if (bookmarks[i].uid === user.uid) {
-                bookmarks.splice(i, 1)
+        let bookmarks_new = fs.readFileSync(bookmarksJson, 'utf8')
+
+        for (let i = 0; i < bookmarks_tmp.length; i++) {
+            if (bookmarks_tmp[i].uid === user.uid) {
+                bookbookmarks_tmpmarks.splice(i, 1)
             }
         }
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks_new, null, 2))
         isBusy = false
     }
 
     updateBookmark(user) {
         isBusy = true
-            // let add = true
+        let bookmarks_new = fs.readFileSync(bookmarksJson, 'utf8')
         for (let i = 0; i < bookmarks.length; i++) {
             if (bookmarks[i].uid === user.uid) {
                 bookmarks[i] = user
                 break
             }
         }
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks_new, null, 2))
         fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
         isBusy = false
     }
