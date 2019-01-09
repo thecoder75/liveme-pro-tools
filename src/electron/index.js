@@ -80,7 +80,7 @@ function createWindow() {
     let winsize = appSettings.get('size.mainWindow')
 
     mainWindow = new BrowserWindow({
-        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
+        icon: path.join(__dirname, 'appicon.png'),
         width: winsize[0],
         height: winsize[1],
         minWidth: 1024,
@@ -103,7 +103,7 @@ function createWindow() {
     })
 
     wizardWindow = new BrowserWindow({
-        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
+        icon: path.join(__dirname, 'appicon.png'),
         width: 520,
         height: 300,
         darkTheme: true,
@@ -249,7 +249,7 @@ ipcMain.on('downloads-parallel', (event, arg) => {
 ipcMain.on('open-home-window', (event, arg) => {
 
     var homeWindow = new BrowserWindow({
-        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
+        icon: path.join(__dirname, 'appicon.png'),
         width: 400,
         minWidth: 400,
         maxWidth: 400,
@@ -547,6 +547,35 @@ ipcMain.on('download-cancel', (event, arg) => {
                                 if (appSettings.get('downloads.deltmp')) {
                                     tsList.forEach(file => fs.unlinkSync(file.path))
                                 }
+
+                                if (appSettings.get('downloads.saveMessageHistory') == true) {
+                                    LiveMe.getChatHistoryForVideo(video.msgfile)
+                                    .then(raw => {
+                                        let t = raw.split('\n')
+                                        let dump = ''
+
+                                        for (let i = 0; i < t.length - 1; i++) {
+                                            try {
+                                                let j = JSON.parse(t[i])
+                                                let timeStamp = formatDuration(parseInt(j.timestamp) - startTime)
+                    
+                                                if (j.objectName === 'app:joinchatroommsgcontent') {
+                                                } else if (j.objectName === 'app:leavechatrrommsgcontent') {
+                                                } else if (j.objectName === 'app:praisemsgcontent') {
+                                                } else if (j.objectName === 'RC:TxtMsg') {
+                                                    dump += `[${timeStamp}] ${j.content.user.name}: ${j.content.content}`
+                                                    dump += '\n';
+                                                }
+                                            } catch (err) {
+                                                // Caught
+                                                console.log(err)
+                                            }
+                                        }
+
+                                        fs.writeFileSync(`${path}/${filename}-chat.txt`, dump)
+                                    })
+                                }
+
                                 return done()
                             })
                             .on('error', (err) => {
@@ -621,7 +650,7 @@ ipcMain.on('watch-replay', (event, arg) => {
                     let winsize = appSettings.get('size.playerWindow')
 
                     playerWindow = new BrowserWindow({
-                        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
+                        icon: path.join(__dirname, 'appicon.png'),
                         width: winsize[0],
                         height: winsize[1],
                         x: winposition[0] !== -1 ? winposition[0] : null,
@@ -671,7 +700,7 @@ ipcMain.on('open-followings-window', (event, arg) => {
     let winposition = appSettings.get('position.followingsWindow') ? appSettings.get('position.followingsWindow') : [-1, -1]
 
     let win = new BrowserWindow({
-        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
+        icon: path.join(__dirname, 'appicon.png'),
         x: winposition[0] !== -1 ? winposition[0] : null,
         y: winposition[1] !== -1 ? winposition[1] : null,
         width: 420,
@@ -705,7 +734,7 @@ ipcMain.on('open-followers-window', (event, arg) => {
     let winposition = appSettings.get('position.fansWindow') ? appSettings.get('position.fansWindow') : [-1, -1]
 
     var win = new BrowserWindow({
-        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
+        icon: path.join(__dirname, 'appicon.png'),
         x: winposition[0] !== -1 ? winposition[0] : null,
         y: winposition[1] !== -1 ? winposition[1] : null,
         width: 420,
@@ -737,7 +766,7 @@ ipcMain.on('open-followers-window', (event, arg) => {
 
 ipcMain.on('read-comments', (event, arg) => {
     let win = new BrowserWindow({
-        icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
+        icon: path.join(__dirname, 'appicon.png'),
         width: 400,
         minWidth: 400,
         maxWidth: 400,
@@ -769,7 +798,7 @@ ipcMain.on('open-bookmarks', (event, arg) => {
         let winsize = appSettings.get('size.bookmarksWindow')
 
         bookmarksWindow = new BrowserWindow({
-            icon: process.platform === 'win' ? path.join(__dirname, 'appicon.ico') :  path.join(__dirname, 'appicon.png'),
+            icon: path.join(__dirname, 'appicon.png'),
             x: winposition[0] > -1 ? winposition[0] : null,
             y: winposition[1] > -1 ? winposition[1] : null,
             width: 440,
