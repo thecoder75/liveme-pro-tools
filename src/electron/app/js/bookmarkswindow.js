@@ -72,7 +72,9 @@ function drawEntry() {
     let fClass = list[index].counts.changed ? 'new_followings' : ''
     let sex = parseInt(list[index].sex) < 0 ? '' : (parseInt(list[index].sex) == 0 ? 'female' : 'male')
     let isNew = nClass.length || fClass.length ? 'isnew' : ''
-    let monitored = list[index].lamd.monitor ? 'bright yellow' : 'dim'
+    let monitored = list[index].lamd.monitor == true ? 'bright yellow' : 'dim'
+
+    console.log(list[index].uid + ' -> ' + monitored)
 
     $('#bookmark-list').append(`
         <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew} ${nClass} ${fClass}">

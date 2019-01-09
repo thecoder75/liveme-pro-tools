@@ -97,7 +97,7 @@ class DataManager {
 
                         for (var i = 0; i < bookmarks.length; i++)
                             bookmarks[i].lamd = {
-                                monitored: false,
+                                monitor: false,
                                 last_checked: 0
                             }
 
