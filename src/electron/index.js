@@ -28,11 +28,11 @@ let menu = null
 let appSettings = require('electron-settings')
 
 function createWindow() {
-    let isFreshInstall = appSettings.get('general.fresh_install') == false
+    let isFreshInstall = appSettings.get('general.fresh_install') === undefined ? true : false
 
-    if (isFreshInstall === true) {
+    if (isFreshInstall) {
         appSettings.set('general', {
-            fresh_install: true,
+            fresh_install: false,
             playerpath: '',
             hide_zeroreplay_fans: false,
             hide_zeroreplay_followings: true,
@@ -102,26 +102,50 @@ function createWindow() {
         }
     })
 
-    wizardWindow = new BrowserWindow({
-        icon: path.join(__dirname, 'appicon.png'),
-        width: 520,
-        height: 300,
-        darkTheme: true,
-        autoHideMenuBar: false,
-        disableAutoHideCursor: true,
-        titleBarStyle: 'default',
-        resizable: false,
-        fullscreen: false,
-        maximizable: false,
-        show: false,
-        frame: false,
-        backgroundColor: 'transparent',
-        webPreferences: {
-            webSecurity: false,
-            textAreasAreResizable: false,
-            plugins: true
-        }
-    })
+    if (isFreshInstall) {
+        wizardWindow = new BrowserWindow({
+            icon: path.join(__dirname, 'appicon.png'),
+            width: 520,
+            height: 300,
+            darkTheme: true,
+            autoHideMenuBar: false,
+            disableAutoHideCursor: true,
+            titleBarStyle: 'default',
+            resizable: false,
+            fullscreen: false,
+            maximizable: false,
+            show: false,
+            frame: false,
+            backgroundColor: 'transparent',
+            webPreferences: {
+                webSecurity: false,
+                textAreasAreResizable: false,
+                plugins: true
+            }
+        })
+
+        wizardWindow.on('close', () => {
+            // Don't allow wizard to run next time
+            appSettings.set('general.fresh_install', false)
+            DataManager.enableWrites()
+            
+            wizardWindow.webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            })
+
+            if (mainWindow != null) {
+                setTimeout(() => {
+                    let pos = appSettings.get('position.mainWindow')
+                    mainWindow.setPosition(pos[0], pos[1], false)
+                    mainWindow.show()
+                }, 250)
+
+            }
+
+            wizardWindow = null
+
+        })
+    }
 
     /**
      * Configure our window contents and callbacks
@@ -155,24 +179,6 @@ function createWindow() {
                 app.quit()
             }, 500)
         })
-
-    wizardWindow.on('close', () => {
-        wizardWindow.webContents.session.clearCache(() => {
-            // Purge the cache to help avoid eating up space on the drive
-        })
-
-        if (mainWindow != null) {
-            setTimeout(() => {
-                let pos = appSettings.get('position.mainWindow')
-                mainWindow.setPosition(pos[0], pos[1], false)
-                mainWindow.show()
-            }, 250)
-
-        }
-
-        wizardWindow = null
-
-    })
 
     /**
      * Build our application menus using the templates provided
