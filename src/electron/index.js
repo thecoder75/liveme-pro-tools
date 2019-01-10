@@ -789,7 +789,13 @@ ipcMain.on('read-comments', (event, arg) => {
     win.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
     win.on('ready-to-show', () => {
-        win.showInactive()
+        if (process.platform === 'linux') {
+            // window.showInactive() doesn't work properly on Linux:
+            // https://github.com/electron/electron/issues/7259
+            win.show()
+        } else {
+            win.showInactive()
+        }
     }).loadURL(`file://${__dirname}/app/comments.html?` + arg.userid)
 })
 
