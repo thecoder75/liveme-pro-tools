@@ -56,6 +56,7 @@ If you find any bugs or would like to help add features or additional functions,
 * [lewdninja](https://github.com/lewdninja)
 * [Tashiketh](https://notabug.org/Tashiketh)
 * [monstergarden](https://notabug.org/monstergarden)
+* [mustang-sally](https://github.com/mustang-sally)
 
 ### License
 This project is licensed under the GPL-3 License - see the [LICENSE](LICENSE) file for details
