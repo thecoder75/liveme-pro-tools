@@ -1112,7 +1112,7 @@ function openReplayContextMenu(vid) {
             click: () => { copyToClipboard(vid) }
         }, {
             label: 'Copy Web URL to Clipboard',
-            click: () => { copyToClipboard(`https://www.liveme.com/live.html?videoid=${vid}`) }
+            click: () => { copyToClipboard(`https://www.liveme.com/us/v/${vid}/index.html`) }
         
         }, {
             label: 'Copy Source to Clipboard (m3u8 or flv)',
