@@ -28,12 +28,11 @@ let menu = null
 let appSettings = require('electron-settings')
 
 function createWindow() {
-    let isFreshInstall = appSettings.get('general.fresh_install')
-    isFreshInstall = isFreshInstall === undefined ? true : isFreshInstall
+    let isFreshInstall = appSettings.get('general.fresh_install') === undefined ? true : false
 
     if (isFreshInstall) {
         appSettings.set('general', {
-            fresh_install: true,
+            fresh_install: false,
             playerpath: '',
             hide_zeroreplay_fans: false,
             hide_zeroreplay_followings: true,
@@ -128,7 +127,8 @@ function createWindow() {
         wizardWindow.on('close', () => {
             // Don't allow wizard to run next time
             appSettings.set('general.fresh_install', false)
-
+            DataManager.enableWrites()
+            
             wizardWindow.webContents.session.clearCache(() => {
                 // Purge the cache to help avoid eating up space on the drive
             })
