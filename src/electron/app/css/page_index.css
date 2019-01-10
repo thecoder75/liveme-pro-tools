@@ -426,7 +426,7 @@
 }
 
 .details > div.info h1 {
-    border-radius: 20px;
+    border-radius: 3px;
     font-size: 18pt;
     line-height: 40px;
     margin: 24px 112px 24px 0;
@@ -436,10 +436,10 @@
     position: absolute;
     bottom: 4px;
     display: inline-block;
-    font-size: 12pt;
+    font-size: 11pt;
     line-height: 24px;
-    border-radius: 12px;
-    padding: 0 12px 0 12px;
+    border-radius: 3px;
+    padding: 0 6px;
     margin: 4px 16px 4px 0;
     text-align: right;
 }
@@ -449,7 +449,7 @@
 .details > div.info h2.variance { left: 508px;}
 
 .details > div.info h2 span, .details > div.info h2 span {
-    font-size: 10pt;
+    font-size: 9pt;
     font-weight: 600;
     display: inline-block;
     float: left;
