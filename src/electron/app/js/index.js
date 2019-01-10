@@ -280,7 +280,7 @@ function showMainMenu() {
             {
                 label: 'Help',
                 submenu: [{
-                        label: 'NotABug Git Home',
+                        label: 'GitHub Home',
                         click: () => shell.openExternal('https://github.com/thecoder75/liveme-pro-tools/')
                     },
                     {
