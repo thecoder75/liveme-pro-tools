@@ -35,7 +35,7 @@ table.results tbody tr.unlisted { display: none; }
 
 #list tbody td {
     line-height: 32px;
-    padding: 0 8px;
+    padding: 0 4px;
 }
 
 #list tbody tr:hover {

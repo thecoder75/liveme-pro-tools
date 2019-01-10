@@ -220,16 +220,6 @@ function createWindow() {
     }
 }
 
-let shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
-    if (mainWindow) {
-        mainWindow.focus()
-    }
-})
-if (shouldQuit) {
-    app.quit()
-    process.exit()
-}
-
 app.on('ready', () => {
     createWindow()
 })

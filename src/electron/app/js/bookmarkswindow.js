@@ -74,8 +74,6 @@ function drawEntry() {
     let isNew = nClass.length || fClass.length ? 'isnew' : ''
     let monitored = list[index].lamd.monitor == true ? 'bright yellow' : 'dim'
 
-    console.log(list[index].uid + ' -> ' + monitored)
-
     $('#bookmark-list').append(`
         <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew} ${nClass} ${fClass}">
             <td width="64">
