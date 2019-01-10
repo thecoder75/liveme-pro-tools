@@ -30,6 +30,11 @@ let appSettings = require('electron-settings')
 function createWindow() {
     let isFreshInstall = appSettings.get('general.fresh_install') === undefined ? true : false
 
+    if (appSettings.get('downloads.template')) {
+        appSettings.set('general.fresh_install', false);
+        isFreshInstall = false;
+    }
+
     if (isFreshInstall) {
         appSettings.set('general', {
             fresh_install: false,
