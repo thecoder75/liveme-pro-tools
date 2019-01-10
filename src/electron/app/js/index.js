@@ -566,30 +566,21 @@ function checkForUpdatesOfLiveMeProTools() {
 }
 
 function initHome() {
-    refreshFeedHeaders();
 
     $('#lmptUpdateNews').html('')
     $('#home').show()
 
     checkForUpdatesOfLiveMeProTools()
-    if (appSettings.get('general.enableHomeScan') == true) {
+    if ((appSettings.get('general.enableHomeScan') == true) &&
+        (
+            (appSettings.get('general.enableShowReplays') == true) || 
+            (appSettings.get('general.enableShowFans') == true) || 
+            (appSettings.get('general.enableShowFollowings') == true)
+        )
+    ){
         $('#bookmarklist').show();    
         loadBookmarkFeeds()
     }
-}
-
-function refreshFeedHeaders() {
-    let hideFollowers = appSettings.get("general.homeHideNewFollowers");
-    if (hideFollowers)
-        document.getElementById("newFollowingsHeader").style.color = "black";
-    else
-        document.getElementById("newFollowingsHeader").style.color = null;
-
-    let hideFans = appSettings.get("general.homeHideNewFans");
-    if (hideFans)
-        document.getElementById("newFansHeader").style.color = "black";
-    else
-        document.getElementById("newFansHeader").style.color = null;
 }
 
 function passwordShowToggler(e) {
@@ -969,13 +960,13 @@ function performUserLookup(uid) {
                     </th>
                     <th width="33" align="right">
                     <a href="#" class="link text-right" onClick="sortReplays('vpm')" title="Sort by Views Per Minute (desc)">VPM</a>
-                </th>
+                    </th>
                     <th width="70" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('likes')" title="Sort by Likes (desc)">Likes</a>
                     </th>
                     <th width="33" align="right">
                     <a href="#" class="link text-right" onClick="sortReplays('lpm')" title="Sort by Likes Per Minute (desc)">LPM</a>
-                </th>
+                 </th>
                     <th width="70" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('shares')" title="Sort by Shares (desc)">Shares</a>
                     </th>
