@@ -344,7 +344,10 @@ class DataManager {
     addBookmark(user) {
         isBusy = true
 
-        let bookmarks_new = JSON.parse(fs.readFileSync(bookmarksJson))
+        let bookmarks_new = []
+        if (fs.existsSync(bookmarksJson)) {
+            bookmarks_new = JSON.parse(fs.readFileSync(bookmarksJson))
+        }
 
         let add = true
         for (let i = 0; i < bookmarks_new.length; i++) {
