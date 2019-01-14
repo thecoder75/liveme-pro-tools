@@ -80,7 +80,6 @@
             "maintainer": "thecoder1975@gmail.com"
         },
         "appImage": {
-            "vendor": "The Coder",
             "category":"Network",
             "desktop": "src/electron/build/desktop.txt"
         },
