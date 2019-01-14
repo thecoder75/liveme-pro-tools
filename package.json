@@ -62,7 +62,7 @@
             "icon": "src/electron/build/appicon.png",
             "target": [
                 {
-                    "target": "AppImage",
+                    "target": "AppImage",                    
                     "arch": [
                         "x64"
                     ]
@@ -74,10 +74,15 @@
                     ]
                 }
             ],
-            "desktop": "src/electron/build/desktop.txt"
+            "desktop": "src/electron/build/desktop.txt",
             "category": "Network",
             "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
             "maintainer": "thecoder1975@gmail.com"
+        },
+        "appImage": {
+            "vendor": "The Coder",
+            "category":"Network",
+            "desktop": "src/electron/build/desktop.txt"
         },
         "win": {
             "target": [
