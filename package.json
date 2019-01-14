@@ -74,14 +74,12 @@
                     ]
                 }
             ],
-            "desktop": "src/electron/build/desktop.txt",
             "category": "Network",
             "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
             "maintainer": "thecoder1975@gmail.com"
         },
         "appImage": {
-            "category":"Network",
-            "desktop": "src/electron/build/desktop.txt"
+            "category":"Network"
         },
         "win": {
             "target": [
