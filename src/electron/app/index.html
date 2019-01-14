@@ -149,7 +149,7 @@
     </main>
     <script id="replays-list-row" type="text/x-handlebars-template">
         <tr data-id="{{vid}}" class="link {{searched}} {{seen}} user-{{userid}}">
-            <td width="400" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
+            <td width="350" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer; overflow: hidden;" onClick="playVideo('{{vid}}')" class="{{highlight}}">{{{watched}}}&nbsp;&nbsp;&nbsp;{{unlisted}}{{{isLive}}}{{title}}</td>
             <td width="130" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
             <td width="55" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right">{{length}}</td>
             <td width="75" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
@@ -158,8 +158,9 @@
             <td width="33" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="lpm">{{lpm}}</td>
             <td width="75" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
             <td width="33" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="spm">{{spm}}</td>
-            <td width="35" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
-                {{{inQueue}}}
+            <td width="85" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
+                {{{inQueue}}}&nbsp;&nbsp;
+                {{{getURL}}}
             </td>
             <td width="40" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
                 <a class="button " onClick="openReplayContextMenu('{{vid}}')" title="menu">...</a>

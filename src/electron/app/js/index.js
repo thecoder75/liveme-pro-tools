@@ -1152,6 +1152,7 @@ function _addReplayEntry(replay, wasSearched) {
 
     let isLive = replay.hlsvideosource.endsWith('flv') || replay.hlsvideosource.indexOf('liveplay') > 0 ? '<b style="color:limegreen;">[LIVE]</b>' : ''
     let inQueue = $('#download-' + replay.vid).length > 0 ? '<a id="download-replay-' + replay.vid + '" class="button icon-only"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + replay.vid + '" class="button icon-only" onClick="downloadVideo(\'' + replay.vid + '\')"">' + downloaded + '</a>'
+    let getURL = '<a title="Copy Replay URL to clipboard." class="button icon-only" onClick="copyToClipboard(\'https://www.liveme.com/us/v/'+replay.vid+'/index.html\')"><i class="icon icon-copy bright"></i></a>'
 
     const template = Handlebars.compile($('#replays-list-row').html())
 
@@ -1169,6 +1170,7 @@ function _addReplayEntry(replay, wasSearched) {
         vpm: vpm.toFixed(1),
         spm: spm.toFixed(1),
         inQueue,
+        getURL,
         source: replay.videosource || replay.hlsvideosource
     })
 
