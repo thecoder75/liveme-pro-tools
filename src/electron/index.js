@@ -41,7 +41,7 @@ function createWindow() {
             playerpath: '',
             hide_zeroreplay_fans: false,
             hide_zeroreplay_followings: true,
-            enableHomeScan: true
+            enableHomeScan: false
         })
         appSettings.set('position', {
             mainWindow: [-1, -1],
@@ -107,51 +107,6 @@ function createWindow() {
         }
     })
 
-    if (isFreshInstall) {
-        wizardWindow = new BrowserWindow({
-            icon: path.join(__dirname, 'appicon.png'),
-            width: 520,
-            height: 300,
-            darkTheme: true,
-            autoHideMenuBar: false,
-            disableAutoHideCursor: true,
-            titleBarStyle: 'default',
-            resizable: false,
-            fullscreen: false,
-            maximizable: false,
-            show: false,
-            frame: false,
-            backgroundColor: 'transparent',
-            webPreferences: {
-                webSecurity: false,
-                textAreasAreResizable: false,
-                plugins: true
-            }
-        })
-
-        wizardWindow.on('close', () => {
-            // Don't allow wizard to run next time
-            appSettings.set('general.fresh_install', false)
-            DataManager.enableWrites()
-            
-            wizardWindow.webContents.session.clearCache(() => {
-                // Purge the cache to help avoid eating up space on the drive
-            })
-
-            if (mainWindow != null) {
-                setTimeout(() => {
-                    let pos = appSettings.get('position.mainWindow')
-                    mainWindow.setPosition(pos[0], pos[1], false)
-                    mainWindow.show()
-                }, 250)
-
-            }
-
-            wizardWindow = null
-
-        })
-    }
-
     /**
      * Configure our window contents and callbacks
      */
@@ -184,7 +139,7 @@ function createWindow() {
                 app.quit()
             }, 500)
         })
-
+    
     /**
      * Build our application menus using the templates provided
      * further down.
@@ -196,7 +151,6 @@ function createWindow() {
     global.LiveMe = LiveMe
     global.DataManager = DataManager
 
-
     DataManager.loadFromDisk()
 
     setTimeout(() => {
@@ -204,20 +158,15 @@ function createWindow() {
         let ma = appSettings.get('history.viewed_maxage')
         let od = Math.floor((dt.getTime() - (ma * 86400000)) / 1000)
         DataManager.unviewProfiles(od, false)
+
     }, 250)
 
-    if (isFreshInstall) {
-        DataManager.disableWrites()
-        wizardWindow.loadURL(`file://${__dirname}/app/wizard.html`)
-        wizardWindow.show()
-    } else {
-        mainWindow.show()
-
-        let pos = appSettings.get('position.mainWindow').length > 1 ? appSettings.get('position.mainWindow') : [null, null]
-        if (pos[0] != null) {
-            mainWindow.setPosition(pos[0], pos[1], false)
-        }
+    let pos = appSettings.get('position.mainWindow').length > 1 ? appSettings.get('position.mainWindow') : [null, null]
+    if (pos[0] != null) {
+        mainWindow.setPosition(pos[0], pos[1], false)
     }
+    mainWindow.show()
+
 }
 
 app.on('ready', () => {
