@@ -541,8 +541,6 @@ function checkForUpdatesOfLiveMeProTools() {
             const rd = (new Date(data.published_at)).toLocaleDateString()
             const rv = parseFloat(data.name)
 
-            console.log(ub)
-
             if (data.prerelease !== true) {
 
                 if (rv != parseFloat(window.require('electron').remote.app.getVersion())) {
@@ -1123,8 +1121,6 @@ function openReplayContextMenu(vid) {
         }
 
     ])
-
-    console.log({ vid })
 
     replayContextMenu.popup(remote.getCurrentWindow())
 }
