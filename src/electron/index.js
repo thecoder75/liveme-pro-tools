@@ -141,7 +141,7 @@ function createWindow() {
 
             setTimeout(() => {
                 app.quit()
-            }, 500)
+            }, 250)
         })
     
     /**
