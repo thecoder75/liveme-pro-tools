@@ -718,7 +718,7 @@ function addToHome(type, bookmark) {
     switch (type) {
         case NEW_FOLLOWINGS:
             if (hideFollowers) return
-            $('#home #newfollowings').append(`
+            $('#bookmarklist #newfollowings').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
                     onClick="showFollowing('${bookmark.uid}')">
@@ -731,7 +731,7 @@ function addToHome(type, bookmark) {
             break;
         case NEW_FANS:
             if (hideFans) return
-            $('#home #newfans').append(`
+            $('#bookmarklist #newfans').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
                     onClick="showFollowers('${bookmark.uid}')">
@@ -743,7 +743,7 @@ function addToHome(type, bookmark) {
                 `)
             break;
         case NEW_REPLAYS:
-            $('#home #newreplays').append(`
+            $('#bookmarklist #newreplays').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
                     onClick="showUser('${bookmark.uid}')">
@@ -1200,11 +1200,6 @@ function _addReplayEntry(replay, wasSearched) {
 
         }
     }
-
-
-
-
-
 
     const html = template(replayData)
 
