@@ -1,6 +1,6 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.302.20190114",
+    "version": "1.303.20190115",
     "description": "Tools for Live.me video network",
     "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
@@ -104,11 +104,6 @@
             ],
             "identity": null,
             "icon": "src/electron/build/appicon.icns"
-        },
-        "publish": {
-            "provider": "github",
-            "releaseType": "draft",
-            "vPrefixedTagName": true
         }
     }
 }
