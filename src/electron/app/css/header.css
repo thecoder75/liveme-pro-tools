@@ -23,7 +23,7 @@ header div.group {
 }
 header div.group a { margin-left: 8px; }
 
-header a.minimize-button, header a.close-button, header a.app-menu, header a.info-button {
+header a.minimize-button, header a.close-button, header a.app-menu, header a.info-button, header a.download-button {
     position: absolute;
     top: 0;
     display: block;
@@ -45,16 +45,18 @@ header svg {
 header a.app-menu { left: 0; }
 header a.close-button { right: 0; }
 header a.minimize-button { right: 48px; }
+header a.download-button { right: 96px; }
 
 header.small a.minimize-button, header.two-lines a.minimize-button,
-header.small a.close-button, header.two-lines a.close-button, header.small a.info-button {
+header.small a.close-button, header.two-lines a.close-button, header.small a.info-button, header.small a.download-button {
 	width: 32px;
 	height: 24px;
 	line-height: 24px;
 }
 header.small a.minimize-button, header.two-lines a.minimize-button, header.small a.info-button { right: 32px; }
+header.small a.download-button { right: 64px; }
 
-header a.minimize-button:hover, header a.close-button:hover, header a.info-button:hover { background-color: rgba(255,255,255,0.1); }
+header a.minimize-button:hover, header a.close-button:hover, header a.info-button:hover, header a.download-button:hover { background-color: rgba(255,255,255,0.1); }
 
 header h1 {
     line-height: 30px;
