@@ -105,7 +105,7 @@ function createWindow() {
         show: false,
         backgroundColor: '#000000',
         webPreferences: {
-            webSecurity: false,
+            webSecurity: true,
             textAreasAreResizable: false,
             plugins: true
         }
