@@ -11,8 +11,10 @@
         }
     </script>
 
-    <script src="js/jquery-3.2.1.min.js"></script>
-    <script src="js/hls.js"></script>
+    <!-- jQuery v3.3.1 -->
+    <script src="js/external/jquery.min.js"></script>
+    <!-- hls.js light v0.12.2 -->
+    <script src="js/external/hls.light.min.js"></script>
 
     <script>
         const {
@@ -44,10 +46,11 @@
             video.currentTime = video.currentTime - 10
         }
 
-        document.onkeypress = (e) => {
-            e = e || window.event;
-            e.code in keyMapping ? keyMapping[e.code]() : _
-        }
+        document.addEventListener('keydown', (e) => {
+            if (e.code in keyMapping) {
+                keyMapping[e.code]();
+            }
+        });
 
         $(function() {
 
@@ -64,7 +67,7 @@
                     var hls = new Hls();
                     hls.loadSource(vid.hlsvideosource);
                     hls.attachMedia(video);
-                    hls.on(hls.Events.MANIFEST_PARSED, function() {
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         video.play();
                     });
                 });

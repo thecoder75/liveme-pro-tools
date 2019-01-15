@@ -18,6 +18,10 @@ const isDev = require('electron-is-dev')
 const ffmpeg = require('fluent-ffmpeg')
 const async = require('async')
 
+// This is required to re-enable autoplay. See:
+// https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+
 let mainWindow = null
 let playerWindow = null
 let bookmarksWindow = null
