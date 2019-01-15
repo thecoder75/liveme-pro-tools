@@ -201,6 +201,20 @@ function setupIPCListeners() {
         $('#status').html('Storing data and shutting down...')
     })
 
+    ipcRenderer.on('download-add', (event, arg) => {
+        if ($('#download-' + arg.vid).length > 0) return
+        $('#queue-list').append(`
+            <div class="download" id="download-${arg.vid}">
+                <div class="filename">${arg.vid}</div>
+                <div class="status">Queued</div>
+                <div class="progress-bar">
+                    <div class="bar" style="width: 0%"></div>
+                </div>
+                <div onClick="cancelDownload('${arg.vid}')" class="cancel">&#x2715;</div>
+            </div>
+        `)
+    })
+
     ipcRenderer.on('download-start', (event, arg) => {
         if ($('#download-' + arg.videoid).length < 1) return
 
