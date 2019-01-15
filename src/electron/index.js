@@ -232,6 +232,7 @@ ipcMain.on('open-home-window', (event, arg) => {
 
 ipcMain.on('download-replay', (event, arg) => {
         DataManager.addToQueueList(arg.videoid)
+        mainWindow.webContents.send('download-add', { vid: arg.videoid} )
         dlQueue.push(arg.videoid, err => {
             if (err) {
                 mainWindow.webContents.send('download-error', err)
