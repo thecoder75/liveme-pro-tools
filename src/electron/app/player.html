@@ -82,55 +82,34 @@
                 userid: userid
             });
         }
+
+        function downloadReplay() {
+            ipcRenderer.send('download-replay', { videoid: videoid })
+        }
     </script>
 
     <link rel="stylesheet" href="css/player.css">
 
-    <style>
-        main a {
-            position: absolute;
-            z-index: 1000;
-            top: 8px;
-            display: block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            font-size: 16px;
-            text-align: center;
-            border-radius: 20px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: rgb(255, 255, 255);
-            opacity: 0.1;
-            cursor: pointer;
-        }
-        
-        main a.info {
-            right: 16px;
-        }
-        
-        main a:hover {
-            opacity: 0.9;
-        }
-        
-        main a i.icon {
-            vertical-align: middle;
-        }
-    </style>
 </head>
 
 <body>
     <header class="small">
         <h1></h1>
+        <a class="download-button" onCLick="downloadReplay()" title="Download Replay">
+                <svg width="17px" height="17px">
+                    <path style="fill:#ffffff;fill-opacity:1;stroke-width:0.11064956;stroke-linejoin:round" d="m 15.526955,11.377596 h 4.425982 v 5.532478 h 4.011046 l -6.224037,6.224037 -6.224038,-6.224037 h 4.011047 z M 0.03601698,0.8658888 H 16.771762 l 3.181175,3.1811747 V 10.824348 H 17.739946 V 4.8769351 L 15.94189,3.0788799 H 15.526955 V 10.271101 H 4.4619991 V 3.0788799 H 2.249008 V 18.569817 H 12.34578 l 2.212991,2.212991 H 0.03601698 Z M 10.547725,3.0788799 v 5.5324777 h 2.766238 V 3.0788799 Z" />
+                </svg>
+            </a>
         <a class="info-button" onClick="showUser()" title="View User">
             <svg width="21px" height="21px">
-                    <g
-                    transform="translate(0,-286)">
-                   <path d="m 3.614857,289.40539 h 2.932456 v 0.83785 5.02709 h 0.83783 v 1.25677 H 3.614857 v -1.25677 h 0.837829 v -4.60815 H 3.614857 Z m 1.885182,-2.93249 c 0.578406,0 1.0473,0.4689 1.0473,1.0473 0,0.57844 -0.468894,1.04733 -1.0473,1.04733 -0.578432,0 -1.047326,-0.46889 -1.047326,-1.04733 0,-0.5784 0.468894,-1.0473 1.047326,-1.0473 z"
-                      style="fill:#ffffff;fill-opacity:1;stroke-width:0.05291667;stroke-linejoin:round" />
-                 </g>
+                <g
+                transform="translate(0,-286)">
+                <path d="m 3.614857,289.40539 h 2.932456 v 0.83785 5.02709 h 0.83783 v 1.25677 H 3.614857 v -1.25677 h 0.837829 v -4.60815 H 3.614857 Z m 1.885182,-2.93249 c 0.578406,0 1.0473,0.4689 1.0473,1.0473 0,0.57844 -0.468894,1.04733 -1.0473,1.04733 -0.578432,0 -1.047326,-0.46889 -1.047326,-1.04733 0,-0.5784 0.468894,-1.0473 1.047326,-1.0473 z"
+                    style="fill:#ffffff;fill-opacity:1;stroke-width:0.05291667;stroke-linejoin:round" />
+                </g>
             </svg>
         </a>
-        <a class="close-button" onClick="closeWindow()">
+        <a class="close-button" onClick="closeWindow()" title="Close Replay Player Window">
             <svg width="11px" height="11px">
                 <line x1="0" y1="0" x2="10" y2="10" />
                 <line x1="0" y1="10" x2="10" y2="0" />
