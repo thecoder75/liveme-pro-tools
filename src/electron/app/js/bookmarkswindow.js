@@ -62,7 +62,7 @@ function redrawList() {
 function drawEntry() {
     if (index === max) return
 
-    $('footer h1').html(index + ' bookmarks rendered.')
+    $('footer h1').html(index + ' of ' + max + ' bookmarks rendered.')
 
     let d1 = prettydate.format(new Date(parseInt(list[index].newest_replay) * 1000))
     let d2 = d1
