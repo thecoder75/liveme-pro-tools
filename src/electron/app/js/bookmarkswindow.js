@@ -69,7 +69,8 @@ function drawEntry() {
     if (parseInt(list[index].last_viewed) > 1514764800) d2 = prettydate.format(new Date(parseInt(list[index].last_viewed) * 1000))
 
     let nClass = parseInt(list[index].newest_replay) > parseInt(list[index].last_viewed) ? 'new_replays' : ''
-    let fClass = list[index].counts.changed ? 'new_followings' : ''
+    let fClass = list[index].counts.changed_followings ? 'new_followings ' : ''
+    fClass += list[index].counts.changed_followers ? 'new_fans ' : ''
     let sex = parseInt(list[index].sex) < 0 ? '' : (parseInt(list[index].sex) == 0 ? 'female' : 'male')
     let isNew = nClass.length || fClass.length ? 'isnew' : ''
     let monitored = list[index].lamd.monitor == true ? 'bright yellow' : 'dim'
