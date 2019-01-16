@@ -606,9 +606,7 @@ function passwordShowToggler(e) {
 }
 
 function rescanFeeds() {
-    DataManager.saveToDisk()
     cachedBookmarkFeeds = undefined
-    DataManager.loadFromDisk()
     loadBookmarkFeeds()
 }
 
@@ -797,6 +795,8 @@ async function _checkBookmark(b, dispatch) {
     b.nickname = user.user_info.uname
     b.shortid = user.user_info.short_id
 
+    DataManager.updateBookmark(b)
+
     if (b.changed_followings && (appSettings.get('general.enableShowFollowings') === true)) {
         dispatch(NEW_FOLLOWINGS, b)
     }
@@ -815,6 +815,7 @@ async function _checkBookmark(b, dispatch) {
             if (replays[i].vtime - b.newest_replay > 0) {
                 b.hasNewReplays = true
                 b.newest_replay = Math.floor(replays[0].vtime)
+                DataManager.updateBookmark(b)
 
                 if (appSettings.get('general.enableShowReplays') === true) {
                     dispatch(NEW_REPLAYS, b)
