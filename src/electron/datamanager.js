@@ -386,12 +386,16 @@ class DataManager {
     updateBookmark(user) {
         isBusy = true
         let bookmarks_new = []
+        if (fs.existsSync(bookmarksJson)) {
+            bookmarks_new = JSON.parse(fs.readFileSync(bookmarksJson))
+        }
         for (let i = 0; i < bookmarks_new.length; i++) {
             if (bookmarks_new[i].uid === user.uid) {
                 bookmarks_new[i] = user
                 break
             }
         }
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks_new, null, 2))
         bookmarks = bookmarks_new
         isBusy = false
     }
