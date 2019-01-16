@@ -110,6 +110,11 @@
     color: rgb(0, 0, 0);
     font-weight: 600;
 }
+#bookmark-list tr.new_fans a.button.fans {
+    background-color: rgba(240, 240, 0, 0.8);
+    color: rgb(0, 0, 0);
+    font-weight: 600;
+}
 
 #bookmark-list tr td .monitor-flag { color: darkgray; }
 #bookmark-list tr.monitored td .monitor-flag { color: blue; }
