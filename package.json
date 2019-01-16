@@ -1,6 +1,6 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.304.20190115",
+    "version": "1.305.20190116",
     "description": "Tools for Live.me video network",
     "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
