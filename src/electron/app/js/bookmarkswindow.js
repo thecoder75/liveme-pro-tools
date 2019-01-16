@@ -96,7 +96,7 @@ function drawEntry() {
     `)
     index++
 
-    setImmediate(() => { drawEntry() })
+    setTimeout(() => { drawEntry() }, 25)
 }
 
 function removeBookmark(uid) {
