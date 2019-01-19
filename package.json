@@ -9,9 +9,7 @@
         "url": "https://github.com/thecoder1975/liveme-pro-tools"
     },
     "scripts": {
-        "postinstall": "",
-        "start": "./node_modules/.bin/electron ./src/electron/index.js --enable-logging",
-        "dev": "NODE_ENV='development' && npm run start",
+        "start": "NODE_ENV='development' && ./node_modules/.bin/electron ./src/electron/index.js --enable-logging",
         "release": "build -w && build -l && build -m",
         "release-win": "build -w",
         "release-linux": "build -l",
@@ -37,8 +35,8 @@
         "tar-fs": "^1.16.2"
     },
     "devDependencies": {
-        "electron": "^4.0.1",
-        "electron-builder": "^19.56.0",
+        "electron": "^3.1.1",
+        "electron-builder": "^19.56.2",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
         "eslint-plugin-import": "^2.11.0",
