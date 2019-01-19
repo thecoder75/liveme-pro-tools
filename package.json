@@ -37,7 +37,7 @@
         "tar-fs": "^1.16.2"
     },
     "devDependencies": {
-        "electron": "^3.1.0",
+        "electron": "^4.0.1",
         "electron-builder": "^19.56.0",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
@@ -62,7 +62,7 @@
             "icon": "src/electron/build/appicon.png",
             "target": [
                 {
-                    "target": "AppImage",                    
+                    "target": "AppImage",
                     "arch": [
                         "x64"
                     ]
@@ -79,7 +79,7 @@
             "maintainer": "thecoder1975@gmail.com"
         },
         "appImage": {
-            "category":"Network"
+            "category": "Network"
         },
         "win": {
             "target": [
