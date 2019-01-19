@@ -699,6 +699,11 @@ function _scanThread(id) {
             // Iterate over bookmarks but start each recursive call with a delay.
             // Each bookmark entry scan is delayed by 50 ms.
             setTimeout(() => _scanThread(id + 1), 50)
+        } else {
+            // We need to save the bookmarks once the scan is complete so they're updated
+            setTimeout(() => {
+                DataManager.saveToDisk()
+            }, 1000)
         }
 
         // UI
