@@ -131,7 +131,8 @@ function toggleMonitoringFlag(uid) {
     let bookmark = DataManager.getSingleBookmark(uid)
     bookmark.lamd.monitor = !bookmark.lamd.monitor;
     DataManager.updateBookmark(bookmark)
-
+    DataManager.saveToDisk()
+    
     if (bookmark.lamd.monitor)
         $('#entry-'+uid+' .monitoricon i').addClass('bright').addClass('yellow').removeClass('dim')
     else
