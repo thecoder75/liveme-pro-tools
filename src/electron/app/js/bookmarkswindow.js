@@ -60,9 +60,8 @@ function redrawList() {
 }
 
 function drawEntry() {
-    if (index === max) return
-
     $('footer h1').html(index + ' of ' + max + ' bookmarks rendered.')
+    if (index === max) return
 
     let d1 = prettydate.format(new Date(parseInt(list[index].newest_replay) * 1000))
     let d2 = d1
@@ -73,7 +72,7 @@ function drawEntry() {
     fClass += list[index].counts.changed_followers ? 'new_fans ' : ''
     let sex = parseInt(list[index].sex) < 0 ? '' : (parseInt(list[index].sex) == 0 ? 'female' : 'male')
     let isNew = nClass.length || fClass.length ? 'isnew' : ''
-    let monitored = list[index].lamd.monitor == true ? 'bright yellow' : 'dim'
+    let monitored = list[index].lamd == undefined ? 'dim' : list[index].lamd.monitor == true ? 'bright yellow' : 'dim'
 
     $('#bookmark-list').append(`
         <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew} ${nClass} ${fClass}">
