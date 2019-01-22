@@ -31,9 +31,10 @@ To download the latest prebuilt versions, [click here](https://github.com/thecod
 - macOS v10.11 or higher (64-bit only!)
 - Windows 7 or higher (64-bit!)
 
-** This project no longer supports 32-bit operating systems.**
+### 32-bit versions???
+**Since we've moved to using newer technologies, keeping support for 32-bit versions has been harder to maintain now so we dropped building them January 1st, 2019.**
 
-We are planning on migrating most of the core over to the .NET/MONO project for better control, flexability and additional functionality in the future.  We found that 32-bit versions will be harder to maintain or build though.
+You are more than welcome to download the source and build your own 32-bit version, but support for issues will be limited.
 
 ### FFMPEG Required?
 FFMPEG is required to combined the downloaded playlist chunks and if transcoding of the downloaded replays are preferred.  There is no way at this time to download replays without having FFMPEG installed.
