@@ -17,6 +17,7 @@ const LiveMe = new LivemeAPI({})
 const isDev = require('electron-is-dev')
 const ffmpeg = require('fluent-ffmpeg')
 const async = require('async')
+const concat = require('concat-files')
 
 // This is required to re-enable autoplay. See:
 // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
@@ -411,12 +412,12 @@ ipcMain.on('download-cancel', (event, arg) => {
                 break
 
             default: // None
-                ffmpegOpts = [
-                    '-c copy',
-                    '-bsf:a aac_adtstoasc',
-                    '-vsync 2',
-                    '-movflags faststart'
-                ]
+                /*
+
+                        FFMPEG removed for default basic concat and replaced with CONCAT-FILES module
+                        allowing the dependancy on FFMPEG to be optional instead of required.
+
+                */
                 break
         }
 
@@ -485,74 +486,101 @@ ipcMain.on('download-cancel', (event, arg) => {
                     }, () => {
                         // Chunks downloaded
                         let cfile = path + '/lpt_temp/' + video.vid + '.txt'
-                        ffmpeg()
-                            .on('start', c => {
-                                mainWindow.webContents.send('download-progress', {
-                                    videoid: task,
-                                    state: `Converting to MP4 file, please wait..`,
-                                    percent: 0
-                                })
+
+                        if (parseInt(appSettings.get('downloads.ffmpegquality')) == 0) {
+                            // Just combined the chunks into a single TS file
+                            let concatFile = fs.readFileSync(cfile, 'utf-8')
+
+                            mainWindow.webContents.send('download-progress', {
+                                videoid: task,
+                                state: `Combining chunks, please wait...`,
+                                percent: 0
                             })
-                            .on('progress', function(progress) {
-                                // FFMPEG doesn't always have this >.<
-                                let p = progress.percent
-                                if (p > 100) p = 100
-                                mainWindow.webContents.send('download-progress', {
-                                    videoid: task,
-                                    state: `Combining and converting to MP4 file, please wait...`,
-                                    percent: p
-                                })
-                            })
-                            .on('end', (stdout, stderr) => {
-                                DataManager.addDownloaded(video.vid)
-                                if (appSettings.get('downloads.deltmp')) {
-                                    tsList.forEach(file => fs.unlinkSync(file.path))
-                                }
 
-                                if (appSettings.get('downloads.saveMessageHistory') == true) {
-                                    LiveMe.getChatHistoryForVideo(video.msgfile)
-                                    .then(raw => {
-                                        let t = raw.split('\n')
-                                        let dump = ''
-
-                                        for (let i = 0; i < t.length - 1; i++) {
-                                            try {
-                                                let j = JSON.parse(t[i])
-                                                let timeStamp = formatDuration(parseInt(j.timestamp) - startTime)
-                    
-                                                if (j.objectName === 'app:joinchatroommsgcontent') {
-                                                } else if (j.objectName === 'app:leavechatrrommsgcontent') {
-                                                } else if (j.objectName === 'app:praisemsgcontent') {
-                                                } else if (j.objectName === 'RC:TxtMsg') {
-                                                    dump += `[${timeStamp}] ${j.content.user.name}: ${j.content.content}`
-                                                    dump += '\n';
-                                                }
-                                            } catch (err) {
-                                                // Caught
-                                                console.log(err)
-                                            }
-                                        }
-
-                                        fs.writeFileSync(`${path}/${filename}-chat.txt`, dump)
+                            concat(concatFile.split('\n'), `${path}/${filename}`, (err) => {
+                                if (err) {
+                                    mainWindow.webContents.send('download-progress', {
+                                        videoid: task,
+                                        state: `Error combining chunks`,
+                                        percent: 100
                                     })
+                                    fs.writeFileSync(`${path}/${filename}-error.log`, err)
+                                    return done({ videoid: task, error: err })
+                                }
+                            })
+
+                        } else {
+                            ffmpeg()
+                                .on('start', c => {
+                                    mainWindow.webContents.send('download-progress', {
+                                        videoid: task,
+                                        state: `Converting to MP4 file, please wait..`,
+                                        percent: 0
+                                    })
+                                })
+                                .on('progress', function(progress) {
+                                    // FFMPEG doesn't always have this >.<
+                                    let p = progress.percent
+                                    if (p > 100) p = 100
+                                    mainWindow.webContents.send('download-progress', {
+                                        videoid: task,
+                                        state: `Combining and converting to MP4 file, please wait...`,
+                                        percent: p
+                                    })
+                                })
+                                .on('end', (stdout, stderr) => {
+                                    DataManager.addDownloaded(video.vid)
+                                    if (appSettings.get('downloads.deltmp')) {
+                                        tsList.forEach(file => fs.unlinkSync(file.path))
+                                    }
+                                    return done()
+                                })
+                                .on('error', (err) => {
+                                    fs.writeFileSync(`${path}/${filename}-error.log`, err)
+                                    return done({ videoid: task, error: err })
+                                })
+                                .input(cfile.replace(/\\/g, '/'))
+                                .inputFormat('concat')
+                                .output(`${path}/${filename}`)
+                                .inputOptions([
+                                    '-safe 0',
+                                    '-f concat'
+                                ])
+                                .outputOptions(ffmpegOpts)
+                                .run()
+                        }
+
+                        if (appSettings.get('downloads.saveMessageHistory') == true) {
+                            LiveMe.getChatHistoryForVideo(video.msgfile)
+                            .then(raw => {
+                                let t = raw.split('\n')
+                                let dump = ''
+
+                                for (let i = 0; i < t.length - 1; i++) {
+                                    try {
+                                        let j = JSON.parse(t[i])
+                                        let timeStamp = formatDuration(parseInt(j.timestamp) - startTime)
+            
+                                        if (j.objectName === 'app:joinchatroommsgcontent') {
+                                        } else if (j.objectName === 'app:leavechatrrommsgcontent') {
+                                        } else if (j.objectName === 'app:praisemsgcontent') {
+                                        } else if (j.objectName === 'RC:TxtMsg') {
+                                            dump += `[${timeStamp}] ${j.content.user.name}: ${j.content.content}`
+                                            dump += '\n';
+                                        }
+                                    } catch (err) {
+                                        // Caught
+                                        console.log(err)
+                                    }
                                 }
 
+                                fs.writeFileSync(`${path}/${filename}-chat.txt`, dump)
                                 return done()
                             })
-                            .on('error', (err) => {
-                                fs.writeFileSync(`${path}/${filename}-error.log`, err)
-                                return done({ videoid: task, error: err })
-                            })
-                            .input(cfile.replace(/\\/g, '/'))
-                            .inputFormat('concat')
-                            .output(`${path}/${filename}`)
-                            .inputOptions([
-                                '-safe 0',
-                                '-f concat'
-                            ])
-                            .outputOptions(ffmpegOpts)
-                            .run()
+                        }
+
                     })
+                        
                 })
                 break
             case 'ffmpeg':
