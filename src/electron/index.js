@@ -288,7 +288,7 @@ ipcMain.on('download-cancel', (event, arg) => {
         filename = filename.replace(/[/\\?%*:|"<>]/g, '-')
         filename = filename.replace(/([^a-z0-9\s]+)/gi, '-')
         filename = filename.replace(/[\u{0080}-\u{FFFF}]/gu, '')
-        filename += '.mp4'
+        
         video._filename = filename
 
         mainWindow.webContents.send('download-start', {
@@ -418,6 +418,7 @@ ipcMain.on('download-cancel', (event, arg) => {
                         allowing the dependancy on FFMPEG to be optional instead of required.
 
                 */
+                ffmpegOpts = []
                 break
         }
 
@@ -497,7 +498,7 @@ ipcMain.on('download-cancel', (event, arg) => {
                                 percent: 0
                             })
 
-                            concat(concatFile.split('\n'), `${path}/${filename}`, (err) => {
+                            concat(concatFile.split('\n'), `${path}/${filename}.ts`, (err) => {
                                 if (err) {
                                     mainWindow.webContents.send('download-progress', {
                                         videoid: task,
@@ -541,7 +542,7 @@ ipcMain.on('download-cancel', (event, arg) => {
                                 })
                                 .input(cfile.replace(/\\/g, '/'))
                                 .inputFormat('concat')
-                                .output(`${path}/${filename}`)
+                                .output(`${path}/${filename}.mp4`)
                                 .inputOptions([
                                     '-safe 0',
                                     '-f concat'
