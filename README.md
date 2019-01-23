@@ -36,8 +36,12 @@ To download the latest prebuilt versions, [click here](https://github.com/thecod
 
 You are more than welcome to download the source and build your own 32-bit version, but support for issues will be limited.
 
-### FFMPEG Required?
-FFMPEG is required to combined the downloaded playlist chunks and if transcoding of the downloaded replays are preferred.  There is no way at this time to download replays without having FFMPEG installed.
+### FFMPEG No Longer Required?
+Dependancy on FFMPEG has been removed.  You can choose to use a basic built-in concat system now to join the chunks downloaded without needing to have FFMPEG installed on your computer.  
+
+If you wish to transcode the downloads, then you will need to have FFMPEG installed.
+
+~~FFMPEG is required to combined the downloaded playlist chunks and if transcoding of the downloaded replays are preferred.  There is no way at this time to download replays without having FFMPEG installed.~~
 
 We are looking into building/rewriting the chunk downloader and removing the dependancy on FFMPEG in future versions.
 
