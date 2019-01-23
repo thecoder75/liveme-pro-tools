@@ -491,6 +491,14 @@ ipcMain.on('download-cancel', (event, arg) => {
                         if (parseInt(appSettings.get('downloads.ffmpegquality')) == 0) {
                             // Just combined the chunks into a single TS file
                             let concatFile = fs.readFileSync(cfile, 'utf-8')
+                            let cList = []
+
+                            concatFile.split('\n').forEach(line => {
+                                let l = line.split(' ')
+                                
+                                if (l.length > 1)
+                                    cList.push(`${path}/lpt_temp/${l[1]}`)
+                            })
 
                             mainWindow.webContents.send('download-progress', {
                                 videoid: task,
@@ -498,7 +506,7 @@ ipcMain.on('download-cancel', (event, arg) => {
                                 percent: 0
                             })
 
-                            concat(concatFile.split('\n'), `${path}/${filename}.ts`, (err) => {
+                            concat(cList, `${path}/${filename}.ts`, (err) => {
                                 if (err) {
                                     mainWindow.webContents.send('download-progress', {
                                         videoid: task,
@@ -510,6 +518,7 @@ ipcMain.on('download-cancel', (event, arg) => {
                                 }
                             })
 
+                            return done()
                         } else {
                             ffmpeg()
                                 .on('start', c => {
