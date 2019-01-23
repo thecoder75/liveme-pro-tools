@@ -325,7 +325,6 @@
             </div>
             <div class="section">
                 <ul>
-
                     <li style="padding-bottom: 5px;">
                         <h4 class="titleColor">FFMPEG Settings</h4>
                     </li>
@@ -381,6 +380,29 @@
 
                 <div class="section">
                     <ul>
+                        <li style="padding-bottom: 5px;"><h4 class="titleColor">LAMD Options</h4></li>
+                        <li style="line-height: 30px;">
+                            When you install LAMD and run it, it will read and use the options below. <br>
+                            <br>
+                            Scan every 
+                            <div class="select" style="margin-left: 8px; margin-right: 8px; vertical-align: middle; height: 26px; border: solid 1px rgb(80,80,80)">
+                                <select id="lamd-cycletime">
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">hour</option>
+                                    <option value="120">2 hours</option>
+                                    <option value="180">3 hours</option>
+                                    <option value="360">6 hours</option>
+                                </select>
+                            </div>
+                            for new replays.<br>
+                            <br>
+                            
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <ul>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Tracking</h4></li>
                         <li>
                             LiveMe Pro Tools tracks all viewed profiles, replays and downloads.  This feature cannot be disabled.
@@ -391,9 +413,9 @@
                 <div class="section">
                     <ul>
                         <li style="padding-bottom: 5px;"><h4 class="titleColor">Viewed Profiles Auto Clear</h4></li>
-                        <li style="line-height: 26px;">
+                        <li style="line-height: 30px;">
                             Clear viewed profiles that were last seen more than
-                            <div class="select" style="vertical-align: middle; height: 26px;">
+                            <div class="select" style="margin-left: 8px; margin-right: 8px; vertical-align: middle; height: 26px; border: solid 1px rgb(80,80,80)">
                                 <select id="cleanup-duration">
                                     <option value="1">1 Day</option>
                                     <option value="2">2 Days</option>
