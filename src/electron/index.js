@@ -74,6 +74,12 @@ function createWindow() {
         })
     }
 
+    if (!appSettings.get('lamd')) {
+        appSettings.set('lamd', {
+            cycletime: 30
+        })
+    }
+
     let test = appSettings.get('position')
     if (test.mainWindow[1] === undefined) {
         appSettings.set('position', {
