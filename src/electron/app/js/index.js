@@ -1440,6 +1440,8 @@ function initSettingsPanel() {
         $('#countryCode').append(`<option value="${cclist[i][1]}" ${isblocked}>${cclist[i][0]}</option>`)
     }
 
+    $('#lamd-cycletime').val(appSettings.get('lamd.cycletime') || 60)
+
 }
 
 function saveLoginManually() {
@@ -1492,6 +1494,8 @@ function saveSettings() {
     appSettings.set('general.enableShowReplays', (!!$('#enableShowReplays').is(':checked')))
     appSettings.set('general.enableShowFans', (!!$('#enableShowFans').is(':checked')))
     appSettings.set('general.enableShowFollowings', (!!$('#enableShowFollowings').is(':checked')))
+
+    appSettings.set('lamd.cycletime', $('#lamd-cycletime').val())
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
 }
