@@ -26,6 +26,7 @@
         "fluent-ffmpeg": "^2.1.2",
         "format-duration": "^1.0.0",
         "hlsdownloader": "^2.1.0",
+        "isbinaryfile": "^4.0.0",
         "node-fetch": "^2.3.0",
         "pretty-date": "^0.2.0",
         "ps-node": "^0.1.6",
@@ -37,7 +38,6 @@
     },
     "devDependencies": {
         "electron": "^3.1.1",
-        "electron-builder": "^20.38.5",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
         "eslint-plugin-import": "^2.11.0",
