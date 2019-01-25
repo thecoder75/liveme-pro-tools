@@ -104,13 +104,7 @@
     background-color: rgba(0, 240, 0, 0.1);
 }
 
-#bookmark-list tr.new_replays a.button.view,
-#bookmark-list tr.new_followings a.button.following {
-    background-color: rgba(240, 240, 0, 0.8);
-    color: rgb(0, 0, 0);
-    font-weight: 600;
-}
-#bookmark-list tr.new_fans a.button.fans {
+#bookmark-list tr.new_replays a.button.view {
     background-color: rgba(240, 240, 0, 0.8);
     color: rgb(0, 0, 0);
     font-weight: 600;

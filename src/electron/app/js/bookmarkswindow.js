@@ -67,15 +67,12 @@ function drawEntry() {
     let d2 = d1
     if (parseInt(list[index].last_viewed) > 1514764800) d2 = prettydate.format(new Date(parseInt(list[index].last_viewed) * 1000))
 
-    let nClass = parseInt(list[index].newest_replay) > parseInt(list[index].last_viewed) ? 'new_replays' : ''
-    let fClass = list[index].counts.changed_followings ? 'new_followings ' : ''
-    fClass += list[index].counts.changed_followers ? 'new_fans ' : ''
     let sex = parseInt(list[index].sex) < 0 ? '' : (parseInt(list[index].sex) == 0 ? 'female' : 'male')
-    let isNew = nClass.length || fClass.length ? 'isnew' : ''
+    let isNew = parseInt(list[index].newest_replay) > parseInt(list[index].last_viewed) ? 'new' : ''
     let monitored = list[index].lamd == undefined ? 'dim' : list[index].lamd.monitor == true ? 'bright yellow' : 'dim'
 
     $('#bookmark-list').append(`
-        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew} ${nClass} ${fClass}">
+        <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew}">
             <td width="64">
                 <img src="${list[index].face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).attr('src', 'images/nouser.png')" align="bottom">
             </td>
