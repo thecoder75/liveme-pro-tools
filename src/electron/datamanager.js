@@ -356,7 +356,7 @@ class DataManager {
         if (add === true) {
             if (user.lamd == undefined) 
                 user.lamd = {
-                    monitored: false,
+                    monitor: false,
                     last_checked: 0
                 }
                 bookmarks_new.push(user)
