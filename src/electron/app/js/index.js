@@ -415,23 +415,20 @@ function downloadVideo(vid) {
     $('#download-replay-' + vid).html('<i class="icon icon-download bright"></i>')
     $('#download-replay-' + vid).unbind()
 
-    if (appSettings.get('lamd.handle_downloads') === true) {
-        AddReplayToLAMD(vid)
-    } else {
-        ipcRenderer.send('download-replay', { videoid: vid })
+    ipcRenderer.send('download-replay', { videoid: vid })
 
-        if ($('#download-' + vid).length > 0) return
-        $('#queue-list').append(`
-            <div class="download" id="download-${vid}">
-                <div class="filename">${vid}</div>
-                <div class="status">Queued</div>
-                <div class="progress-bar">
-                    <div class="bar" style="width: 0%"></div>
-                </div>
-                <div onClick="cancelDownload('${vid}')" class="cancel">&#x2715;</div>
+    if ($('#download-' + vid).length > 0) return
+    $('#queue-list').append(`
+        <div class="download" id="download-${vid}">
+            <div class="filename">${vid}</div>
+            <div class="status">Queued</div>
+            <div class="progress-bar">
+                <div class="bar" style="width: 0%"></div>
             </div>
-        `)
-    }
+            <div onClick="cancelDownload('${vid}')" class="cancel">&#x2715;</div>
+        </div>
+    `)
+
 }
 
 function cancelDownload(i) {
