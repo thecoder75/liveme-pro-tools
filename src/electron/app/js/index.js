@@ -738,7 +738,7 @@ function addToHome(type, bookmark) {
                     onClick="showFollowing('${bookmark.uid}')">
                     <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
                     <h1>${bookmark.nickname}</h1>
-                    <h3>User is following more accounts now.</h3>
+                    <h3>User is following ${bookmark.counts.new_following} more accounts now.</h3>
                     <h2>${type}</h2>
                 </div>
         `)
@@ -751,7 +751,7 @@ function addToHome(type, bookmark) {
                     onClick="showFollowers('${bookmark.uid}')">
                     <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
                     <h1>${bookmark.nickname}</h1>
-                    <h3>User has more fans now.</h3>
+                    <h3>User has ${bookmark.counts.new_followers} more fans now.</h3>
                     <h2>${type}</h2>
                 </div>
                 `)
@@ -786,6 +786,11 @@ async function _checkBookmark(b, dispatch) {
 
     b.changed_followings = b.counts.followings != user.count_info.following_count
     b.changed_followers = b.counts.followers != user.count_info.follower_count
+
+    // We now store how much has changed on the counts
+    b.counts.new_following = user.count_info.following_count - b.counts.followings
+    b.counts.new_followers = user.count_info.follower_count - b.counts.followers
+    b.counts.new_replays = user.count_info.video_count - b.counts.replays
 
     b.counts.replays = user.count_info.video_count
     b.counts.friends = user.count_info.friends_count
