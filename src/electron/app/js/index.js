@@ -731,7 +731,6 @@ function addToHome(type, bookmark) {
 
     switch (type) {
         case NEW_FOLLOWINGS:
-            if (hideFollowers) return
             $('#bookmarklist #newfollowings').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -744,7 +743,6 @@ function addToHome(type, bookmark) {
         `)
             break;
         case NEW_FANS:
-            if (hideFans) return
             $('#bookmarklist #newfans').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -763,7 +761,7 @@ function addToHome(type, bookmark) {
                     onClick="showUser('${bookmark.uid}')">
                     <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
                     <h1>${bookmark.nickname}</h1>
-                    <h3>User has new replays.</h3>
+                    <h3>User has ${bookmark.counts.new_replays} new replay(s).</h3>
                     <h2>${type}</h2>
                 </div>
                 `)
