@@ -77,7 +77,8 @@ function createWindow() {
 
     if (!appSettings.get('lamd')) {
         appSettings.set('lamd', {
-            cycletime: 30
+            cycletime: 60,
+            concurrent: 3
         })
     }
 

@@ -1441,6 +1441,7 @@ function initSettingsPanel() {
     }
 
     $('#lamd-cycletime').val(appSettings.get('lamd.cycletime') || 60)
+    $('#lamd-concurrency').val(appSettings.get('lamd.concurrency') || 3)
 
 }
 
@@ -1496,6 +1497,7 @@ function saveSettings() {
     appSettings.set('general.enableShowFollowings', (!!$('#enableShowFollowings').is(':checked')))
 
     appSettings.set('lamd.cycletime', $('#lamd-cycletime').val())
+    appSettings.set('lamd.concurrency', $('#lamd-concurrency').val())
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
 }

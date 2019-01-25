@@ -336,7 +336,7 @@
                         <label for="ffmpeg-transcode-setting" onClick="saveSettings()">Transcode Setting:
                             <div class="select" style="margin-left: 32px; vertical-align: middle; height: 26px; border: solid 1px rgb(80,80,80)">
                                 <select id="ffmpeg-transcode-setting">
-                                    <option value="0">No transcoding - Combine chunks only!</option>
+                                    <option value="0">No transcoding</option>
                                     <option value="1">H264 Fast</option>
                                     <option value="2">H264 Best</option>
                                     <option value="3">H264 Best (Intel Hardware Accelerated)</option>
@@ -396,7 +396,10 @@
                             </div>
                             for new replays.<br>
                             <br>
-
+                            Limit to
+                            <input type="text" id="lamd-concurrency" value="3" maxlength="3" style="width: 48px; text-align: right; margin-left: 4px; margin-right: 4px;" onBlur="saveSettings()" onFocus="saveSettings()">
+                            replay download at a time.
+                            <br>
                         </li>
                     </ul>
                 </div>
