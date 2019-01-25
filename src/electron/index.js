@@ -413,13 +413,12 @@ ipcMain.on('download-cancel', (event, arg) => {
                 break
 
             default: // None
-                /*
-
-                        FFMPEG removed for default basic concat and replaced with CONCAT-FILES module
-                        allowing the dependancy on FFMPEG to be optional instead of required.
-
-                */
-                ffmpegOpts = []
+                ffmpegOpts = [
+                    '-c copy',
+                    '-bsf:a aac_adtstoasc',
+                    '-vsync 2',
+                    '-movflags faststart'
+                ]
                 break
         }
 
