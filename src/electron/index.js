@@ -414,7 +414,7 @@ ipcMain.on('download-cancel', (event, arg) => {
 
             default: // None
                 ffmpegOpts = [
-                    '-c copy',
+                    '-c:a copy',
                     '-bsf:a aac_adtstoasc',
                     '-vsync 2',
                     '-movflags faststart'
@@ -594,9 +594,11 @@ ipcMain.on('download-cancel', (event, arg) => {
                 })
                 break
             case 'ffmpeg':
+                let outFile = path + '/' + filename + '.mp4'
+
                 ffmpeg(video.hlsvideosource)
                     .outputOptions(ffmpegOpts)
-                    .output(path + '/' + filename)
+                    .output(process.platform == 'win32' ? outFile.replace(/\\/g, '/') : outFile)
                     .on('end', function(stdout, stderr) {
                         DataManager.addDownloaded(video.vid)
                         return done()
