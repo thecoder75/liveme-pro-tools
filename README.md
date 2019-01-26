@@ -3,6 +3,8 @@
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
 ### Support/Assistance/Reporting Issues
+![Discord Chat](https://img.shields.io/discord/340106715334836224.svg)
+![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)
 I've re-enabled the Issue Tracker here.  Please use it **ONLY** to report bugs or feature requests.
 
 For help in general use and general questions, please use the [Discord chat room](https://discord.gg/A5p2aF4).  There are now many on there who provide help and also work on this now.
@@ -16,7 +18,7 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - See and navigate user's followers and followings
 - Watch and download replays
 - Allows downloading of replays using FFMPEG
-- Supports [LAMD](https://notabug.org/thecoder75/lamd)
+- Supports [LAMD](https://github.com/thecoder75/lamd)
 
 ### Building LiveMe Pro Tools
 
