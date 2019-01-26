@@ -796,19 +796,19 @@ async function _checkBookmark(b, dispatch) {
     b.changed_followers = b.counts.followers != user.count_info.follower_count
 
     // We now store how much has changed on the counts
-    b.counts.new_following = user.count_info.following_count - b.counts.followings
-    b.counts.new_followers = user.count_info.follower_count - b.counts.followers
-    b.counts.new_replays = user.count_info.video_count - b.counts.replays
+    b.counts.new_following = parseInt(user.count_info.following_count) - parseInt(b.counts.followings)
+    b.counts.new_followers = parseInt(user.count_info.follower_count) - parseInt(b.counts.followers)
+    b.counts.new_replays = parseInt(user.count_info.video_count) - parseInt(b.counts.replays)
 
-    b.counts.replays = user.count_info.video_count
-    b.counts.friends = user.count_info.friends_count
-    b.counts.followers = user.count_info.follower_count
-    b.counts.followings = user.count_info.following_count
+    b.counts.replays = parseInt(user.count_info.video_count)
+    b.counts.friends = parseInt(user.count_info.friends_count)
+    b.counts.followers = parseInt(user.count_info.follower_count)
+    b.counts.followings = parseInt(user.count_info.following_count)
     b.signature = user.user_info.usign
     b.sex = user.user_info.sex
     b.face = user.user_info.face
     b.nickname = user.user_info.uname
-    b.shortid = user.user_info.short_id
+    b.shortid = parseInt(user.user_info.short_id)
 
     DataManager.updateBookmark(b)
 
