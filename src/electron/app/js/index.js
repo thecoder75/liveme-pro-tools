@@ -1039,19 +1039,19 @@ function performUserLookup(uid) {
 
             currentUser = {
                 uid: user.user_info.uid,
-                shortid: user.user_info.short_id,
+                shortid: parseInt(user.user_info.short_id),
                 signature: user.user_info.usign,
                 sex: sex,
                 face: user.user_info.face,
                 nickname: user.user_info.uname,
                 counts: {
                     changed: false,
-                    replays: user.count_info.video_count,
-                    friends: user.count_info.friends_count,
-                    followers: user.count_info.follower_count,
-                    followings: user.count_info.following_count
+                    replays: parseInt(user.count_info.video_count),
+                    friends: parseInt(user.count_info.friends_count),
+                    followers: parseInt(user.count_info.follower_count),
+                    followings: parseInt(user.count_info.following_count)
                 },
-                last_viewed: Math.floor((new Date()).getTime() / 1000),
+                last_viewed: parseInt(Math.floor((new Date()).getTime() / 1000)),
                 newest_replay: 0
             }
 
