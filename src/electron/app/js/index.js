@@ -728,12 +728,15 @@ function addToHome(type, bookmark) {
 
     let hideFollowers = appSettings.get("general.homeHideNewFollowers")
     let hideFans = appSettings.get("general.homeHideNewFans")
+    let m = ''
+    let c = 0
+    let s = ''
 
     switch (type) {
         case NEW_FOLLOWINGS:
-            let m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
-            let c = Math.abs(bookmark.counts.new_followers)
-            let s = c > 1 ? 's' : ''
+            m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
+            c = Math.abs(bookmark.counts.new_followers)
+            s = c > 1 ? 's' : ''
             $('#bookmarklist #newfollowings').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -746,9 +749,9 @@ function addToHome(type, bookmark) {
             `)
             break;
         case NEW_FANS:
-            let m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
-            let c = Math.abs(bookmark.counts.new_followers)
-            let s = c > 1 ? 's' : ''
+            m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
+            c = Math.abs(bookmark.counts.new_followers)
+            s = c > 1 ? 's' : ''
             $('#bookmarklist #newfans').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -761,7 +764,7 @@ function addToHome(type, bookmark) {
                 `)
             break;
         case NEW_REPLAYS:
-            let s = bookmark.counts.new_replays > 1 ? 's' : ''
+            s = bookmark.counts.new_replays > 1 ? 's' : ''
             $('#bookmarklist #newreplays').append(`
                 <div class="bookmark"
                     id="bookmark-${bookmark.uid}"
@@ -826,7 +829,7 @@ async function _checkBookmark(b, dispatch) {
         for (let i = 0; i < replays.length; i++) {
             if (replays[i].vtime - b.newest_replay > 0) {
                 b.hasNewReplays = true
-                b.newest_replay = Math.floor(replays[0].vtime)
+                b.newest_replay = parseInt(Math.floor(replays[0].vtime))
                 DataManager.updateBookmark(b)
 
                 if (appSettings.get('general.enableShowReplays') === true) {
@@ -1155,7 +1158,7 @@ function openReplayContextMenu(vid) {
 function _addReplayEntry(replay, wasSearched) {
     if (replay.userid !== currentUser.uid) return
 
-    if (replay.vtime > currentUser.newest_replay) currentUser.newest_replay = replay.vtime
+    if (replay.vtime > currentUser.newest_replay) currentUser.newest_replay = parseInt(replay.vtime)
 
     let dt = new Date(replay.vtime * 1000)
     let ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes()
