@@ -94,7 +94,7 @@ class DataManager {
                     if (bookmarks.length == 0) return
 
                     if (bookmarks[0].lamd == undefined) {
-                        for (var i = 0; i < bookmarks.length; i++)
+                        for (let i = 0; i < bookmarks.length; i++)
                             bookmarks[i].lamd = {
                                 monitor: false,
                                 last_checked: 0
@@ -104,7 +104,7 @@ class DataManager {
                     /*
                         Bookmarks cleanup
                     */
-                    for (var i = 0; i < bookmarks.length; i++) {
+                    for (let i = 0; i < bookmarks.length; i++) {
                         if (bookmarks[i].lamd.monitored != undefined) {
                             bookmarks[i].lamd.monitor = false
                             delete(bookmarks[i].lamd.monitored)
