@@ -86,3 +86,16 @@
 
 
 footer h1 { font-size: 9pt; }
+footer > input[type=button] {
+    position: absolute;
+    left: 32px;
+    bottom: 2px;
+    width: 80px;
+    height: 20px;
+    padding: 0;
+    line-height: 20px;
+    font-size: 8pt;
+    display: block;
+    z-index: 10;
+    margin: 0;
+}
