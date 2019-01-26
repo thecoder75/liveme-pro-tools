@@ -1074,6 +1074,7 @@ function performUserLookup(uid) {
 function getUsersReplays() {
     if (!LiveMe.user) {
         $('#replay-result-alert').html('<span>Error!</span> You are not authenticated, please enter your login details under Settings.').fadeIn(400)
+        $('footer h1').html('You must have valid login details in Settings to view account details and replay lists!')
         return setTimeout(() => getUsersReplays(), 5000)
     } else {
         $('#replay-result-alert').hide()
