@@ -3,13 +3,11 @@
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
 ### Support/Assistance/Reporting Issues
-![Discord Chat](https://img.shields.io/discord/340106715334836224.svg)
-![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)
-I've re-enabled the Issue Tracker here.  Please use it **ONLY** to report bugs or feature requests.
+![Discord Chat](https://img.shields.io/discord/340106715334836224.svg) - ![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)
 
-For help in general use and general questions, please use the [Discord chat room](https://discord.gg/A5p2aF4).  There are now many on there who provide help and also work on this now.
+Please *only* use the Issue Tracker here for bugs and glitches only!  To discuss thoughts on improvements, features or for general usage support, please use the [Discord chat room](https://discord.gg/A5p2aF4).  There is always people in the chat room who will provide assistance.
 
-**I DO NOT RESPOND TO EMAILS EITHER ASKING FOR ASSISTANCE!**  This is my spare-time project so use the Discord chat room as others will assist as they can.
+**I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR FOR ANYTHING ELSE RELATED TO THIS PROJECT!**  This is my spare-time project that's been active for over 1.5 years now.
 
 ### What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
