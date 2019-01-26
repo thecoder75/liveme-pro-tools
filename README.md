@@ -1,5 +1,5 @@
 # LiveMe Pro Tools
-![GNU AGPLv3]()(https://img.shields.io/github/license/thecoder75/liveme-pro-tools.svg)
+![GNU AGPLv3](https://img.shields.io/github/license/thecoder75/liveme-pro-tools.svg)
 ![Current Release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg)
 ![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)
 ![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)
