@@ -94,16 +94,25 @@ class DataManager {
                     if (bookmarks.length == 0) return
 
                     if (bookmarks[0].lamd == undefined) {
-
                         for (var i = 0; i < bookmarks.length; i++)
                             bookmarks[i].lamd = {
                                 monitor: false,
                                 last_checked: 0
                             }
-
-                        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
-
                     }
+
+                    /*
+                        Bookmarks cleanup
+                    */
+                    for (var i = 0; i < bookmarks.length; i++) {
+                        if (bookmarks[i].lamd.monitored != undefined) {
+                            bookmarks[i].lamd.monitor = false
+                            delete(bookmarks[i].lamd.monitored)
+                        }
+                        bookmarks[i].newest_replay = parseInt(bookmarks[i].newest_replay)
+                    }
+
+                    fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
                 }
             })
         }
