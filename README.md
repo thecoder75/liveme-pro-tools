@@ -1,9 +1,14 @@
 # LiveMe Pro Tools
+![GNU AGPLv3]()(https://img.shields.io/github/license/thecoder75/liveme-pro-tools.svg)
+![Current Release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg)
+![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)
+![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)
+![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)
+![Discord Chat](https://img.shields.io/discord/340106715334836224.svg)
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
 ### Support/Assistance/Reporting Issues
-![Discord Chat](https://img.shields.io/discord/340106715334836224.svg) - ![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)
 
 Please *only* use the Issue Tracker here for bugs and glitches only!  To discuss thoughts on improvements, features or for general usage support, please use the [Discord chat room](https://discord.gg/A5p2aF4).  There is always people in the chat room who will provide assistance.
 
@@ -62,7 +67,7 @@ If you find any bugs or would like to help add features or additional functions,
 * [mustang-sally](https://github.com/mustang-sally)
 
 ### License
-This project is licensed under the GPL-3 License - see the [LICENSE](LICENSE) file for details
+This project is now licensed under the [GNU AGPLv3](LICENSE) License.
 
 ### Donations
 **Please help keep this project alive!**
