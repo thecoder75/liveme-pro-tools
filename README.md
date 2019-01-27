@@ -1,18 +1,22 @@
 # LiveMe Pro Tools
-![GNU AGPLv3](https://img.shields.io/github/license/thecoder75/liveme-pro-tools.svg)
-![Current Release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg)
-![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)
-![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)
-![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)
-![Discord Chat](https://img.shields.io/discord/340106715334836224.svg)
+[![GNU AGPLv3](https://img.shields.io/github/license/thecoder75/liveme-pro-tools.svg)](LICENSE)
+[![Current Release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
+[![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
+[![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/commits/master)
+[![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/issues)
+[![Discord Chat](https://img.shields.io/discord/340106715334836224.svg)](https://discord.gg/A5p2aF4)
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
+
+* * *
 
 ### Support/Assistance/Reporting Issues
 
 Please *only* use the Issue Tracker here for bugs and glitches only!  To discuss thoughts on improvements, features or for general usage support, please use the [Discord chat room](https://discord.gg/A5p2aF4).  There is always people in the chat room who will provide assistance.
 
 **I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR FOR ANYTHING ELSE RELATED TO THIS PROJECT!**  This is my spare-time project that's been active for over 1.5 years now.
+
+* * *
 
 ### What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
@@ -22,6 +26,8 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - Watch and download replays
 - Allows downloading of replays using FFMPEG
 - Supports [LAMD](https://github.com/thecoder75/lamd)
+
+* * *
 
 ### Building LiveMe Pro Tools
 
@@ -41,12 +47,16 @@ To download the latest prebuilt versions, [click here](https://github.com/thecod
 
 You are more than welcome to download the source and build your own 32-bit version, but support for issues will be limited.
 
+* * *
+
 ### FFMPEG No Longer Required?
 Dependancy on FFMPEG has been removed.  You can choose to use a basic built-in concat system now to join the chunks downloaded without needing to have FFMPEG installed on your computer.  
 
 If you wish to transcode the downloads, then you will need to have FFMPEG installed.
 
 ~~FFMPEG is required to combined the downloaded playlist chunks and if transcoding of the downloaded replays are preferred.  There is no way at this time to download replays without having FFMPEG installed.~~
+
+* * *
 
 ### Current Releases Built With
 * [Electron](http://electronjs.org)
