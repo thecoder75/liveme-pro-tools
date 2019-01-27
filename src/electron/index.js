@@ -33,7 +33,7 @@ let menu = null
 let appSettings = require('electron-settings')
 
 function createWindow() {
-    let isFreshInstall = appSettings.get('general.fresh_install') === undefined ? true : false
+    let isFreshInstall = typeof appSettings.get('general.fresh_install') === 'undefined' ? true : false
 
     if (appSettings.get('downloads.template')) {
         appSettings.set('general.fresh_install', false);
@@ -83,7 +83,7 @@ function createWindow() {
     }
 
     let test = appSettings.get('position')
-    if (test.mainWindow[1] === undefined) {
+    if (typeof test.mainWindow[1] === 'undefined') {
         appSettings.set('position', {
             mainWindow: [-1, -1],
             playerWindow: [-1, -1],
@@ -262,7 +262,7 @@ ipcMain.on('download-cancel', (event, arg) => {
         })
     })
 
-    const dlQueue = async.queue((task, done) => {
+const dlQueue = async.queue((task, done) => {
     // Set custom FFMPEG path if defined
     if (appSettings.get('downloads.ffmpeg')) ffmpeg.setFfmpegPath(appSettings.get('downloads.ffmpeg'))
         // Get video info

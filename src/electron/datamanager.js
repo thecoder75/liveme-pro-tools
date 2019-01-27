@@ -93,7 +93,7 @@ class DataManager {
 
                     if (bookmarks.length == 0) return
 
-                    if (bookmarks[0].lamd == undefined) {
+                    if (typeof bookmarks[0].lamd == 'undefined') {
                         for (let i = 0; i < bookmarks.length; i++)
                             bookmarks[i].lamd = {
                                 monitor: false,
@@ -105,7 +105,7 @@ class DataManager {
                         Bookmarks cleanup
                     */
                     for (let i = 0; i < bookmarks.length; i++) {
-                        if (bookmarks[i].lamd.monitored != undefined) {
+                        if (typeof bookmarks[i].lamd.monitored != 'undefined') {
                             bookmarks[i].lamd.monitor = false
                             delete(bookmarks[i].lamd.monitored)
                         }
@@ -363,7 +363,7 @@ class DataManager {
             if (bookmarks_new[i].uid === user.uid) add = false
         }
         if (add === true) {
-            if (user.lamd == undefined) 
+            if (typeof user.lamd == 'undefined') 
                 user.lamd = {
                     monitor: false,
                     last_checked: 0
