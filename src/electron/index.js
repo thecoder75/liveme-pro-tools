@@ -298,126 +298,100 @@ const dlQueue = async.queue((task, done) => {
         })
 
         switch (parseInt(appSettings.get('downloads.ffmpegquality'))) {
-            case 9: // AMD Hardware HEVC/H265 Encoder
+            case 20: // Linux VAAPI Accelerated
                 ffmpegOpts = [
-                    '-c:v hevc_amf',
-                    '-preset superfast',
-                    '-b:v 300k',
+                    '-hwaccel vaapi',
+                    '-hwaccel_output_format vaapi',
+                    '-vaapi_device /dev/dri/renderD128',
+                    '-c:v h264_vaapi',
+                    '-vf hwupload,format=vaapi',
+                    '-qp 22',
                     '-r 15',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
+                    '-bf 4',
                     '-vsync 2',
-                    '-movflags faststart'
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc'
                 ]
                 break
 
-            case 8: // nVidia Hardware HEVC/H265 Encoder
+            case 10: // macOS Video Toolbox
                 ffmpegOpts = [
-                    '-c:v hevc_nvenc',
-                    '-preset superfast',
-                    '-b:v 300k',
+                    '-c:v h264_videotoolbox',
+                    '-qp 22',
                     '-r 15',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
+                    '-bf 4',
                     '-vsync 2',
-                    '-movflags faststart'
-                ]
-                break
-
-            case 7: // Intel Hardware HEVC/H265 Encoder
-                ffmpegOpts = [
-                    '-c:v hevc_qsv',
-                    '-preset superfast',
-                    '-b:v 300k',
-                    '-r 15',
+                    '-preset slow',
                     '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
-                    '-vsync 2',
-                    '-movflags faststart'
-                ]
-                break
-
-            case 6: // HEVC/H265 Encoder
-                ffmpegOpts = [
-                    '-c:v hevc',
-                    '-preset superfast',
-                    '-b:v 300k',
-                    '-r 15',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
-                    '-vsync 2',
-                    '-movflags faststart'
+                    '-bsf:a aac_adtstoasc'
                 ]
                 break
 
             case 5: // AMD AMF Hardware Enabled - Experimental
                 ffmpegOpts = [
                     '-c:v h264_amf',
-                    '-preset none',
-                    '-b:v 500k',
+                    '-qp 22',
                     '-r 15',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
+                    '-bf 4',
                     '-vsync 2',
-                    '-movflags faststart'
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc'
                 ]
                 break
 
             case 4: // nVidia Hardware Enabled - Experimental
                 ffmpegOpts = [
                     '-c:v h264_nvenc',
-                    '-preset none',
-                    '-b:v 500k',
+                    '-qp 22',
                     '-r 15',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
+                    '-bf 4',
                     '-vsync 2',
-                    '-movflags faststart'
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc'
                 ]
                 break
 
             case 3: // Intel Hardware Enabled - Experimental
                 ffmpegOpts = [
                     '-c:v h264_qsv',
-                    '-preset none',
-                    '-b:v 500k',
+                    '-qp 22',
                     '-r 15',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
+                    '-bf 4',
                     '-vsync 2',
-                    '-movflags faststart'
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc'
                 ]
                 break
 
             case 2: // Best
                 ffmpegOpts = [
                     '-c:v h264',
-                    '-preset fast',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
+                    '-qp 22',
+                    '-r 15',
+                    '-bf 4',
                     '-vsync 2',
-                    '-movflags faststart'
+                    '-preset slow',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc'
                 ]
                 break
 
             case 1: // Fast
                 ffmpegOpts = [
                     '-c:v h264',
-                    '-preset superfast',
-                    '-q:v 0',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
+                    '-qp 22',
+                    '-r 15',
+                    '-bf 4',
                     '-vsync 2',
-                    '-movflags faststart'
+                    '-preset superfast',
+                    '-c:a copy',
+                    '-bsf:a aac_adtstoasc'
                 ]
                 break
 
             default: // None
                 ffmpegOpts = [
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc',
-                    '-vsync 2',
-                    '-movflags faststart'
+                    '-c copy'
                 ]
                 break
         }
@@ -463,7 +437,7 @@ const dlQueue = async.queue((task, done) => {
                     // Download chunks
                     let downloadedChunks = 0
 
-                    async.eachLimit(tsList, 4, (file, next) => {
+                    async.eachLimit(tsList, 3, (file, next) => {
 
                         const stream = request(`${video.hlsvideosource.split('/').slice(0, -1).join('/')}/${file.name}`)
                             .on('error', err => {
