@@ -1408,9 +1408,11 @@ function initSettingsPanel() {
     $('#chunk-method-tmp').prop('checked', appSettings.get('downloads.deltmp'))
     $('#downloads-parallel').val(appSettings.get('downloads.parallel') || 3)
 
-    const ffmpegPath = appSettings.get('downloads.ffmpeg') || false
     const ffmpegQuality = appSettings.get('downloads.ffmpegquality') || false
+    if ((ffmpegQuality > 5) && (ffmpegQuality < 10)) ffmpegQuality = 1
     $('#ffmpeg-transcode-setting').val(ffmpegQuality ? ffmpegQuality : 0)
+
+    const ffmpegPath = appSettings.get('downloads.ffmpeg') || false
     if (ffmpegPath) { $('#ffmpegPath').val(ffmpegPath) }
 
     let stats = DataManager.getStats()
@@ -1497,6 +1499,7 @@ function saveSettings() {
     appSettings.set('downloads.deltmp', (!!$('#chunk-method-tmp').is(':checked')))
     appSettings.set('downloads.ffmpeg', $('#ffmpegPath').val().trim() || false)
     appSettings.set('downloads.parallel', $('#downloads-parallel').val() || 3)
+
     appSettings.set('downloads.ffmpegquality', $('#ffmpeg-transcode-setting').val())
 
     appSettings.set('general.blockedCountries', $('#countryCode').val())
