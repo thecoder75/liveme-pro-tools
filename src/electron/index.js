@@ -33,64 +33,6 @@ let menu = null
 let appSettings = require('electron-settings')
 
 function createWindow() {
-    let isFreshInstall = typeof appSettings.get('general.fresh_install') === 'undefined' ? true : false
-
-    if (appSettings.get('downloads.template')) {
-        appSettings.set('general.fresh_install', false);
-        isFreshInstall = false;
-    }
-
-    if (isFreshInstall) {
-        appSettings.set('general', {
-            fresh_install: false,
-            playerpath: '',
-            hide_zeroreplay_fans: false,
-            hide_zeroreplay_followings: true,
-            enableHomeScan: false
-        })
-        appSettings.set('position', {
-            mainWindow: [-1, -1],
-            playerWindow: [-1, -1],
-            bookmarksWindow: [-1, -1],
-            fansWindow: [-1, -1],
-            followingsWindow: [-1, -1]
-        })
-        appSettings.set('size', {
-            mainWindow: [1024, 600],
-            playerWindow: [370, 680],
-            bookmarksWindow: [400, 720]
-        })
-        appSettings.set('downloads', {
-            path: path.join(app.getPath('home'), 'Downloads'),
-            template: '%%replayid%%',
-            chunkthreads: 1,
-            chunks: 1,
-            ffmpegquality: 1
-        })
-    }
-
-    if (!appSettings.get('history.viewed_maxage')) {
-        appSettings.set('history', {
-            viewed_maxage: 1
-        })
-    }
-
-    if (!appSettings.get('lamd.concurrent')) {
-        appSettings.set('lamd', {
-            cycletime: 60,
-            concurrent: 3
-        })
-    }
-
-    let test = appSettings.get('position')
-    if (typeof test.mainWindow[1] === 'undefined') {
-        appSettings.set('position', {
-            mainWindow: [-1, -1],
-            playerWindow: [-1, -1],
-            bookmarksWindow: [-1, -1]
-        })
-    }
-
     /**
      * Create our window definitions
      */
@@ -182,6 +124,64 @@ function createWindow() {
 }
 
 app.on('ready', () => {
+    let isFreshInstall = typeof appSettings.get('general.fresh_install') === 'undefined' ? true : false
+
+    if (appSettings.get('downloads.template')) {
+        appSettings.set('general.fresh_install', false);
+        isFreshInstall = false;
+    }
+
+    if (isFreshInstall) {
+        appSettings.set('general', {
+            fresh_install: false,
+            playerpath: '',
+            hide_zeroreplay_fans: false,
+            hide_zeroreplay_followings: true,
+            enableHomeScan: false
+        })
+        appSettings.set('position', {
+            mainWindow: [-1, -1],
+            playerWindow: [-1, -1],
+            bookmarksWindow: [-1, -1],
+            fansWindow: [-1, -1],
+            followingsWindow: [-1, -1]
+        })
+        appSettings.set('size', {
+            mainWindow: [1024, 600],
+            playerWindow: [370, 680],
+            bookmarksWindow: [400, 720]
+        })
+        appSettings.set('downloads', {
+            path: path.join(app.getPath('home'), 'Downloads'),
+            template: '%%replayid%%',
+            chunkthreads: 1,
+            chunks: 1,
+            ffmpegquality: 1
+        })
+    }
+
+    if (!appSettings.get('history.viewed_maxage')) {
+        appSettings.set('history', {
+            viewed_maxage: 1
+        })
+    }
+
+    if (!appSettings.get('lamd.concurrent')) {
+        appSettings.set('lamd', {
+            cycletime: 60,
+            concurrent: 3
+        })
+    }
+
+    let test = appSettings.get('position')
+    if (typeof test.mainWindow[1] === 'undefined') {
+        appSettings.set('position', {
+            mainWindow: [-1, -1],
+            playerWindow: [-1, -1],
+            bookmarksWindow: [-1, -1]
+        })
+    }
+    
     createWindow()
 })
 
