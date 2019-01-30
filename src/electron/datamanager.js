@@ -90,24 +90,27 @@ class DataManager {
                     bookmarks = []
                 } else {
                     bookmarks = JSON.parse(data)
-
                     if (bookmarks.length == 0) return
 
-                    if (typeof bookmarks[0].lamd == 'undefined') {
-                        for (let i = 0; i < bookmarks.length; i++)
+                    /*
+                        Migrate bookmarks using the old format to the new one,
+                        in order to avoid unwanted behaviour
+                    */
+                    for (let i = 0; i < bookmarks.length; i++) {
+                        if ('lamd' in bookmarks[i]) {
+                            if ('monitored' in bookmarks[i].lamd) {
+                                // old bookmark property detected, let's use the previous value
+                                // instead of blindly setting it to false
+                                bookmarks[i].lamd.monitor = bookmarks[i].lamd.monitored
+                                // delete the old property
+                                delete bookmarks[i].lamd.monitored
+                            }
+                        } else {
+                            // old bookmark detected, let's create a new 'lamd' object
                             bookmarks[i].lamd = {
                                 monitor: false,
                                 last_checked: 0
                             }
-                    }
-
-                    /*
-                        Bookmarks cleanup
-                    */
-                    for (let i = 0; i < bookmarks.length; i++) {
-                        if (typeof bookmarks[i].lamd.monitored != 'undefined') {
-                            bookmarks[i].lamd.monitor = false
-                            delete(bookmarks[i].lamd.monitored)
                         }
                         bookmarks[i].newest_replay = parseInt(bookmarks[i].newest_replay)
                     }
@@ -363,12 +366,11 @@ class DataManager {
             if (bookmarks_new[i].uid === user.uid) add = false
         }
         if (add === true) {
-            if (typeof user.lamd == 'undefined') 
-                user.lamd = {
-                    monitor: false,
-                    last_checked: 0
-                }
-                bookmarks_new.push(user)
+            user.lamd = {
+                monitor: false,
+                last_checked: 0
+            }
+            bookmarks_new.push(user)
         }
         fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks_new, null, 2))
         bookmarks = bookmarks_new
