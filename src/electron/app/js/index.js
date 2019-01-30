@@ -220,7 +220,7 @@ function setupIPCListeners() {
 
         $('#download-' + arg.videoid).addClass('active')
         $('#download-' + arg.videoid + ' .status').html('Starting download..')
-        $('#download-' + arg.videoid + ' .filename').html(arg.filename)
+        $('#download-' + arg.videoid + ' .filename').attr("title", arg.filename).html(arg.filename)
         $('#download-' + arg.videoid + ' .cancel').remove()
     })
 
