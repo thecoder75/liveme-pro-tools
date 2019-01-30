@@ -209,6 +209,10 @@
 
     text-align: left;
     text-overflow: ellipsis;
+
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 #queue-list .download .status {
