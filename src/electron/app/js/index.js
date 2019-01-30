@@ -1181,7 +1181,7 @@ function _addReplayEntry(replay, wasSearched) {
     let watched = watchDate === false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched ' + prettydate.format(watchDate) + '"></i>'
     let seen = watchDate === false ? '' : 'watched'
 
-    let isLive = replay.hlsvideosource.endsWith('flv') || replay.hlsvideosource.indexOf('liveplay') > 0 ? '<b style="color:limegreen;">[LIVE]</b>' : ''
+    let isLive = replay.status == 0 ? '<b style="color:limegreen;">[LIVE] </b>' : ''
     let inQueue = $('#download-' + replay.vid).length > 0 ? '<a id="download-replay-' + replay.vid + '" class="button icon-only"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + replay.vid + '" class="button icon-only" onClick="downloadVideo(\'' + replay.vid + '\')"">' + downloaded + '</a>'
     let getURL = '<a title="Copy Replay URL to clipboard." class="button icon-only" onClick="copyToClipboard(\'https://www.liveme.com/us/v/'+replay.vid+'/index.html\')"><i class="icon icon-copy bright"></i></a>'
 
@@ -1354,7 +1354,7 @@ function _performHashtagSearch() {
                 let watched = watchDate === false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched ' + prettydate.format(watchDate) + '"></i>'
                 let seen = watchDate === false ? '' : 'watched'
 
-                let isLive = results[i].hlsvideosource.endsWith('flv') || results[i].hlsvideosource.indexOf('liveplay') > 0 ? '<b style="color:limegreen;">[LIVE]</b>' : ''
+                let isLive = results[i].status == 0 ? '<b style="color:limegreen;">[LIVE] </b> ' : ''
                 let inQueue = $('#download-' + results[i].vid).length > 0 ? '<a id="download-replay-' + results[i].vid + '" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + results[i].vid + '" class="button icon-only" onClick="downloadVideo(\'' + results[i].vid + '\')" title="Download Replay"><i class="icon icon-download"></i></a>'
 
                 $('#list tbody').append(`
