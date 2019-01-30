@@ -299,7 +299,7 @@ function showMainMenu() {
                     },
                     {
                         label: 'Discord Chat Rooms for Support',
-                        click: () => shell.openExternal('https://discord.gg/vKwR3WB')
+                        click: () => shell.openExternal('https://discord.gg/A5p2aF4')
                     }
                 ]
             },
