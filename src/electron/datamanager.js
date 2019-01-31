@@ -1,7 +1,7 @@
 const events = require('events')
 const path = require('path')
 const fs = require('fs')
-const { app } = require('electron')
+const { app, dialog, shell } = require('electron')
 const appSettings = require("electron-settings");
 
 let bookmarks = []
@@ -41,6 +41,69 @@ function migrateBlacklist() {
     } catch (error) {
 
     }
+}
+
+function tryParseJSON(strData, filePath) {
+    let obj = []
+
+    try {
+        obj = JSON.parse(strData)
+    } catch(error) {
+        canWrite = false
+        handleConfigFileError(error, filePath)
+        app.quit()
+    }
+    return obj
+}
+
+function handleConfigFileError(error, filePath) {
+    let btn1, btn2
+
+    do {
+        btn1 = dialog.showMessageBox({
+            type: 'error',
+            title: `Unable to read ${path.basename(filePath)}`,
+            message: `File '${path.basename(filePath)}' appears to be corrupt!\n\n` +
+                     'In order to avoid data loss, the program will abort now.\n' +
+                     'If you need help, screenshot this error and show it to someone in our Discord group:\n',
+            detail: `File: ${filePath}\n${error.name}: ${error.message}`,
+            buttons: ['Open Discord group', 'Reset file (DANGEROUS!)', 'Close'],
+            cancelId: 2,
+            defaultId: 0,
+        })
+
+        switch(btn1) {
+            case 0:
+                shell.openExternal('https://discord.gg/A5p2aF4')
+                break
+            case 1:
+                btn2 = dialog.showMessageBox({
+                    type: 'warning',
+                    title: 'Are you really sure?',
+                    message: `Reset ${path.basename(filePath)} for good?`,
+                    detail: 'This will replace the current file by a new (empty) one.\n' +
+                            'Be sure to backup your data before proceeding, this action is IRREVERSIBLE!',
+                    buttons: ['YES, reset it', 'NO, go back'],
+                    calcelId: 1,
+                    defaultId: 1,
+                })
+                break
+            default:
+                break
+        }
+        if (btn2 === 0) {
+            fs.writeFileSync(filePath, '[]')
+            dialog.showMessageBox({
+                type: 'info',
+                title: 'Success',
+                message: `File ${path.basename(filePath)} was reset.`,
+                detail: 'If no more errors appear after you close this window, '+
+                        'you will have to re-open the program manually.',
+                buttons: ['OK']
+            })
+            break
+        }
+    } while (btn1 === 0 || (btn1 === 1 && btn2 === 1))
 }
 
 class DataManager {
@@ -89,25 +152,28 @@ class DataManager {
                 if (err) {
                     bookmarks = []
                 } else {
-                    bookmarks = JSON.parse(data)
-
+                    bookmarks = tryParseJSON(data, bookmarksJson)
                     if (bookmarks.length == 0) return
 
-                    if (typeof bookmarks[0].lamd == 'undefined') {
-                        for (let i = 0; i < bookmarks.length; i++)
+                    /*
+                        Migrate bookmarks using the old format to the new one,
+                        in order to avoid unwanted behaviour
+                    */
+                    for (let i = 0; i < bookmarks.length; i++) {
+                        if ('lamd' in bookmarks[i]) {
+                            if ('monitored' in bookmarks[i].lamd) {
+                                // old bookmark property detected, let's use the previous value
+                                // instead of blindly setting it to false
+                                bookmarks[i].lamd.monitor = bookmarks[i].lamd.monitored
+                                // delete the old property
+                                delete bookmarks[i].lamd.monitored
+                            }
+                        } else {
+                            // old bookmark detected, let's create a new 'lamd' object
                             bookmarks[i].lamd = {
                                 monitor: false,
                                 last_checked: 0
                             }
-                    }
-
-                    /*
-                        Bookmarks cleanup
-                    */
-                    for (let i = 0; i < bookmarks.length; i++) {
-                        if (typeof bookmarks[i].lamd.monitored != 'undefined') {
-                            bookmarks[i].lamd.monitor = false
-                            delete(bookmarks[i].lamd.monitored)
                         }
                         bookmarks[i].newest_replay = parseInt(bookmarks[i].newest_replay)
                     }
@@ -121,7 +187,7 @@ class DataManager {
                 if (err) {
                     profiles = []
                 } else {
-                    profiles = JSON.parse(data)
+                    profiles = tryParseJSON(data, profilesJson)
                 }
             })
         }
@@ -130,7 +196,7 @@ class DataManager {
                 if (err) {
                     downloaded = []
                 } else {
-                    downloaded = JSON.parse(data)
+                    downloaded = tryParseJSON(data, downloadedJson)
                 }
             })
         }
@@ -139,7 +205,7 @@ class DataManager {
                 if (err) {
                     watched = []
                 } else {
-                    watched = JSON.parse(data)
+                    watched = tryParseJSON(data, watchedJson)
                 }
             })
         }
@@ -148,7 +214,7 @@ class DataManager {
                 if (err) {
                     ignored_forever = {}
                 } else {
-                    ignored_forever = JSON.parse(data)
+                    ignored_forever = tryParseJSON(data, ignoredJson)
                 }
             })
         } else {
@@ -159,7 +225,7 @@ class DataManager {
                 if (err) {
                     errored = []
                 } else {
-                    errored = JSON.parse(data)
+                    errored = tryParseJSON(data, erroredJson)
                 }
             })
         }
@@ -168,7 +234,7 @@ class DataManager {
                 if (err) {
                     queued = []
                 } else {
-                    queued = JSON.parse(data)
+                    queued = tryParseJSON(data, queuedJson)
                 }
             })
         }
@@ -363,12 +429,11 @@ class DataManager {
             if (bookmarks_new[i].uid === user.uid) add = false
         }
         if (add === true) {
-            if (typeof user.lamd == 'undefined') 
-                user.lamd = {
-                    monitor: false,
-                    last_checked: 0
-                }
-                bookmarks_new.push(user)
+            user.lamd = {
+                monitor: false,
+                last_checked: 0
+            }
+            bookmarks_new.push(user)
         }
         fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks_new, null, 2))
         bookmarks = bookmarks_new
