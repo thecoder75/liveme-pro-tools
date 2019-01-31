@@ -298,7 +298,7 @@ const dlQueue = async.queue((task, done) => {
         })
 
         switch (parseInt(appSettings.get('downloads.ffmpegquality'))) {
-            case 21: // Linux VAAPI Accelerated
+            case 21: // Linux NVENC Accelerated
                 ffmpegOpts = [
                     '-c:v h264_nvenc',
                     '-qp 22',
