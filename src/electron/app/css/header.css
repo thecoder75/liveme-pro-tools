@@ -33,7 +33,7 @@ header a.minimize-button, header a.close-button, header a.app-menu, header a.inf
     text-decoration:  none;
     cursor:  default;
 }
-header a.minimize-button:hover, header a.close-button:hover, header a.app-menu:hover, header a.info-button:hover, header a.download-button:hover {
+header a:hover {
     background-color: rgba(255,255,255,0.1);
 }
 
@@ -70,6 +70,7 @@ header .control-buttons a {
     display: inline-block;
 }
 
+header .control-buttons a:hover { background: rgba(255,255,255,0.1); }
 header .control-buttons a.close:hover { background: rgb(224,0,0); }
 header .control-buttons a.close:hover svg path { fill: rgb(255,255,255); }
 
