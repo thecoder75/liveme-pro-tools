@@ -42,14 +42,6 @@ header svg {
     height: 24px;
     vertical-align: middle;
 }
-header svg path, header svg polygon, header svg rect {
-    fill: rgba(252,252,252,0.8);
-}
-header svg circle {
-    stroke: rgba(252,252,252,0.8);
-    stroke-width: 1;
-}
-
 
 header a {
     display: inline-block;
