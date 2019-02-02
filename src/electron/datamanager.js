@@ -465,6 +465,7 @@ class DataManager {
                 break
             }
         }
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
         isBusy = false
     }
 
