@@ -146,6 +146,15 @@ function setupContextMenu() {
         CopyableContextMenu.popup(remote.getCurrentWindow())
     })
 
+    /*
+    document.getElementById("userHamburgerMenu").addEventListener('click', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+    })
+    */
+}
+
+function popupUserMenu() {
     const UserContextMenu = remote.Menu.buildFromTemplate([{
         label: 'Ignore user (Forever)',
         click: () => currentUser !== undefined ? DataManager.addIgnoredForever(currentUser.uid) : _
@@ -153,12 +162,7 @@ function setupContextMenu() {
         label: 'Ignore user (current Session)',
         click: () => currentUser !== undefined ? DataManager.addIgnoredSession(currentUser.uid) : _
     }])
-
-    document.getElementById("userHamburgerMenu").addEventListener('click', (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        UserContextMenu.popup(remote.getCurrentWindow())
-    })
+    UserContextMenu.popup(remote.getCurrentWindow())
 }
 
 function setupLoadOnScroll() {
@@ -412,7 +416,7 @@ function sortReplays(name) {
 }
 
 function downloadVideo(vid) {
-    $('#download-replay-' + vid).html('<i class="icon icon-download bright"></i>')
+    $('#download-replay-' + vid).html('<svg class="" viewBox="0 0 20 20"><path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path></svg>')
     $('#download-replay-' + vid).unbind()
 
     ipcRenderer.send('download-replay', { videoid: vid })
@@ -515,10 +519,10 @@ function preSearch(q) {
 function AddToBookmarks() {
     if (DataManager.isBookmarked(currentUser) === true) {
         DataManager.removeBookmark(currentUser)
-        $('a.bookmark').attr('title', 'Add to Bookmarks').html('<i class="icon icon-star-empty"></i>')
+        $('a.bookmark').attr('title', 'Add to Bookmarks').html(`<svg class="dim" viewBox="0 0 20 20"><path d="M17.684,7.925l-5.131-0.67L10.329,2.57c-0.131-0.275-0.527-0.275-0.658,0L7.447,7.255l-5.131,0.67C2.014,7.964,1.892,8.333,2.113,8.54l3.76,3.568L4.924,17.21c-0.056,0.297,0.261,0.525,0.533,0.379L10,15.109l4.543,2.479c0.273,0.153,0.587-0.089,0.533-0.379l-0.949-5.103l3.76-3.568C18.108,8.333,17.986,7.964,17.684,7.925 M13.481,11.723c-0.089,0.083-0.129,0.205-0.105,0.324l0.848,4.547l-4.047-2.208c-0.055-0.03-0.116-0.045-0.176-0.045s-0.122,0.015-0.176,0.045l-4.047,2.208l0.847-4.547c0.023-0.119-0.016-0.241-0.105-0.324L3.162,8.54L7.74,7.941c0.124-0.016,0.229-0.093,0.282-0.203L10,3.568l1.978,4.17c0.053,0.11,0.158,0.187,0.282,0.203l4.578,0.598L13.481,11.723z"></path></svg>`)
     } else {
         DataManager.addBookmark(currentUser)
-        $('a.bookmark').attr('title', 'Remove from Bookmarks').html('<i class="icon icon-star-full bright yellow"></i>')
+        $('a.bookmark').attr('title', 'Remove from Bookmarks').html(`<svg class="bright yellow" viewBox="0 0 20 20"><path d="M17.684,7.925l-5.131-0.67L10.329,2.57c-0.131-0.275-0.527-0.275-0.658,0L7.447,7.255l-5.131,0.67C2.014,7.964,1.892,8.333,2.113,8.54l3.76,3.568L4.924,17.21c-0.056,0.297,0.261,0.525,0.533,0.379L10,15.109l4.543,2.479c0.273,0.153,0.587-0.089,0.533-0.379l-0.949-5.103l3.76-3.568C18.108,8.333,17.986,7.964,17.684,7.925 M13.481,11.723c-0.089,0.083-0.129,0.205-0.105,0.324l0.848,4.547l-4.047-2.208c-0.055-0.03-0.116-0.045-0.176-0.045s-0.122,0.015-0.176,0.045l-4.047,2.208l0.847-4.547c0.023-0.119-0.016-0.241-0.105-0.324L3.162,8.54L7.74,7.941c0.124-0.016,0.229-0.093,0.282-0.203L10,3.568l1.978,4.17c0.053,0.11,0.158,0.187,0.282,0.203l4.578,0.598L13.481,11.723z"></path></svg>`)
     }
 }
 
@@ -561,7 +565,12 @@ function checkForUpdatesOfLiveMeProTools() {
 
                     $('#lmptUpdateNews').append(`
                     <div class="section">
-                        <h3><i class="icon icon-download"></i> Update v${rv} available!</h3>
+                        <h3>
+                            <svg class="bright red" viewBox="0 0 20 20" style="width: 48px; height: 48px; margin-right: 4px; vertical-align: middle">
+                                <path d="M18.344,16.174l-7.98-12.856c-0.172-0.288-0.586-0.288-0.758,0L1.627,16.217c0.339-0.543-0.603,0.668,0.384,0.682h15.991C18.893,16.891,18.167,15.961,18.344,16.174 M2.789,16.008l7.196-11.6l7.224,11.6H2.789z M10.455,7.552v3.561c0,0.244-0.199,0.445-0.443,0.445s-0.443-0.201-0.443-0.445V7.552c0-0.245,0.199-0.445,0.443-0.445S10.455,7.307,10.455,7.552M10.012,12.439c-0.733,0-1.33,0.6-1.33,1.336s0.597,1.336,1.33,1.336c0.734,0,1.33-0.6,1.33-1.336S10.746,12.439,10.012,12.439M10.012,14.221c-0.244,0-0.443-0.199-0.443-0.445c0-0.244,0.199-0.445,0.443-0.445s0.443,0.201,0.443,0.445C10.455,14.021,10.256,14.221,10.012,14.221"></path>
+                            </svg>
+                            Update v${rv} available!
+                        </h3>
                         <h4>Release Date: ${rd} - Released By: ${data.author.login}</h4>
                         <div class="body">${ub}</div>
                         <button onClick="openURL('${data.html_url}')">Download</button>
@@ -1001,8 +1010,7 @@ function performUserLookup(uid) {
                     <th width="33" align="right">
                         <a href="#" class="link text-right" onClick="sortReplays('spm')" title="Sort by Shares Per Minute (desc)">SPM</a>
                     </th>
-                    <th width="45">DL</th>
-                    <th width="60">Actions</th>
+                    <th width="100">Actions</th>
                 </tr>
             `)
 
@@ -1011,9 +1019,9 @@ function performUserLookup(uid) {
 
             $('img.avatar').attr('src', user.user_info.face)
             $('#user-details div.info h1 span').html(user.user_info.uname)
-            $('#user-details div.info h2.id').html('<span>ID:</span> ' + user.user_info.uid + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.uid + '\')"><i class="icon icon-copy"></i></a>')
-            $('#user-details div.info h2.shortid').html('<span>Short ID:</span> ' + user.user_info.short_id + ' <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard(\'' + user.user_info.short_id + '\')"><i class="icon icon-copy"></i></a>')
-            $('#user-details div.info h2.level').html('<span>Lvl:</span><b>' + user.user_info.level + '</b>')
+            $('#user-details div.info h2.id').html(`<span>ID:</span> ${user.user_info.uid} <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.uid}')"><svg class="svg-icon" viewBox="0 0 20 20"><path d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411"></path></svg></a>`)
+            $('#user-details div.info h2.shortid').html(`<span>Short ID:</span> ${user.user_info.short_id} <a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.short_id}')"><svg class="svg-icon" viewBox="0 0 20 20"><path d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411"></path></svg></a>`)
+            $('#user-details div.info h2.level').html(`<span>Lvl:</span> <b>${user.user_info.level}</b>`)
             $('#user-details div.info h4').html(`
                 <abbr
                     title="${countryCodes.getFullName(user.user_info.countryCode)}">
@@ -1022,13 +1030,21 @@ function performUserLookup(uid) {
                 `)
 
             if (DataManager.isBookmarked(user.user_info) === true) {
-                $('#user-details a.bookmark').attr('title', 'Remove from Bookmarks').html('<i class="icon icon-star-full bright yellow"></i>')
+                $('#user-details a.bookmark').attr('title', 'Remove from Bookmarks').html(`
+                <svg class="bright yellow" viewBox="0 0 20 20">
+                    <path d="M17.684,7.925l-5.131-0.67L10.329,2.57c-0.131-0.275-0.527-0.275-0.658,0L7.447,7.255l-5.131,0.67C2.014,7.964,1.892,8.333,2.113,8.54l3.76,3.568L4.924,17.21c-0.056,0.297,0.261,0.525,0.533,0.379L10,15.109l4.543,2.479c0.273,0.153,0.587-0.089,0.533-0.379l-0.949-5.103l3.76-3.568C18.108,8.333,17.986,7.964,17.684,7.925 M13.481,11.723c-0.089,0.083-0.129,0.205-0.105,0.324l0.848,4.547l-4.047-2.208c-0.055-0.03-0.116-0.045-0.176-0.045s-0.122,0.015-0.176,0.045l-4.047,2.208l0.847-4.547c0.023-0.119-0.016-0.241-0.105-0.324L3.162,8.54L7.74,7.941c0.124-0.016,0.229-0.093,0.282-0.203L10,3.568l1.978,4.17c0.053,0.11,0.158,0.187,0.282,0.203l4.578,0.598L13.481,11.723z"></path>
+                </svg>
+                `)
             } else {
-                $('#user-details a.bookmark').attr('title', 'Add to Bookmarks').html('<i class="icon icon-star-empty"></i>')
+                $('#user-details a.bookmark').attr('title', 'Add to Bookmarks').html(`
+                <svg class="dim" viewBox="0 0 20 20">
+                    <path d="M17.684,7.925l-5.131-0.67L10.329,2.57c-0.131-0.275-0.527-0.275-0.658,0L7.447,7.255l-5.131,0.67C2.014,7.964,1.892,8.333,2.113,8.54l3.76,3.568L4.924,17.21c-0.056,0.297,0.261,0.525,0.533,0.379L10,15.109l4.543,2.479c0.273,0.153,0.587-0.089,0.533-0.379l-0.949-5.103l3.76-3.568C18.108,8.333,17.986,7.964,17.684,7.925 M13.481,11.723c-0.089,0.083-0.129,0.205-0.105,0.324l0.848,4.547l-4.047-2.208c-0.055-0.03-0.116-0.045-0.176-0.045s-0.122,0.015-0.176,0.045l-4.047,2.208l0.847-4.547c0.023-0.119-0.016-0.241-0.105-0.324L3.162,8.54L7.74,7.941c0.124-0.016,0.229-0.093,0.282-0.203L10,3.568l1.978,4.17c0.053,0.11,0.158,0.187,0.282,0.203l4.578,0.598L13.481,11.723z"></path>
+                </svg>
+                `)
             }
 
-            $('#user-details div.info a.following').html('Following ' + user.count_info.following_count)
-            $('#user-details div.info a.followers').html(user.count_info.follower_count + ' Fans')
+            $('#user-details div.info a.following').html(`Following ${user.count_info.following_count}`)
+            $('#user-details div.info a.followers').html(`${user.count_info.follower_count} Fans`)
 
             setTimeout(() => {
                 $('#status').hide()
@@ -1067,14 +1083,14 @@ function performUserLookup(uid) {
             showProgressBar()
         })
         .catch(() => {
-            $('#status').html('Account no longer available.')
+            $('#status').html('Account no longer available, possibly deleted by LiveMe admins.')
         })
 }
 
 function getUsersReplays() {
     if (!LiveMe.user) {
-        $('#replay-result-alert').html('<span>Error!</span> You are not authenticated, please enter your login details under Settings.').fadeIn(400)
-        $('footer h1').html('You must have valid login details in Settings to view account details and replay lists!')
+        $('#replay-result-alert').html(`<span>Error!</span> You are not authenticated, please enter your login details under Settings.`).fadeIn(400)
+        $('footer h1').html(`You must have valid login details in Settings to view account details and replay lists!`)
         return setTimeout(() => getUsersReplays(), 5000)
     } else {
         $('#replay-result-alert').hide()
@@ -1085,8 +1101,8 @@ function getUsersReplays() {
 
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
-                    $('#replay-result-alert').html('<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!').fadeIn(400)
-                    $('footer h1').html('User\'s account has been terminated.')
+                    $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!`).fadeIn(400)
+                    $('footer h1').html(`User's account has been terminated.`)
                     hideProgressBar()
                 }
                 return
@@ -1177,13 +1193,12 @@ function _addReplayEntry(replay, wasSearched) {
 
     let downloadDate = DataManager.wasDownloaded(replay.vid)
     let watchDate = DataManager.wasWatched(replay.vid)
-    let downloaded = downloadDate === false ? '<i class="icon icon-download dim" title="Click to download replay."></i>' : '<i class="icon icon-download bright green" title="Replay was previously downloaded."></i>'
-    let watched = watchDate === false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched ' + prettydate.format(watchDate) + '"></i>'
+    let downloaded = downloadDate === false ? 'dim' : 'bright green'
+    let watched = watchDate === false ? 'dim' : 'bright green'
     let seen = watchDate === false ? '' : 'watched'
 
-    let isLive = replay.status == 0 ? '<b style="color:limegreen;">[LIVE] </b>' : ''
-    let inQueue = $('#download-' + replay.vid).length > 0 ? '<a id="download-replay-' + replay.vid + '" class="button icon-only"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + replay.vid + '" class="button icon-only" onClick="downloadVideo(\'' + replay.vid + '\')"">' + downloaded + '</a>'
-    let getURL = '<a title="Copy Replay URL to clipboard." class="button icon-only" onClick="copyToClipboard(\'https://www.liveme.com/us/v/'+replay.vid+'/index.html\')"><i class="icon icon-copy bright"></i></a>'
+    let isLive = replay.status == 0 ? '<b style="color: limegreen;">[LIVE] </b>' : ''
+    let inQueue = $('#download-' + replay.vid).length > 0 ? 'bright' : downloaded
 
     const template = Handlebars.compile($('#replays-list-row').html())
 
@@ -1201,7 +1216,6 @@ function _addReplayEntry(replay, wasSearched) {
         vpm: vpm.toFixed(1),
         spm: spm.toFixed(1),
         inQueue,
-        getURL,
         source: replay.videosource || replay.hlsvideosource
     })
 
@@ -1248,10 +1262,8 @@ function performUsernameSearch() {
             setTimeout(function() { scrollBusy = false }, 250)
 
             for (var i = 0; i < results.length; i++) {
-                let bookmarked = DataManager.isBookmarked(results[i].user_id) ? '<i class="icon icon-star-full bright yellow"></i>' : '<i class="icon icon-star-full dim"></i>'
-                let viewed = DataManager.wasProfileViewed(results[i].user_id) ?
-                    '<i class="icon icon-eye bright blue" title="Last viewed ' + prettydate.format(DataManager.wasProfileViewed(results[i].user_id)) + '"></i>' :
-                    '<i class="icon icon-eye dim"></i>'
+                let bookmarked = DataManager.isBookmarked(results[i].user_id) ? '<svg class="bright yellow" viewBox="0 0 20 20"><path d="M17.684,7.925l-5.131-0.67L10.329,2.57c-0.131-0.275-0.527-0.275-0.658,0L7.447,7.255l-5.131,0.67C2.014,7.964,1.892,8.333,2.113,8.54l3.76,3.568L4.924,17.21c-0.056,0.297,0.261,0.525,0.533,0.379L10,15.109l4.543,2.479c0.273,0.153,0.587-0.089,0.533-0.379l-0.949-5.103l3.76-3.568C18.108,8.333,17.986,7.964,17.684,7.925 M13.481,11.723c-0.089,0.083-0.129,0.205-0.105,0.324l0.848,4.547l-4.047-2.208c-0.055-0.03-0.116-0.045-0.176-0.045s-0.122,0.015-0.176,0.045l-4.047,2.208l0.847-4.547c0.023-0.119-0.016-0.241-0.105-0.324L3.162,8.54L7.74,7.941c0.124-0.016,0.229-0.093,0.282-0.203L10,3.568l1.978,4.17c0.053,0.11,0.158,0.187,0.282,0.203l4.578,0.598L13.481,11.723z"></path></svg>':'<svg class="dim" viewBox="0 0 20 20"><path d="M17.684,7.925l-5.131-0.67L10.329,2.57c-0.131-0.275-0.527-0.275-0.658,0L7.447,7.255l-5.131,0.67C2.014,7.964,1.892,8.333,2.113,8.54l3.76,3.568L4.924,17.21c-0.056,0.297,0.261,0.525,0.533,0.379L10,15.109l4.543,2.479c0.273,0.153,0.587-0.089,0.533-0.379l-0.949-5.103l3.76-3.568C18.108,8.333,17.986,7.964,17.684,7.925 M13.481,11.723c-0.089,0.083-0.129,0.205-0.105,0.324l0.848,4.547l-4.047-2.208c-0.055-0.03-0.116-0.045-0.176-0.045s-0.122,0.015-0.176,0.045l-4.047,2.208l0.847-4.547c0.023-0.119-0.016-0.241-0.105-0.324L3.162,8.54L7.74,7.941c0.124-0.016,0.229-0.093,0.282-0.203L10,3.568l1.978,4.17c0.053,0.11,0.158,0.187,0.282,0.203l4.578,0.598L13.481,11.723z"></path></svg>'
+                let viewed = DataManager.wasProfileViewed(results[i].user_id) ? '<svg class="bright green" viewBox="0 0 20 20"><path d="M10,6.978c-1.666,0-3.022,1.356-3.022,3.022S8.334,13.022,10,13.022s3.022-1.356,3.022-3.022S11.666,6.978,10,6.978M10,12.267c-1.25,0-2.267-1.017-2.267-2.267c0-1.25,1.016-2.267,2.267-2.267c1.251,0,2.267,1.016,2.267,2.267C12.267,11.25,11.251,12.267,10,12.267 M18.391,9.733l-1.624-1.639C14.966,6.279,12.563,5.278,10,5.278S5.034,6.279,3.234,8.094L1.609,9.733c-0.146,0.147-0.146,0.386,0,0.533l1.625,1.639c1.8,1.815,4.203,2.816,6.766,2.816s4.966-1.001,6.767-2.816l1.624-1.639C18.536,10.119,18.536,9.881,18.391,9.733 M16.229,11.373c-1.656,1.672-3.868,2.594-6.229,2.594s-4.573-0.922-6.23-2.594L2.41,10l1.36-1.374C5.427,6.955,7.639,6.033,10,6.033s4.573,0.922,6.229,2.593L17.59,10L16.229,11.373z"></path></svg>'        :'<svg class="dim" viewBox="0 0 20 20"><path d="M10,6.978c-1.666,0-3.022,1.356-3.022,3.022S8.334,13.022,10,13.022s3.022-1.356,3.022-3.022S11.666,6.978,10,6.978M10,12.267c-1.25,0-2.267-1.017-2.267-2.267c0-1.25,1.016-2.267,2.267-2.267c1.251,0,2.267,1.016,2.267,2.267C12.267,11.25,11.251,12.267,10,12.267 M18.391,9.733l-1.624-1.639C14.966,6.279,12.563,5.278,10,5.278S5.034,6.279,3.234,8.094L1.609,9.733c-0.146,0.147-0.146,0.386,0,0.533l1.625,1.639c1.8,1.815,4.203,2.816,6.766,2.816s4.966-1.001,6.767-2.816l1.624-1.639C18.536,10.119,18.536,9.881,18.391,9.733 M16.229,11.373c-1.656,1.672-3.868,2.594-6.229,2.594s-4.573-0.922-6.23-2.594L2.41,10l1.36-1.374C5.427,6.955,7.639,6.033,10,6.033s4.573,0.922,6.229,2.593L17.59,10L16.229,11.373z"></path></svg>'        
                 var sex = results[i].sex < 0 ? '' : (results[i].sex == 0 ? 'female' : 'male');
 
                 $('#list tbody').append(`
@@ -1288,8 +1300,8 @@ function performUsernameSearch() {
                         $('#user-' + user.user_info.uid + ' td.details a.followings').html(`Following ${user.count_info.following_count}`)
                         $('#user-' + user.user_info.uid + ' td.details a.followers').html(`${user.count_info.follower_count} Fans`)
 
-                        $('#user-' + user.user_info.uid + ' td.details h5.userid').html(`ID: <span>${user.user_info.uid}<a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.uid}')"><i class="icon icon-copy"></i></a></span>`)
-                        $('#user-' + user.user_info.uid + ' td.details h5.shortid').html(`Short ID: <span>${user.user_info.short_id}<a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.short_id}')"><i class="icon icon-copy"></i></a></span>`)
+                        $('#user-' + user.user_info.uid + ' td.details h5.userid').html(`ID: <span>${user.user_info.uid}<a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.uid}')"><svg viewBox="0 0 20 20"><path d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411"></path></svg></a></span>`)
+                        $('#user-' + user.user_info.uid + ' td.details h5.shortid').html(`Short ID: <span>${user.user_info.short_id}<a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.short_id}')"><svg viewBox="0 0 20 20"><path d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411"></path></svg></a></span>`)
 
                         $('#user-' + user.user_info.uid + ' td.details h5.level').html(`Level: <span>${user.user_info.level}</span>`)
                         $('#user-' + user.user_info.uid + ' td.details h5.country').html(`${user.user_info.countryCode}`)
@@ -1350,12 +1362,19 @@ function _performHashtagSearch() {
 
                 let downloadDate = DataManager.wasDownloaded(results[i].vid)
                 let watchDate = DataManager.wasWatched(results[i].vid)
-                let downloaded = downloadDate === false ? '<i class="icon icon-floppy-disk dim"></i>' : '<i class="icon icon-floppy-disk bright blue" title="Downloaded ' + prettydate.format(downloadDate) + '"></i>'
-                let watched = watchDate === false ? '<i class="icon icon-eye dim"></i>' : '<i class="icon icon-eye bright green" title="Last watched ' + prettydate.format(watchDate) + '"></i>'
+                let downloaded = downloadDate === false ? 
+                    '<svg class="dim" viewBox="0 0 20 20"><path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path></svg>' : 
+                    `<svg class="bright green" title="Downloaded ${prettydate.format(downloadDate)}" viewBox="0 0 20 20"><path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path></svg>`
+                
+                let watched = watchDate === false ? 
+                    `<svg class="dim" viewBox="0 0 20 20"><path d="M10,6.978c-1.666,0-3.022,1.356-3.022,3.022S8.334,13.022,10,13.022s3.022-1.356,3.022-3.022S11.666,6.978,10,6.978M10,12.267c-1.25,0-2.267-1.017-2.267-2.267c0-1.25,1.016-2.267,2.267-2.267c1.251,0,2.267,1.016,2.267,2.267C12.267,11.25,11.251,12.267,10,12.267 M18.391,9.733l-1.624-1.639C14.966,6.279,12.563,5.278,10,5.278S5.034,6.279,3.234,8.094L1.609,9.733c-0.146,0.147-0.146,0.386,0,0.533l1.625,1.639c1.8,1.815,4.203,2.816,6.766,2.816s4.966-1.001,6.767-2.816l1.624-1.639C18.536,10.119,18.536,9.881,18.391,9.733 M16.229,11.373c-1.656,1.672-3.868,2.594-6.229,2.594s-4.573-0.922-6.23-2.594L2.41,10l1.36-1.374C5.427,6.955,7.639,6.033,10,6.033s4.573,0.922,6.229,2.593L17.59,10L16.229,11.373z"></path></svg>`:
+                    `<svg class="bright green" title="Last watched ${prettydate.format(watchDate)}" viewBox="0 0 20 20"><path d="M10,6.978c-1.666,0-3.022,1.356-3.022,3.022S8.334,13.022,10,13.022s3.022-1.356,3.022-3.022S11.666,6.978,10,6.978M10,12.267c-1.25,0-2.267-1.017-2.267-2.267c0-1.25,1.016-2.267,2.267-2.267c1.251,0,2.267,1.016,2.267,2.267C12.267,11.25,11.251,12.267,10,12.267 M18.391,9.733l-1.624-1.639C14.966,6.279,12.563,5.278,10,5.278S5.034,6.279,3.234,8.094L1.609,9.733c-0.146,0.147-0.146,0.386,0,0.533l1.625,1.639c1.8,1.815,4.203,2.816,6.766,2.816s4.966-1.001,6.767-2.816l1.624-1.639C18.536,10.119,18.536,9.881,18.391,9.733 M16.229,11.373c-1.656,1.672-3.868,2.594-6.229,2.594s-4.573-0.922-6.23-2.594L2.41,10l1.36-1.374C5.427,6.955,7.639,6.033,10,6.033s4.573,0.922,6.229,2.593L17.59,10L16.229,11.373z"></path></svg>`
                 let seen = watchDate === false ? '' : 'watched'
 
                 let isLive = results[i].status == 0 ? '<b style="color:limegreen;">[LIVE] </b> ' : ''
-                let inQueue = $('#download-' + results[i].vid).length > 0 ? '<a id="download-replay-' + results[i].vid + '" class="button icon-only" title="Download Replay"><i class="icon icon-download dim"></i></a>' : '<a id="download-replay-' + results[i].vid + '" class="button icon-only" onClick="downloadVideo(\'' + results[i].vid + '\')" title="Download Replay"><i class="icon icon-download"></i></a>'
+                let inQueue = $('#download-' + results[i].vid).length > 0 ? 
+                    `<a id="download-replay-${results[i].vid}" class="button icon-only" title="Download Replay"><svg class="dim" viewBox="0 0 20 20"><path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path></svg></a>` : 
+                    `<a id="download-replay-${results[i].vid}" class="button icon-only" onClick="downloadVideo('${results[i].vid}')" title="Download Replay"><svg class="dim" viewBox="0 0 20 20"><path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path></svg></a>`
 
                 $('#list tbody').append(`
 					<tr data-id="${results[i].vid}"  onClick="playVideo('${results[i].vid}')" class="user-${results[i].userid}">
