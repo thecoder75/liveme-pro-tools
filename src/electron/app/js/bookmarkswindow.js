@@ -68,7 +68,7 @@ function drawEntry() {
     if (parseInt(list[index].last_viewed) > 1514764800) d2 = prettydate.format(new Date(parseInt(list[index].last_viewed) * 1000))
 
     let sex = parseInt(list[index].sex) < 0 ? '' : (parseInt(list[index].sex) == 0 ? 'female' : 'male')
-    let isNew = parseInt(list[index].newest_replay) > parseInt(list[index].last_viewed) ? 'new' : ''
+    let isNew = (list[index].newest_replay > list[index].last_viewed) || list[index].counts.changed ? 'new' : ''
     let monitored = list[index].lamd == undefined ? 'dim' : list[index].lamd.monitor ? 'bright yellow' : 'dim'
 
     $('#bookmark-list').append(`

@@ -808,11 +808,13 @@ async function _checkBookmark(b, dispatch) {
     b.counts.new_following = parseInt(user.count_info.following_count) - parseInt(b.counts.followings)
     b.counts.new_followers = parseInt(user.count_info.follower_count) - parseInt(b.counts.followers)
     b.counts.new_replays = parseInt(user.count_info.video_count) - parseInt(b.counts.replays)
-
+    
     b.counts.replays = parseInt(user.count_info.video_count)
     b.counts.friends = parseInt(user.count_info.friends_count)
     b.counts.followers = parseInt(user.count_info.follower_count)
     b.counts.followings = parseInt(user.count_info.following_count)
+    b.counts.changed = false        // This is used as a secondary flag for new replays
+
     b.signature = user.user_info.usign
     b.sex = user.user_info.sex
     b.face = user.user_info.face
@@ -837,8 +839,8 @@ async function _checkBookmark(b, dispatch) {
 
         for (let i = 0; i < replays.length; i++) {
             if (replays[i].vtime - b.newest_replay > 0) {
-                b.hasNewReplays = true
-                b.newest_replay = parseInt(Math.floor(replays[0].vtime))
+                b.counts.changed = true
+                b.newest_replay = parseInt(replays[0].vtime)
                 DataManager.updateBookmark(b)
 
                 if (appSettings.get('general.enableShowReplays') === true) {
