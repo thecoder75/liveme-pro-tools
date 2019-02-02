@@ -69,7 +69,7 @@ function drawEntry() {
 
     let sex = parseInt(list[index].sex) < 0 ? '' : (parseInt(list[index].sex) == 0 ? 'female' : 'male')
     let isNew = parseInt(list[index].newest_replay) > parseInt(list[index].last_viewed) ? 'new' : ''
-    let monitored = list[index].lamd == undefined ? 'dim' : list[index].lamd.monitor == true ? 'bright yellow' : 'dim'
+    let monitored = list[index].lamd == undefined ? 'dim' : list[index].lamd.monitor ? 'bright yellow' : 'dim'
 
     $('#bookmark-list').append(`
         <tr id="entry-${list[index].uid}" data-viewed="${list[index].last_viewed}" class="${sex} ${isNew}">
