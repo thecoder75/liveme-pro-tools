@@ -135,10 +135,6 @@
     margin-bottom: 12px;
 }
 
-#home .panel .section i.icon {
-    font-size: 16px;
-    vertical-align: middle;
-}
 #home .panel .section .body {
     display: block;
     font-family: monospace;
@@ -146,21 +142,24 @@
     padding: 0;
 }
 
-#home .panel .section .body ul {
+#home .panel .section ul {
     list-style: inside;
-    margin: 0;
-    padding: 0;
+    margin: 0 0 32px;
+    padding: 0 0 0 16px;
 }
-#home .panel .section .body ul ul { 
+#home .panel .section ul ul { 
     list-style: inside circle; 
-    padding-left: 16px;
+    padding-left: 8px;
 }
 
-#home .panel .section .body ul li {
-    margin: 0;
-    padding: 0 0 0 4px;
-    line-height: 13pt;
+#home .panel .section ul li {
+    margin: 8px 0 8px 8px;
+    padding: 0;
+    font-size: 9pt;
+    line-height: 12pt;
+    list-style: outside;
 }
+
 
 
 

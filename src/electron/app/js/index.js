@@ -563,7 +563,7 @@ function checkForUpdatesOfLiveMeProTools() {
                         $('#lmptUpdateNews').empty()
                     }
 
-                    $('#lmptUpdateNews').append(`
+                    $('.panel').prepend(`
                     <div class="section">
                         <h3>
                             <svg class="bright red" viewBox="0 0 20 20" style="width: 48px; height: 48px; margin-right: 4px; vertical-align: middle">
