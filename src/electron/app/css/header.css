@@ -143,7 +143,7 @@ header.two-lines .search input[type=text] {
 header .button-group {
     position: absolute;
     top: 0;
-    left: 640px;
+    left: 560px;
 }
 
 /*
@@ -189,7 +189,7 @@ header .search {
 .search input[type=text] {
     display: inline-block;
     border: none;
-    width: 320px;
+    width: 256px;
     height: 30px;
     line-height: 30px;
     padding: 0 8px;
