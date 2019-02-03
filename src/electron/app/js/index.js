@@ -394,6 +394,8 @@ function showUser(u) {
 
 function openBookmarks() { ipcRenderer.send('open-bookmarks') }
 
+function openHousekeeping() { ipcRenderer.send('open-housekeeping') }
+
 function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: u === undefined ? currentUser.uid : u }) }
 
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: u === undefined ? currentUser.uid : u }) }
