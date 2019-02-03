@@ -370,7 +370,7 @@ function showSettings() { $('#settings').show() }
 
 function hideSettings() {
     $('#settings').hide()
-    initHome()
+    goHome()
 }
 
 function closeWindow() { window.close() }
@@ -471,7 +471,7 @@ function goHome() {
     $('#queue-list').hide()
 
     currentView = 'home'
-    initHome()
+    checkForUpdatesOfLiveMeProTools()
 }
 
 function preSearch(q) {
@@ -581,23 +581,6 @@ function checkForUpdatesOfLiveMeProTools() {
             }
         }
     })
-}
-
-function initHome() {
-
-    $('#home').show()
-
-    checkForUpdatesOfLiveMeProTools()
-    if ((appSettings.get('general.enableHomeScan') == true) &&
-        (
-            (appSettings.get('general.enableShowReplays') == true) || 
-            (appSettings.get('general.enableShowFans') == true) || 
-            (appSettings.get('general.enableShowFollowings') == true)
-        )
-    ){
-        $('#bookmarklist').show();    
-        loadBookmarkFeeds()
-    }
 }
 
 function passwordShowToggler(e) {
