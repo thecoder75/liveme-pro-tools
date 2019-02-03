@@ -1,0 +1,54 @@
+h4 {
+    padding: 0 8px 4px;
+    margin: 32px 0 8px;
+    border-bottom: solid 2px rgba(255,255,255,0.2);
+}
+
+h4 svg {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+main {
+    display: block;
+    overflow: hidden;
+}
+
+p {
+    font-size: 12pt;
+    font-weight: 600;
+    padding: 16px;
+    text-align: center;
+}
+ul {
+    margin: 8px 16px 16px;
+}
+
+ul li {
+    line-height: 40px;
+    margin: 24px 0;
+    padding: 0;
+}
+
+ul li svg {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    float: right;
+    position: relative;
+    top: 2px;
+}
+
+
+
+input.numInput {
+    width: 32px;
+    text-align: center;
+    margin: 0 4px;
+}
+
+.svg-button {
+    
+}
