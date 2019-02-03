@@ -56,7 +56,7 @@
             "output": "./dist"
         },
         "productName": "LiveMe Pro Tools",
-        "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+        "artifactName": "LiveMe_Pro_Tools-${version}-${os}-${arch}.${ext}",
         "asar": true,
         "linux": {
             "icon": "src/electron/build/appicon.png",
