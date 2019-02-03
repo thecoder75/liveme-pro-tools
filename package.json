@@ -9,14 +9,14 @@
         "url": "https://github.com/thecoder1975/liveme-pro-tools"
     },
     "scripts": {
-        "start": "NODE_ENV='development' && ./node_modules/.bin/electron ./src/electron/index.js --enable-logging",
+        "start": "cross-env NODE_ENV=development electron ./src/electron/index.js --enable-logging",
         "release": "build -w && build -l && build -m",
         "release-win": "build -w",
         "release-linux": "build -l",
         "release-mac": "build -m"
     },
     "author": "TheCoder75",
-    "license": "AGPL3",
+    "license": "AGPL-3.0-only",
     "dependencies": {
         "async": "^2.6.0",
         "axios": "^0.17.1",
@@ -37,6 +37,7 @@
         "tar-fs": "^1.16.2"
     },
     "devDependencies": {
+        "cross-env": "^5.2.0",
         "electron": "^3.1.1",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
@@ -55,10 +56,10 @@
             "output": "./dist"
         },
         "productName": "LiveMe Pro Tools",
-        "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+        "artifactName": "LiveMe_Pro_Tools-${version}-${os}-${arch}.${ext}",
         "asar": true,
         "linux": {
-            "icon": "src/electron/build/appicon.png",
+            "icon": "src/electron/build/",
             "target": [
                 {
                     "target": "AppImage",
