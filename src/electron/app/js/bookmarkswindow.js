@@ -153,7 +153,9 @@ function hideNonRecent() {
 function toggleMonitoringFlag(uid) {
 
     let bookmark = DataManager.getSingleBookmark(uid)
-    bookmark.lamd.monitor = !bookmark.lamd.monitor;
+    if (typeof bookmark == 'undefined') return
+
+    bookmark.lamd.monitor = !bookmark.lamd.monitor
     DataManager.updateBookmark(bookmark)
     DataManager.saveToDisk()
     
