@@ -59,7 +59,7 @@
         "artifactName": "LiveMe_Pro_Tools-${version}-${os}-${arch}.${ext}",
         "asar": true,
         "linux": {
-            "icon": "src/electron/build/appicon.png",
+            "icon": "src/electron/build/",
             "target": [
                 {
                     "target": "AppImage",
