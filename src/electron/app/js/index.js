@@ -43,13 +43,12 @@ $(function() {
     }
 
     $('footer h1').html('').show()
-    $('#bookmarklist').hide()
     setTimeout(() => {
         if (appSettings.get('general.enableHomeScan') == true) {
-            $('footer h1').html('Loading Home').show()
-            initHome()
+            $('footer h1').html('Online').show()
+            goHome()
         }
-    }, 2500)
+    }, 500)
 
     // Store Bookmarks, History and more every 5 minutes (300,000ms) in case of a crash or something
     setInterval(() => {
@@ -396,6 +395,8 @@ function openBookmarks() { ipcRenderer.send('open-bookmarks') }
 
 function openHousekeeping() { ipcRenderer.send('open-housekeeping') }
 
+function openHomeWindow() { ipcRenderer.send('open-home-window') }
+
 function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid: u === undefined ? currentUser.uid : u }) }
 
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: u === undefined ? currentUser.uid : u }) }
@@ -465,7 +466,6 @@ function readComments(u) { ipcRenderer.send('read-comments', { userid: u }) }
 function goHome() {
     $('main').hide()
     $('#home').show()
-    $('footer h1').html('Loading Home').show()
 
     $('overlay').hide()
     $('#queue-list').hide()
@@ -542,23 +542,6 @@ function restoreData() {
 
 function checkForUpdatesOfLiveMeProTools() {
 
-    $('#home .panel').html(`
-            <div class="section">
-                <h3>
-                    <svg class="bright" viewBox="0 0 20 20" style="width: 32px; height: 32px; margin-right: 4px; vertical-align: middle">
-                        <path d="M17.592,8.936l-6.531-6.534c-0.593-0.631-0.751-0.245-0.751,0.056l0.002,2.999L5.427,9.075H2.491c-0.839,0-0.162,0.901-0.311,0.752l3.683,3.678l-3.081,3.108c-0.17,0.171-0.17,0.449,0,0.62c0.169,0.17,0.448,0.17,0.618,0l3.098-3.093l3.675,3.685c-0.099-0.099,0.773,0.474,0.773-0.296v-2.965l3.601-4.872l2.734-0.005C17.73,9.688,18.326,9.669,17.592,8.936 M3.534,9.904h1.906l4.659,4.66v1.906L3.534,9.904z M10.522,13.717L6.287,9.48l4.325-3.124l3.088,3.124L10.522,13.717z M14.335,8.845l-3.177-3.177V3.762l5.083,5.083H14.335z"></path>
-                    </svg>
-                    Tips
-                </h3>
-                <h5>New Video Player Key Shortcuts:</h5>
-                <ul>
-                    <li>j &nbsp;&nbsp;&nbsp;&nbsp; go back 10 seconds</li>
-                    <li>k &nbsp;&nbsp;&nbsp;&nbsp; pause/play toggle</li>
-                    <li>l &nbsp;&nbsp;&nbsp;&nbsp; skip 10 seconds</li>
-                </ul>
-            </div>
-    `)
-
     request({
         url: 'https://api.github.com/repos/thecoder75/liveme-pro-tools/releases/latest',
         method: 'get',
@@ -579,11 +562,8 @@ function checkForUpdatesOfLiveMeProTools() {
             if (data.prerelease !== true) {
 
                 if (rv != parseFloat(window.require('electron').remote.app.getVersion())) {
-                    if ($('#lmptUpdateNews').length < 1) {
-                        $('#lmptUpdateNews').empty()
-                    }
 
-                    $('.panel').prepend(`
+                    $('.panel.update').html(`
                     <div class="section">
                         <h3>
                             <svg class="bright red" viewBox="0 0 20 20" style="width: 48px; height: 48px; margin-right: 4px; vertical-align: middle">
@@ -628,250 +608,6 @@ function passwordShowToggler(e) {
         e.innerHTML = 'Show'
         document.getElementById('authPassword').type = "password";
     }
-}
-
-function rescanFeeds() {
-    cachedBookmarkFeeds = undefined
-    loadBookmarkFeeds()
-}
-
-function loadBookmarkFeeds() {
-    if (!LiveMe.token) //  delay loop until successful login
-    {
-        setTimeout(() => loadBookmarkFeeds(), 500)
-        $('footer h1').html('Waiting for Login').show()
-        return;
-    }
-
-    clearHomeUI();
-
-    if (cachedBookmarkFeeds) {
-        $('footer h1').html('Bookmark feeds are loaded from cache ...').show()
-        loadFromCache(cachedBookmarkFeeds, addToHome)
-        $('footer h1').html('').show()
-
-    } else {
-        $('footer h1').html('Bookmarks are now being scanned for new replays...').show()
-        $('#rescan-btn').html("Scanning ...")
-        document.getElementById("rescan-btn").disabled = true;
-
-        setProgressBarValue(0)
-        showProgressBar()
-
-        scanLiveme()
-    }
-}
-
-function scanLiveme() {
-    bookmarksFromJson = DataManager.getAllBookmarks()
-    if (bookmarksFromJson.length === 0)
-        return
-
-    cachedBookmarkFeeds = []
-
-    setImmediate(() => {
-        _scanThread(0)
-    })
-}
-
-function clearHomeUI() {
-
-    if (appSettings.get('general.enableShowReplays') === true) {
-        $('#home #newReplaysHeader').show()
-        $('#home #newreplays').show().empty()
-    } else {
-        $('#home #newReplaysHeader').hide()
-        $('#home #newreplays').hide()
-    }
-
-    if (appSettings.get('general.enableShowFollowings') === true) {
-        $('#home #newFollowingsHeader').show()
-        $('#home #newfollowings').show().empty()
-    } else {
-        $('#home #newFollowingsHeader').hide()
-        $('#home #newfollowings').hide()
-    }
-
-    if (appSettings.get('general.enableShowFans') === true) {
-        $('#home #newFansHeader').show()
-        $('#home #newfans').show().empty()
-    } else {
-        $('#home #newFansHeader').hide()
-        $('#home #newfans').hide()
-    }
-
-}
-
-function loadFromCache(bookmarks, dispatch) {
-    setImmediate(() => {
-        bookmarks.forEach(b => {
-            if (b.changed_followings) {
-                dispatch(NEW_FOLLOWINGS, b)
-            }
-            if (b.changed_followers) {
-                dispatch(NEW_FANS, b)
-            }
-            if (b.hasNewReplays) {
-                dispatch(NEW_REPLAYS, b)
-            }
-        })
-    })
-}
-
-function _scanThread(id) {
-    setImmediate(async() => {
-        if (id < bookmarksFromJson.length - 1) {
-            // Iterate over bookmarks but start each recursive call with a delay.
-            // Each bookmark entry scan is delayed by 50 ms.
-            setTimeout(() => _scanThread(id + 1), 50)
-        } else {
-            // We need to save the bookmarks once the scan is complete so they're updated
-            setTimeout(() => {
-                DataManager.saveToDisk()
-            }, 1000)
-        }
-
-        // UI
-        $('footer h1').html('Checking ' + id + ' of ' + bookmarksFromJson.length + ' bookmarks.')
-        setProgressBarValue((id / bookmarksFromJson.length) * 100)
-
-        // Logic
-        let currentBookmarkToScan = bookmarksFromJson[id]
-        let updatedBookmark = await _checkBookmark(currentBookmarkToScan, addToHome)
-        cachedBookmarkFeeds.push(updatedBookmark)
-
-        // Update UI after last element was scanned.
-        if (id === bookmarksFromJson.length - 1) {
-            $('footer h1').html('Bookmarks scan complete.')
-            hideProgressBar()
-            $('#rescan-btn').html("Rescan")
-            document.getElementById("rescan-btn").disabled = false;
-        }
-
-    })
-}
-
-function addToHome(type, bookmark) {
-    if (currentView !== 'home') return
-
-    let hideFollowers = appSettings.get("general.homeHideNewFollowers")
-    let hideFans = appSettings.get("general.homeHideNewFans")
-    let m = ''
-    let c = 0
-    let s = ''
-
-    switch (type) {
-        case NEW_FOLLOWINGS:
-            m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
-            c = Math.abs(bookmark.counts.new_followers)
-            s = c > 1 ? 's' : ''
-            $('#bookmarklist #newfollowings').append(`
-                <div class="bookmark"
-                    id="bookmark-${bookmark.uid}"
-                    onClick="showFollowing('${bookmark.uid}')">
-                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-                    <h1>${bookmark.nickname}</h1>
-                    <h3>User is following ${c} ${m} account${s} now.</h3>
-                    <h2>${type}</h2>
-                </div>
-            `)
-            break;
-        case NEW_FANS:
-            m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
-            c = Math.abs(bookmark.counts.new_followers)
-            s = c > 1 ? 's' : ''
-            $('#bookmarklist #newfans').append(`
-                <div class="bookmark"
-                    id="bookmark-${bookmark.uid}"
-                    onClick="showFollowers('${bookmark.uid}')">
-                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-                    <h1>${bookmark.nickname}</h1>
-                    <h3>User has ${c} ${m} fan${s} now.</h3>
-                    <h2>${type}</h2>
-                </div>
-                `)
-            break;
-        case NEW_REPLAYS:
-            s = bookmark.counts.new_replays > 1 ? 's' : ''
-            $('#bookmarklist #newreplays').append(`
-                <div class="bookmark"
-                    id="bookmark-${bookmark.uid}"
-                    onClick="showUser('${bookmark.uid}')">
-                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-                    <h1>${bookmark.nickname}</h1>
-                    <h3>User has ${bookmark.counts.new_replays} new replay${s}.</h3>
-                    <h2>${type}</h2>
-                </div>
-                `)
-            break;
-        default:
-            break;
-    }
-
-}
-
-async function _checkBookmark(b, dispatch) {
-    let uid = b.uid
-    if (uid === undefined) return
-    if (!LiveMe.user) {
-        return setTimeout(async() => await _checkBookmark(), 5000)
-    }
-
-    let user = await LiveMe.getUserInfo(uid)
-    if (user === undefined) return
-
-    b.changed_followings = b.counts.followings != user.count_info.following_count
-    b.changed_followers = b.counts.followers != user.count_info.follower_count
-
-    // We now store how much has changed on the counts
-    b.counts.new_following = parseInt(user.count_info.following_count) - parseInt(b.counts.followings)
-    b.counts.new_followers = parseInt(user.count_info.follower_count) - parseInt(b.counts.followers)
-    b.counts.new_replays = parseInt(user.count_info.video_count) - parseInt(b.counts.replays)
-    
-    b.counts.replays = parseInt(user.count_info.video_count)
-    b.counts.friends = parseInt(user.count_info.friends_count)
-    b.counts.followers = parseInt(user.count_info.follower_count)
-    b.counts.followings = parseInt(user.count_info.following_count)
-    b.counts.changed = false        // This is used as a secondary flag for new replays
-
-    b.signature = user.user_info.usign
-    b.sex = user.user_info.sex
-    b.face = user.user_info.face
-    b.nickname = user.user_info.uname
-    b.shortid = parseInt(user.user_info.short_id)
-
-    DataManager.updateBookmark(b)
-
-    if (b.changed_followings && (appSettings.get('general.enableShowFollowings') === true)) {
-        dispatch(NEW_FOLLOWINGS, b)
-    }
-
-    if (b.changed_followers && (appSettings.get('general.enableShowFans') === true)) {
-        dispatch(NEW_FANS, b)
-    }
-
-    if (b.counts.replays > 0) {
-        let replays = await LiveMe.getUserReplays(uid, 1, 2)
-
-        if (replays === undefined) return
-        if (replays.length < 1) return
-
-        for (let i = 0; i < replays.length; i++) {
-            if (replays[i].vtime - b.newest_replay > 0) {
-                b.counts.changed = true
-                b.newest_replay = parseInt(replays[0].vtime)
-                DataManager.updateBookmark(b)
-
-                if (appSettings.get('general.enableShowReplays') === true) {
-                    dispatch(NEW_REPLAYS, b)
-                }
-                break
-            }
-        }
-    }
-
-
-    return b;
 }
 
 function saveAccountFace() {
