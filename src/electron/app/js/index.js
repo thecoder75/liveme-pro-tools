@@ -585,7 +585,6 @@ function checkForUpdatesOfLiveMeProTools() {
 
 function initHome() {
 
-    $('#lmptUpdateNews').html('')
     $('#home').show()
 
     checkForUpdatesOfLiveMeProTools()
