@@ -94,28 +94,24 @@
 #bookmark-list td .bookmarkicon { right: 8px; }
 #bookmark-list td .monitoricon { right: 32px; }
 
-#bookmark-list td.new .flag {
-    display: block;
-    width: 120px;
-    height: 24px;
-    position: absolute;
-    top: 0;
-    right: 0;
-    font-size: 12pt;
-    font-weight: 600;
-    line-height: 24px;
-    text-align: center;
-}
-
-#bookmark-list tr.new_replays {
-    background-color: rgba(0, 240, 0, 0.1);
-}
-
-#bookmark-list tr.new_replays a.button.view {
-    background-color: rgba(240, 240, 0, 0.8);
-    color: rgb(0, 0, 0);
-    font-weight: 600;
-}
-
 #bookmark-list tr td .monitor-flag { color: darkgray; }
 #bookmark-list tr.monitored td .monitor-flag { color: blue; }
+
+
+#bookmark-search {
+    width: 160px;
+    left: 56px;
+}
+
+.active-timespan {
+    display: block;
+    position: absolute;
+    top: 24px;
+    line-height: 40px;
+    left: 248px;
+}
+#bookmark-timespan {
+    
+    width: 40px;
+    text-align: right;
+}
