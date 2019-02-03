@@ -29,6 +29,7 @@ let bookmarksWindow = null
 let chatWindow = null
 let wizardWindow = null
 let homeWindow = null
+let housekeepingWindow = null
 let menu = null
 let appSettings = require('electron-settings')
 
@@ -234,7 +235,7 @@ ipcMain.on('open-home-window', (event, arg) => {
 
     homeWindow.on('ready-to-show', () => {
         homeWindow.show()
-    }).loadURL(`file://${__dirname}/app/newhome.html`)
+    }).loadURL(`file://${__dirname}/app/home.html`)
 })
 
 
@@ -827,6 +828,44 @@ ipcMain.on('open-bookmarks', (event, arg) => {
     bookmarksWindow.on('ready-to-show', () => {
         bookmarksWindow.show()
     }).loadURL(`file://${__dirname}/app/bookmarks.html`)
+})
+
+
+ipcMain.on('open-housekeeping', (event, arg) => {
+    if (housekeepingWindow == null) {
+        housekeepingWindow = new BrowserWindow({
+            icon: path.join(__dirname, 'appicon.png'),
+            width: 400,
+            height: 600,
+            minWidth: 400,
+            maxWidth: 400,
+            minHeight: 600,
+            maxHeight: 600,
+            darkTheme: true,
+            autoHideMenuBar: false,
+            disableAutoHideCursor: true,
+            titleBarStyle: 'default',
+            fullscreen: false,
+            maximizable: false,
+            frame: false,
+            show: false,
+            backgroundColor: '#000000'
+        })
+
+        housekeepingWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+
+        housekeepingWindow.on('close', () => {
+            housekeepingWindow.webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            })
+            housekeepingWindow = null
+        })
+    } else {
+        housekeepingWindow.restore()
+    }
+    housekeepingWindow.on('ready-to-show', () => {
+        housekeepingWindow.show()
+    }).loadURL(`file://${__dirname}/app/housekeeping.html`)
 })
 
 ipcMain.on('restore-backup', (event, arg) => {
