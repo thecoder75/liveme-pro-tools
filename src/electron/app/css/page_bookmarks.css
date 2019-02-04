@@ -97,10 +97,9 @@
 #bookmark-list tr td .monitor-flag { color: darkgray; }
 #bookmark-list tr.monitored td .monitor-flag { color: blue; }
 
-
 #bookmark-search {
-    width: 160px;
-    left: 56px;
+    width: 144px;
+    left: 128px;
 }
 
 .active-timespan {
@@ -108,10 +107,13 @@
     position: absolute;
     top: 24px;
     line-height: 40px;
-    left: 248px;
+    right: 16px;
 }
+
 #bookmark-timespan {
-    
     width: 40px;
     text-align: right;
 }
+
+#filter-male, #filter-female { background: none; border: solid 1px rgba(0,0,0,0); border-radius: 5px; }
+#filter-male.active, #filter-female.active { border-color: rgba(255,255,255,0.15); }

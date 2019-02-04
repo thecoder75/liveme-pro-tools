@@ -165,3 +165,23 @@ function toggleMonitoringFlag(uid) {
         $('#entry-'+uid+' .monitoricon i').removeClass('bright').removeClass('yellow').addClass('dim')
 
 }
+
+function toggleMaleProfiles() {
+    if ($('#filter-male').hasClass('active') === true) {
+        $('.male').hide()
+        $('#filter-male').removeClass('active')
+    } else {
+        $('.male').show()
+        $('#filter-male').addClass('active')
+    }
+}
+
+function toggleFemaleProfiles() {
+    if ($('#filter-female').hasClass('active') === true) {
+        $('.female').hide()
+        $('#filter-female').removeClass('active')
+    } else {
+        $('.female').show()
+        $('#filter-female').addClass('active')
+    }
+}
