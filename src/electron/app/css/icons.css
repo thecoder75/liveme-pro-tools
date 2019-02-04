@@ -36,6 +36,11 @@ svg.yellow cirlce { stroke: rgb(240,240,0); }
 svg.black path, svg.black polygon, svg.black rect { fill: rgb(0,0,0); }
 svg.black circle { stroke: rgb(0,0,0); }
 
+svg.blue path, svg.blue polygon, svg.blue rect { fill: rgb(32,112,255); }
+svg.blue circle { stroke: rgb(32,112,255); }
+
+svg.pink path, svg.pink polygon, svg.pink rect { fill: rgb(255,144,120); }
+svg.pink circle { stroke: rgb(255,144,120); }
 
 #list svg.watched {
     display: inline-block;
