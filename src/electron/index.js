@@ -836,7 +836,7 @@ ipcMain.on('open-housekeeping', (event, arg) => {
         housekeepingWindow = new BrowserWindow({
             icon: path.join(__dirname, 'appicon.png'),
             width: 480,
-            height: 340,
+            height: 400,
             minWidth: 480,
             maxWidth: 480,
             minHeight: 400,
