@@ -835,11 +835,11 @@ ipcMain.on('open-housekeeping', (event, arg) => {
     if (housekeepingWindow == null) {
         housekeepingWindow = new BrowserWindow({
             icon: path.join(__dirname, 'appicon.png'),
-            width: 480,
-            height: 400,
-            minWidth: 480,
-            maxWidth: 480,
-            minHeight: 400,
+            width: 520,
+            height: 480,
+            minWidth: 520,
+            maxWidth: 520,
+            minHeight: 480,
             maxHeight: 1600,
             darkTheme: true,
             autoHideMenuBar: false,
