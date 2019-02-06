@@ -10,6 +10,36 @@ let pList = []
 
 function closeWindow() { window.close() }
 
+function previewBookmarks() {
+    list = DataManager.getAllBookmarks()
+
+    let count = 0
+    pList = []
+    
+    $('#results').html('')
+
+    for(let i = 0; i < list.length; i++) {
+        let d_now = Math.floor((new Date()).getTime() / 1000) - ($('#bm1').val() * 86400)
+        let f = (d_now - list[i].newest_replay)
+    
+        if (f > 0) {
+            let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
+            $('#results').append(`
+                <div class="entry">
+                    <div class="dt">Last replay was ${dt}</div>
+                    <div class="name">${list[i].nickname}</div>
+                    <div class="luid">Long ID: ${list[i].uid}</div>
+                    <div class="suid">Short ID: ${list[i].shortid}</div>
+                </div>
+            `)
+            count++
+        }
+    }
+
+    $('#results').prepend(`<h4>Total: ${count}</h4>`)
+
+}
+
 function prescanBookmarks() {
     list = DataManager.getAllBookmarks()
 
@@ -43,6 +73,32 @@ function prescanBookmarks() {
         }
     }    
 }
+
+function previewBookmarksNR() {
+    list = DataManager.getAllBookmarks()
+
+    let count = 0
+    pList = []
+    
+    for(let i = 0; i < list.length; i++) {
+        if (list[i].counts.replays == 0) {
+
+            let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
+            $('#results').append(`
+                <div class="entry">
+                    <div class="dt">Last replay was ${dt}</div>
+                    <div class="name">${list[i].nickname}</div>
+                    <div class="luid">Long ID: ${list[i].uid}</div>
+                    <div class="suid">Short ID: ${list[i].shortid}</div>
+                </div>
+            `)
+            count++
+        }
+    }
+    
+    $('#results').prepend(`<h4>Total: ${count}</h4>`)
+}
+           
 
 function prescanBookmarksNR() {
     list = DataManager.getAllBookmarks()
