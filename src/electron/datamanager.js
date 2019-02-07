@@ -155,21 +155,13 @@ class DataManager {
                     bookmarks = tryParseJSON(data, bookmarksJson)
                     if (bookmarks.length == 0) return
 
-                    /*
-                        Migrate bookmarks using the old format to the new one,
-                        in order to avoid unwanted behaviour
-                    */
                     for (let i = 0; i < bookmarks.length; i++) {
                         if ('lamd' in bookmarks[i]) {
                             if ('monitored' in bookmarks[i].lamd) {
-                                // old bookmark property detected, let's use the previous value
-                                // instead of blindly setting it to false
                                 bookmarks[i].lamd.monitor = bookmarks[i].lamd.monitored
-                                // delete the old property
                                 delete bookmarks[i].lamd.monitored
                             }
                         } else {
-                            // old bookmark detected, let's create a new 'lamd' object
                             bookmarks[i].lamd = {
                                 monitor: false,
                                 last_checked: 0
@@ -255,6 +247,16 @@ class DataManager {
         fs.writeFileSync(queuedJson, JSON.stringify(queued, null, 2))
     }
 
+    forceSave() {
+        fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
+        fs.writeFileSync(profilesJson, JSON.stringify(profiles, null, 2))
+        fs.writeFileSync(downloadedJson, JSON.stringify(downloaded, null, 2))
+        fs.writeFileSync(watchedJson, JSON.stringify(watched, null, 2))
+        fs.writeFileSync(ignoredJson, JSON.stringify(ignored_forever, null, 2))
+        fs.writeFileSync(erroredJson, JSON.stringify(errored, null, 2))
+        fs.writeFileSync(queuedJson, JSON.stringify(queued, null, 2))
+    }
+
     /**
      * Track Downloaded Replays
      */
@@ -303,8 +305,6 @@ class DataManager {
             delete ignored_forever[userid]
         }
         ignored_temp[userid] = 0;
-        // We don't save ignored_temp to disk, so the next time the app loads,
-        // those entries will not be ignored anymore (what we want).
 
         isBusy = false
     }
