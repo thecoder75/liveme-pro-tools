@@ -72,7 +72,8 @@ function _scanThread(id) {
             // Each bookmark entry scan is delayed by 50 ms.
             setTimeout(() => _scanThread(id + 1), 50)
             
-            if (id % 5 == 0) $('header h1').html('Recent Activity - Scanning ('+Math.ceil((id / bookmarksFromJson.length) * 100)+'%)...')
+            let step = Math.floor(bookmarksFromJson.length / 20);
+            if (id % step == 0) $('header h1').html('Recent Activity - Scanning ('+Math.ceil((id / bookmarksFromJson.length) * 100)+'%)...')
         } else {
             // We need to save the bookmarks once the scan is complete so they're updated
             $('header h1').html('Recent Activity')
