@@ -23,16 +23,20 @@ function previewBookmarks() {
         let f = (d_now - list[i].newest_replay)
     
         if (f > 0) {
-            let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
-            $('#results').append(`
-                <div class="entry">
-                    <div class="dt">Last replay was ${dt}</div>
-                    <div class="name">${list[i].nickname}</div>
-                    <div class="luid">Long ID: ${list[i].uid}</div>
-                    <div class="suid">Short ID: ${list[i].shortid}</div>
-                </div>
-            `)
-            count++
+            if ('locked' in list[i]) {  
+                // Skip it, its locked from being f**ked with!
+            } else {
+                let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
+                $('#results').append(`
+                    <div class="entry">
+                        <div class="dt">Last replay was ${dt}</div>
+                        <div class="name">${list[i].nickname}</div>
+                        <div class="luid">Long ID: ${list[i].uid}</div>
+                        <div class="suid">Short ID: ${list[i].shortid}</div>
+                    </div>
+                `)
+                count++
+            }
         }
     }
 
@@ -51,8 +55,12 @@ function prescanBookmarks() {
         let f = (d_now - list[i].newest_replay)
     
         if (f > 0) {
-            pList.push(list[i])
-            count++
+            if ('locked' in list[i]) {  
+                // Skip it, its locked from being f**ked with!
+            } else {
+                pList.push(list[i])
+                count++
+            }
         }
     }
 
@@ -82,17 +90,20 @@ function previewBookmarksNR() {
     
     for(let i = 0; i < list.length; i++) {
         if (list[i].counts.replays == 0) {
-
-            let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
-            $('#results').append(`
-                <div class="entry">
-                    <div class="dt">Last replay was ${dt}</div>
-                    <div class="name">${list[i].nickname}</div>
-                    <div class="luid">Long ID: ${list[i].uid}</div>
-                    <div class="suid">Short ID: ${list[i].shortid}</div>
-                </div>
-            `)
-            count++
+            if ('locked' in list[i]) {  
+                // Skip it, its locked from being f**ked with!
+            } else {
+                let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
+                $('#results').append(`
+                    <div class="entry">
+                        <div class="dt">Last replay was ${dt}</div>
+                        <div class="name">${list[i].nickname}</div>
+                        <div class="luid">Long ID: ${list[i].uid}</div>
+                        <div class="suid">Short ID: ${list[i].shortid}</div>
+                    </div>
+                `)
+                count++
+            }
         }
     }
     
@@ -108,8 +119,12 @@ function prescanBookmarksNR() {
     
     for(let i = 0; i < list.length; i++) {
         if (list[i].counts.replays == 0) {
-            pList.push(list[i])
-            count++
+            if ('locked' in list[i]) {  
+                // Skip it, its locked from being f**ked with!
+            } else {
+                pList.push(list[i])
+                count++
+            }
         }
     }
 
