@@ -429,10 +429,13 @@ class DataManager {
             if (bookmarks_new[i].uid === user.uid) add = false
         }
         if (add === true) {
-            user.lamd = {
-                monitor: false,
-                last_checked: 0
+            if ('lamd' in user) {
+                // User record is in current format
+            } else {
+                user.monitor = false
+                user.last_checked = 0
             }
+
             bookmarks_new.push(user)
         }
         fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks_new, null, 2))
