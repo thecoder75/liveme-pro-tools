@@ -143,3 +143,8 @@ a.button.icon-only i.icon {
     line-height: 16px;
     vertical-align: middle;
 }
+
+a.button.red { background-color: rgb(240,0,0); color: rgb(255,255,255); }
+a.button.green { background-color: rgb(0,180,0); color: rgb(0,0,0); }
+a.button.blue { background-color: rgb(0,0,224); color: rgb(255,255,255); }
+a.button.yellow { background-color: rgb(224,224,0); color: rgb(0,0,0); }
