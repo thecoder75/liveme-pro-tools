@@ -363,6 +363,7 @@
     padding: 0;
     line-height: 20px;
     height: 20px;
+    margin-left: 8px;
 }
 
 .details > div.info h2 a svg, .details > div.info div.buttons svg {
@@ -484,7 +485,6 @@
     position: absolute;
     top: 4px;
 }
-.user-search div.bookmarked i.icon, .user-search div.viewed i.icon { font-size: 20px; line-height: 20px; }
 
 .user-search div.viewed { right: 12px; }
 .user-search div.bookmarked { right: 40px; }
