@@ -160,9 +160,9 @@ function toggleMonitoringFlag(uid) {
     DataManager.saveToDisk()
     
     if (bookmark.lamd.monitor)
-        $('#entry-'+uid+' .monitoricon i').addClass('bright').addClass('yellow').removeClass('dim')
+        $('#entry-'+uid+' .monitoricon svg').addClass('bright').addClass('yellow').removeClass('dim')
     else
-        $('#entry-'+uid+' .monitoricon i').removeClass('bright').removeClass('yellow').addClass('dim')
+        $('#entry-'+uid+' .monitoricon svg').removeClass('bright').removeClass('yellow').addClass('dim')
 
 }
 
