@@ -105,36 +105,47 @@ header.two-lines {
 
 header.two-lines h1 { line-height: 24px; }
 header.two-lines div.buttons-row {
-    position: absolute;
-    top: 24px;
-    left: 16px;
-    display: block;
+    display: inline-block;
     height: 40px;
     line-height: 40px;
 }
 header.two-lines .search-row {
     position: absolute;
-    top: 33px;
-    left: 107px;
-    right: 0px;
-    padding: 0 4px;
-    width: 50%;
+    display: block;
+    top: 30px;
+    left: 0;
+    right: 0;
+    padding: 0 8px;
+}
+
+header.two-lines .search-row a.button {
+    height: 30px;
+    width: 30px;
+    background: none;
+}
+header.two-lines .search-row a.button svg {
+    width: 20px;
+    height: 20px;
 }
 
 header.two-lines div.buttons-row span {
     display: inline-block;
     font-size: 9.5pt;
     font-weight: 600;
-    padding-right: 8px;
 }
 
 header.two-lines .select {
     vertical-align: middle;
-    background-color: rgb(32,32,32);
+    background-color: none;
 }
 
-header.two-lines .search input[type=text] {
-    width: 280px;
+header.two-lines .search-row input[type=text] {
+    display: inline-block;
+    width: 160px;
+    margin: 0 4px;
+    padding: 0 4px;
+    vertical-align: middle;
+    font-size: 9.5pt;
 }
 
 /*
@@ -192,9 +203,9 @@ header .search {
     width: 256px;
     height: 30px;
     line-height: 30px;
-    padding: 0 8px;
+    padding: 0 4px;
     margin: 0;
-    color: rgb(192,192,192);
+    color: rgb(224,224,224);
     background-color: transparent;
     vertical-align: top;
     outline: none;
