@@ -303,6 +303,15 @@ function addEntry (entry) {
         </tr>
     `)
 
+    if ($('#filter-female').hasClass('active') === true) {
+        $('.is-female').hide()
+    }
+    
+    if ($('#filter-male').hasClass('active') === true) {
+        $('.is-male').hide()
+    }
+
+    
     LiveMe.getUserInfo(entry.uid).then(user => {
         if ((user.count_info.replay_count < 1) && (appSettings.get('general.hide_zeroreplay_followings') === true) && (winType === 1)) {
             $('#entry-' + user.user_info.uid).remove()
@@ -314,10 +323,18 @@ function addEntry (entry) {
             $('#user-' + user.user_info.uid + '-buttons a.fans').html(user.count_info.follower_count + ' Fans')
             $('#user-' + user.user_info.uid + '-buttons a.following').html('Following ' + user.count_info.following_count)
         }
-
+            
+        if ($('#filter-female').hasClass('active') === true) {
+            $('.is-female').hide()
+        }
+        
+        if ($('#filter-male').hasClass('active') === true) {
+            $('.is-male').hide()
+        }
+        
         if (appSettings.get('general.hide_high_fan_count') == false) return;
-        if ((user.count_info.follower_count > parseInt(appSettings.get('general.hide_high_fan_count_value'))) && (winType == 1))
-            $('#entry-' + user.user_info.uid).remove()        
+        if ((user.count_info.follower_count > parseInt(appSettings.get('general.hide_high_fan_count_value'))) && (winType == 1)) $('#entry-' + user.user_info.uid).remove()      
+                    
     })
 }
 
@@ -325,4 +342,24 @@ function showFollowing (u) { ipcRenderer.send('open-followings-window', { userid
 function showFollowers (u) { ipcRenderer.send('open-followers-window', { userid: u }) }
 function showUser (u) {
     $('#entry-' + u).animate({ opacity: 0.3 }, 200); ipcRenderer.send('show-user', { userid: u })
+}
+
+function toggleMaleProfiles() {
+    if ($('#filter-male').hasClass('active') === true) {
+        $('.is-male').hide()
+        $('#filter-male').removeClass('active')
+    } else {
+        $('.is-male').show()
+        $('#filter-male').addClass('active')
+    }
+}
+
+function toggleFemaleProfiles() {
+    if ($('#filter-female').hasClass('active') === true) {
+        $('.is-female').hide()
+        $('#filter-female').removeClass('active')
+    } else {
+        $('.is-female').show()
+        $('#filter-female').addClass('active')
+    }
 }

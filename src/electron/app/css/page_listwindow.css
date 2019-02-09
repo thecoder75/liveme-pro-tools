@@ -99,3 +99,9 @@ footer > input[type=button] {
     z-index: 10;
     margin: 0;
 }
+
+#filter-male, #filter-female { opacity: 0.20; background-color: rgba(0,0,0,0.5) }
+#filter-male.active, #filter-female.active { opacity: 1.0; background-color: transparent; }
+#filter-male svg, #filter-female svg {
+    margin: 1px 0 -1px -1px;
+}
