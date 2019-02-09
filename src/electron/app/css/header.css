@@ -146,6 +146,8 @@ header.two-lines .search-row input[type=text] {
     padding: 0 4px;
     vertical-align: middle;
     font-size: 9.5pt;
+    border: none;
+    background-color: rgba(0,0,0,0.1);
 }
 
 /*
