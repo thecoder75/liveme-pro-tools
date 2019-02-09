@@ -132,7 +132,7 @@ class DataManager {
         fs.writeFileSync(profilesJson, '[]')
         fs.writeFileSync(downloadedJson, '[]')
         fs.writeFileSync(watchedJson, '[]')
-        fs.writeFileSync(ignoredJson, '{}')
+        fs.writeFileSync(ignoredJson, '[]')
         fs.writeFileSync(erroredJson, '[]')
         fs.writeFileSync(queuedJson, '[]')
     }
@@ -290,10 +290,17 @@ class DataManager {
     /**
      * Ignore Accounts
      */
-    addIgnoredForever(userid) {
+    addIgnoredForever(uid) {
         isBusy = true
 
-        ignored_forever[userid] = timestamp()
+        let add = true
+        for (let i = 0; i < ignored_forever.length; i++) {
+            if (ignored_forever[i] == uid) {
+                add = false
+            }
+            if (!add) break
+        }
+        if (add) ignored_forever.push(uid)
 
         isBusy = false
     }
@@ -301,16 +308,41 @@ class DataManager {
     addIgnoredSession(userid) {
         isBusy = true
 
-        if (userid in ignored_forever) { // remove from forever in case user miss clicked
-            delete ignored_forever[userid]
+        let add = true
+        for (let i = 0; i < ignored_temp.length; i++) {
+            if (ignored_temp[i] == uid) {
+                for (let j = 0; j < ignored_forever.length; j++) {
+                    if (ignored_forever[j] == uid) {
+                        ignored_forever.splice(j, 1)
+                    }
+                    if (!add) break
+                }
+                add = false
+            }
+            if (!add) break
         }
-        ignored_temp[userid] = 0;
+        if (add) ignored_temp.push(uid)
 
         isBusy = false
     }
 
     isIgnored(userid) {
-        return userid in ignored_forever || userid in ignored_temp;
+        let ret = false
+        for (let i = 0; i < ignored_forever; i++) {
+            if (ignored_forever[i] == uid) {
+                ret = true
+                break
+            }
+        }
+        if (!ret) {
+            for (let i = 0; i < ignored_temp; i++) {
+                if (ignored_temp[i] == uid) {
+                    ret = true
+                    break
+                }
+            }    
+        }    
+        return ret    
     }
 
 
