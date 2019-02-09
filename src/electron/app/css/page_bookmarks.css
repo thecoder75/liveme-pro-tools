@@ -97,23 +97,20 @@
 #bookmark-list tr td .monitor-flag { color: darkgray; }
 #bookmark-list tr.monitored td .monitor-flag { color: blue; }
 
-#bookmark-search {
-    width: 144px;
-    left: 128px;
+#filter-male, #filter-female { opacity: 0.20; background-color: rgba(0,0,0,0.5) }
+#filter-male.active, #filter-female.active { opacity: 1.0; background-color: transparent; }
+#filter-male svg, #filter-female svg {
+    margin: 1px 0 -1px -1px;
 }
 
-.active-timespan {
-    display: block;
-    position: absolute;
-    top: 24px;
-    line-height: 40px;
-    right: 16px;
-}
 
-#bookmark-timespan {
-    width: 40px;
+.active-timespan { 
+    display: inline-block;
+    width: 150px;
     text-align: right;
 }
 
-#filter-male, #filter-female { background: none; border: solid 1px rgba(0,0,0,0); border-radius: 5px; }
-#filter-male.active, #filter-female.active { border-color: rgba(255,255,255,0.15); }
+.active-timespan #bookmark-timespan {
+    display: inline-block;
+    width: 150px;    
+}
