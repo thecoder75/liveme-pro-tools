@@ -154,13 +154,26 @@ function setupContextMenu() {
 }
 
 function popupUserMenu() {
-    const UserContextMenu = remote.Menu.buildFromTemplate([{
-        label: 'Ignore user (Forever)',
-        click: () => currentUser !== undefined ? DataManager.addIgnoredForever(currentUser.uid) : _
-    }, {
-        label: 'Ignore user (current Session)',
-        click: () => currentUser !== undefined ? DataManager.addIgnoredSession(currentUser.uid) : _
-    }])
+    const UserContextMenu = remote.Menu.buildFromTemplate([
+        {
+            label: 'Copy Account Profile URL to Clipboard',
+            click: () => clipboard.writeText(`https://www.liveme.com/us/u/${currentUser.uid}`)
+        },
+        {
+            label: 'Visit Account Profile Page in Web Browser',
+            click: () => shell.openExternal(`https://www.liveme.com/us/u/${currentUser.uid}`)
+        },
+        {
+            type: 'separator'
+        },
+        {
+            label: 'Ignore user (Forever)',
+            click: () => DataManager.addIgnoredForever(currentUser.uid)
+        }, {
+            label: 'Ignore user (current Session)',
+            click: () => DataManager.addIgnoredSession(currentUser.uid)
+        }
+    ])
     UserContextMenu.popup(remote.getCurrentWindow())
 }
 
@@ -283,13 +296,6 @@ function showMainMenu() {
                         click: () => restoreData()
                     }
                 ]
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Open Bookmarks',
-                click: () => openBookmarks()
             },
             {
                 type: 'separator'
