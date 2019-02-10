@@ -8,8 +8,8 @@ let bookmarks = []
 let profiles = []
 let downloaded = []
 let watched = []
-let ignored_temp = {}
-let ignored_forever = {}
+let ignored_temp = []
+let ignored_forever = []
 let errored = []
 let queued = []
 let isBusy = false
@@ -123,8 +123,8 @@ class DataManager {
         profiles = []
         downloaded = []
         watched = []
-        ignored_temp = {}
-        ignored_forever = {}
+        ignored_temp = []
+        ignored_forever = []
         errored = []
         queued = []
 
@@ -204,7 +204,7 @@ class DataManager {
         if (fs.existsSync(ignoredJson)) {
             fs.readFile(ignoredJson, 'utf8', function(err, data) {
                 if (err) {
-                    ignored_forever = {}
+                    ignored_forever = []
                 } else {
                     ignored_forever = tryParseJSON(data, ignoredJson)
                 }
