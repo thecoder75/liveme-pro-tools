@@ -19,6 +19,7 @@ let currentPage = 1
 let hasMore = false
 let currentSearch = ''
 let scrollBusy = false
+let currentReplayIDList = []
 let currentView = 'home'
 let bookmarksFromJson = undefined
 let cachedBookmarkFeeds = undefined
@@ -156,6 +157,13 @@ function popupUserMenu() {
         {
             label: 'Visit Account Profile Page in Web Browser',
             click: () => shell.openExternal(`https://www.liveme.com/us/u/${currentUser.uid}`)
+        },
+        {
+            type: 'separator'
+        },
+        {
+            label: 'Copy Replay URL List to Clipboard',
+            click: () => copyReplayUrlListToClipboard()
         },
         {
             type: 'separator'
@@ -465,6 +473,18 @@ function openURL(u) { shell.openExternal(u) }
 
 function readComments(u) { ipcRenderer.send('read-comments', { userid: u }) }
 
+function copyReplayUrlListToClipboard() {
+    
+    let list = ''
+    for (let i = 0; i < currentReplayIDList.length; i++) {
+        list += 'https://www.liveme.com/us/v/' + currentReplayIDList[i] + '/index.html\n'
+    }
+
+    console.log(list)
+    clipboard.writeText(list)
+}
+
+
 function goHome() {
     $('main').hide()
     $('#home').show()
@@ -484,6 +504,7 @@ function preSearch(q) {
     $('#queue-list').hide()
 
     currentView = 'search'
+    currentReplayIDList = []
 
     if ((u.length === 20) && (isnum)) {
         if ($('#search-type').val() !== 'video-id') {
@@ -972,6 +993,8 @@ function _addReplayEntry(replay, wasSearched) {
     if (replay.userid !== currentUser.uid) return
 
     if (replay.vtime > currentUser.newest_replay) currentUser.newest_replay = parseInt(replay.vtime)
+
+    currentReplayIDList.push(replay.vid)
 
     let dt = new Date(replay.vtime * 1000)
     let ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes()
