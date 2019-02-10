@@ -145,12 +145,6 @@ function setupContextMenu() {
         CopyableContextMenu.popup(remote.getCurrentWindow())
     })
 
-    /*
-    document.getElementById("userHamburgerMenu").addEventListener('click', (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-    })
-    */
 }
 
 function popupUserMenu() {
