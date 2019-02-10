@@ -480,7 +480,6 @@ function copyReplayUrlListToClipboard() {
         list += 'https://www.liveme.com/us/v/' + currentReplayIDList[i] + '/index.html\n'
     }
 
-    console.log(list)
     clipboard.writeText(list)
 }
 
