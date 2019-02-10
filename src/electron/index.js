@@ -379,7 +379,7 @@ const dlQueue = async.queue((task, done) => {
             case 2: // Best
                 ffmpegOpts = [
                     '-c:v h264',
-                    '-qp 22',
+                    '-crf 21',
                     '-r 15',
                     '-bf 4',
                     '-vsync 2',
@@ -392,7 +392,7 @@ const dlQueue = async.queue((task, done) => {
             case 1: // Fast
                 ffmpegOpts = [
                     '-c:v h264',
-                    '-qp 22',
+                    '-crf 21',
                     '-r 15',
                     '-bf 4',
                     '-vsync 2',
@@ -438,9 +438,6 @@ const dlQueue = async.queue((task, done) => {
                                 }
                             }
                         })
-                        // remove last |
-                        //concatList = concatList.slice(0, -1)
-                        // Check if tmp dir exists
                     if (!fs.existsSync(`${path}/lpt_temp`)) {
                         // create temporary dir for ts files
                         fs.mkdirSync(`${path}/lpt_temp`)
@@ -450,7 +447,7 @@ const dlQueue = async.queue((task, done) => {
                     // Download chunks
                     let downloadedChunks = 0
 
-                    async.eachLimit(tsList, 3, (file, next) => {
+                    async.eachLimit(tsList, 2, (file, next) => {
 
                         const stream = request(`${video.hlsvideosource.split('/').slice(0, -1).join('/')}/${file.name}`)
                             .on('error', err => {
@@ -602,7 +599,6 @@ const dlQueue = async.queue((task, done) => {
                         })
                     })
                     .on('start', function(c) {
-                        console.log('started', c)
                         mainWindow.webContents.send('download-start', {
                             videoid: task,
                             filename: filename
