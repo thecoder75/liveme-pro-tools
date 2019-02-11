@@ -19,7 +19,7 @@ let currentPage = 1
 let hasMore = false
 let currentSearch = ''
 let scrollBusy = false
-let currentReplayIDList = []
+let currentReplayURLList = []
 let currentView = 'home'
 let bookmarksFromJson = undefined
 let cachedBookmarkFeeds = undefined
@@ -480,8 +480,8 @@ function readComments(u) { ipcRenderer.send('read-comments', { userid: u }) }
 function copyReplayUrlListToClipboard() {
     
     let list = ''
-    for (let i = 0; i < currentReplayIDList.length; i++) {
-        list += 'https://www.liveme.com/us/v/' + currentReplayIDList[i] + '/index.html\n'
+    for (let i = 0; i < currentReplayURLList.length; i++) {
+        list += currentReplayURLList[i] + '\r\n'
     }
 
     clipboard.writeText(list)
@@ -507,7 +507,7 @@ function preSearch(q) {
     $('#queue-list').hide()
 
     currentView = 'search'
-    currentReplayIDList = []
+    currentReplayURLList = []
 
     if ((u.length === 20) && (isnum)) {
         if ($('#search-type').val() !== 'video-id') {
@@ -997,7 +997,7 @@ function _addReplayEntry(replay, wasSearched) {
 
     if (replay.vtime > currentUser.newest_replay) currentUser.newest_replay = parseInt(replay.vtime)
 
-    currentReplayIDList.push(replay.vid)
+    currentReplayURLList.push(replay.videosource)
 
     let dt = new Date(replay.vtime * 1000)
     let ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes()
