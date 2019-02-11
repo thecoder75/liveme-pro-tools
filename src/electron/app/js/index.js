@@ -578,23 +578,22 @@ function AddToLAMD() {
 
 function toggleAccountLock() {
 
-    if (DataManager.isBookmarked(currentUser.uid) === true) {
-        let bm = DataManager.getSingleBookmark(currentUser.uid)
-        if (typeof bm.locked == 'undefined') {
-            bm.locked = false
-        }
+    if (typeof currentUser.locked == 'undefined') {
+        currentUser.locked = false
+    }
 
-        if (bm.locked) {
-            $('a.account-lock').removeClass('red')
-            $('a.account-lock svg').removeClass('bright')
-            bm.locked = false
-        } else {
-            $('a.account-lock').addClass('red')
-            $('a.account-lock svg').addClass('bright')
-            bm.locked = true
-        }
-        DataManager.updateBookmark(bm)
-    }        
+    if (currentUser.locked) {
+        $('a.account-lock').removeClass('red')
+        $('a.account-lock svg').removeClass('bright')
+        currentUser.locked = false
+    } else {
+        $('a.account-lock').addClass('red')
+        $('a.account-lock svg').addClass('bright')
+        currentUser.locked = true
+    }
+    DataManager.updateBookmark(currentUser)
+    DataManager.saveToDisk()
+
 }
 
 function backupData() {
@@ -788,9 +787,17 @@ function performUserLookup(uid) {
         .then(user => {
             let bookmark = DataManager.getSingleBookmark(user.user_info.uid)
 
+            $('a.account-lock').removeClass('red')
+            $('a.account-lock svg').removeClass('bright')
+
             if (bookmark !== false) {
                 bookmark.last_viewed = Math.floor(new Date().getTime() / 1000)
                 DataManager.updateBookmark(bookmark)
+
+                if (bookmark.locked == true) {
+                    $('a.account-lock').addClass('red')
+                    $('a.account-lock svg').addClass('bright')
+                }
             }
             DataManager.addViewed(user.user_info.uid)
 
@@ -886,7 +893,8 @@ function performUserLookup(uid) {
                     followings: parseInt(user.count_info.following_count)
                 },
                 last_viewed: parseInt(Math.floor((new Date()).getTime() / 1000)),
-                newest_replay: 0
+                newest_replay: 0,
+                locked: false
             }
 
             allReplays = []
