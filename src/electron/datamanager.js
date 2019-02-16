@@ -194,8 +194,6 @@ class DataManager {
                     ignored_forever = tryParseJSON(data, ignoredJson)
                 }
             })
-        } else {
-            migrateBlacklist()
         }
         if (fs.existsSync(erroredJson)) {
             fs.readFile(erroredJson, 'utf8', function(err, data) {
