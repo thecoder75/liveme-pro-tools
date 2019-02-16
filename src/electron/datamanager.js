@@ -312,20 +312,19 @@ class DataManager {
 
     isIgnored(userid) {
         let ret = false
-        for (let i = 0; i < ignored_forever; i++) {
+
+        for (let i = 0; i < ignored_forever.length; i++) {
             if (ignored_forever[i] == userid) {
                 ret = true
-                break
             }
         }
-        if (!ret) {
-            for (let i = 0; i < ignored_temp; i++) {
-                if (ignored_temp[i] == userid) {
-                    ret = true
-                    break
-                }
-            }    
+
+        for (let i = 0; i < ignored_temp.length; i++) {
+            if (ignored_temp[i] == userid) {
+                ret = true
+            }
         }    
+
         return ret    
     }
 
