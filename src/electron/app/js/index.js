@@ -497,6 +497,7 @@ function goHome() {
 
     currentView = 'home'
     checkForUpdatesOfLiveMeProTools()
+    $('footer h1').html(`&nbsp;`)
 }
 
 function preSearch(q) {
