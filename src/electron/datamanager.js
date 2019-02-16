@@ -23,28 +23,13 @@ const ignoredJson = path.join(app.getPath('appData'), app.getName(), 'ignored.js
 const erroredJson = path.join(app.getPath('appData'), app.getName(), 'errored.json')
 const queuedJson = path.join(app.getPath('appData'), app.getName(), 'queued.json')
 
-
-function timestamp() { return +new Date() }
-
-function migrateBlacklist() {
-    try {
-        if (fs.existsSync(ignoredJson)) {
-            return
-        }
-
-        let blacklist = appSettings.get("blacklist", {});
-        ignored_forever = blacklist
-        fs.writeFileSync(ignoredJson, JSON.stringify(ignored_forever), () => {})
-            // if something throws, we don't delete so it will be redone next start
-        appSettings.delete("blacklist")
-
-    } catch (error) {
-
-    }
-}
-
 function tryParseJSON(strData, filePath) {
     let obj = []
+
+    // If the raw data is less than 8 bytes, we return a null array list instead
+    if (strData.length < 8) {
+        return obj
+    }
 
     try {
         obj = JSON.parse(strData)
@@ -301,6 +286,7 @@ class DataManager {
             if (!add) break
         }
         if (add) ignored_forever.push(uid)
+        fs.writeFileSync(ignoredJson, JSON.stringify(ignored_forever, null, 2))
 
         isBusy = false
     }
