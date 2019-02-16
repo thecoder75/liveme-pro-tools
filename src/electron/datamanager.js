@@ -273,17 +273,17 @@ class DataManager {
     /**
      * Ignore Accounts
      */
-    addIgnoredForever(uid) {
+    addIgnoredForever(userid) {
         isBusy = true
 
         let add = true
         for (let i = 0; i < ignored_forever.length; i++) {
-            if (ignored_forever[i] == uid) {
+            if (ignored_forever[i] == userid) {
                 add = false
             }
             if (!add) break
         }
-        if (add) ignored_forever.push(uid)
+        if (add) ignored_forever.push(userid)
         fs.writeFileSync(ignoredJson, JSON.stringify(ignored_forever, null, 2))
 
         isBusy = false
@@ -294,9 +294,9 @@ class DataManager {
 
         let add = true
         for (let i = 0; i < ignored_temp.length; i++) {
-            if (ignored_temp[i] == uid) {
+            if (ignored_temp[i] == userid) {
                 for (let j = 0; j < ignored_forever.length; j++) {
-                    if (ignored_forever[j] == uid) {
+                    if (ignored_forever[j] == userid) {
                         ignored_forever.splice(j, 1)
                     }
                     if (!add) break
@@ -305,7 +305,7 @@ class DataManager {
             }
             if (!add) break
         }
-        if (add) ignored_temp.push(uid)
+        if (add) ignored_temp.push(userid)
 
         isBusy = false
     }
@@ -313,14 +313,14 @@ class DataManager {
     isIgnored(userid) {
         let ret = false
         for (let i = 0; i < ignored_forever; i++) {
-            if (ignored_forever[i] == uid) {
+            if (ignored_forever[i] == userid) {
                 ret = true
                 break
             }
         }
         if (!ret) {
             for (let i = 0; i < ignored_temp; i++) {
-                if (ignored_temp[i] == uid) {
+                if (ignored_temp[i] == userid) {
                     ret = true
                     break
                 }
