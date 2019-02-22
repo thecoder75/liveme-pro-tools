@@ -7,8 +7,8 @@ const DataManager = remote.getGlobal('DataManager')
 let list = []
 let pList = []
 
-
 function closeWindow() { window.close() }
+function showUser(u) { ipcRenderer.send('show-user', { userid: u }) }
 
 function previewBookmarks() {
     list = DataManager.getAllBookmarks()
@@ -28,7 +28,7 @@ function previewBookmarks() {
             } else {
                 let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
                 $('#results').append(`
-                    <div class="entry">
+                    <div class="entry" onClick="showUser('${list[i].uid}')">
                         <div class="dt">Last replay was ${dt}</div>
                         <div class="name">${list[i].nickname}</div>
                         <div class="luid">Long ID: ${list[i].uid}</div>
@@ -145,4 +145,5 @@ function prescanBookmarksNR() {
         }
     }    
 }
+
 
