@@ -24,25 +24,8 @@
         var videoid = '',
             userid = '';
 
-        function skip10() {
-            const video = document.getElementById('video');
-            video.currentTime = video.currentTime + 10
-        }
-
-        function pause() {
-            const video = document.getElementById('video');
-            video.paused ? video.play() : video.pause()
-        }
-
-        function back10() {
-            const video = document.getElementById('video');
-            video.currentTime = video.currentTime - 10
-        }
-
         document.addEventListener('keydown', (e) => {
             const video = document.getElementById('video')
-
-            console.log(`Key: ${e.code}`)
 
             switch (e.code) {
 
