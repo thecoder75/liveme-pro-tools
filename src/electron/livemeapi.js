@@ -109,8 +109,9 @@ class LiveMe {
                 if (typeof rawBody === 'string') 
                 {
 
+                    let body = {}
                     try {
-                        let body = JSON.parse(rawBody)
+                        body = JSON.parse(rawBody)
                     } catch (error) {
                         throw new Error(`Either LiveMe banned the login account or your IP address, login failed.`)
                     }
