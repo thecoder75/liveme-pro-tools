@@ -108,7 +108,13 @@ class LiveMe {
             transform:  (rawBody) => {
                 if (typeof rawBody === 'string') 
                 {
-                    let body = JSON.parse(rawBody)
+
+                    try {
+                        let body = JSON.parse(rawBody)
+                    } catch (error) {
+                        throw new Error(`Either LiveMe banned the login account or your IP address, login failed.`)
+                    }
+
                     if (body.status === undefined) body.status = 200
                     if (body.ret === undefined) body.ret = 1
                     if (body.status != 200 || body.ret != 1) {
