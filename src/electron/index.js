@@ -422,8 +422,8 @@ const dlQueue = async.queue((task, done) => {
                     const tsList = []
                     body.split('\n').forEach(line => {
                             if (line.indexOf('.ts') !== -1) {
-                                const tsName = line.split('?')[0]
-                                let tsPath = `${path}/lpt_temp/${video.vid}_${tsName}`
+                                const tsName = line.split('?')[0].replace('/', '_')
+                                let tsPath = `${path}/lmpt_temp/${video.vid}_${tsName}`
 
                                 if (process.platform == 'win32') {
                                     tsPath = tsPath.replace(/\\/g, '/');
@@ -438,11 +438,11 @@ const dlQueue = async.queue((task, done) => {
                                 }
                             }
                         })
-                    if (!fs.existsSync(`${path}/lpt_temp`)) {
+                    if (!fs.existsSync(`${path}/lmpt_temp`)) {
                         // create temporary dir for ts files
-                        fs.mkdirSync(`${path}/lpt_temp`)
+                        fs.mkdirSync(`${path}/lmpt_temp`)
                     }
-                    fs.writeFileSync(`${path}/lpt_temp/${video.vid}.txt`, concatList)
+                    fs.writeFileSync(`${path}/lmpt_temp/${video.vid}.txt`, concatList)
 
                     // Download chunks
                     let downloadedChunks = 0
