@@ -69,12 +69,12 @@ If you find any bugs or would like to help add features or additional functions,
 
 ### Project Contributors
 #### In no special order:
-* [thecoder75](https://notabug.com/thecoder75)
+* [thecoder75](https://github.com/thecoder75)
 * [zp](https://github.com/zp)
 * [polydragon](https://github.com/polydragon)
 * [lewdninja](https://github.com/lewdninja)
 * [Tashiketh](https://notabug.org/Tashiketh)
-* [monstergarden](https://notabug.org/monstergarden)
+* [monstergarden](https://github.org/monstergarden)
 * [mustang-sally](https://github.com/mustang-sally)
 
 ### License
