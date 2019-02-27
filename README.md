@@ -4,6 +4,7 @@
 [![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
 [![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/commits/master)
 [![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/issues)
+[![Gitter](https://badges.gitter.im/thecoderstoolbox/community.svg)](https://gitter.im/thecoderstoolbox/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
@@ -11,7 +12,7 @@
 
 ### Support/Assistance/Reporting Issues
 
-Please *only* use the Issue Tracker here for bugs and glitches only!  To discuss thoughts on improvements, features or for general usage support, please use the ...  There is always people in the chat room who will provide assistance.
+Please *only* use the Issue Tracker here for bugs and glitches only!  To discuss thoughts on improvements, features or for general usage support, please use the [Gitter chat room](https://gitter.im/thecoderstoolbox/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link).  There is always people in the chat room who will provide assistance.
 
 **After almost 2 years, Discord zapped my account.  Looking into alternative chat site to use now!**
 
