@@ -4,7 +4,6 @@
 [![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
 [![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/commits/master)
 [![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/issues)
-[![Discord Chat](https://img.shields.io/discord/340106715334836224.svg)](https://discord.gg/A5p2aF4)
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
@@ -12,7 +11,9 @@
 
 ### Support/Assistance/Reporting Issues
 
-Please *only* use the Issue Tracker here for bugs and glitches only!  To discuss thoughts on improvements, features or for general usage support, please use the [Discord chat room](https://discord.gg/A5p2aF4).  There is always people in the chat room who will provide assistance.
+Please *only* use the Issue Tracker here for bugs and glitches only!  To discuss thoughts on improvements, features or for general usage support, please use the ...  There is always people in the chat room who will provide assistance.
+
+**After almost 2 years, Discord zapped my account.  Looking into alternative chat site to use now!**
 
 **I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR FOR ANYTHING ELSE RELATED TO THIS PROJECT!**  This is my spare-time project that's been active for over 1.5 years now.
 
