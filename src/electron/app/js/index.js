@@ -309,8 +309,8 @@ function showMainMenu() {
                         click: () => shell.openExternal('https://github.com/thecoder75/liveme-pro-tools/')
                     },
                     {
-                        label: 'Discord Chat Rooms for Support',
-                        click: () => shell.openExternal('https://discord.gg/A5p2aF4')
+                        label: 'The Coders Toolbox Community on Gitter Chat',
+                        click: () => shell.openExternal('https://gitter.im/thecoderstoolbox/community')
                     }
                 ]
             },
