@@ -937,7 +937,7 @@ function getMenuTemplate() {
             role: 'help',
             submenu: [{
                 label: 'LiveMe Pro Tools Page',
-                click: () => shell.openExternal('https://github.com/lewdninja/liveme-pro-tools/')
+                click: () => shell.openExternal('https://github.com/thecoder75/liveme-pro-tools/')
             }]
         }
     ]
