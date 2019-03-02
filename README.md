@@ -4,6 +4,7 @@
 [![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
 [![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/commits/master)
 [![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/issues)
+[![Gitter](https://badges.gitter.im/thecoderstoolbox/liveme-pro-tools.svg)](https://gitter.im/thecoderstoolbox/liveme-pro-tools?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
@@ -11,17 +12,11 @@
 
 ### Getting Support or Assistance
 
-**Due to Discord zapping the chat server, I will respond to Issue tickets here related *only* to:**
-- Feature Support and Requests
-- Bugs Discovered
-- Basic Setup and Troubleshooting
+Since Discord banned my account and killed the old chat server, I have now set up [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools) for discussion on the development and usage of LiveMe Pro Tools. Please use this for more general usage and installation questions as others on there will provide assistance also.
 
-**What will be ignored:**
-- Requests for help in using
-- Requests for help in finding things
-- Requests for help with downloading not deemed a bug
+For general bugs or feature requests, feel free to open an Issue ticket.
 
-***I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME SENDING THEM!*** 
+***FYI: I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME SENDING THEM!*** 
 
 * * *
 
