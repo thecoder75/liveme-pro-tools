@@ -93,10 +93,8 @@ function previewBookmarksNR() {
             if ('locked' in list[i]) {  
                 // Skip it, its locked from being f**ked with!
             } else {
-                let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
                 $('#results').append(`
-                    <div class="entry">
-                        <div class="dt">Last replay was ${dt}</div>
+                    <div class="entry" onClick="showUser('${list[i].uid}')">
                         <div class="name">${list[i].nickname}</div>
                         <div class="luid">Long ID: ${list[i].uid}</div>
                         <div class="suid">Short ID: ${list[i].shortid}</div>
