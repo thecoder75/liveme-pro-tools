@@ -97,30 +97,34 @@ function addToHome(type, bookmark) {
 
     switch (type) {
         case NEW_FOLLOWINGS:
-            m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
-            c = Math.abs(bookmark.counts.new_followers)
-            s = c > 1 ? 's' : ''
-            $('#newfollowings').append(`
-                <div class="bookmark" id="bookmark-${bookmark.uid}" onClick="showFollowing('${bookmark.uid}')">
-                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-                    <h1>${bookmark.nickname}</h1>
-                    <h3>User is following ${c} ${m} account${s} now.</h3>
-                    <h2>${type}</h2>
-                </div>
-            `)
+            if (bookmark.counts.new_following != 0) {
+                m = bookmark.counts.new_following > 0 ? 'more' : 'less'
+                c = Math.abs(bookmark.counts.new_following)
+                s = c > 1 ? 's' : ''
+                $('#newfollowings').append(`
+                    <div class="bookmark" id="bookmark-${bookmark.uid}" onClick="showFollowing('${bookmark.uid}')">
+                        <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+                        <h1>${bookmark.nickname}</h1>
+                        <h3>User is following ${c} ${m} account${s} now.</h3>
+                        <h2>${type}</h2>
+                    </div>
+                `)
+            }
             break;
         case NEW_FANS:
-            m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
-            c = Math.abs(bookmark.counts.new_followers)
-            s = c > 1 ? 's' : ''
-            $('#newfans').append(`
-                <div class="bookmark" id="bookmark-${bookmark.uid}" onClick="showFollowers('${bookmark.uid}')">
-                    <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
-                    <h1>${bookmark.nickname}</h1>
-                    <h3>User has ${c} ${m} fan${s} now.</h3>
-                    <h2>${type}</h2>
-                </div>
+            if (bookmark.counts.new_followers != 0) {
+                m = bookmark.counts.new_followers > 0 ? 'more' : 'less'
+                c = Math.abs(bookmark.counts.new_followers)
+                s = c > 1 ? 's' : ''
+                $('#newfans').append(`
+                    <div class="bookmark" id="bookmark-${bookmark.uid}" onClick="showFollowers('${bookmark.uid}')">
+                        <img src="${bookmark.face}" class="avatar" onError="$(this).hide()">
+                        <h1>${bookmark.nickname}</h1>
+                        <h3>User has ${c} ${m} fan${s} now.</h3>
+                        <h2>${type}</h2>
+                    </div>
                 `)
+            }
             break;
         case NEW_REPLAYS:
             s = bookmark.counts.new_replays > 1 ? 's' : ''
@@ -131,7 +135,7 @@ function addToHome(type, bookmark) {
                     <h3>User has ${bookmark.counts.new_replays} new replay${s}.</h3>
                     <h2>${type}</h2>
                 </div>
-                `)
+            `)
             break;
         default:
             break;
