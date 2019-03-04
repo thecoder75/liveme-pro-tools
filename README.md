@@ -77,6 +77,7 @@ If you find any bugs or would like to help add features or additional functions,
 * [Tashiketh](https://notabug.org/Tashiketh)
 * [monstergarden](https://github.org/monstergarden)
 * [mustang-sally](https://github.com/mustang-sally)
+* [marcell](https://github.com/bem13)
 
 ### License
 This project is now licensed under the [GNU AGPLv3](LICENSE) License.
