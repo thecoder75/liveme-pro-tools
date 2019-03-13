@@ -1,6 +1,6 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.330.20190303",
+    "version": "1.332.20190312",
     "description": "Tools for Live.me video network",
     "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
@@ -37,6 +37,7 @@
     "devDependencies": {
         "cross-env": "^5.2.0",
         "electron": "^3.1.1",
+        "electron-builder": "^20.39.0",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
         "eslint-plugin-import": "^2.11.0",
@@ -57,7 +58,6 @@
         "artifactName": "LiveMe_Pro_Tools-${version}-${os}-${arch}.${ext}",
         "asar": true,
         "linux": {
-            "icon": "src/electron/build/",
             "target": [
                 {
                     "target": "AppImage",
@@ -80,7 +80,14 @@
             ],
             "category": "Network",
             "description": "Browse, search and manage accounts, replays and more without the need of an actual account on Live.me.",
-            "maintainer": "thecoder1975@gmail.com"
+            "maintainer": "thecoder1975@gmail.com",
+            "desktop": {
+                "Encoding": "UTF-8",
+                "Terminal": false,
+                "Name": "LiveMe Pro Tools"
+            },
+            "icon": "src/electron/build/1024x1024.png",
+            "publish": null
         },
         "appImage": {
             "category": "Network"
@@ -94,15 +101,23 @@
                     ]
                 }
             ],
-            "icon": "src/electron/build/appicon.ico"
+            "icon": "src/electron/build/appicon.ico",
+            "publish": null
         },
         "mac": {
             "category": "public.app-category.video",
+            "minimumSystemVersion": "10.12",
             "target": [
-                "zip"
+                {
+                    "target": "zip",
+                    "arch": [
+                        "x64"
+                    ]
+                }
             ],
             "identity": null,
-            "icon": "src/electron/build/appicon.icns"
+            "icon": "src/electron/build/appicon.icns",
+            "publish": null
         }
     }
 }
