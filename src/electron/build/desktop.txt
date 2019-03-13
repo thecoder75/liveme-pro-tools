@@ -1,6 +1,0 @@
-[Desktop Entry]
-Name=LiveMe Pro Tools
-Exec=liveme-pro-tools
-Icon=liveme-pro-tools
-Type=Application
-Categories=Network;Internet
