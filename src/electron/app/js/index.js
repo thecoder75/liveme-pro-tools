@@ -665,7 +665,7 @@ function passwordShowToggler(e) {
 function saveAccountFace() {
     let u = appSettings.get('downloads.path')
 
-    request.get(currentUser.face)
+    request.get(currentUser.face.replace('/small/', '/big/'))
         .on('error', () => {
 
         }).pipe(
