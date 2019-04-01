@@ -1054,7 +1054,7 @@ function _addReplayEntry(replay, wasSearched) {
         vpm: vpm.toFixed(1),
         spm: spm.toFixed(1),
         inQueue,
-        source: replay.videosource || replay.hlsvideosource
+        source: LiveMe.pickProperVideoSource(replay)
     })
 
     allReplays.push(replayData)

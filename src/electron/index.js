@@ -298,6 +298,18 @@ const dlQueue = async.queue((task, done) => {
             filename: filename
         })
 
+        let properSource = LiveMe.pickProperVideoSource(video)
+
+        if (properSource === '') {
+            let err = "Replay might still being generated or was deleted. Refresh the user's page and try again."
+
+            fs.writeFileSync(`${path}/${filename}-error.log`, err)
+            return done({
+                videoid: task,
+                error: err
+            })
+        }
+
         switch (parseInt(appSettings.get('downloads.ffmpegquality'))) {
             case 21: // Linux NVENC Accelerated
                 ffmpegOpts = [
@@ -412,7 +424,7 @@ const dlQueue = async.queue((task, done) => {
 
         switch (appSettings.get('downloads.method')) {
             case 'chunk':
-                request(video.hlsvideosource, (err, res, body) => {
+                request(properSource, (err, res, body) => {
                     if (err || !body) {
                         fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))
                         return done({ videoid: task, error: err || 'Failed to fetch m3u8 file.' })
@@ -449,7 +461,7 @@ const dlQueue = async.queue((task, done) => {
 
                     async.eachLimit(tsList, 2, (file, next) => {
 
-                        const stream = request(`${video.hlsvideosource.split('/').slice(0, -1).join('/')}/${file.name}`)
+                        const stream = request(`${properSource.split('/').slice(0, -1).join('/')}/${file.name}`)
                             .on('error', err => {
                                 fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))
                                 return done({ videoid: task, error: err })
@@ -580,7 +592,7 @@ const dlQueue = async.queue((task, done) => {
             case 'ffmpeg':
                 let outFile = path + '/' + filename + '.mp4'
 
-                ffmpeg(video.hlsvideosource)
+                ffmpeg(properSource)
                     .outputOptions(ffmpegOpts)
                     .output(process.platform == 'win32' ? outFile.replace(/\\/g, '/') : outFile)
                     .on('end', function(stdout, stderr) {
@@ -626,7 +638,7 @@ ipcMain.on('watch-replay', (event, arg) => {
             let playerpath = appSettings.get('general.playerpath') || ' '
 
             if (playerpath.length > 5) {
-                exec(playerpath.replace('%url%', video.hlsvideosource))
+                exec(playerpath.replace('%url%', LiveMe.pickProperVideoSource(video)))
             } else {
                 // Open internal player
                 if (playerWindow == null) {
