@@ -374,7 +374,10 @@ function enterOnSearch(e) { if (e.keyCode === 13) preSearch() }
 
 function copyToClipboard(i) { clipboard.writeText(i) }
 
-function showSettings() { $('#settings').show() }
+function showSettings() { 
+    $('#status').hide()
+    $('#settings').show()
+}
 
 function hideSettings() {
     $('#settings').hide()
@@ -489,6 +492,7 @@ function copyReplayUrlListToClipboard() {
 
 
 function goHome() {
+    $('#status').hide()
     $('main').hide()
     $('#home').show()
 
