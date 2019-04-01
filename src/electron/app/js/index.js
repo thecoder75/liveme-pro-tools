@@ -994,10 +994,9 @@ function openReplayContextMenu(vid) {
         }, {
             label: 'Copy Web URL to Clipboard',
             click: () => { copyToClipboard(`https://www.liveme.com/us/v/${vid}/index.html`) }
-        
         }, {
-            label: 'Copy Source to Clipboard (m3u8 or flv)',
-            click: () => copyToClipboard(`${replay.videosource || replay.hlsvideosource}`)
+            label: 'Copy Source to Clipboard (m3u8 URL)',
+            click: () => { copyToClipboard(replay.source) }
         }, {
             label: 'Read Comments',
             click: () => readComments(replay.vid)
