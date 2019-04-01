@@ -305,7 +305,7 @@ class LiveMe {
         })
     }
 
-    // Helper function to get the date of a live video ended.
+    // Helper function to get the date of when a live video ended.
     //
     // @returns int: Returns an UNIX timestamp in ms OR
     //               -1 if the video is still live
