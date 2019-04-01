@@ -6,3 +6,13 @@
 @import url(./header.css);
 @import url(./mainarea.css);
 @import url(./footer.css);
+
+.mid-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.player-msg {
+    text-align: center;
+}
