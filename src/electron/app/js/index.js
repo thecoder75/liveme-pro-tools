@@ -768,16 +768,23 @@ function performShortIDSearch() {
 function performVideoLookup(q) {
     LiveMe.getVideoInfo(q)
         .then(video => {
-            if (video.videosource.length < 1) {
-                $('#status').html('Video not found or was deleted from the servers.')
+            if (video.videosource === '') {
+                let endedAt = new Date(LiveMe.getVideoEndDate(video))
+
+                $('#status').html('<h3>Video not found!</h3>' +
+                                  '<br><br>' +
+                                  `The live you're searching for ended <strong>${prettydate.format(endedAt)}</strong>.<br>` +
+                                  'The replay might still being generated or was deleted.' +
+                                  '<br><br>' +
+                                  'Try again later, maybe?')
                 $('overlay').hide()
                 $('main').hide()
             } else {
                 _addReplayEntry(video, true)
                 performUserLookup(video.userid)
             }
-        }).catch(() => {
-            $('#status').html('Video not found or was deleted from the servers.')
+        }).catch(reason => {
+            $('#status').html(`Something went wrong: ${reason}`)
             $('overlay').hide()
             $('main').hide()
         })
