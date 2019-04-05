@@ -21,6 +21,8 @@
             ipcRenderer,
             remote
         } = require('electron'), LiveMe = remote.getGlobal('LiveMe');
+        const prettydate = require('pretty-date');
+
         var videoid = '',
             userid = '';
 
@@ -71,9 +73,26 @@
                     videoid = vid.vid;
                     userid = vid.userid;
 
+                    let properSource = LiveMe.pickProperVideoSource(vid)
+
+                    if (properSource === '') {
+                        let endedAt = new Date(LiveMe.getVideoEndDate(vid))
+
+                        $('#video').hide()
+                        $('.player-msg').html('<h3>Video not found!</h3>' +
+                                              '<br><br>' +
+                                              `This live stream ended <strong>${prettydate.format(endedAt)}</strong>.<br>` +
+                                              'The replay might still being generated or was deleted.' +
+                                              '<br><br>' +
+                                              'Try again later, maybe?').show()
+                        $('.mid-container').show()
+
+                        return
+                    }
+
                     var video = document.getElementById('video');
                     var hls = new Hls();
-                    hls.loadSource(vid.hlsvideosource);
+                    hls.loadSource(properSource);
                     hls.attachMedia(video);
                     hls.on(Hls.Events.MANIFEST_PARSED, function() {
                         video.play();
@@ -122,6 +141,9 @@
         </div>
     </header>
     <main class="has-small-header" style="display: block; overflow: hidden;">
+        <div class="mid-container" style="display: none">
+            <span class="player-msg"></span>
+        </div>
         <video id="video" controls></video>
     </main>
 </body>

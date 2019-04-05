@@ -374,7 +374,10 @@ function enterOnSearch(e) { if (e.keyCode === 13) preSearch() }
 
 function copyToClipboard(i) { clipboard.writeText(i) }
 
-function showSettings() { $('#settings').show() }
+function showSettings() { 
+    $('#status').hide()
+    $('#settings').show()
+}
 
 function hideSettings() {
     $('#settings').hide()
@@ -489,6 +492,7 @@ function copyReplayUrlListToClipboard() {
 
 
 function goHome() {
+    $('#status').hide()
     $('main').hide()
     $('#home').show()
 
@@ -768,16 +772,23 @@ function performShortIDSearch() {
 function performVideoLookup(q) {
     LiveMe.getVideoInfo(q)
         .then(video => {
-            if (video.videosource.length < 1) {
-                $('#status').html('Video not found or was deleted from the servers.')
+            if (video.videosource === '') {
+                let endedAt = new Date(LiveMe.getVideoEndDate(video))
+
+                $('#status').html('<h3>Video not found!</h3>' +
+                                  '<br><br>' +
+                                  `The live stream you're searching for ended <strong>${prettydate.format(endedAt)}</strong>.<br>` +
+                                  'The replay might still being generated or was deleted.' +
+                                  '<br><br>' +
+                                  'Try again later, maybe?')
                 $('overlay').hide()
                 $('main').hide()
             } else {
                 _addReplayEntry(video, true)
                 performUserLookup(video.userid)
             }
-        }).catch(() => {
-            $('#status').html('Video not found or was deleted from the servers.')
+        }).catch(reason => {
+            $('#status').html(`Something went wrong: ${reason}`)
             $('overlay').hide()
             $('main').hide()
         })
@@ -987,10 +998,9 @@ function openReplayContextMenu(vid) {
         }, {
             label: 'Copy Web URL to Clipboard',
             click: () => { copyToClipboard(`https://www.liveme.com/us/v/${vid}/index.html`) }
-        
         }, {
-            label: 'Copy Source to Clipboard (m3u8 or flv)',
-            click: () => copyToClipboard(`${replay.videosource || replay.hlsvideosource}`)
+            label: 'Copy Source to Clipboard (m3u8 URL)',
+            click: () => { copyToClipboard(replay.source) }
         }, {
             label: 'Read Comments',
             click: () => readComments(replay.vid)
@@ -1047,7 +1057,7 @@ function _addReplayEntry(replay, wasSearched) {
         vpm: vpm.toFixed(1),
         spm: spm.toFixed(1),
         inQueue,
-        source: replay.videosource || replay.hlsvideosource
+        source: LiveMe.pickProperVideoSource(replay)
     })
 
     allReplays.push(replayData)

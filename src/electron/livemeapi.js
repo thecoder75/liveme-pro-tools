@@ -304,6 +304,51 @@ class LiveMe {
             }
         })
     }
+
+    // Helper function to get the date of when a live video ended.
+    //
+    // @returns int: Returns an UNIX timestamp in ms OR
+    //               -1 if the video is still live
+    getVideoEndDate(videoInfo) {
+        if (videoInfo.status == 0) {
+            // Video is still live
+            return -1
+        }
+        let endedAt = +videoInfo.vtime + (+videoInfo.videolength)
+
+        return endedAt * 1000
+    }
+
+    // Helper function used to pick the correct video source.
+    //
+    // @returns string: M3U8 URL of the replay/live video OR
+    //                  an empty string if the replay is being generated / was deleted
+    //
+    pickProperVideoSource(videoInfo) {
+        let properSource
+
+        // We should use `hlsvideosource` if it's a live video.
+        // We should use `videosource` if it's a replay.
+        //
+        // This ensures we're always getting the URL of a M3U8 file and never of a FLV stream.
+        //
+        // However, `videosource` will be empty if the replay is 30+ days older.
+        // That's because replays older than 30 days are marked as "Expired" in the official app
+        // and can't be watched (through the app).
+        //
+        // Since we're not the official app, we can ignore that, because the replay URL
+        // will still be available through `hlsvideosource`.
+        switch (+videoInfo.status) {
+            case 0:
+                properSource = videoInfo.hlsvideosource
+                break
+            default:
+                properSource = (videoInfo.videosource === '') ? '' : videoInfo.videosource
+                break
+        }
+        return properSource
+    }
+
 }
 
 module.exports = LiveMe
