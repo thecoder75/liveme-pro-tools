@@ -12,9 +12,7 @@
 
 ### Getting Support or Assistance
 
-Since Discord banned my account and killed the old chat server, I have now set up [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools) for discussion on the development and usage of LiveMe Pro Tools. Please use this for more general usage and installation questions as others on there will provide assistance also.
-
-For general bugs or feature requests, feel free to open an Issue ticket.
+For general bugs or feature requests, feel free to open an Issue ticket or chat on [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools).  I will try and answer issues and questions as I have time now.
 
 ***FYI: I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME SENDING THEM!*** 
 
@@ -26,7 +24,7 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - View public replays for user accounts
 - See and navigate user's followers and followings
 - Watch and download replays
-- Allows downloading of replays using FFMPEG
+- Allows downloading of replays using internal downloader or FFMPEG
 - Supports [LAMD](https://github.com/thecoder75/lamd)
 
 * * *
