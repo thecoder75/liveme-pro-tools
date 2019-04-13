@@ -159,6 +159,10 @@ app.on('ready', () => {
             chunks: 1,
             ffmpegquality: 1
         })
+        appSettings.set('player', {
+            volume: 1,
+            muted: false
+        })
     }
 
     if (!appSettings.get('history.viewed_maxage')) {
@@ -171,6 +175,13 @@ app.on('ready', () => {
         appSettings.set('lamd', {
             cycletime: 60,
             concurrent: 3
+        })
+    }
+
+    if (!appSettings.get('player')) {
+        appSettings.set('player', {
+            volume: 1,
+            muted: false
         })
     }
 
@@ -684,6 +695,10 @@ ipcMain.on('watch-replay', (event, arg) => {
         .catch(err => {
             console.log('[watch-replay] getVideoInfo Error:', err)
         })
+})
+
+ipcMain.on('save-player-options', (event, options) => {
+    appSettings.set('player', options)
 })
 
 ipcMain.on('open-bookmarks', (event, arg) => {})
