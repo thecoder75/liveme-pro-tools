@@ -149,7 +149,7 @@ app.on('ready', () => {
         })
         appSettings.set('size', {
             mainWindow: [1024, 600],
-            playerWindow: [370, 680],
+            playerWindow: [360, 640],
             bookmarksWindow: [400, 720]
         })
         appSettings.set('downloads', {
