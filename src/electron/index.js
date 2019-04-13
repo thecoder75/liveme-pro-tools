@@ -688,8 +688,14 @@ ipcMain.on('watch-replay', (event, arg) => {
                         })
                         playerWindow = null
                     })
+                    playerWindow.loadURL(`file://${__dirname}/app/player.html`)
+                    playerWindow.webContents.once('dom-ready', () => {
+                        playerWindow.webContents.send('play-video', video, appSettings.get('player'))
+                    })
+                } else {
+                    playerWindow.webContents.send('play-video', video, appSettings.get('player'))
                 }
-                playerWindow.loadURL(`file://${__dirname}/app/player.html?${video.vid}`)
+                playerWindow.focus()
             }
         })
         .catch(err => {
