@@ -445,7 +445,7 @@ const dlQueue = async.queue((task, done) => {
                     const tsList = []
                     body.split('\n').forEach(line => {
                             if (line.indexOf('.ts') !== -1) {
-                                const tsName = line.split('?')[0].replace('/', '_')
+                                const tsName = line.split('?')[0].replace('\/', '_')
                                 let tsPath = `${path}/lmpt_temp/${video.vid}_${tsName}`
 
                                 if (process.platform == 'win32') {
@@ -493,7 +493,7 @@ const dlQueue = async.queue((task, done) => {
 
                     }, () => {
                         // Chunks downloaded
-                        let cfile = path + '/lpt_temp/' + video.vid + '.txt'
+                        let cfile = path + '/lmpt_temp/' + video.vid + '.txt'
 
                         if (parseInt(appSettings.get('downloads.ffmpegquality')) == 0) {
                             // Just combined the chunks into a single TS file
@@ -504,7 +504,7 @@ const dlQueue = async.queue((task, done) => {
                                 let l = line.split(' ')
                                 
                                 if (l.length > 1)
-                                    cList.push(`${path}/lpt_temp/${l[1]}`)
+                                    cList.push(`${path}/lmpt_temp/${l[1]}`)
                             })
 
                             mainWindow.webContents.send('download-progress', {
