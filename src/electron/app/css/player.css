@@ -1,18 +1,49 @@
 @import url(./base.css);
 @import url(./fonts.css);
 @import url(./icons.css);
-@import url(./video.css);
-
 @import url(./header.css);
 @import url(./mainarea.css);
 @import url(./footer.css);
 
+main {
+    background-color: #000;
+}
+#video {
+    height: calc(100vh - 24px); /* 24px is from the header */
+    transition: all 0.5s ease-in-out;
+}
+:-webkit-full-screen #video {
+    height: 100vh;
+}
+.landscape {
+    position: fixed;
+    top: 0;
+    width: calc(100vh - 24px) !important; /* 24px is from the header */
+    height: 100vw !important;
+    margin-top: calc(-100vw + 24px); /* 24px is from the header */
+}
+:-webkit-full-screen .landscape {
+    margin-top: -100vw;
+    width: 100vh !important;
+}
+.landscape-left {
+    right: 0;
+    transform-origin: bottom right;
+}
+.landscape-right {
+    left: 0;
+    transform-origin: bottom left;
+}
 .mid-container {
     height: 100%;
+    background-color: rgb(48, 48, 48);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .player-msg {
     text-align: center;
+}
+.plyr__controls {
+    position: fixed !important;
 }

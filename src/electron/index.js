@@ -149,7 +149,7 @@ app.on('ready', () => {
         })
         appSettings.set('size', {
             mainWindow: [1024, 600],
-            playerWindow: [370, 680],
+            playerWindow: [360, 640],
             bookmarksWindow: [400, 720]
         })
         appSettings.set('downloads', {
@@ -158,6 +158,10 @@ app.on('ready', () => {
             chunkthreads: 1,
             chunks: 1,
             ffmpegquality: 1
+        })
+        appSettings.set('player', {
+            volume: 1,
+            muted: false
         })
     }
 
@@ -171,6 +175,13 @@ app.on('ready', () => {
         appSettings.set('lamd', {
             cycletime: 60,
             concurrent: 3
+        })
+    }
+
+    if (!appSettings.get('player')) {
+        appSettings.set('player', {
+            volume: 1,
+            muted: false
         })
     }
 
@@ -651,8 +662,8 @@ ipcMain.on('watch-replay', (event, arg) => {
                         height: winsize[1],
                         x: winposition[0] !== -1 ? winposition[0] : null,
                         y: winposition[1] !== -1 ? winposition[1] : null,
-                        minWidth: 380,
-                        minHeight: 708,
+                        minWidth: 360,
+                        minHeight: 360,
                         darkTheme: true,
                         autoHideMenuBar: false,
                         disableAutoHideCursor: true,
@@ -677,13 +688,23 @@ ipcMain.on('watch-replay', (event, arg) => {
                         })
                         playerWindow = null
                     })
+                    playerWindow.loadURL(`file://${__dirname}/app/player.html`)
+                    playerWindow.webContents.once('dom-ready', () => {
+                        playerWindow.webContents.send('play-video', video, appSettings.get('player'))
+                    })
+                } else {
+                    playerWindow.webContents.send('play-video', video, appSettings.get('player'))
                 }
-                playerWindow.loadURL(`file://${__dirname}/app/player.html?${video.vid}`)
+                playerWindow.focus()
             }
         })
         .catch(err => {
             console.log('[watch-replay] getVideoInfo Error:', err)
         })
+})
+
+ipcMain.on('save-player-options', (event, options) => {
+    appSettings.set('player', options)
 })
 
 ipcMain.on('open-bookmarks', (event, arg) => {})
