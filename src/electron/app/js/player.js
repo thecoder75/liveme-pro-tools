@@ -176,24 +176,39 @@ function setupFlv(source) {
 
 function setupShortcuts() {
     document.addEventListener('keydown', event => {
+        // Make sure we don't create conflicts with other shortcuts using the
+        // same keys, but with different modifiers, e.g. pressing "Ctrl+A" or
+        // "Alt+A" should not trigger our "A" shortcut
         switch (event.code) {
             case 'Comma':
-                if (video.paused) video.currentTime -= 0.05
+                if (!event.altKey && !event.ctrlKey) {
+                    if (video.paused) video.currentTime -= 0.05
+                }
                 break
             case 'Period':
-                if (video.paused) video.currentTime += 0.05
+                if (!event.altKey && !event.ctrlKey) {
+                    if (video.paused) video.currentTime += 0.05
+                }
                 break
             case 'KeyA':
-                video.currentTime -= 10
+                if (!event.altKey && !event.ctrlKey) {
+                    video.currentTime -= 10
+                }
                 break
             case 'KeyD':
-                video.currentTime += 10
+                if (!event.altKey && !event.ctrlKey) {
+                    video.currentTime += 10
+                }
                 break
             case 'ArrowRight':
-                if (event.altKey) videoRotate('right')
+                if (event.altKey && !event.ctrlKey) {
+                    videoRotate('right')
+                }
                 break
             case 'ArrowLeft':
-                if (event.altKey) videoRotate('left')
+                if (event.altKey && !event.ctrlKey) {
+                    videoRotate('left')
+                }
                 break
         }
     })
