@@ -671,7 +671,6 @@ ipcMain.on('watch-replay', (event, arg) => {
                         autoHideMenuBar: false,
                         disableAutoHideCursor: true,
                         titleBarStyle: 'default',
-                        fullscreen: false,
                         maximizable: false,
                         frame: false,
                         backgroundColor: '#000000',
