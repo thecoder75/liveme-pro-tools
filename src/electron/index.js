@@ -457,8 +457,6 @@ const dlQueue = async.queue((task, done) => {
                                     // We'll use this later to merge downloaded chunks
                                     concatList += 'file ' + tsName + '\n'
 
-                                    console.log('Added to list: ' + tsName)
-
                                     // Push data to list
                                     tsList.push({ name: tsName, path: tsPath, url: line.split('?')[0] })
                                 }
