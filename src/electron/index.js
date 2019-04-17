@@ -161,7 +161,11 @@ app.on('ready', () => {
         })
         appSettings.set('player', {
             volume: 1,
-            muted: false
+            muted: false,
+            resize_on_rotate: false,
+            hide_restart_button: false,
+            hide_settings_button: false,
+            hide_fullscreen_button: false
         })
     }
 
