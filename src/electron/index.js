@@ -445,8 +445,8 @@ const dlQueue = async.queue((task, done) => {
                     const tsList = []
                     body.split('\n').forEach(line => {
                             if (line.indexOf('.ts') !== -1) {
-                                const tsName = line.split('?')[0].replace('\/', '_')
-                                let tsPath = `${path}/lmpt_temp/${video.vid}_${tsName}`
+                                let tsName = video.vid + '_' + line.split('?')[0].replace(/\//g, '_')
+                                let tsPath = `${path}/lmpt_temp/${tsName}`
 
                                 if (process.platform == 'win32') {
                                     tsPath = tsPath.replace(/\\/g, '/');
@@ -455,9 +455,12 @@ const dlQueue = async.queue((task, done) => {
                                 // Check if TS has already been added to array
                                 if (concatList.indexOf(tsPath) === -1) {
                                     // We'll use this later to merge downloaded chunks
-                                    concatList += 'file ' + video.vid + '_' + tsName + '\n'
-                                        // Push data to list
-                                    tsList.push({ name: tsName, path: tsPath })
+                                    concatList += 'file ' + tsName + '\n'
+
+                                    console.log('Added to list: ' + tsName)
+
+                                    // Push data to list
+                                    tsList.push({ name: tsName, path: tsPath, url: line.split('?')[0] })
                                 }
                             }
                         })
@@ -472,9 +475,9 @@ const dlQueue = async.queue((task, done) => {
 
                     async.eachLimit(tsList, 2, (file, next) => {
 
-                        const stream = request(`${properSource.split('/').slice(0, -1).join('/')}/${file.name}`)
+                        const stream = request(`${properSource.split('/').slice(0, -1).join('/')}/${file.url}`)
                             .on('error', err => {
-                                fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))
+                                fs.writeFileSync(`${path}/${file.name}-error.log`, JSON.stringify(err, null, 2))
                                 return done({ videoid: task, error: err })
                             })
                             .pipe(
