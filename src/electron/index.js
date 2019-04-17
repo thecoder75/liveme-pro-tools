@@ -157,7 +157,8 @@ app.on('ready', () => {
             template: '%%replayid%%',
             chunkthreads: 1,
             chunks: 1,
-            ffmpegquality: 1
+            ffmpegquality: 1,
+            parallel: 3
         })
         appSettings.set('player', {
             volume: 1,
@@ -197,7 +198,8 @@ app.on('ready', () => {
             bookmarksWindow: [-1, -1]
         })
     }
-    
+    dlQueue.concurrency = +appSettings.get('downloads.parallel') || 3
+
     createWindow()
 })
 
@@ -642,7 +644,7 @@ const dlQueue = async.queue((task, done) => {
                 break
         }
     })
-}, +appSettings.get('downloads.parallel') || 3)
+})
 
 
 /**
