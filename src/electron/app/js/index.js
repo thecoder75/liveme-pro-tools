@@ -1254,6 +1254,10 @@ function initSettingsPanel() {
     $('#viewmode-followers').prop('checked', appSettings.get('general.hide_zeroreplay_fans'))
     $('#viewmode-followings').prop('checked', appSettings.get('general.hide_zeroreplay_followings'))
 
+    $('#player-auto-resize').prop('checked', appSettings.get('player.resize_on_rotate'))
+    $('#player-hide-restart-btn').prop('checked', appSettings.get('player.hide_restart_button'))
+    $('#player-hide-settings-btn').prop('checked', appSettings.get('player.hide_settings_button'))
+    $('#player-hide-fullscreen-btn').prop('checked', appSettings.get('player.hide_fullscreen_button'))
     $('#playerpath').val(appSettings.get('general.playerpath'))
 
     $('#cleanup-duration').val(appSettings.get('history.viewed_maxage'))
@@ -1347,10 +1351,14 @@ function saveSettings() {
 
     appSettings.set('general.hide_zeroreplay_fans', (!!$('#viewmode-followers').is(':checked')))
     appSettings.set('general.hide_zeroreplay_followings', (!!$('#viewmode-followings').is(':checked')))
-    
+
     appSettings.set('general.hide_high_fan_count', (!!$('#hide-many-fans').is(':checked')))
     appSettings.set('general.hide_high_fan_count_value', parseInt($('#hide-many-fans-count').val()))
-            
+
+    appSettings.set('player.resize_on_rotate', $('#player-auto-resize').is(':checked'))
+    appSettings.set('player.hide_restart_button', $('#player-hide-restart-btn').is(':checked'))
+    appSettings.set('player.hide_settings_button', $('#player-hide-settings-btn').is(':checked'))
+    appSettings.set('player.hide_fullscreen_button', $('#player-hide-fullscreen-btn').is(':checked'))
     appSettings.set('general.playerpath', $('#playerpath').val())
 
     appSettings.set('history.viewed_maxage', $('#cleanup-duration').val())

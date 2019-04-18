@@ -86,7 +86,7 @@
                 "Terminal": false,
                 "Name": "LiveMe Pro Tools"
             },
-            "icon": "src/electron/build/1024x1024.png",
+            "icon": "src/electron/build/",
             "publish": null
         },
         "appImage": {

@@ -10,64 +10,11 @@ var hlsPlayer, flvPlayer, videoInfo, playerOptions, currentStream, title,
 title = $('#title')[0]
 video = $('#video')[0]
 
-// Plyr options are available here:
-// https://github.com/sampotts/plyr/tree/v3.5.3#options
-plyr = new Plyr(video, {
-    // Warning: Too noisy
-    // debug: isDev,
-    iconUrl: 'images/plyr.svg',
-    blankVideo: 'images/blank.mp4',
-    settings: [
-        'speed',
-        'loop'
-    ],
-    clickToPlay: false,
-    keyboard: {
-        focused: true,
-        global: true
-    },
-    controls: [
-        'restart',
-        'play',
-        'progress',
-        'current-time',
-        'duration',
-        'mute',
-        'volume',
-        'settings',
-        'fullscreen'
-    ],
-    tooltips: {
-        controls: true,
-        seek: true
-    },
-    seekTime: 1
-})
-
-// Display player controls whenever the user is seeking the video, so that
-// they can see the video timestamps
-plyr.on('seeking', () => {
-    isSeeking = true
-    plyr.config.hideControls = false
-    plyr.toggleControls(true)
-    lastSeek = Date.now()
-})
-// Check each half second if user has manually seeked the video, then
-// hides the player controls after 2 to 2.5 seconds
-setInterval(() => {
-    if (isSeeking && (Date.now() - lastSeek) >= 2000) {
-        plyr.config.hideControls = true
-        plyr.toggleControls(false)
-        isSeeking = false
-    }
-}, 500)
-
 flvjs.LoggingControl.enableDebug = isDev
-
-setupShortcuts()
 
 // --- Only functions and IPC listeners below ---
 
+// This listener will initialize everything (if necessary)
 ipcRenderer.on('play-video', (event, info, options) => {
     // Store some information in globals
     videoInfo = info
@@ -76,15 +23,10 @@ ipcRenderer.on('play-video', (event, info, options) => {
     document.title = videoInfo.vid
     title.textContent = videoInfo.vid
 
-    if (!plyr.source) {
-        // Restore player's previous state and apply it to the current player
-        plyr.volume = playerOptions.volume
-        plyr.muted = playerOptions.muted
-        plyr.on('volumechange', () => {
-            playerOptions.volume = plyr.volume
-            playerOptions.muted = plyr.muted
-            ipcRenderer.send('save-player-options', playerOptions)
-        })
+    if (!video.src) {
+        // Initialize player and setup shortcuts
+        setupPlyr()
+        setupShortcuts()
     } else {
         // Destroy current player
         switch (currentStream) {
@@ -142,6 +84,73 @@ ipcRenderer.on('play-video', (event, info, options) => {
     }
 })
 
+function setupPlyr() {
+    // Controls' order does matter.
+    let defaultControls = []
+
+    if (!!playerOptions.hide_restart_button === false) {
+        defaultControls.push('restart')
+    }
+    defaultControls.push('play', 'progress', 'current-time', 'duration', 'mute', 'volume')
+
+    if (!!playerOptions.hide_settings_button === false) {
+        defaultControls.push('settings')
+    }
+    if (!!playerOptions.hide_fullscreen_button === false) {
+        defaultControls.push('fullscreen')
+    }
+    // Plyr options are available here:
+    // https://github.com/sampotts/plyr/tree/v3.5.3#options
+    plyr = new Plyr(video, {
+        // Warning: Too noisy
+        // debug: isDev,
+        iconUrl: 'images/plyr.svg',
+        blankVideo: 'images/blank.mp4',
+        settings: [
+            'speed',
+            'loop'
+        ],
+        clickToPlay: false,
+        keyboard: {
+            focused: true,
+            global: true
+        },
+        controls: defaultControls,
+        tooltips: {
+            controls: true,
+            seek: true
+        },
+        seekTime: 1
+    })
+
+    // Restore previous player state
+    plyr.volume = playerOptions.volume
+    plyr.muted = playerOptions.muted
+
+    plyr.on('volumechange', () => {
+        playerOptions.volume = plyr.volume
+        playerOptions.muted = plyr.muted
+        ipcRenderer.send('save-player-options', playerOptions)
+    })
+    // Display player controls whenever the user is seeking the video, so that
+    // they can see the video timestamps (Plyr does not do that by default)
+    plyr.on('seeking', () => {
+        isSeeking = true
+        plyr.config.hideControls = false
+        plyr.toggleControls(true)
+        lastSeek = Date.now()
+    })
+    // Check each half second if user has manually seeked the video, then
+    // hides the player controls after 2 to 2.5 seconds
+    setInterval(() => {
+        if (isSeeking && (Date.now() - lastSeek) >= 2000) {
+            plyr.config.hideControls = true
+            plyr.toggleControls(false)
+            isSeeking = false
+        }
+    }, 500)
+}
+
 function setupHls() {
     hlsPlayer = new Hls({
         // Warning: Can be quite noisy
@@ -176,24 +185,39 @@ function setupFlv(source) {
 
 function setupShortcuts() {
     document.addEventListener('keydown', event => {
+        // Make sure we don't create conflicts with other shortcuts using the
+        // same keys, but with different modifiers, e.g. pressing "Ctrl+A" or
+        // "Alt+A" should not trigger our "A" shortcut
         switch (event.code) {
             case 'Comma':
-                if (video.paused) video.currentTime -= 0.05
+                if (!event.altKey && !event.ctrlKey) {
+                    if (video.paused) video.currentTime -= 0.05
+                }
                 break
             case 'Period':
-                if (video.paused) video.currentTime += 0.05
+                if (!event.altKey && !event.ctrlKey) {
+                    if (video.paused) video.currentTime += 0.05
+                }
                 break
             case 'KeyA':
-                video.currentTime -= 10
+                if (!event.altKey && !event.ctrlKey) {
+                    video.currentTime -= 10
+                }
                 break
             case 'KeyD':
-                video.currentTime += 10
+                if (!event.altKey && !event.ctrlKey) {
+                    video.currentTime += 10
+                }
                 break
             case 'ArrowRight':
-                if (event.altKey) videoRotate('right')
+                if (event.altKey && !event.ctrlKey) {
+                    videoRotate('right')
+                }
                 break
             case 'ArrowLeft':
-                if (event.altKey) videoRotate('left')
+                if (event.altKey && !event.ctrlKey) {
+                    videoRotate('left')
+                }
                 break
         }
     })
@@ -234,7 +258,9 @@ function videoRotate(direction) {
     let maxRotation = newRotation % (newRotation < 0 ? -360 : 360)
 
     if (isLandscape) {
-        window.resizeTo(newHeight, newWidth + 24) // 24px is from the header
+        if (!!playerOptions.resize_on_rotate) {
+            window.resizeTo(newHeight, newWidth + 24) // 24px is from the header
+        }
         $(video).addClass('landscape')
 
         if (maxRotation === -270 || maxRotation === 90) {
@@ -243,10 +269,12 @@ function videoRotate(direction) {
             $(video).addClass('landscape-left')
         }
     } else {
-        // Resize player window to perfectly match video dimensions
-        // Don't need to worry about screen bounds, the browser will handle that
-        // for us
-        window.resizeTo(newWidth, newHeight + 24) // 24px is from the header
+        if (!!playerOptions.resize_on_rotate) {
+            // Resize player window to perfectly match video dimensions
+            // Don't need to worry about screen bounds, the browser will handle that
+            // for us
+            window.resizeTo(newWidth, newHeight + 24) // 24px is from the header
+        }
         $(video).removeClass('landscape landscape-left landscape-right')
     }
     video.style.transform = `rotate(${newRotation}deg)`

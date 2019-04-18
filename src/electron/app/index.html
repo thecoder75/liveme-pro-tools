@@ -368,7 +368,21 @@
             <div class="section">
                 <ul>
                     <li style="padding-bottom: 5px;">
-                        <h4 class="titleColor">Video Player</h4>
+                        <h4 class="titleColor">Internal Video Player</h4>
+                    </li>
+                    <li style="padding-bottom: 20px;">
+                        The options below are only valid for the internal player.<br><br>
+                        <input type="checkbox" id="player-auto-resize" onchange="saveSettings()">
+                        <label for="player-auto-resize">Auto-resize the player's window to match the video's dimensions (after rotation).</label><br>
+                        <input type="checkbox" id="player-hide-restart-btn" onchange="saveSettings()">
+                        <label for="player-hide-restart-btn">Hide restart button.</label><br>
+                        <input type="checkbox" id="player-hide-settings-btn" onchange="saveSettings()">
+                        <label for="player-hide-settings-btn">Hide settings button.</label><br>
+                        <input type="checkbox" id="player-hide-fullscreen-btn" onchange="saveSettings()">
+                        <label for="player-hide-fullscreen-btn">Hide fullscreen button.</label><br>
+                    </li>
+                    <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">External Video Player</h4>
                     </li>
                     <li style="padding-bottom: 20px;">
                         Internal player is used by default unless you specify one in the field below.<br>

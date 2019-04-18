@@ -68,7 +68,27 @@ function createWindow() {
     mainWindow.loadURL(`file://${__dirname}/app/index.html`)
     mainWindow
         .on('open', () => {})
-        .on('close', () => {
+        .on('close', (event) => {
+            let toDownload = dlQueue.running() + dlQueue.length()
+            let userChoice = 0
+
+            if (toDownload > 0) {
+                userChoice = dialog.showMessageBox(mainWindow, {
+                    type: 'question',
+                    title: 'Download is in progress',
+                    message: `You still have ${toDownload} ` +
+                             (toDownload > 1 ? 'videos' : 'video') +
+                             ' to download.\n\n' +
+                             'Exit anyway?',
+                    buttons: ['Yes', 'No'],
+                    cancelId: 1,
+                    defaultId: 1,
+                })
+            }
+            if (userChoice === 1) {
+                event.preventDefault()
+                return false
+            }
             appSettings.set('position.mainWindow', mainWindow.getPosition())
             appSettings.set('size.mainWindow', mainWindow.getSize())
 
@@ -157,11 +177,16 @@ app.on('ready', () => {
             template: '%%replayid%%',
             chunkthreads: 1,
             chunks: 1,
-            ffmpegquality: 1
+            ffmpegquality: 1,
+            parallel: 3
         })
         appSettings.set('player', {
             volume: 1,
-            muted: false
+            muted: false,
+            resize_on_rotate: false,
+            hide_restart_button: false,
+            hide_settings_button: false,
+            hide_fullscreen_button: false
         })
     }
 
@@ -193,7 +218,8 @@ app.on('ready', () => {
             bookmarksWindow: [-1, -1]
         })
     }
-    
+    dlQueue.concurrency = +appSettings.get('downloads.parallel') || 3
+
     createWindow()
 })
 
@@ -636,7 +662,7 @@ const dlQueue = async.queue((task, done) => {
                 break
         }
     })
-}, +appSettings.get('downloads.parallel') || 3)
+})
 
 
 /**
@@ -669,7 +695,6 @@ ipcMain.on('watch-replay', (event, arg) => {
                         autoHideMenuBar: false,
                         disableAutoHideCursor: true,
                         titleBarStyle: 'default',
-                        fullscreen: false,
                         maximizable: false,
                         frame: false,
                         backgroundColor: '#000000',
