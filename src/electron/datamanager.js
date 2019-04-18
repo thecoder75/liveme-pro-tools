@@ -50,16 +50,16 @@ function handleConfigFileError(error, filePath) {
             title: `Unable to read ${path.basename(filePath)}`,
             message: `File '${path.basename(filePath)}' appears to be corrupt!\n\n` +
                      'In order to avoid data loss, the program will abort now.\n' +
-                     'If you need help, screenshot this error and show it to someone in our Discord group:\n',
+                     'If you need help, screenshot this error and show it to someone in our Gitter group:\n',
             detail: `File: ${filePath}\n${error.name}: ${error.message}`,
-            buttons: ['Open Discord group', 'Reset file (DANGEROUS!)', 'Close'],
+            buttons: ['Open Gitter group', 'Reset file (DANGEROUS!)', 'Close'],
             cancelId: 2,
             defaultId: 0,
         })
 
         switch(btn1) {
             case 0:
-                shell.openExternal('https://discord.gg/A5p2aF4')
+                shell.openExternal('https://gitter.im/thecoderstoolbox/liveme-pro-tools')
                 break
             case 1:
                 btn2 = dialog.showMessageBox({
