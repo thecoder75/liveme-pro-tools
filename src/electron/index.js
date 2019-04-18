@@ -68,7 +68,27 @@ function createWindow() {
     mainWindow.loadURL(`file://${__dirname}/app/index.html`)
     mainWindow
         .on('open', () => {})
-        .on('close', () => {
+        .on('close', (event) => {
+            let toDownload = dlQueue.running() + dlQueue.length()
+            let userChoice = 0
+
+            if (toDownload > 0) {
+                userChoice = dialog.showMessageBox(mainWindow, {
+                    type: 'question',
+                    title: 'Download is in progress',
+                    message: `You still have ${toDownload} ` +
+                             (toDownload > 1 ? 'videos' : 'video') +
+                             ' to download.\n\n' +
+                             'Exit anyway?',
+                    buttons: ['Yes', 'No'],
+                    cancelId: 1,
+                    defaultId: 1,
+                })
+            }
+            if (userChoice === 1) {
+                event.preventDefault()
+                return false
+            }
             appSettings.set('position.mainWindow', mainWindow.getPosition())
             appSettings.set('size.mainWindow', mainWindow.getSize())
 
