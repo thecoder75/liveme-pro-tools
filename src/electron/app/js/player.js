@@ -131,6 +131,8 @@ function setupPlyr() {
         playerOptions.volume = plyr.volume
         playerOptions.muted = plyr.muted
         ipcRenderer.send('save-player-options', playerOptions)
+        // Lose focus of the volume slider
+        $('input[data-plyr="volume"]').blur()
     })
     // Display player controls whenever the user is seeking the video, so that
     // they can see the video timestamps (Plyr does not do that by default)
@@ -139,6 +141,10 @@ function setupPlyr() {
         plyr.config.hideControls = false
         plyr.toggleControls(true)
         lastSeek = Date.now()
+    })
+    plyr.on('seeked', () => {
+        // Lose focus of the progress bar
+        $('input[data-plyr="seek"]').blur()
     })
     // Check each half second if user has manually seeked the video, then
     // hides the player controls after 2 to 2.5 seconds
