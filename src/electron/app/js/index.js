@@ -1274,6 +1274,8 @@ function initSettingsPanel() {
     $('#chunk-method-tmp').prop('checked', appSettings.get('downloads.deltmp'))
     $('#downloads-parallel').val(appSettings.get('downloads.parallel') || 3)
 
+    $('#chat-history').prop('checked', appSettings.get('downloads.saveMessageHistory'))
+
     const ffmpegQuality = appSettings.get('downloads.ffmpegquality') || false
     if ((ffmpegQuality > 5) && (ffmpegQuality < 10)) ffmpegQuality = 1
     $('#ffmpeg-transcode-setting').val(ffmpegQuality ? ffmpegQuality : 0)
@@ -1370,6 +1372,8 @@ function saveSettings() {
     appSettings.set('downloads.ffmpeg', $('#ffmpegPath').val().trim() || false)
     appSettings.set('downloads.parallel', $('#downloads-parallel').val() || 3)
 
+    appSettings.set('downloads.saveMessageHistory', (!!$('#chat-history').is(':checked')))
+
     appSettings.set('downloads.ffmpegquality', $('#ffmpeg-transcode-setting').val())
 
     appSettings.set('general.blockedCountries', $('#countryCode').val())
@@ -1397,7 +1401,8 @@ function resetSettings() {
     })
     appSettings.set('downloads', {
         path: path.join(app.getPath('home'), 'Downloads'),
-        template: '%%replayid%%'
+        template: '%%replayid%%',
+        saveMessageHistory: false
     })
     appSettings.set('history', {
         viewed_maxage: 1
