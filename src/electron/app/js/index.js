@@ -941,8 +941,9 @@ function getUsersReplays() {
 
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
-                    $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!`).fadeIn(400)
-                    $('footer h1').html(`User's account has been terminated.`)
+                    // **OLD** $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!`).fadeIn(400)
+                    $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has no public replays available for viewing!`).fadeIn(400)
+                    $('footer h1').html(`No publically viewable replays found.`)
                     hideProgressBar()
                 }
                 return
