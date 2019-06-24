@@ -468,7 +468,7 @@ const dlQueue = async.queue((task, done) => {
                 for (let i = 0; i < t.length - 1; i++) {
                     try {
                         let j = JSON.parse(t[i])
-                        let timeStamp = formatDuration(parseInt(j.timestamp) - startTime)
+                        let timeStamp = formatDuration(parseInt(j.timestamp) - (video.vtime * 1000))
 
                         if (j.objectName === 'app:joinchatroommsgcontent') {
                         } else if (j.objectName === 'app:leavechatrrommsgcontent') {
