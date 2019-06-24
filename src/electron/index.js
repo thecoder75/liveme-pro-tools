@@ -459,6 +459,35 @@ const dlQueue = async.queue((task, done) => {
         }
 
 
+        if (appSettings.get('downloads.saveMessageHistory') == true) {
+            LiveMe.getChatHistoryForVideo(video.msgfile)
+            .then(raw => {
+                let t = raw.split('\n')
+                let dump = ''
+
+                for (let i = 0; i < t.length - 1; i++) {
+                    try {
+                        let j = JSON.parse(t[i])
+                        let timeStamp = formatDuration(parseInt(j.timestamp) - startTime)
+
+                        if (j.objectName === 'app:joinchatroommsgcontent') {
+                        } else if (j.objectName === 'app:leavechatrrommsgcontent') {
+                        } else if (j.objectName === 'app:praisemsgcontent') {
+                        } else if (j.objectName === 'RC:TxtMsg') {
+                            dump += `[${timeStamp}] ${j.content.user.name}: ${j.content.content}`
+                            dump += '\n';
+                        }
+                    } catch (err) {
+                        // Caught
+                        console.log(err)
+                    }
+                }
+
+                fs.writeFileSync(`${path}/${filename}.txt`, dump)
+                return done()
+            })
+        }
+
         switch (appSettings.get('downloads.method')) {
             case 'chunk':
                 request(properSource, (err, res, body) => {
@@ -592,35 +621,6 @@ const dlQueue = async.queue((task, done) => {
                                 ])
                                 .outputOptions(ffmpegOpts)
                                 .run()
-                        }
-
-                        if (appSettings.get('downloads.saveMessageHistory') == true) {
-                            LiveMe.getChatHistoryForVideo(video.msgfile)
-                            .then(raw => {
-                                let t = raw.split('\n')
-                                let dump = ''
-
-                                for (let i = 0; i < t.length - 1; i++) {
-                                    try {
-                                        let j = JSON.parse(t[i])
-                                        let timeStamp = formatDuration(parseInt(j.timestamp) - startTime)
-            
-                                        if (j.objectName === 'app:joinchatroommsgcontent') {
-                                        } else if (j.objectName === 'app:leavechatrrommsgcontent') {
-                                        } else if (j.objectName === 'app:praisemsgcontent') {
-                                        } else if (j.objectName === 'RC:TxtMsg') {
-                                            dump += `[${timeStamp}] ${j.content.user.name}: ${j.content.content}`
-                                            dump += '\n';
-                                        }
-                                    } catch (err) {
-                                        // Caught
-                                        console.log(err)
-                                    }
-                                }
-
-                                fs.writeFileSync(`${path}/${filename}-chat.txt`, dump)
-                                return done()
-                            })
                         }
 
                     })
