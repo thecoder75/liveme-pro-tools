@@ -8,6 +8,48 @@
 main {
     background-color: #000;
 }
+
+#chathistory {
+    display: block;
+    position: absolute;
+    z-index: 1000;
+    right: 8px;
+    bottom: 48px;
+    width: 320px;
+    overflow: hidden;
+    background-color: transparent;
+    text-align: right;
+}
+#chathistory > .message {
+    float: right;
+    display: block;
+    max-width: 320px;
+    min-width: 160px;
+    margin: 8px 0;
+}
+
+#chathistory > .message h1, #chathistory > .message h2 {
+    display: block;
+    font-weight: 400;
+    margin: 0;
+    text-align: left;
+}
+
+#chathistory > .message h1 { 
+    font-size: 10pt; 
+    background-color: rgb(0,64,248); 
+    color: rgb(255,255,255); 
+    padding: 6px 10px;
+}
+#chathistory > .message h2 { 
+    font-size: 8pt; 
+    font-weight: bold;
+    background-color: rgb(0,32,224); 
+    color: rgb(255,255,255); 
+    padding: 3px 4px;
+}
+
+
 #video {
     height: calc(100vh - 24px); /* 24px is from the header */
     transition: all 0.5s ease-in-out;
@@ -46,4 +88,5 @@ main {
 }
 .plyr__controls {
     position: fixed !important;
+    z-index: 100;
 }

@@ -5,7 +5,7 @@ const { ipcRenderer, remote } = require('electron'),
 
 // Globals
 var hlsPlayer, flvPlayer, videoInfo, playerOptions, currentStream, title,
-    video, plyr, isSeeking, lastSeek
+    video, plyr, isSeeking, lastSeek, messageHistory = []
 
 title = $('#title')[0]
 video = $('#video')[0]
@@ -82,6 +82,12 @@ ipcRenderer.on('play-video', (event, info, options) => {
         // Re-enable seek bar
         $('.plyr__progress input[type=range]').attr('disabled', false)
     }
+
+    setImmediate(() => {
+        messageHistory = []
+        preloadChatHistory()
+    })
+
 })
 
 function setupPlyr() {
@@ -146,6 +152,34 @@ function setupPlyr() {
         // Lose focus of the progress bar
         $('input[data-plyr="seek"]').blur()
     })
+
+    plyr.on('timeupdate', () => {
+        let t = formatDuration(plyr.currentTime * 1000)
+        let tt = Math.floor(plyr.currentTime)
+
+        if (messageHistory[t] != null) {
+            var h = `
+            <div class="message message-${tt}">
+                <h2>${messageHistory[t].user}</h2>
+                <h1>${messageHistory[t].text}</h1>
+            </div>
+            `
+            $('#chathistory').append(h) //.scrollTo($('#chathistory').innerHeight() - 1)
+
+            setTimeout(() => {
+                $(`.message-${tt}`).animate({
+                    opacity: 0
+                }, 800)
+            }, 6000)
+            setTimeout(() => {
+                $(`.message-${tt}`).hide()
+            }, 7000)
+        
+            messageHistory[t] = null
+        } 
+       
+    })
+
     // Check each half second if user has manually seeked the video, then
     // hides the player controls after 2 to 2.5 seconds
     setInterval(() => {
@@ -154,6 +188,7 @@ function setupPlyr() {
             plyr.toggleControls(false)
             isSeeking = false
         }
+
     }, 500)
 }
 
@@ -300,4 +335,44 @@ function downloadReplay() {
     ipcRenderer.send('download-replay', {
         videoid: videoInfo.vid
     })
+}
+
+function preloadChatHistory() {
+    LiveMe.getVideoInfo(videoInfo.vid).then(video => {
+
+        LiveMe.getChatHistoryForVideo(video.msgfile)
+        .then(raw => {
+            let t = raw.split('\n')
+
+            for (let i = 0; i < t.length - 1; i++) {
+                try {
+                    let j = JSON.parse(t[i])
+                    let timeStamp = formatDuration(parseInt(j.timestamp) - (video.vtime * 1000))
+                    //let timeStamp = j.timestamp
+
+                    if (j.objectName === 'RC:TxtMsg') {
+                        messageHistory[timeStamp] = {
+                            user: j.content.user.name,
+                            text: j.content.content,
+                        }
+                    }
+                } catch (err) {
+                    // Caught
+                    console.log(err)
+                }
+            }
+
+            console.log(messageHistory);
+        })    
+    })
+}
+
+function formatDuration(i) {
+    var sec = Math.floor((i / 1000) % 60),
+        min = Math.floor((i / 1000) / 60),
+        hour = Math.floor((i / 1000) / 3600)
+
+    return  ((hour < 10 ? '0' : '') + hour + ':' +
+            (min < 10 ? '0' : '') + min + ':' +
+            (sec < 10 ? '0' : '') + sec)
 }
