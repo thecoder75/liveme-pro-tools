@@ -459,34 +459,33 @@ const dlQueue = async.queue((task, done) => {
         }
 
 
-        if (appSettings.get('downloads.saveMessageHistory') == true) {
-            LiveMe.getChatHistoryForVideo(video.msgfile)
-            .then(raw => {
-                let t = raw.split('\n')
-                let dump = ''
+        //if (appSettings.get('downloads.saveMessageHistory') == true) {
+            LiveMe.getVideoInfo(video.vid).then(vid => {
+                LiveMe.getChatHistoryForVideo(vid.msgfile)
+                .then(raw => {
+                    let t = raw.split('\n')
+                    var dump = ''
 
-                for (let i = 0; i < t.length - 1; i++) {
-                    try {
-                        let j = JSON.parse(t[i])
-                        let timeStamp = formatDuration(parseInt(j.timestamp) - (video.vtime * 1000))
+                    for (let i = 0; i < t.length - 1; i++) {
+                        try {
+                            let j = JSON.parse(t[i])
+                            let timeStamp = formatDuration(parseInt(j.timestamp) - (vid.vtime * 1000))
 
-                        if (j.objectName === 'app:joinchatroommsgcontent') {
-                        } else if (j.objectName === 'app:leavechatrrommsgcontent') {
-                        } else if (j.objectName === 'app:praisemsgcontent') {
-                        } else if (j.objectName === 'RC:TxtMsg') {
-                            dump += `[${timeStamp}] ${j.content.user.name}: ${j.content.content}`
-                            dump += '\n';
+                            if (j.objectName === 'RC:TxtMsg') {
+                                dump += `[${timeStamp}] ${j.content.user.name}: ${j.content.content}`
+                                dump += '\n';
+                            }
+                        } catch (err) {
+                            // Caught
+                            console.log(err)
                         }
-                    } catch (err) {
-                        // Caught
-                        console.log(err)
                     }
-                }
 
-                fs.writeFileSync(`${path}/${filename}.txt`, dump)
-                return done()
+                    fs.writeFileSync(`${path}/${filename}.txt`, dump)
+                    
+                })
             })
-        }
+        //}
 
         switch (appSettings.get('downloads.method')) {
             case 'chunk':
@@ -1063,3 +1062,15 @@ function getMiniMenuTemplate() {
     ]
     return template
 }
+
+
+function formatDuration(i) {
+    var sec = Math.floor((i / 1000) % 60),
+        min = Math.floor((i / 1000) / 60),
+        hour = Math.floor((i / 1000) / 3600)
+
+    return  ((hour < 10 ? '0' : '') + hour + ':' +
+            (min < 10 ? '0' : '') + min + ':' +
+            (sec < 10 ? '0' : '') + sec)
+}
+
