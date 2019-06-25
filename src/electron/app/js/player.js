@@ -156,7 +156,7 @@ function setupPlyr() {
 
     plyr.on('timeupdate', () => {
 
-        if (!playerOptions.chatEnabled) return
+        if (playerOptions.chatEnabled == false) return
 
         let t = formatDuration(plyr.currentTime * 1000)
         let tt = Math.floor(plyr.currentTime)
@@ -346,6 +346,8 @@ function downloadReplay() {
 
 function toggleChat() {
     playerOptions.chatEnabled = !playerOptions.chatEnabled
+
+    ipcRenderer.send('save-player-options', playerOptions)
 
     var tt = Math.round(Math.random() * 1000),
         h = `
