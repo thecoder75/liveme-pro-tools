@@ -18,13 +18,13 @@ main {
     width: 320px;
     overflow: hidden;
     background-color: transparent;
-    text-align: right;
 }
 #chathistory > .message {
     float: right;
+    clear: both;
     display: block;
     max-width: 320px;
-    min-width: 160px;
+    min-width: 240px;
     margin: 8px 0;
 }
 
