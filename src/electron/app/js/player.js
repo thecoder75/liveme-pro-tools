@@ -155,6 +155,9 @@ function setupPlyr() {
     })
 
     plyr.on('timeupdate', () => {
+
+        if (!playerOptions.chatEnabled) return
+
         let t = formatDuration(plyr.currentTime * 1000)
         let tt = Math.floor(plyr.currentTime)
 
@@ -261,6 +264,9 @@ function setupShortcuts() {
                     videoRotate('left')
                 }
                 break
+            case 'KeyC':
+                toggleChat()
+                break
         }
     })
 }
@@ -336,6 +342,27 @@ function downloadReplay() {
     ipcRenderer.send('download-replay', {
         videoid: videoInfo.vid
     })
+}
+
+function toggleChat() {
+    playerOptions.chatEnabled = !playerOptions.chatEnabled
+
+    var tt = Math.round(Math.random() * 1000),
+        h = `
+    <div class="message message-${tt}">
+        <h1>Replay chat message ` + (playerOptions.chatEnabled ? 'enabled' : 'disabled') + `
+    </div>
+    `
+    $('#chathistory').append(h)
+
+    setTimeout(() => {
+        $(`.message-${tt}`).animate({
+            opacity: 0
+        }, 800)
+    }, 2000)
+    setTimeout(() => {
+        $(`.message-${tt}`).hide()
+    }, 3000)
 }
 
 function preloadChatHistory() {
