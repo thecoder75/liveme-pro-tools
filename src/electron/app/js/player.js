@@ -84,6 +84,7 @@ ipcRenderer.on('play-video', (event, info, options) => {
     }
 
     setImmediate(() => {
+        $('.message').hide()
         messageHistory = []
         preloadChatHistory()
     })
