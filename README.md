@@ -12,7 +12,7 @@
 
 ### Getting Support or Assistance
 
-For general bugs or feature requests, feel free to open an Issue ticket or chat on [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools).  I will try and answer issues and questions as I have time now.
+For general bugs or feature requests, chat on [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools).  I will try and answer issues and questions as I have time now.
 
 ***FYI: I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME SENDING THEM!*** 
 
