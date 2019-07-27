@@ -8,6 +8,9 @@
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
+## LiveMe Pro Tools is reaching its end of life support from me.
+**Since LiveMe is banning people for doing nothing now and making its own service no longer desirable, I've decided to end all development on the LiveMe Tools series.
+
 * * *
 
 ### Getting Support or Assistance
