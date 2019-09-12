@@ -8,8 +8,10 @@
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
-## LiveMe Pro Tools is reaching its end of life support from me.
-**Since LiveMe is banning people for doing nothing now and making its own service no longer desirable, I've decided to end all development on the LiveMe Tools series.
+* * *
+
+### IT'S NOT DEAD YET!
+***So I mis-spoke awhile back as lately I've found a few wins on LiveMe that have escaped the censors.  So the project is back active but with limited work being done.***
 
 * * *
 
@@ -29,6 +31,8 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - Watch and download replays
 - Allows downloading of replays using internal downloader or FFMPEG
 - Supports [LAMD](https://github.com/thecoder75/lamd)
+- FFMPEG Hardware-Accelerated video transcoding supported on Linux only!  
+  - Fully supports VAAPI on AMD and Intel cards for now.
 
 * * *
 
@@ -53,11 +57,9 @@ You are more than welcome to download the source and build your own 32-bit versi
 * * *
 
 ### FFMPEG No Longer Required?
-Dependancy on FFMPEG has been removed.  You can choose to use a basic built-in concat system now to join the chunks downloaded without needing to have FFMPEG installed on your computer.  
+You can choose to use a basic built-in concat system now to join the chunks downloaded without needing to have FFMPEG installed on your computer.  Or for better support, you can still use FFMPEG settings.
 
 If you wish to transcode the downloads, then you will need to have FFMPEG installed.
-
-~~FFMPEG is required to combined the downloaded playlist chunks and if transcoding of the downloaded replays are preferred.  There is no way at this time to download replays without having FFMPEG installed.~~
 
 * * *
 
