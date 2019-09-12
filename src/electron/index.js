@@ -348,28 +348,28 @@ const dlQueue = async.queue((task, done) => {
         }
 
         switch (parseInt(appSettings.get('downloads.ffmpegquality'))) {
-            case 21: // Linux NVENC Accelerated
+            case 20: // Linux H264 VAAPI Accelerated
                 ffmpegOpts = [
-                    '-c:v h264_nvenc',
-                    '-qp 22',
-                    '-r 15',
-                    '-bf 4',
+                    '-hwaccel vaapi',
+                    '-hwaccel_output_format vaapi',
+                    '-vaapi_device /dev/dri/renderD128',
+                    '-c:v h264_vaapi',
+                    '-vf "format=nv12,hwupload"',
+                    '-qp 25',
                     '-vsync 2',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc'
                 ]
                 break
 
-            case 20: // Linux VAAPI Accelerated
+            case 19: // Linux HEVC VAAPI Accelerated
                 ffmpegOpts = [
                     '-hwaccel vaapi',
                     '-hwaccel_output_format vaapi',
                     '-vaapi_device /dev/dri/renderD128',
-                    '-c:v h264_vaapi',
-                    '-vf hwupload,format=vaapi',
-                    '-qp 22',
-                    '-r 15',
-                    '-bf 4',
+                    '-c:v hevc_vaapi',
+                    '-vf "format=nv12,hwupload"',
+                    '-qp 30',
                     '-vsync 2',
                     '-c:a copy',
                     '-bsf:a aac_adtstoasc'
@@ -389,48 +389,12 @@ const dlQueue = async.queue((task, done) => {
                 ]
                 break
 
-            case 5: // AMD AMF Hardware Enabled - Experimental
-                ffmpegOpts = [
-                    '-c:v h264_amf',
-                    '-qp 22',
-                    '-r 15',
-                    '-bf 4',
-                    '-vsync 2',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc'
-                ]
-                break
-
-            case 4: // nVidia Hardware Enabled - Experimental
-                ffmpegOpts = [
-                    '-c:v h264_nvenc',
-                    '-qp 22',
-                    '-r 15',
-                    '-bf 4',
-                    '-vsync 2',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc'
-                ]
-                break
-
-            case 3: // Intel Hardware Enabled - Experimental
-                ffmpegOpts = [
-                    '-c:v h264_qsv',
-                    '-qp 22',
-                    '-r 15',
-                    '-bf 4',
-                    '-vsync 2',
-                    '-c:a copy',
-                    '-bsf:a aac_adtstoasc'
-                ]
-                break
-
             case 2: // Best
                 ffmpegOpts = [
                     '-c:v h264',
                     '-crf 21',
                     '-r 15',
-                    '-bf 4',
+                    '-bf 2',
                     '-vsync 2',
                     '-preset slow',
                     '-c:a copy',
@@ -443,7 +407,7 @@ const dlQueue = async.queue((task, done) => {
                     '-c:v h264',
                     '-crf 21',
                     '-r 15',
-                    '-bf 4',
+                    '-bf 2',
                     '-vsync 2',
                     '-preset superfast',
                     '-c:a copy',
