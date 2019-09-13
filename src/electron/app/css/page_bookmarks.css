@@ -38,6 +38,7 @@
     font-weight: 400;
     line-height: 12pt;
     top: 48px;
+    max-width: 340px;
 }
 
 #bookmark-list h3 {
@@ -68,7 +69,7 @@
 
 #bookmark-list td div.buttons a.button {
     margin-right: 2px;
-    width: 92px;
+    width: 108px;
     font-size: 9pt;
     line-height: 24px;
     height: 24px;
