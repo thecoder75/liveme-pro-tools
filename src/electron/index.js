@@ -423,7 +423,7 @@ const dlQueue = async.queue((task, done) => {
         }
 
 
-        //if (appSettings.get('downloads.saveMessageHistory') == true) {
+        if (appSettings.get('downloads.saveMessageHistory') == true) {
             LiveMe.getVideoInfo(video.vid).then(vid => {
                 LiveMe.getChatHistoryForVideo(vid.msgfile)
                 .then(raw => {
@@ -449,7 +449,7 @@ const dlQueue = async.queue((task, done) => {
                     
                 })
             })
-        //}
+        }
 
         switch (appSettings.get('downloads.method')) {
             case 'chunk':
