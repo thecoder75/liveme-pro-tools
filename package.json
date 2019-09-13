@@ -1,6 +1,6 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.341.20190912",
+    "version": "1.342.20190914",
     "description": "Tools for Live.me video network",
     "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
@@ -61,18 +61,6 @@
             "target": [
                 {
                     "target": "AppImage",
-                    "arch": [
-                        "x64"
-                    ]
-                },
-                {
-                    "target": "deb",
-                    "arch": [
-                        "x64"
-                    ]
-                },
-                {
-                    "target": "rpm",
                     "arch": [
                         "x64"
                     ]
