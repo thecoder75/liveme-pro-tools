@@ -45,7 +45,6 @@ header svg {
 
 header a {
     display: inline-block;
-    width: 46px;
     height: 30px;
     line-height: 30px;
     margin: 0;
@@ -56,6 +55,9 @@ header a svg {
     position: absolute;
     top: 3px;
     left: 11px;
+}
+header a.app-menu svg {
+    left: 8px;
 }
 
 header a:hover { background-color: rgba(255,255,255,0.1); }
@@ -68,6 +70,7 @@ header .control-buttons {
 }
 header .control-buttons a {
     display: inline-block;
+    width: 46px;
 }
 
 header .control-buttons a:hover { background: rgba(255,255,255,0.1); }
@@ -156,7 +159,17 @@ header.two-lines .search-row input[type=text] {
 header .button-group {
     position: absolute;
     top: 0;
-    left: 560px;
+    left: 520px;
+}
+header .button-group a {
+    width: 36px;
+    border-radius: 5px;
+    background-color: rgba(255,255,255,0.05);
+}
+header .button-group a:hover { background-color: rgba(255,255,255,0.2); }
+
+header .button-group a svg {
+    left: 7px;
 }
 
 /*
@@ -164,11 +177,14 @@ header .button-group {
 */
 header .search {
     position: absolute;
-    left: 80px;
+    left: 48px;
     display: block;
-    height: 30px;
+    height: 26px;
     vertical-align: top;
     -webkit-app-region: no-drag;
+    background-color: rgba(255,255,255,0.1);
+    border-radius: 13px;
+    margin-top: 2px;
 }
 
 .search svg {
@@ -178,20 +194,20 @@ header .search {
 }
 .search svg.search-icon {
     position: absolute;
-    left: 0px;
-    top: 4px;
+    left: 4px;
+    top: 3px;
     opacity: 0.5
 }
 .search .select {
     margin-left: 24px;
-    height: 30px;
-    line-height: 30px;
+    height: 26px;
+    line-height: 26px;
 }
 
 .search .select select {
     color: rgb(128,128,128);
     border: none;
-    height: 30px;
+    height: 26px;
     font-size: 11pt;
 }
 
@@ -203,8 +219,8 @@ header .search {
     display: inline-block;
     border: none;
     width: 256px;
-    height: 30px;
-    line-height: 30px;
+    height: 26px;
+    line-height: 26px;
     padding: 0 4px;
     margin: 0;
     color: rgb(224,224,224);
@@ -223,7 +239,7 @@ header .search {
     height: 24px;
     line-height: 24px;
     padding: 0;
-    margin-right: 8px;
+    margin: -1px 4px 0 0;
     cursor: pointer;
     vertical-align: top;
 }

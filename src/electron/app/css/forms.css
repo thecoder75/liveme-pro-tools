@@ -104,7 +104,7 @@ input[type=button] {
     text-decoration: none;
     text-align: center;
     background-color: rgb(80, 80, 80);
-    border-radius: 2px;
+    border-radius: 5px;
     border: none;
     color: rgb(192, 192, 192);
     vertical-align: middle;
