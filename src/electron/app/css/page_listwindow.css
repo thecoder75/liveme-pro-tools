@@ -79,11 +79,15 @@
     position: absolute;
     bottom: 0;
     left: 6px;
-    font-size: 8.5pt;
+    font-size: 8pt;
     font-weight:  600;
 }
 .fflist td div.buttons a.button { margin-right: 3px; width: 102px; line-height: 24px; height: 24px; margin-bottom: 4px; padding: 0; }
 
+.fflist a.button.mini {
+    font-size: 9pt !important;
+    font-weight: 700 !important;
+}
 
 footer h1 { font-size: 9pt; }
 footer > input[type=button] {
