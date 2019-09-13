@@ -414,9 +414,9 @@ kbd {
     text-align: right;
 }
 .details > div.info h2.id { padding-right: 4px; left: 12px;}
-.details > div.info h2.shortid { padding-right: 4px; left: 228px;}
-.details > div.info h2.level { left: 418px;}
-.details > div.info h2.variance { left: 508px;}
+.details > div.info h2.shortid { padding-right: 4px; left: 258px;}
+.details > div.info h2.level { left: 450px;}
+.details > div.info h2.variance { left: 528px;}
 
 .details > div.info h2 span, .details > div.info h2 span {
     font-size: 9pt;
@@ -425,19 +425,18 @@ kbd {
     float: left;
 }
 
-.details > div.info h2.id { width: 212px; }
-.details > div.info h2.shortid { width: 166px; }
-.details > div.info h2.level { width: 66px; }
+.details > div.info h2.id { width: 240px; }
+.details > div.info h2.shortid { width: 186px; }
+.details > div.info h2.level { width: 80px; }
 .details > div.info h2.variance { width: 86px; }
 .details > div.info h2.stars, .details > div.info h2.stars  { width: 96px; }
 
 .details > div.info h4 {
     position: absolute;
-    top: -12px;
-    right: 0;
-    font-size: 64pt;
-    font-weight: 600;
-    letter-spacing: -0.05em;
+    top: -2px;
+    right: 8px;
+    font-size: 48pt;
+    font-weight: 700;
     color: rgba(255,255,255,0.2);
 }
 
