@@ -11,7 +11,7 @@
 * * *
 
 ### IT'S NOT DEAD YET!
-***So I mis-spoke awhile back as lately I've found a few wins on LiveMe that have escaped the censors.  So the project is back active but with limited work being done.***
+***So I miss-spoke awhile back as lately I've found a few wins on LiveMe that have escaped the censors.  So the project is back active but with limited work being done and releases not happening as fast as they use to.***
 
 * * *
 
@@ -19,7 +19,7 @@
 
 For general bugs or feature requests, chat on [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools).  I will try and answer issues and questions as I have time now.
 
-***FYI: I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME SENDING THEM!*** 
+***FYI: I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME SENDING THEM!***
 
 * * *
 
@@ -69,7 +69,7 @@ If you wish to transcode the downloads, then you will need to have FFMPEG instal
 * LiveMe-API - *now integrated into the project*
 
 ### Contributing
-If you find any bugs or would like to help add features or additional functions, please create a pull request for review and the current contributors will review it.  No guarantees are provided on if your pull request will be integrated or not. 
+If you find any bugs or would like to help add features or additional functions, please create a pull request for review and the current contributors will review it.  No guarantees are provided on if your pull request will be integrated or not.
 
 ### Project Contributors
 #### In no special order:
