@@ -162,12 +162,27 @@ function setupPlyr() {
         let tt = Math.floor(plyr.currentTime)
 
         if (messageHistory[t] != null) {
-            var h = `
-            <div class="message message-${tt}">
-                <h2>${messageHistory[t].user}</h2>
-                <h1>${messageHistory[t].text}</h1>
-            </div>
-            `
+            var h = ''
+
+            switch (messageHistory[t].type) {
+                case 0: // regular chat message
+                    h = `
+                    <div class="message message-${tt}">
+                        <h2>${messageHistory[t].user}</h2>
+                        <h1>${messageHistory[t].text}</h1>
+                    </div>
+                    `
+                    break
+
+                case 100: // Praise
+                    h = `
+                    <div class="message message-${tt} praise">
+                        <h1>${messageHistory[t].text}</h1>
+                    </div>
+                    `
+                    break
+
+            }
             $('#chathistory').append(h) //.scrollTo($('#chathistory').innerHeight() - 1)
 
             setTimeout(() => {
@@ -178,10 +193,10 @@ function setupPlyr() {
             setTimeout(() => {
                 $(`.message-${tt}`).hide()
             }, 7000)
-        
+
             messageHistory[t] = null
-        } 
-       
+        }
+
     })
 
     // Check each half second if user has manually seeked the video, then
@@ -378,12 +393,28 @@ function preloadChatHistory() {
                 try {
                     let j = JSON.parse(t[i])
                     let timeStamp = formatDuration(parseInt(j.timestamp) - (video.vtime * 1000))
-                    //let timeStamp = j.timestamp
 
-                    if (j.objectName === 'RC:TxtMsg') {
+                    // console.log(j.objectName)
+
+                    if (j.objectName == 'app:joinchatroommsgcontent') {
+                        // console.log(JSON.stringify(j.content, null, 2))
+                    } else if (j.objectName == 'app:leavechatroommsgcontent') {
+                        // console.log(JSON.stringify(j.content, null, 2))
+                    } else if (j.objectName == 'app:starmsgcontent') {
+                        // console.log(JSON.stringify(j.content, null, 2))
+                    } else if (j.objectName == 'app:normallvmsgcontent') {
+                        // console.log(JSON.stringify(j.content, null, 2))
+                    } else if (j.objectName == 'app:praisemsgcontent') {
+                        messageHistory[timeStamp] = {
+                            user: j.content.name,
+                            text: 'Praised by ' + j.content.name,
+                            type: 100
+                        }
+                    } else if (j.objectName === 'RC:TxtMsg') {
                         messageHistory[timeStamp] = {
                             user: j.content.user.name,
                             text: j.content.content,
+                            type: 0
                         }
                     }
                 } catch (err) {
@@ -392,8 +423,7 @@ function preloadChatHistory() {
                 }
             }
 
-            console.log(messageHistory);
-        })    
+        })
     })
 }
 
