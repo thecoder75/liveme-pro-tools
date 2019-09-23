@@ -6,6 +6,7 @@ const DataManager = remote.getGlobal('DataManager')
 
 let list = []
 let pList = []
+let count = 0
 
 function closeWindow() { window.close() }
 function showUser(u) { ipcRenderer.send('show-user', { userid: u }) }
@@ -13,17 +14,17 @@ function showUser(u) { ipcRenderer.send('show-user', { userid: u }) }
 function previewBookmarks() {
     list = DataManager.getAllBookmarks()
 
-    let count = 0
+    count = 0
     pList = []
-    
+
     $('#results').html('')
 
     for(let i = 0; i < list.length; i++) {
         let d_now = Math.floor((new Date()).getTime() / 1000) - ($('#bm1').val() * 86400)
         let f = (d_now - list[i].newest_replay)
-    
+
         if (f > 0) {
-            if ('locked' in list[i]) {  
+            if ('locked' in list[i]) {
                 // Skip it, its locked from being f**ked with!
             } else {
                 let dt = prettydate.format(new Date(list[i].newest_replay * 1000))
@@ -47,15 +48,15 @@ function previewBookmarks() {
 function prescanBookmarks() {
     list = DataManager.getAllBookmarks()
 
-    let count = 0
+    count = 0
     pList = []
-    
+
     for(let i = 0; i < list.length; i++) {
         let d_now = Math.floor((new Date()).getTime() / 1000) - ($('#bm1').val() * 86400)
         let f = (d_now - list[i].newest_replay)
-    
+
         if (f > 0) {
-            if ('locked' in list[i]) {  
+            if ('locked' in list[i]) {
                 // Skip it, its locked from being f**ked with!
             } else {
                 pList.push(list[i])
@@ -79,53 +80,49 @@ function prescanBookmarks() {
         for (let j = 0; j < pList.length; j++) {
             DataManager.removeBookmark(pList[j])
         }
-    }    
+    }
 }
 
-function previewBookmarksNR() {
+
+
+
+function scannedBookmarksBA() {
     list = DataManager.getAllBookmarks()
 
-    let count = 0
+    count = 0
     pList = []
-    
+
+    $('#results').html(`
+            <div style="text-align: left; padding: 0 16px; line-height: 48px;">
+                <input type="button" value="Removed these" onClick="removeBannedBookmarks()">
+                <h4 class="count" style="float: right;"></h4>
+            </div>
+    `)
+
+    $('h4.count').html(count + ' entries found!')
+
     for(let i = 0; i < list.length; i++) {
-        if (list[i].counts.replays == 0) {
-            if ('locked' in list[i]) {  
-                // Skip it, its locked from being f**ked with!
-            } else {
+        LiveMe.getUserInfo(list[i].uid).then(user => {
+            if (user.user_info.status == 4) {
+                pList.push(user.user_info.uid)
+
                 $('#results').append(`
-                    <div class="entry" onClick="showUser('${list[i].uid}')">
-                        <div class="name">${list[i].nickname}</div>
-                        <div class="luid">Long ID: ${list[i].uid}</div>
-                        <div class="suid">Short ID: ${list[i].shortid}</div>
+                    <div class="entry" onClick="showUser('${user.user_info.uid}')">
+                        <div class="name">${user.user_info.nickname}</div>
+                        <div class="luid">Long ID: ${user.user_info.uid}</div>
+                        <div class="suid">Short ID: ${user.user_info.short_id}</div>
                     </div>
                 `)
                 count++
+
+                $('h4.count').html(count + ' entries found!')
             }
-        }
+        })
     }
-    
-    $('#results').prepend(`<h4>Total: ${count}</h4>`)
 }
-           
 
-function prescanBookmarksNR() {
-    list = DataManager.getAllBookmarks()
 
-    let count = 0
-    pList = []
-    
-    for(let i = 0; i < list.length; i++) {
-        if (list[i].counts.replays == 0) {
-            if ('locked' in list[i]) {  
-                // Skip it, its locked from being f**ked with!
-            } else {
-                pList.push(list[i])
-                count++
-            }
-        }
-    }
-
+function removeBannedBookmarks() {
     let confirmBM = remote.dialog.showMessageBox({
         type: 'warning',
         title: 'Confirm Bookmark Purge',
@@ -141,7 +138,5 @@ function prescanBookmarksNR() {
         for (let j = 0; j < pList.length; j++) {
             DataManager.removeBookmark(pList[j])
         }
-    }    
+    }
 }
-
-

@@ -1,6 +1,6 @@
 h4 {
     padding: 0 8px 4px;
-    margin: 32px 0 8px;
+    margin: 8px 0 8px;
     border-bottom: solid 2px rgba(255,255,255,0.2);
 }
 
@@ -17,9 +17,9 @@ main {
 }
 
 p {
-    font-size: 12pt;
-    font-weight: 600;
-    padding: 16px;
+    font-size: 11pt;
+    font-weight: 400;
+    padding: 0 16px;
     text-align: center;
 }
 ul {
@@ -28,7 +28,7 @@ ul {
 
 ul li {
     line-height: 40px;
-    margin: 24px 0;
+    margin: 12px 0;
     padding: 0;
     position: relative;
 }
@@ -54,7 +54,7 @@ input.numInput {
 
 h5 {
     position: absolute;
-    top: 314px;
+    top: 160px;
     line-height: 24px;
     font-size: 11pt;
     display: block;
@@ -67,7 +67,7 @@ h5 {
 #results {
     display: block;
     position: absolute;
-    top: 340px;
+    top: 190px;
     bottom: 0;
     left: 0;
     right: 0;
