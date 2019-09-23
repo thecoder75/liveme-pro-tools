@@ -44,7 +44,7 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 
 To download the latest prebuilt versions, [click here](https://github.com/thecoder75/liveme-pro-tools/releases/latest).
 
-**Current Supported Platforms:**
+**Current Supported Platforms (64-bit only):**
 - Ubuntu-based Linux and Debian Distributions (64-bit)
 - macOS v10.11 or higher (64-bit only!)
 - Windows 7 or higher (64-bit!)
