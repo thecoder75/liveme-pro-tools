@@ -906,7 +906,8 @@ function performUserLookup(uid) {
                 },
                 last_viewed: parseInt(Math.floor((new Date()).getTime() / 1000)),
                 newest_replay: 0,
-                locked: false
+                locked: false,
+                status: user.user_info.status
             }
 
             allReplays = []
@@ -919,8 +920,14 @@ function performUserLookup(uid) {
             </abbr>`
             */
 
-            getUsersReplays()
-            showProgressBar()
+            if (user.user_info.status == 5) {
+                getUsersReplays()
+                showProgressBar()
+            } else {
+                $('#replay-result-alert').html(`<span>Account Suspended!</span> Look's like this user account was suspended by LiveMe.`).fadeIn(400)
+                $('footer h1').html(`Account suspended.`)
+                hideProgressBar()
+            }
         })
         .catch(() => {
             $('#status').html('Account no longer available, possibly deleted by LiveMe admins.')
@@ -942,8 +949,8 @@ function getUsersReplays() {
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
                     // **OLD** $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!`).fadeIn(400)
-                    $('#replay-result-alert').html(`<span>Uh Oh!</span> This account has no public replays available for viewing!  It might have been terminated by the mean LiveMe admins!`).fadeIn(400)
-                    $('footer h1').html(`No publically viewable replays found.`)
+                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has either removed all of their replays or currently has them hidden.`).show()
+                    $('footer h1').html(`No replays available.`)
                     hideProgressBar()
                 }
                 return
@@ -978,7 +985,10 @@ function getUsersReplays() {
                     $('#list table tbody tr.unlisted').remove()
                     $('footer h1').html($('#list tbody tr').length + ' visible of ' + currentUser.counts.replays + ' total replays loaded.')
                 }
-                if (d === 0) $('footer h1').html('No publicly listed replays available.')
+                if (d === 0) {
+                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has either removed all of their replays or currently has them hidden.`).show()
+                    $('footer h1').html(`No replays available.`)
+                }
 
                 hideProgressBar()
             }
