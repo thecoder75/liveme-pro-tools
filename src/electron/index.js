@@ -114,7 +114,7 @@ function createWindow() {
                 app.quit()
             }, 250)
         })
-    
+
     /**
      * Build our application menus using the templates provided
      * further down.
@@ -327,7 +327,7 @@ const dlQueue = async.queue((task, done) => {
         filename = filename.replace(/[/\\?%*:|"<>]/g, '-')
         filename = filename.replace(/([^a-z0-9\s]+)/gi, '-')
         filename = filename.replace(/[\u{0080}-\u{FFFF}]/gu, '')
-        
+
         video._filename = filename
 
         mainWindow.webContents.send('download-start', {
@@ -446,7 +446,7 @@ const dlQueue = async.queue((task, done) => {
                     }
 
                     fs.writeFileSync(`${path}/${filename}.txt`, dump)
-                    
+
                 })
             })
         }
@@ -521,7 +521,7 @@ const dlQueue = async.queue((task, done) => {
 
                             concatFile.split('\n').forEach(line => {
                                 let l = line.split(' ')
-                                
+
                                 if (l.length > 1)
                                     cList.push(`${path}/lmpt_temp/${l[1]}`)
                             })
@@ -587,7 +587,7 @@ const dlQueue = async.queue((task, done) => {
                         }
 
                     })
-                        
+
                 })
                 break
             case 'ffmpeg':
@@ -806,13 +806,13 @@ ipcMain.on('read-comments', (event, arg) => {
 
 ipcMain.on('open-bookmarks', (event, arg) => {
     if (bookmarksWindow == null) {
-        let winposition = appSettings.get('position.bookmarksWindow')
-        let winsize = appSettings.get('size.bookmarksWindow')
+        let winposition = appSettings.get('position.bookmarksWindow') ? appSettings.get('position.bookmarksWindow') : [-1, -1]
+        let winsize = appSettings.get('size.bookmarksWindow') ? appSettings.get('size.bookmarksWindow') : [440, 480]
 
         bookmarksWindow = new BrowserWindow({
             icon: path.join(__dirname, 'appicon.png'),
-            x: winposition[0] > -1 ? winposition[0] : null,
-            y: winposition[1] > -1 ? winposition[1] : null,
+            x: winposition[0] !== -1 ? winposition[0] : null,
+            y: winposition[1] !== -1 ? winposition[1] : null,
             width: 440,
             height: winsize[1],
             minWidth: 440,
@@ -857,7 +857,7 @@ ipcMain.on('open-housekeeping', (event, arg) => {
             height: 480,
             minWidth: 520,
             maxWidth: 520,
-            minHeight: 480,
+            minHeight: 600,
             maxHeight: 1600,
             darkTheme: true,
             autoHideMenuBar: false,
@@ -1037,4 +1037,3 @@ function formatDuration(i) {
             (min < 10 ? '0' : '') + min + ':' +
             (sec < 10 ? '0' : '') + sec)
 }
-
