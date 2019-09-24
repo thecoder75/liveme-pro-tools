@@ -643,8 +643,8 @@ ipcMain.on('watch-replay', (event, arg) => {
             } else {
                 // Open internal player
                 if (playerWindow == null) {
-                    let winposition = appSettings.get('position.playerWindow')
-                    let winsize = appSettings.get('size.playerWindow')
+                    let winposition = appSettings.get('position.playerWindow') ? appSettings.get('position.playerWindow') : [-1, -1]
+                    let winsize = appSettings.get('size.playerWindow') ? appSettings.get('size.playerWindow') : [360, 640]
 
                     playerWindow = new BrowserWindow({
                         icon: path.join(__dirname, 'appicon.png'),
