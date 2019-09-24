@@ -920,7 +920,7 @@ ipcMain.on('create-backup', (event, arg) => {
     let backupFile = path.join(app.getPath('home'), 'Downloads', fname + '.tar')
     tarfs.pack(
         configPath, {
-            entries: ['bookmarks.json', 'downloaded.json', 'profiles.json', 'watched.json', 'ignored.json']
+            entries: ['bookmarks.json', 'downloaded.json', 'profiles.json', 'watched.json', 'ignored.json', 'Settings']
         }
     ).pipe(fs.createWriteStream(backupFile))
 })
