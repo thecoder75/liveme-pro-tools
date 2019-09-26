@@ -5,6 +5,7 @@ const { app, dialog, shell } = require('electron')
 const appSettings = require("electron-settings");
 
 let bookmarks = []
+let follows = []
 let profiles = []
 let downloaded = []
 let watched = []
@@ -16,6 +17,7 @@ let isBusy = false
 let canWrite = true
 
 const bookmarksJson = path.join(app.getPath('appData'), app.getName(), 'bookmarks.json')
+const followsJson = path.join(app.getPath('appData'), app.getName(), 'bookmarks.json')
 const profilesJson = path.join(app.getPath('appData'), app.getName(), 'profiles.json')
 const downloadedJson = path.join(app.getPath('appData'), app.getName(), 'downloaded.json')
 const watchedJson = path.join(app.getPath('appData'), app.getName(), 'watched.json')
@@ -105,6 +107,7 @@ class DataManager {
 
     wipeAllData() {
         bookmarks = []
+        follows = []
         profiles = []
         downloaded = []
         watched = []
@@ -114,6 +117,7 @@ class DataManager {
         queued = []
 
         fs.writeFileSync(bookmarksJson, '[]')
+        fs.writeFileSync(followsJson, '[]')
         fs.writeFileSync(profilesJson, '[]')
         fs.writeFileSync(downloadedJson, '[]')
         fs.writeFileSync(watchedJson, '[]')
@@ -125,6 +129,7 @@ class DataManager {
     getStats() {
         return {
             bookmarks: bookmarks.length,
+            follows: follows.length,
             profiles: profiles.length,
             downloaded: downloaded.length,
             watched: watched.length
@@ -156,6 +161,15 @@ class DataManager {
                     }
 
                     fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
+                }
+            })
+        }
+        if (fs.existsSync(followsJson)) {
+            fs.readFile(followsJson, 'utf8', function(err, data) {
+                if (err) {
+                    follows = []
+                } else {
+                    follows = tryParseJSON(data, followsJson)
                 }
             })
         }
@@ -222,6 +236,7 @@ class DataManager {
         if (canWrite === false) return
 
         fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
+        fs.writeFileSync(followsJson, JSON.stringify(follows, null, 2))
         fs.writeFileSync(profilesJson, JSON.stringify(profiles, null, 2))
         fs.writeFileSync(downloadedJson, JSON.stringify(downloaded, null, 2))
         fs.writeFileSync(watchedJson, JSON.stringify(watched, null, 2))
@@ -232,6 +247,7 @@ class DataManager {
 
     forceSave() {
         fs.writeFileSync(bookmarksJson, JSON.stringify(bookmarks, null, 2))
+        fs.writeFileSync(followsJson, JSON.stringify(follows, null, 2))
         fs.writeFileSync(profilesJson, JSON.stringify(profiles, null, 2))
         fs.writeFileSync(downloadedJson, JSON.stringify(downloaded, null, 2))
         fs.writeFileSync(watchedJson, JSON.stringify(watched, null, 2))
@@ -239,6 +255,45 @@ class DataManager {
         fs.writeFileSync(erroredJson, JSON.stringify(errored, null, 2))
         fs.writeFileSync(queuedJson, JSON.stringify(queued, null, 2))
     }
+
+
+
+
+    /*
+            Follows List
+     */
+    addToFollowList(user) {
+        isBusy = true
+        let add = true
+        for (let i = 0; i < follows.length; i++) {
+            if (follows[i] === user) add = false
+        }
+        if (add === true) {
+            follows.push(user)
+        }
+        fs.writeFileSync(followsJson, JSON.stringify(follows), () => {})
+        isBusy = false
+    }
+    removeFromFollowList(user) {
+        isBusy = true
+        for (let i = 0; i < follows.length; i++) {
+            if (follows[i] === user) {
+                follows.splice(i, 1)
+            }
+        }
+        fs.writeFileSync(followsJson, JSON.stringify(follows), () => {})
+        isBusy = false
+    }
+    isFollowed(user) {
+        let ret = false
+        for (let i = 0; i < follows.length; i++) {
+            if (follows[i] == user) {
+                ret = true
+            }
+        }
+        return ret
+    }
+
 
     /**
      * Track Downloaded Replays
@@ -323,9 +378,9 @@ class DataManager {
             if (ignored_temp[i] == userid) {
                 ret = true
             }
-        }    
+        }
 
-        return ret    
+        return ret
     }
 
 
