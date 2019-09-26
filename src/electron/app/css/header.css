@@ -37,7 +37,7 @@ header a:hover {
     background-color: rgba(255,255,255,0.1);
 }
 
-header svg { 
+header svg {
     width: 24px;
     height: 24px;
     vertical-align: middle;
@@ -67,6 +67,9 @@ header .control-buttons {
     position: absolute;
     top: 0;
     right: 0;
+    width: 160px;
+    text-align: right;
+    z-index: 100;
 }
 header .control-buttons a {
     display: inline-block;
