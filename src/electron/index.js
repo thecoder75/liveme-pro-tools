@@ -136,10 +136,8 @@ function createWindow() {
 
     }, 250)
 
-    let pos = appSettings.get('position.mainWindow').length > 1 ? appSettings.get('position.mainWindow') : [null, null]
-    if (pos[0] != null) {
-        mainWindow.setPosition(pos[0], pos[1], false)
-    }
+    let pos = appSettings.get('position.mainWindow') ? appSettings.get('position.mainWindow') : [0, 0]
+    mainWindow.setPosition(pos[0], pos[1], false)
     mainWindow.show()
 
 }
