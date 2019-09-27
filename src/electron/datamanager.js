@@ -535,7 +535,8 @@ class DataManager {
         for (let i = 0; i < bookmarks.length; i++) {
             if (bookmarks[i].uid === user.uid) {
                 bookmarks[i] = user
-                break
+                isBusy = false
+                return
             }
         }
         isBusy = false
