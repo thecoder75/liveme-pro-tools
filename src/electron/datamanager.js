@@ -293,6 +293,12 @@ class DataManager {
         }
         return ret
     }
+    getAllFollows() {
+        if (fs.existsSync(followsJson)) {
+            follows = JSON.parse(fs.readFileSync(followsJson))
+        }
+        return follows
+    }
 
 
     /**
