@@ -26,6 +26,7 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 let mainWindow = null
 let playerWindow = null
 let bookmarksWindow = null
+let followsWindow = null
 let chatWindow = null
 let wizardWindow = null
 let homeWindow = null
@@ -694,8 +695,6 @@ ipcMain.on('save-player-options', (event, options) => {
     appSettings.set('player', options)
 })
 
-ipcMain.on('open-bookmarks', (event, arg) => {})
-
 ipcMain.on('show-user', (event, arg) => {
     mainWindow.webContents.send('show-user', { userid: arg.userid })
 })
@@ -844,6 +843,51 @@ ipcMain.on('open-bookmarks', (event, arg) => {
     bookmarksWindow.on('ready-to-show', () => {
         bookmarksWindow.show()
     }).loadURL(`file://${__dirname}/app/bookmarks.html`)
+})
+
+
+ipcMain.on('open-follows', (event, arg) => {
+    if (followsWindow == null) {
+        let winposition = appSettings.get('position.followsWindow') ? appSettings.get('position.followsWindow') : [-1, -1]
+        let winsize = appSettings.get('size.followsWindow') ? appSettings.get('size.followsWindow') : [440, 480]
+
+        followsWindow = new BrowserWindow({
+            icon: path.join(__dirname, 'appicon.png'),
+            x: winposition[0] !== -1 ? winposition[0] : null,
+            y: winposition[1] !== -1 ? winposition[1] : null,
+            width: 440,
+            height: winsize[1],
+            minWidth: 440,
+            maxWidth: 480,
+            minHeight: 480,
+            darkTheme: true,
+            autoHideMenuBar: false,
+            disableAutoHideCursor: true,
+            titleBarStyle: 'default',
+            fullscreen: false,
+            maximizable: false,
+            frame: false,
+            show: false,
+            backgroundColor: '#000000'
+        })
+
+        followsWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+
+        followsWindow.on('close', () => {
+            appSettings.set('position.followsWindow', followsWindow.getPosition())
+            appSettings.set('size.followsWindow', followsWindow.getSize())
+
+            followsWindow.webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            })
+            followsWindow = null
+        })
+    } else {
+        followsWindow.restore()
+    }
+    followsWindow.on('ready-to-show', () => {
+        followsWindow.show()
+    }).loadURL(`file://${__dirname}/app/follows.html`)
 })
 
 
