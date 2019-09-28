@@ -17,7 +17,7 @@ let isBusy = false
 let canWrite = true
 
 const bookmarksJson = path.join(app.getPath('appData'), app.getName(), 'bookmarks.json')
-const followsJson = path.join(app.getPath('appData'), app.getName(), 'bookmarks.json')
+const followsJson = path.join(app.getPath('appData'), app.getName(), 'follows.json')
 const profilesJson = path.join(app.getPath('appData'), app.getName(), 'profiles.json')
 const downloadedJson = path.join(app.getPath('appData'), app.getName(), 'downloaded.json')
 const watchedJson = path.join(app.getPath('appData'), app.getName(), 'watched.json')
