@@ -12,7 +12,7 @@ const NEW_REPLAYS = "New Replay"
 
 $(function(){
     setTimeout(() => {
-        loadBookmarkFeeds()        
+        loadBookmarkFeeds()
     }, 100)
 })
 
@@ -71,15 +71,17 @@ function _scanThread(id) {
             // Iterate over bookmarks but start each recursive call with a delay.
             // Each bookmark entry scan is delayed by 50 ms.
             setTimeout(() => _scanThread(id + 1), 50)
-            
+
             let step = Math.floor(bookmarksFromJson.length / 20);
-            if (id % step == 0) $('header h1').html('Recent Activity - Scanning ('+Math.ceil((id / bookmarksFromJson.length) * 100)+'%)...')
+            if (id % step == 0) {
+                $('header h1').html('Recent Activity - Scanning ('+Math.ceil((id / bookmarksFromJson.length) * 100)+'%)...')
+            }
         } else {
             // We need to save the bookmarks once the scan is complete so they're updated
             $('header h1').html('Recent Activity')
             setTimeout(() => {
-                DataManager.saveToDisk()
-            }, 1000)
+                DataManager.forceSave()
+            }, 5000)
         }
 
         let currentBookmarkToScan = bookmarksFromJson[id]
@@ -150,17 +152,17 @@ async function _checkBookmark(b, dispatch) {
         return setTimeout(async() => await _checkBookmark(), 5000)
     }
 
+    // We add a timestamp to each bookmark to help in debugging issues
+    b.last_checked = (new Date()).getTime()
+
     let user = await LiveMe.getUserInfo(uid)
     if (user === undefined) return
-
-    b.changed_followings = b.counts.followings != user.count_info.following_count
-    b.changed_followers = b.counts.followers != user.count_info.follower_count
 
     // We now store how much has changed on the counts
     b.counts.new_following = parseInt(user.count_info.following_count) - parseInt(b.counts.followings)
     b.counts.new_followers = parseInt(user.count_info.follower_count) - parseInt(b.counts.followers)
     b.counts.new_replays = parseInt(user.count_info.video_count) - parseInt(b.counts.replays)
-    
+
     b.counts.replays = parseInt(user.count_info.video_count)
     b.counts.friends = parseInt(user.count_info.friends_count)
     b.counts.followers = parseInt(user.count_info.follower_count)
@@ -175,11 +177,11 @@ async function _checkBookmark(b, dispatch) {
 
     DataManager.updateBookmark(b)
 
-    if (b.changed_followings && (appSettings.get('general.enableShowFollowings') === true)) {
+    if ((b.counts.followings !== user.count_info.following_count) && (appSettings.get('general.enableShowFollowings') === true)) {
         dispatch(NEW_FOLLOWINGS, b)
     }
 
-    if (b.changed_followers && (appSettings.get('general.enableShowFans') === true)) {
+    if ((b.counts.followers !== user.count_info.follower_count) && (appSettings.get('general.enableShowFans') === true)) {
         dispatch(NEW_FANS, b)
     }
 
