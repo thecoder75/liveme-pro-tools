@@ -238,12 +238,23 @@ app.on('activate', () => {
 ipcMain.on('import-queue', (event, arg) => {})
 
 ipcMain.on('import-users', (event, arg) => {})
-
 ipcMain.on('export-users', (event, arg) => {})
 
 ipcMain.on('downloads-parallel', (event, arg) => {
     dlQueue.concurrency = arg
 })
+
+ipcMain.on('follows-add', (event, arg) => {
+    if (followsWindow !== null) {
+        followsWindow.send('add-entry', arg )
+    }
+})
+ipcMain.on('follows-remove', (event, arg) => {
+    if (followsWindow !== null) {
+        followsWindow.send('remove-entry', arg )
+    }
+})
+
 
 ipcMain.on('open-home-window', (event, arg) => {
 
