@@ -271,7 +271,7 @@ class DataManager {
         if (add === true) {
             follows.push(user)
         }
-        fs.writeFileSync(followsJson, JSON.stringify(follows), () => {})
+        fs.writeFileSync(followsJson, JSON.stringify(follows, null, 2), () => {})
         isBusy = false
     }
     removeFromFollowList(user) {
@@ -281,14 +281,15 @@ class DataManager {
                 follows.splice(i, 1)
             }
         }
-        fs.writeFileSync(followsJson, JSON.stringify(follows), () => {})
+        fs.writeFileSync(followsJson, JSON.stringify(follows, null, 2), () => {})
         isBusy = false
     }
     isFollowed(user) {
         let ret = false
         for (let i = 0; i < follows.length; i++) {
-            if (follows[i] == user) {
+            if (follows[i].uid === user.uid) {
                 ret = true
+                break
             }
         }
         return ret
