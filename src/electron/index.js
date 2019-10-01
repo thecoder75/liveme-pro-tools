@@ -244,6 +244,9 @@ ipcMain.on('downloads-parallel', (event, arg) => {
     dlQueue.concurrency = arg
 })
 
+/*
+    Redirects to Follows Window
+*/
 ipcMain.on('follows-add', (event, arg) => {
     if (followsWindow !== null) {
         followsWindow.send('add-entry', arg )
@@ -254,6 +257,26 @@ ipcMain.on('follows-remove', (event, arg) => {
         followsWindow.send('remove-entry', arg )
     }
 })
+
+
+/*
+    Redirects to Bookmarks Window
+*/
+ipcMain.on('bookmarks-add', (event, arg) => {
+    if (bookmarksWindow !== null) {
+        bookmarksWindow.send('add-entry', arg )
+    }
+})
+ipcMain.on('bookmarks-remove', (event, arg) => {
+    if (bookmarksWindow !== null) {
+        bookmarksWindow.send('remove-entry', arg )
+    }
+})
+
+
+
+
+
 
 
 ipcMain.on('open-home-window', (event, arg) => {
