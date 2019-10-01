@@ -29,13 +29,11 @@ $(function() {
     ipcRenderer.on('add-entry', (event, arg) => {
         console.log('Add:' + JSON.stringify(arg, null, 2))
         addSingleEntry(arg, true)
-        DataManager.addToFollows(arg)
     })
 
     ipcRenderer.on('remove-entry', (event, arg) => {
         console.log('Remove:' + JSON.stringify(arg, null, 2))
         $('#entry-'+arg.uid).remove()
-        DataManager.removeFromFollowList(arg)
     })
 
 
@@ -86,12 +84,11 @@ function addSingleEntry(e, m) {
     if (m === true) {
         $('#bookmark-list').append(`
             <tr id="entry-${e.uid}">
-                <td width="64">
+                <td width="64" class="short">
                     <img src="${e.face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).attr('src', 'images/nouser.png')" align="bottom">
                 </td>
-                <td width="90%" class="main">
+                <td width="90%" class="main short">
                     <h1>${e.nickname}</h1>
-                    <h2>${e.signature}</h2>
                     <div id="user-${e.uid}-buttons" class="buttons">
                         <a class="button mini view" onClick="showUser('${e.uid}')">${e.counts.replays} replays</a>
                         <a class="button mini fans" onClick="showFollowers('${e.uid}')">${e.counts.followers} Fans</a>
@@ -102,12 +99,11 @@ function addSingleEntry(e, m) {
         `)
     } else
         $('tr #entry-'+e.uid).html(`
-                <td width="64">
+                <td width="64" class="short">
                     <img src="${e.face}" style="height: 64px; width: 64px;" class="avatar" onError="$(this).attr('src', 'images/nouser.png')" align="bottom">
                 </td>
-                <td width="90%" class="main">
+                <td width="90%" class="main short">
                     <h1>${e.nickname}</h1>
-                    <h2>${e.signature}</h2>
                     <div id="user-${e.uid}-buttons" class="buttons">
                         <a class="button mini view" onClick="showUser('${e.uid}')">${e.counts.replays} replays</a>
                         <a class="button mini fans" onClick="showFollowers('${e.uid}')">${e.counts.followers} Fans</a>
