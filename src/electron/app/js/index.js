@@ -247,11 +247,19 @@ function setupIPCListeners() {
 
         $('#download-' + arg.videoid + ' .status').html(arg.state)
         $('#download-' + arg.videoid + ' .progress-bar .bar').css('width', arg.percent + '%')
+        if ($('#queue-list').length === 0) {
+            $('.queue-button svg').removeClass('bright').removeClass('green')
+        }
     })
 
     ipcRenderer.on('download-complete', (event, arg) => {
         if ($('#download-' + arg.videoid).length < 1) return
         $('#download-' + arg.videoid).remove()
+
+        console.log('Downloads: ' + $('.download').length)
+        if ($('.download').length === 0) {
+            $('.queue-button svg').removeClass('bright').removeClass('green')
+        }
     })
 
     ipcRenderer.on('download-error', (event, arg) => {
@@ -455,11 +463,17 @@ function downloadVideo(vid) {
         </div>
     `)
 
+    if ($('#queue-list').length > 0) {
+        $('.queue-button svg').addClass('bright').addClass('green')
+    }
 }
 
 function cancelDownload(i) {
     ipcRenderer.send('download-cancel', { videoid: i })
     $('#download-' + i).remove()
+    if ($('#queue-list').length === 0) {
+        $('.queue-button svg').removeClass('bright').removeClass('green')
+    }
 }
 
 function showDownloads() {
