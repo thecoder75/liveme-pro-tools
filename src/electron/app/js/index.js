@@ -247,7 +247,7 @@ function setupIPCListeners() {
 
         $('#download-' + arg.videoid + ' .status').html(arg.state)
         $('#download-' + arg.videoid + ' .progress-bar .bar').css('width', arg.percent + '%')
-        if ($('#queue-list').length === 0) {
+        if ($('.download').length === 0) {
             $('.queue-button svg').removeClass('bright').removeClass('green')
         }
     })
@@ -463,9 +463,8 @@ function downloadVideo(vid) {
         </div>
     `)
 
-    if ($('#queue-list').length > 0) {
-        $('.queue-button svg').addClass('bright').addClass('green')
-    }
+    $('.queue-button svg').addClass('bright').addClass('green')
+
 }
 
 function cancelDownload(i) {
