@@ -266,7 +266,7 @@ class DataManager {
         isBusy = true
         let add = true
         for (let i = 0; i < follows.length; i++) {
-            if (follows[i] === user) add = false
+            if (follows[i].uid === user.uid) add = false
         }
         if (add === true) {
             follows.push(user)
@@ -277,7 +277,7 @@ class DataManager {
     removeFromFollowList(user) {
         isBusy = true
         for (let i = 0; i < follows.length; i++) {
-            if (follows[i] === user) {
+            if (follows[i].uid === user.uid) {
                 follows.splice(i, 1)
             }
         }
