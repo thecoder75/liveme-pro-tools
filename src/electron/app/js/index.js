@@ -422,7 +422,10 @@ function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid:
 
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: u === undefined ? currentUser.uid : u }) }
 
-function playVideo(vid) { ipcRenderer.send('watch-replay', { videoid: vid }) }
+function playVideo(vid) {
+    $('.replay-'+vid+' svg.watched').addClass('bright').addClass('green')
+    ipcRenderer.send('watch-replay', { videoid: vid })
+}
 
 function sortReplays(name) {
     $('table#list tbody tr').sort(function(a, b) {
