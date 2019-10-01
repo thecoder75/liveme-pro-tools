@@ -18,6 +18,8 @@
     border-bottom: solid 4px rgba(0, 0, 0, 0.6);
 }
 
+#bookmark-list td.short { height: 72px; }
+
 #bookmark-list h1,
 #bookmark-list h2,
 #bookmark-list h3,
@@ -32,6 +34,7 @@
     line-height: 24px;
     top: 16px;
 }
+#bookmark-list td.short h1 { font-size: 12pt; line-height: 16px; }
 
 #bookmark-list h2 {
     font-size: 9.5pt;
@@ -105,7 +108,7 @@
 }
 
 
-.active-timespan { 
+.active-timespan {
     display: inline-block;
     width: 150px;
     text-align: right;
@@ -113,5 +116,5 @@
 
 .active-timespan #bookmark-timespan {
     display: inline-block;
-    width: 150px;    
+    width: 150px;
 }
