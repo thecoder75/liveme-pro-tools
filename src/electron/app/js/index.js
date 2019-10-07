@@ -236,7 +236,6 @@ function setupIPCListeners() {
     ipcRenderer.on('download-start', (event, arg) => {
         if ($('#download-' + arg.videoid).length < 1) return
 
-        $('#download-' + arg.videoid).addClass('active')
         $('#download-' + arg.videoid + ' .status').html('Starting download..')
         $('#download-' + arg.videoid + ' .filename').attr("title", arg.filename).html(arg.filename)
         $('#download-' + arg.videoid + ' .cancel').remove()
@@ -244,6 +243,12 @@ function setupIPCListeners() {
 
     ipcRenderer.on('download-progress', (event, arg) => {
         if ($('#download-' + arg.videoid).length < 1) return
+
+        if ($('#download-' + arg.videoid).length < 1) {
+            $('.queue-button svg').removeClass('bright').removeClass('green')
+        } else {
+            $('.queue-button svg').addClass('bright').addClass('green')
+        }
 
         $('#download-' + arg.videoid + ' .status').html(arg.state)
         $('#download-' + arg.videoid + ' .progress-bar .bar').css('width', arg.percent + '%')
