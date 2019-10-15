@@ -1106,7 +1106,7 @@ function getMiniMenuTemplate() {
 
 function formatDuration(i) {
     var sec = Math.floor((i / 1000) % 60),
-        min = Math.floor((i / 1000) / 60),
+        min = Math.floor((i / 1000) / 60) % 60,
         hour = Math.floor((i / 1000) / 3600)
 
     return  ((hour < 10 ? '0' : '') + hour + ':' +
