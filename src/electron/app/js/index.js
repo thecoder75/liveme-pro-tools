@@ -974,8 +974,11 @@ function performUserLookup(uid) {
             }
         })
         .catch(() => {
-            $('#status').html('Error fetching data, try your search query again.')
-            $('footer h1').html(`Data error, resubmit search to try again.`)
+            $('#status').html('Error fetching data, will try search query again in a few seconds.')
+            $('footer h1').html(`Data error, resubmitting search query automatically.`)
+            setTimeout({
+                preSearch()
+            }, 3000)
         })
 }
 
