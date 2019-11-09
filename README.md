@@ -41,36 +41,36 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 If you currently do not have NodeJS installed on your computer, download it from [here](https://www.nodejs.org).  You will also need to have **git** installed.
 
 Once you have those requisites installed, clone the repository using the following command:
-'''
+```
 git clone https://github.com/thecoder75/liveme-pro-tools.git
-'''
+```
 
 Once the repository has been cloned, open a command prompt and navigate to the folder where its installed.  You will need to issue the following command to prepare the working folder:
-'''
+```
 npm install
-'''
+```
 
 After this completes, you can build the project by issuing one of the following commands:
 
 #### Windows 64-bit
-'''
+```
 npm run release-win
-'''
+```
 
 #### Linux 64-bit
-'''
+```
 npm run release-win
-'''
+```
 
 #### macOS 64-bit
-'''
+```
 npm run release-win
-'''
+```
 
 #### All Platforms (Only execute on Linux or it will fail!)
-'''
+```
 npm run release
-'''
+```
 
 
 ## Prebuilt Releases (64-bit only!)
