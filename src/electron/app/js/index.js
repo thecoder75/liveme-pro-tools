@@ -974,7 +974,8 @@ function performUserLookup(uid) {
             }
         })
         .catch(() => {
-            $('#status').html('Account no longer available, possibly deleted by LiveMe admins.')
+            $('#status').html('Error fetching data, try your search query again.')
+            $('footer h1').html(`Data error, resubmit search to try again.`)
         })
 }
 
@@ -1039,6 +1040,7 @@ function getUsersReplays() {
         })
         .catch(error => {
             // Unhandled error
+            $('footer h1').html(`Unknown error during retrieval of replays.`)
 
         })
 }
