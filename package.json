@@ -1,6 +1,6 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.350.20191014",
+    "version": "1.351.20191110",
     "description": "Tools for Live.me video network",
     "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
@@ -15,7 +15,7 @@
         "release-linux": "build -l",
         "release-mac": "build -m"
     },
-    "author": "TheCoder75",
+    "author": "TheCoder",
     "license": "AGPL-3.0-only",
     "dependencies": {
         "async": "^2.6.0",
