@@ -977,7 +977,7 @@ function performUserLookup(uid) {
             $('#status').html('Error fetching data, will try search query again in a few seconds.')
             $('footer h1').html(`Data error, resubmitting search query automatically in a few seconds.`)
             hideProgressBar()
-            setTimeout({
+            setTimeout(() => {
                 preSearch()
             }, 3000)
         })
