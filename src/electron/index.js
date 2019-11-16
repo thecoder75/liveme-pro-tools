@@ -161,14 +161,12 @@ app.on('ready', () => {
         })
         appSettings.set('position', {
             mainWindow: [-1, -1],
-            playerWindow: [-1, -1],
             bookmarksWindow: [-1, -1],
             fansWindow: [-1, -1],
             followingsWindow: [-1, -1]
         })
         appSettings.set('size', {
             mainWindow: [1024, 600],
-            playerWindow: [360, 640],
             bookmarksWindow: [400, 720]
         })
         appSettings.set('downloads', {
@@ -666,54 +664,16 @@ const dlQueue = async.queue((task, done) => {
  */
 ipcMain.on('watch-replay', (event, arg) => {
     let playerpath = appSettings.get('general.playerpath') || ' '
-
     if (playerpath.length > 5) {
         exec(playerpath.replace('%url%', arg.source))
     } else {
-        // Open internal player
-        if (playerWindow == null) {
-            let winposition = appSettings.get('position.playerWindow') ? appSettings.get('position.playerWindow') : [-1, -1]
-            let winsize = appSettings.get('size.playerWindow') ? appSettings.get('size.playerWindow') : [360, 640]
+        dialog.showMessageBox(mainWindow, {
+            type: 'info',
+            title: 'No Video Player Configured',
+            message: '\nYou must configure an external video player\nas the internal one has been removed.\n',
+            buttons: ['Ok']
+        })
 
-            playerWindow = new BrowserWindow({
-                icon: path.join(__dirname, 'appicon.png'),
-                width: winsize[0],
-                height: winsize[1],
-                x: winposition[0] !== -1 ? winposition[0] : null,
-                y: winposition[1] !== -1 ? winposition[1] : null,
-                minWidth: 360,
-                minHeight: 360,
-                darkTheme: true,
-                autoHideMenuBar: false,
-                disableAutoHideCursor: true,
-                titleBarStyle: 'default',
-                maximizable: false,
-                frame: false,
-                backgroundColor: '#000000',
-                webPreferences: {
-                    webSecurity: false,
-                    textAreasAreResizable: false,
-                    plugins: true
-                }
-            })
-            playerWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
-            playerWindow.on('close', () => {
-                appSettings.set('position.playerWindow', playerWindow.getPosition())
-                appSettings.set('size.playerWindow', playerWindow.getSize())
-
-                playerWindow.webContents.session.clearCache(() => {
-                    // Purge the cache to help avoid eating up space on the drive
-                })
-                playerWindow = null
-            })
-            playerWindow.loadURL(`file://${__dirname}/app/player.html`)
-            playerWindow.webContents.once('dom-ready', () => {
-                playerWindow.webContents.send('play-video', arg.source, appSettings.get('player'))
-            })
-        } else {
-            playerWindow.webContents.send('play-video', arg.source, appSettings.get('player'))
-        }
-        playerWindow.focus()
     }
 })
 
