@@ -261,7 +261,6 @@ function setupIPCListeners() {
         if ($('#download-' + arg.videoid).length < 1) return
         $('#download-' + arg.videoid).remove()
 
-        console.log('Downloads: ' + $('.download').length)
         if ($('.download').length === 0) {
             $('.queue-button svg').removeClass('bright').removeClass('green')
         }
@@ -1099,8 +1098,6 @@ function _addReplayEntry(replay, wasSearched) {
         inQueue,
         source: LiveMe.pickProperVideoSource(replay)
     })
-
-    console.log(JSON.stringify(replayData, null, 2))
 
     allReplays.push(replayData)
 
