@@ -427,9 +427,10 @@ function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid:
 
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: u === undefined ? currentUser.uid : u }) }
 
-function playVideo(vid) {
+function playVideo(src, vid) {
+    DataManager.addWatched(vid)
     $('.replay-'+vid+' svg.watched').addClass('bright').addClass('green')
-    ipcRenderer.send('watch-replay', { videoid: vid })
+    ipcRenderer.send('watch-replay', { source: src })
 }
 
 function sortReplays(name) {
@@ -1259,7 +1260,7 @@ function _performHashtagSearch() {
                     `<a id="download-replay-${results[i].vid}" class="button icon-only" onClick="downloadVideo('${results[i].vid}')" title="Download Replay"><svg class="dim" viewBox="0 0 20 20"><path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path></svg></a>`
 
                 $('#list tbody').append(`
-					<tr data-id="${results[i].vid}"  onClick="playVideo('${results[i].vid}')" class="user-${results[i].userid}">
+					<tr data-id="${results[i].vid}"  onClick="playVideo('${results[i].source}', '${results[i].vid}')" class="user-${results[i].userid}">
                         <td width="410">${results[i].title}</td>
                         <td width="120" align="center">${ds}</td>
                         <td width="50" align="right">${length}</td>
