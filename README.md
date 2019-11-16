@@ -6,7 +6,7 @@
 [![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/issues)
 [![Gitter](https://badges.gitter.im/thecoderstoolbox/liveme-pro-tools.svg)](https://gitter.im/thecoderstoolbox/liveme-pro-tools?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-**A big thank you to all those who are now contributing to help make this tool even better!**
+**A big thank you to all those who have contributed and helped make this tool one of the best!**
 
 * * *
 
