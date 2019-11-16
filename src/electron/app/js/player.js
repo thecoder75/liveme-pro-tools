@@ -17,13 +17,12 @@ flvjs.LoggingControl.enableDebug = isDev
 // This listener will initialize everything (if necessary)
 ipcRenderer.on('play-video', (event, info, options) => {
     // Store some information in globals
-    videoInfo = info
     playerOptions = options
 
-    document.title = videoInfo.vid
-    title.textContent = videoInfo.vid
+    document.title = 'Internal Player'
+    title.textContent = 'Internal Player'
 
-    if (!video.src) {
+    if (!info.source) {
         // Initialize player and setup shortcuts
         setupPlyr()
         setupShortcuts()
@@ -43,9 +42,8 @@ ipcRenderer.on('play-video', (event, info, options) => {
                 break
         }
     }
-    let properSource = LiveMe.pickProperVideoSource(videoInfo, true)
 
-    if (!properSource) {
+    if (!info.source) {
         let endedAt = new Date(LiveMe.getVideoEndDate(videoInfo))
 
         $('.plyr').hide()
@@ -62,14 +60,11 @@ ipcRenderer.on('play-video', (event, info, options) => {
     $('.plyr').show()
     $('.mid-container').hide()
 
-    // Set the player poster using user's cover picture
-    plyr.poster = videoInfo.videocapture
-
-    // If it's a live stream, we use the FLV source, because playback is
+        // If it's a live stream, we use the FLV source, because playback is
     // much smoother than HLS
-    if (properSource.endsWith('.flv')) {
+    if (info.source.endsWith('.flv')) {
         currentStream = 'flv'
-        setupFlv(properSource)
+        setupFlv(info.source)
         flvPlayer.attachMediaElement(video)
         flvPlayer.load()
         // Hack to disable plyr's seek bar instead of completely hiding it
@@ -77,18 +72,11 @@ ipcRenderer.on('play-video', (event, info, options) => {
     } else {
         currentStream = 'hls'
         setupHls()
-        hlsPlayer.loadSource(properSource)
+        hlsPlayer.loadSource(info.source)
         hlsPlayer.attachMedia(video)
         // Re-enable seek bar
         $('.plyr__progress input[type=range]').attr('disabled', false)
     }
-
-    setImmediate(() => {
-        $('.message').hide()
-        messageHistory = []
-        preloadChatHistory()
-    })
-
 })
 
 function setupPlyr() {
@@ -152,51 +140,6 @@ function setupPlyr() {
     plyr.on('seeked', () => {
         // Lose focus of the progress bar
         $('input[data-plyr="seek"]').blur()
-    })
-
-    plyr.on('timeupdate', () => {
-
-        if (playerOptions.chatEnabled == false) return
-
-        let t = formatDuration(plyr.currentTime * 1000)
-        let tt = Math.floor(plyr.currentTime)
-
-        if (messageHistory[t] != null) {
-            var h = ''
-
-            switch (messageHistory[t].type) {
-                case 0: // regular chat message
-                    h = `
-                    <div class="message message-${tt}">
-                        <h2>${messageHistory[t].user}</h2>
-                        <h1>${messageHistory[t].text}</h1>
-                    </div>
-                    `
-                    break
-
-                case 100: // Praise
-                    h = `
-                    <div class="message message-${tt} praise">
-                        <h1>${messageHistory[t].text}</h1>
-                    </div>
-                    `
-                    break
-
-            }
-            $('#chathistory').append(h) //.scrollTo($('#chathistory').innerHeight() - 1)
-
-            setTimeout(() => {
-                $(`.message-${tt}`).animate({
-                    opacity: 0
-                }, 800)
-            }, 6000)
-            setTimeout(() => {
-                $(`.message-${tt}`).hide()
-            }, 7000)
-
-            messageHistory[t] = null
-        }
-
     })
 
     // Check each half second if user has manually seeked the video, then
@@ -279,9 +222,6 @@ function setupShortcuts() {
                     videoRotate('left')
                 }
                 break
-            case 'KeyC':
-                toggleChat()
-                break
         }
     })
 }
@@ -345,86 +285,6 @@ function videoRotate(direction) {
 
 function closeWindow() {
     window.close()
-}
-
-function showUser() {
-    ipcRenderer.send('show-user', {
-        userid: videoInfo.userid
-    })
-}
-
-function downloadReplay() {
-    ipcRenderer.send('download-replay', {
-        videoid: videoInfo.vid
-    })
-}
-
-function toggleChat() {
-    playerOptions.chatEnabled = !playerOptions.chatEnabled
-
-    ipcRenderer.send('save-player-options', playerOptions)
-
-    var tt = Math.round(Math.random() * 1000),
-        h = `
-    <div class="message message-${tt}">
-        <h1>Replay chat message ` + (playerOptions.chatEnabled ? 'enabled' : 'disabled') + `
-    </div>
-    `
-    $('#chathistory').append(h)
-
-    setTimeout(() => {
-        $(`.message-${tt}`).animate({
-            opacity: 0
-        }, 800)
-    }, 2000)
-    setTimeout(() => {
-        $(`.message-${tt}`).hide()
-    }, 3000)
-}
-
-function preloadChatHistory() {
-    LiveMe.getVideoInfo(videoInfo.vid).then(video => {
-
-        LiveMe.getChatHistoryForVideo(video.msgfile)
-        .then(raw => {
-            let t = raw.split('\n')
-
-            for (let i = 0; i < t.length - 1; i++) {
-                try {
-                    let j = JSON.parse(t[i])
-                    let timeStamp = formatDuration(parseInt(j.timestamp) - (video.vtime * 1000))
-
-                    // console.log(j.objectName)
-
-                    if (j.objectName == 'app:joinchatroommsgcontent') {
-                        // console.log(JSON.stringify(j.content, null, 2))
-                    } else if (j.objectName == 'app:leavechatroommsgcontent') {
-                        // console.log(JSON.stringify(j.content, null, 2))
-                    } else if (j.objectName == 'app:starmsgcontent') {
-                        // console.log(JSON.stringify(j.content, null, 2))
-                    } else if (j.objectName == 'app:normallvmsgcontent') {
-                        // console.log(JSON.stringify(j.content, null, 2))
-                    } else if (j.objectName == 'app:praisemsgcontent') {
-                        messageHistory[timeStamp] = {
-                            user: j.content.name,
-                            text: 'Praised by ' + j.content.name,
-                            type: 100
-                        }
-                    } else if (j.objectName === 'RC:TxtMsg') {
-                        messageHistory[timeStamp] = {
-                            user: j.content.user.name,
-                            text: j.content.content,
-                            type: 0
-                        }
-                    }
-                } catch (err) {
-                    // Caught
-                    console.log(err)
-                }
-            }
-
-        })
-    })
 }
 
 function formatDuration(i) {
