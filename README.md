@@ -10,11 +10,6 @@
 
 * * *
 
-## IT'S NOT DEAD YET!
-***Updates to this project are done periodically when I have time.  I invite others to contribute and help keep this project alive and growing.***
-
-* * *
-
 ## Getting Support or Assistance
 
 For general bugs or feature requests, chat on [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools).  I will try and answer issues and questions as I have time now.
@@ -28,9 +23,8 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - Search and browse user accounts
 - View public replays for user accounts
 - See and navigate user's followers and followings
-- Watch and download replays
+- Watch and download replays (requires an external video player)
 - Allows downloading of replays using internal downloader or FFMPEG
-- Supports [LAMD](https://github.com/thecoder75/lamd)
 - FFMPEG Hardware-Accelerated video transcoding supported on Linux only!  
   - Fully supports VAAPI on AMD and Intel cards for now.
 
@@ -89,17 +83,9 @@ You are more than welcome to download the source and build your own 32-bit versi
 
 * * *
 
-## FFMPEG No Longer Required?
-You can choose to use a basic built-in concat system now to join the chunks downloaded without needing to have FFMPEG installed on your computer.  Or for better support, you can still use FFMPEG settings.
-
-If you wish to transcode the downloads, then you will need to have FFMPEG installed.
-
-* * *
-
 ## Current Releases Built With
 * [Electron](http://electronjs.org)
 * [NodeJS](http://nodejs.org)
-* LiveMe-API - *now integrated into the project*
 
 ## Contributing
 If you find any bugs or would like to help add features or additional functions, please create a pull request for review and the current contributors will review it.  No guarantees are provided on if your pull request will be integrated or not.
