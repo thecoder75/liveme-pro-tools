@@ -426,10 +426,9 @@ function showFollowing(u) { ipcRenderer.send('open-followings-window', { userid:
 
 function showFollowers(u) { ipcRenderer.send('open-followers-window', { userid: u === undefined ? currentUser.uid : u }) }
 
-function playVideo(src, vid) {
-    DataManager.addWatched(vid)
+function playVideo(vid) {
     $('.replay-'+vid+' svg.watched').addClass('bright').addClass('green')
-    ipcRenderer.send('watch-replay', { source: src, videoid: vid })
+    ipcRenderer.send('watch-replay', { videoid: vid })
 }
 
 function sortReplays(name) {
@@ -657,7 +656,7 @@ function checkForUpdatesOfLiveMeProTools() {
                             <svg class="bright red" viewBox="0 0 20 20" style="width: 48px; height: 48px; margin-right: 4px; vertical-align: middle">
                                 <path d="M18.344,16.174l-7.98-12.856c-0.172-0.288-0.586-0.288-0.758,0L1.627,16.217c0.339-0.543-0.603,0.668,0.384,0.682h15.991C18.893,16.891,18.167,15.961,18.344,16.174 M2.789,16.008l7.196-11.6l7.224,11.6H2.789z M10.455,7.552v3.561c0,0.244-0.199,0.445-0.443,0.445s-0.443-0.201-0.443-0.445V7.552c0-0.245,0.199-0.445,0.443-0.445S10.455,7.307,10.455,7.552M10.012,12.439c-0.733,0-1.33,0.6-1.33,1.336s0.597,1.336,1.33,1.336c0.734,0,1.33-0.6,1.33-1.336S10.746,12.439,10.012,12.439M10.012,14.221c-0.244,0-0.443-0.199-0.443-0.445c0-0.244,0.199-0.445,0.443-0.445s0.443,0.201,0.443,0.445C10.455,14.021,10.256,14.221,10.012,14.221"></path>
                             </svg>
-                            Update v${rv.toFixed(3)} available!
+                            Update v${rv} available!
                         </h3>
                         <h4>Release Date: ${rd} - Released By: ${data.author.login}</h4>
                         <div class="body">${ub}</div>
@@ -952,12 +951,8 @@ function performUserLookup(uid) {
             }
         })
         .catch(() => {
-            $('#status').html('Error fetching data, will try search query again in a few seconds.')
-            $('footer h1').html(`Data error, resubmitting search query automatically in a few seconds.`)
-            hideProgressBar()
-            setTimeout(() => {
-                preSearch()
-            }, 3000)
+          $('#status').html('Error fetching data, resubmit search query again.')
+          $('footer h1').html(`Data error, resubmit search query again.`)
         })
 }
 
@@ -1022,7 +1017,6 @@ function getUsersReplays() {
         })
         .catch(error => {
             // Unhandled error
-            $('footer h1').html(`Unknown error during retrieval of replays.`)
 
         })
 }
@@ -1055,7 +1049,7 @@ function _addReplayEntry(replay, wasSearched) {
 
     if (replay.vtime > currentUser.newest_replay) currentUser.newest_replay = parseInt(replay.vtime)
 
-    currentReplayURLList.push(LiveMe.pickProperVideoSource(replay.videosource))
+    currentReplayURLList.push(replay.videosource)
 
     let dt = new Date(replay.vtime * 1000)
     let ds = (dt.getMonth() + 1) + '-' + dt.getDate() + '-' + dt.getFullYear() + ' ' + (dt.getHours() < 10 ? '0' : '') + dt.getHours() + ':' + (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes()
@@ -1259,15 +1253,15 @@ function _performHashtagSearch() {
                     `<a id="download-replay-${results[i].vid}" class="button icon-only" onClick="downloadVideo('${results[i].vid}')" title="Download Replay"><svg class="dim" viewBox="0 0 20 20"><path d="M17.064,4.656l-2.05-2.035C14.936,2.544,14.831,2.5,14.721,2.5H3.854c-0.229,0-0.417,0.188-0.417,0.417v14.167c0,0.229,0.188,0.417,0.417,0.417h12.917c0.229,0,0.416-0.188,0.416-0.417V4.952C17.188,4.84,17.144,4.733,17.064,4.656M6.354,3.333h7.917V10H6.354V3.333z M16.354,16.667H4.271V3.333h1.25v7.083c0,0.229,0.188,0.417,0.417,0.417h8.75c0.229,0,0.416-0.188,0.416-0.417V3.886l1.25,1.239V16.667z M13.402,4.688v3.958c0,0.229-0.186,0.417-0.417,0.417c-0.229,0-0.417-0.188-0.417-0.417V4.688c0-0.229,0.188-0.417,0.417-0.417C13.217,4.271,13.402,4.458,13.402,4.688"></path></svg></a>`
 
                 $('#list tbody').append(`
-					<tr data-id="${results[i].vid}"  onClick="playVideo(${results[i]})" class="user-${results[i].userid}">
+                  <tr data-id="${results[i].vid}"  onClick="playVideo('${results[i].vid}')" class="user-${results[i].userid}">
                         <td width="410">${results[i].title}</td>
                         <td width="120" align="center">${ds}</td>
                         <td width="50" align="right">${length}</td>
                         <td width="70" align="right">${results[i].playnumber}</td>
                         <td width="70" align="right">${results[i].likenum}</td>
                         <td width="70" align="right">${results[i].sharenum}</td>
-						<td width="70" align="right">${results[i].sharenum}</td>
-						<td width="100" style="padding: 0 16px; text-align: right;">
+                  <td width="70" align="right">${results[i].sharenum}</td>
+                  <td width="100" style="padding: 0 16px; text-align: right;">
                             ${inQueue}
                         </td>
                     </tr>

@@ -107,28 +107,83 @@
         <div class="panel tips">
             <div class="section">
                 <h3>
-                    Internal Video Player Removed
+                    <svg class="bright" viewBox="0 0 20 20" style="width: 32px; height: 32px; margin-right: 4px; vertical-align: middle">
+                        <path d="M17.592,8.936l-6.531-6.534c-0.593-0.631-0.751-0.245-0.751,0.056l0.002,2.999L5.427,9.075H2.491c-0.839,0-0.162,0.901-0.311,0.752l3.683,3.678l-3.081,3.108c-0.17,0.171-0.17,0.449,0,0.62c0.169,0.17,0.448,0.17,0.618,0l3.098-3.093l3.675,3.685c-0.099-0.099,0.773,0.474,0.773-0.296v-2.965l3.601-4.872l2.734-0.005C17.73,9.688,18.326,9.669,17.592,8.936 M3.534,9.904h1.906l4.659,4.66v1.906L3.534,9.904z M10.522,13.717L6.287,9.48l4.325-3.124l3.088,3.124L10.522,13.717z M14.335,8.845l-3.177-3.177V3.762l5.083,5.083H14.335z"></path>
+                    </svg>
+                    Tips
                 </h3>
-                <p>
-                    Starting with release 1.360.20191116, the internal video player was completely removed.
-                    You must configure an external video player now to watch the replays.
-                </p>
-                <p>
-                    There are no signs of it returning as recent changes has caused me the restructure a bit of the app just to restore watching and downloading some of the replays due to recent API changes by LiveMe.
-                </p>
-            </div>
-
-            <div class="section">
-                <h3>LAMD no more!</h3>
-                <p style="margin: 8px 16px;">
-                    All integrated support for LAMD (LiveMe Account Monitor Daemon) has been removed now.  There are no plans for reintegration or for any further development on that project.
-                </p>
+                <table width="100%" style="margin: 16px 0;">
+                    <tr>
+                        <td><kbd>Alt</kbd> + <kbd>←</kbd></td>
+                        <td>Rotate video backward by 90 degrees</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>Alt</kbd> + <kbd>→</kbd></td>
+                        <td>Rotate video forward by 90 degrees</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>0</kbd> to <kbd>9</kbd></td>
+                        <td>Seek from 0% to 90% respectively</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>C</kbd></td>
+                        <td>Toggle replay chat history messages.</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>A</kbd></td>
+                        <td>Seek backward by 10 seconds</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>D</kbd></td>
+                        <td>Seek forward by 10 seconds</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>F</kbd></td>
+                        <td>Toggle fullscreen</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>L</kbd></td>
+                        <td>Toggle loop</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>M</kbd></td>
+                        <td>Toggle mute</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>Space</kbd> or <kbd>K</kbd></td>
+                        <td>Toggle playback</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>Comma</kbd></td>
+                        <td>Seek backward by one frame (when paused)</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>Period</kbd></td>
+                        <td>Seek forward by one frame (when paused)</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>←</kbd></td>
+                        <td>Seek backward by 1 second</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>→</kbd></td>
+                        <td>Seek forward by 1 second</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>↑</kbd></td>
+                        <td>Increase volume</td>
+                    </tr>
+                    <tr>
+                        <td><kbd>↓</kbd></td>
+                        <td>Decrease volume</td>
+                    </tr>
+                </table>
             </div>
 
             <div class="section">
                 <h3>Getting Support</h3>
                 <p style="margin: 8px 16px;">
-                    You can access the public discussion forum on Gitter by going to:
+                    I have set up a new public discussion community on Gitter that can be accessed by going to:
                     <pre style="text-align: center; margin: 16px 0;">https://gitter.im/thecoderstoolbox/community#</pre>
                 </p>
                 <p>
@@ -218,7 +273,7 @@
     </main>
     <script id="replays-list-row" type="text/x-handlebars-template">
         <tr data-id="{{vid}}" class="link {{searched}} {{seen}} user-{{userid}} replay-{{vid}}">
-            <td width="350" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer; overflow: hidden;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}">
+            <td width="350" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer; overflow: hidden;" onClick="playVideo('{{vid}}')" class="{{highlight}}">
                 <svg class="watched {{{watched}}}" viewBox="0 0 20 20">
                     <path d="M10,6.978c-1.666,0-3.022,1.356-3.022,3.022S8.334,13.022,10,13.022s3.022-1.356,3.022-3.022S11.666,6.978,10,6.978M10,12.267c-1.25,0-2.267-1.017-2.267-2.267c0-1.25,1.016-2.267,2.267-2.267c1.251,0,2.267,1.016,2.267,2.267C12.267,11.25,11.251,12.267,10,12.267 M18.391,9.733l-1.624-1.639C14.966,6.279,12.563,5.278,10,5.278S5.034,6.279,3.234,8.094L1.609,9.733c-0.146,0.147-0.146,0.386,0,0.533l1.625,1.639c1.8,1.815,4.203,2.816,6.766,2.816s4.966-1.001,6.767-2.816l1.624-1.639C18.536,10.119,18.536,9.881,18.391,9.733 M16.229,11.373c-1.656,1.672-3.868,2.594-6.229,2.594s-4.573-0.922-6.23-2.594L2.41,10l1.36-1.374C5.427,6.955,7.639,6.033,10,6.033s4.573,0.922,6.229,2.593L17.59,10L16.229,11.373z"></path>
                 </svg>
@@ -226,16 +281,16 @@
                 {{{isLive}}}
                 {{title}}
             </td>
-            <td width="130" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
-            <td width="55" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}" align="right">{{length}}</td>
-            <td width="75" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
-            <td width="33" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="vpm">{{vpm}}</td>
-            <td width="75" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
-            <td width="33" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="lpm">{{lpm}}</td>
-            <td width="75" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
-            <td width="33" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{source}}', '{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="spm">{{spm}}</td>
+            <td width="130" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="center" data-name="date">{{ds}}</td>
+            <td width="55" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right">{{length}}</td>
+            <td width="75" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right" data-name="views">{{playnumber}}</td>
+            <td width="33" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="vpm">{{vpm}}</td>
+            <td width="75" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right" data-name="likes">{{likenum}}</td>
+            <td width="33" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="lpm">{{lpm}}</td>
+            <td width="75" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" align="right" data-name="shares">{{sharenum}}</td>
+            <td width="33" oncontextmenu="openReplayContextMenu('{{vid}}')" style="cursor: pointer;" onClick="playVideo('{{vid}}')" class="{{highlight}}" style="color:gray" align="right" data-name="spm">{{spm}}</td>
             <td width="125" class="{{highlight}}" style="padding: 0 0.5em; text-align: right;">
-                <a class="button icon-only" onClick="downloadVideo('{{vid}}','{{source}}')" title="Download Video">
+                <a class="button icon-only" onClick="downloadVideo('{{vid}}')" title="Download Video">
                     <svg class="{{{inQueue}}}" viewBox="0 0 1024 1024" id="download-button-{{vid}}">
                         <path class="path1" d="M760.499 493.901c-9.995-9.997-26.206-9.997-36.203 0l-212.296 212.294v-578.195c0-14.138-11.462-25.6-25.6-25.6s-25.6 11.462-25.6 25.6v578.195l-212.298-212.294c-9.998-9.997-26.206-9.997-36.205 0-9.997 9.995-9.997 26.206 0 36.203l256 256c5 4.997 11.55 7.496 18.102 7.496s13.102-2.499 18.102-7.501l256-256c9.997-9.995 9.997-26.203-0.003-36.198z"></path><path class="path2" d="M896 972.8h-819.2c-42.347 0-76.8-34.451-76.8-76.8v-102.4c0-14.139 11.462-25.6 25.6-25.6s25.6 11.461 25.6 25.6v102.4c0 14.115 11.485 25.6 25.6 25.6h819.2c14.115 0 25.6-11.485 25.6-25.6v-102.4c0-14.139 11.461-25.6 25.6-25.6s25.6 11.461 25.6 25.6v102.4c0 42.349-34.451 76.8-76.8 76.8z"></path>
                     </svg>
@@ -299,23 +354,26 @@
             <div class="section">
                 <ul>
                     <li style="padding-bottom: 5px;">
+                        <h4 class="titleColor">Internal Video Player</h4>
+                    </li>
+                    <li style="padding-bottom: 20px;">
+                        The options below are only valid for the internal player.<br><br>
+                        <input type="checkbox" id="player-auto-resize" onchange="saveSettings()">
+                        <label for="player-auto-resize">Auto-resize the player's window to match the video's dimensions (after rotation).</label><br>
+                        <input type="checkbox" id="player-hide-restart-btn" onchange="saveSettings()">
+                        <label for="player-hide-restart-btn">Hide restart button.</label><br>
+                        <input type="checkbox" id="player-hide-settings-btn" onchange="saveSettings()">
+                        <label for="player-hide-settings-btn">Hide settings button.</label><br>
+                        <input type="checkbox" id="player-hide-fullscreen-btn" onchange="saveSettings()">
+                        <label for="player-hide-fullscreen-btn">Hide fullscreen button.</label><br>
+                    </li>
+                    <li style="padding-bottom: 5px;">
                         <h4 class="titleColor">External Video Player</h4>
                     </li>
                     <li style="padding-bottom: 20px;">
-                        The internal player has been removed.  Please configure an external player.<br>
-                        <br>
+                        Internal player is used by default unless you specify one in the field below.<br>
                         <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
-                        <small>You <b>MUST</b> also add <i>%url%</i> to the command to denote where to place the URL to the replay.</small><br>
-                        <br>
-                        <b>Example configurations:</b><br>
-                        <ul>
-                            <li>MPV:</li>
-                            <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mpv %url%</li>
-                            <li>&nbsp;</li>
-                            <li>VLC:</li>
-                            <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;vlc  %url%</li>
-                            <li>&nbsp;</li>
-                        </ul>
+                        <small>You <b>MUST</b> also add <i>%url%</i> to the command to denote where to place the URL to the replay. (Ex: mpv %url%)</small>
                     </li>
                 </ul>
             </div>
@@ -440,15 +498,10 @@
                                     <option value="0">No transcoding</option>
                                     <option value="1">H264 Fast</option>
                                     <option value="2">H264 Best</option>
-                                    <option value="19">HEVC HW Accelerated (Linux AMD/Intel VAAPI)</option>
-                                    <option value="20">H264 HW Accelerated (Linux AMD/Intel VAAPI)</option>
                                 </select>
                             </div>
                             <br>
-                            <p>
-                                <b>ONLY</b> select Hardware Accelerated transcoding if you are sure your computer supports it.  If your computer does not support it, downloads will fail.
-                            </p>
-                            <small>When set to <b>None</b>, the video may be glitchy or contain errors.</small>
+                            <small>When set to <b>None</b>, the video may be glitchy or contain errors, but will be the original that is on LiveMe servers.</small>
                         </li>
 
                     </ul>
