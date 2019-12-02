@@ -1,0 +1,95 @@
+@import url(./base.css);
+@import url(./fonts.css);
+@import url(./icons.css);
+@import url(./header.css);
+@import url(./mainarea.css);
+@import url(./footer.css);
+
+main {
+    background-color: #000;
+}
+
+#chathistory {
+    display: block;
+    position: absolute;
+    z-index: 1000;
+    right: 8px;
+    bottom: 48px;
+    width: 320px;
+    overflow: hidden;
+    background-color: transparent;
+}
+#chathistory > .message {
+    float: right;
+    clear: both;
+    display: block;
+    max-width: 320px;
+    min-width: 240px;
+    margin: 8px 0;
+    border-radius: 5px;
+}
+
+#chathistory > .message h1, #chathistory > .message h2 {
+    display: block;
+    font-weight: 400;
+    margin: 0;
+    text-align: left;
+}
+
+#chathistory > .message h1 {
+    font-size: 10pt;
+    background-color: rgb(0,64,248);
+    color: rgb(255,255,255);
+    padding: 6px 10px;
+}
+#chathistory > .message h2 {
+    font-size: 8pt;
+    font-weight: bold;
+    background-color: rgb(0,32,224);
+    color: rgb(255,255,255);
+    padding: 3px 4px;
+}
+
+#chathistory > .message.praise {  }
+#chathistory > .message.praise h2 { background-color: transparent; color: rgba(0,192,255,0.8); font-style: italic; }
+
+#video {
+    height: calc(100vh - 24px); /* 24px is from the header */
+    transition: all 0.5s ease-in-out;
+}
+:-webkit-full-screen #video {
+    height: 100vh;
+}
+.landscape {
+    position: fixed;
+    top: 0;
+    width: calc(100vh - 24px) !important; /* 24px is from the header */
+    height: 100vw !important;
+    margin-top: calc(-100vw + 24px); /* 24px is from the header */
+}
+:-webkit-full-screen .landscape {
+    margin-top: -100vw;
+    width: 100vh !important;
+}
+.landscape-left {
+    right: 0;
+    transform-origin: bottom right;
+}
+.landscape-right {
+    left: 0;
+    transform-origin: bottom left;
+}
+.mid-container {
+    height: 100%;
+    background-color: rgb(48, 48, 48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.player-msg {
+    text-align: center;
+}
+.plyr__controls {
+    position: fixed !important;
+    z-index: 100;
+}
