@@ -26,6 +26,7 @@
         "format-duration": "^1.0.0",
         "isbinaryfile": "^4.0.0",
         "node-fetch": "^2.3.0",
+        "node-mpv": "^1.4.3",
         "pretty-date": "^0.2.0",
         "ps-node": "^0.1.6",
         "remarkable": "^1.7.1",
