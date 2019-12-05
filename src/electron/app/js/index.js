@@ -644,7 +644,7 @@ function checkForUpdatesOfLiveMeProTools() {
 
             const ub = md.render(data.body);
             const rd = (new Date(data.published_at)).toLocaleDateString()
-            const rv = parseFloat(data.name)
+            const rv = parseFloat(data.name).toFixed(3)
 
             if (data.prerelease !== true) {
 
@@ -1341,6 +1341,7 @@ function initSettingsPanel() {
     $('#hide-many-fans').prop('checked', hideHighFanCount)
     $('#hide-many-fans-count').val(appSettings.get('general.hide_high_fan_count_value') || 5000)
 
+    /*
     let blockedCountries = appSettings.get('general.blockedCountries') || []
     $('#countryCode').empty()
     for (let i = 0; i < cclist.length; i++) {
@@ -1353,6 +1354,7 @@ function initSettingsPanel() {
         }
         $('#countryCode').append(`<option value="${cclist[i][1]}" ${isblocked}>${cclist[i][0]}</option>`)
     }
+    */
 
 }
 
