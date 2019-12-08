@@ -1272,8 +1272,8 @@ function _performHashtagSearch() {
                         <td width="70" align="right">${results[i].playnumber}</td>
                         <td width="70" align="right">${results[i].likenum}</td>
                         <td width="70" align="right">${results[i].sharenum}</td>
-                  <td width="70" align="right">${results[i].sharenum}</td>
-                  <td width="100" style="padding: 0 16px; text-align: right;">
+                        <td width="70" align="right">${results[i].sharenum}</td>
+                        <td width="100" style="padding: 0 16px; text-align: right;">
                             ${inQueue}
                         </td>
                     </tr>
@@ -1303,7 +1303,7 @@ function initSettingsPanel() {
     $('#player-hide-restart-btn').prop('checked', appSettings.get('player.hide_restart_button'))
     $('#player-hide-settings-btn').prop('checked', appSettings.get('player.hide_settings_button'))
     $('#player-hide-fullscreen-btn').prop('checked', appSettings.get('player.hide_fullscreen_button'))
-    $('#playerpath').val(appSettings.get('general.playerpath'))
+    $('#playerpath').val(appSettings.get('player.path'))
 
     $('#cleanup-duration').val(appSettings.get('history.viewed_maxage'))
 
@@ -1320,6 +1320,10 @@ function initSettingsPanel() {
     $('#downloads-parallel').val(appSettings.get('downloads.parallel') || 3)
 
     $('#chat-history').prop('checked', appSettings.get('downloads.saveMessageHistory'))
+
+    const vPlayerSelection = appSettings.get('player.selection') || false
+    if ((vPlayerSelection > 5) && (vPlayerSelection < 10)) vPlayerSelection = 1
+    $('#vPlayerSelection').val(vPlayerSelection ? vPlayerSelection : 0)
 
     const ffmpegQuality = appSettings.get('downloads.ffmpegquality') || false
     if ((ffmpegQuality > 5) && (ffmpegQuality < 10)) ffmpegQuality = 1
@@ -1405,7 +1409,8 @@ function saveSettings() {
     appSettings.set('player.hide_restart_button', $('#player-hide-restart-btn').is(':checked'))
     appSettings.set('player.hide_settings_button', $('#player-hide-settings-btn').is(':checked'))
     appSettings.set('player.hide_fullscreen_button', $('#player-hide-fullscreen-btn').is(':checked'))
-    appSettings.set('general.playerpath', $('#playerpath').val())
+    appSettings.set('player.selection', $('#vPlayerSelection').val())
+    appSettings.set('player.path', $('#playerpath').val())
 
     appSettings.set('history.viewed_maxage', $('#cleanup-duration').val())
 
