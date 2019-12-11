@@ -669,56 +669,66 @@ ipcMain.on('watch-replay', (event, arg) => {
 
     LiveMe.getVideoInfo(arg.videoid)
         .then(video => {
-            let playerpath = appSettings.get('general.playerpath') || ' '
+            let playerPath = appSettings.get('player.path') || ' '
+            let playerSelection = appSettings.get('player.selection') || 0
 
-            if (playerpath.length > 5) {
-                exec(playerpath.replace('%url%', LiveMe.pickProperVideoSource(video)))
-            } else {
-                // Open internal player
-                if (playerWindow == null) {
-                    let winposition = appSettings.get('position.playerWindow') ? appSettings.get('position.playerWindow') : [-1, -1]
-                    let winsize = appSettings.get('size.playerWindow') ? appSettings.get('size.playerWindow') : [360, 640]
+            switch(playerSelection) {
+                case 99:    // External Player
+                    exec(playerPath.replace('%url%', LiveMe.pickProperVideoSource(video)))
+                    break
 
-                    playerWindow = new BrowserWindow({
-                        icon: path.join(__dirname, 'appicon.png'),
-                        width: winsize[0],
-                        height: winsize[1],
-                        x: winposition[0] !== -1 ? winposition[0] : null,
-                        y: winposition[1] !== -1 ? winposition[1] : null,
-                        minWidth: 360,
-                        minHeight: 360,
-                        darkTheme: true,
-                        autoHideMenuBar: false,
-                        disableAutoHideCursor: true,
-                        titleBarStyle: 'default',
-                        maximizable: false,
-                        frame: false,
-                        backgroundColor: '#000000',
-                        webPreferences: {
-                            webSecurity: false,
-                            textAreasAreResizable: false,
-                            plugins: true
-                        }
-                    })
-                    playerWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
-                    playerWindow.on('close', () => {
-                        appSettings.set('position.playerWindow', playerWindow.getPosition())
-                        appSettings.set('size.playerWindow', playerWindow.getSize())
 
-                        playerWindow.webContents.session.clearCache(() => {
-                            // Purge the cache to help avoid eating up space on the drive
+                default:    // Default to internal player
+                    // Open internal player
+                    if (playerWindow == null) {
+                        let winposition = appSettings.get('position.playerWindow') ? appSettings.get('position.playerWindow') : [-1, -1]
+                        let winsize = appSettings.get('size.playerWindow') ? appSettings.get('size.playerWindow') : [360, 640]
+
+                        playerWindow = new BrowserWindow({
+                            icon: path.join(__dirname, 'appicon.png'),
+                            width: winsize[0],
+                            height: winsize[1],
+                            x: winposition[0] !== -1 ? winposition[0] : null,
+                            y: winposition[1] !== -1 ? winposition[1] : null,
+                            minWidth: 360,
+                            minHeight: 360,
+                            darkTheme: true,
+                            autoHideMenuBar: false,
+                            disableAutoHideCursor: true,
+                            titleBarStyle: 'default',
+                            maximizable: false,
+                            frame: false,
+                            backgroundColor: '#000000',
+                            webPreferences: {
+                                webSecurity: false,
+                                textAreasAreResizable: false,
+                                plugins: true
+                            }
                         })
-                        playerWindow = null
-                    })
-                    playerWindow.loadURL(`file://${__dirname}/app/player.html`)
-                    playerWindow.webContents.once('dom-ready', () => {
-                        playerWindow.webContents.send('play-video', video, appSettings.get('player'))
-                    })
-                } else {
-                    playerWindow.webContents.send('play-video', video, appSettings.get('player'))
-                }
-                playerWindow.focus()
+                        playerWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+                        playerWindow.on('close', () => {
+                            appSettings.set('position.playerWindow', playerWindow.getPosition())
+                            appSettings.set('size.playerWindow', playerWindow.getSize())
+
+                            playerWindow.webContents.session.clearCache(() => { })
+                            playerWindow = null
+                        })
+                        playerWindow.loadURL(`file://${__dirname}/app/player.html`)
+                        playerWindow.webContents.once('dom-ready', () => {
+                            playerWindow.webContents.send('play-video', video, appSettings.get('player'))
+                        })
+                    } else {
+                        playerWindow.webContents.session.clearCache(() => { })
+                        // Need to allow time for the cache to get cleared before starting the next video
+                        setTimeout(() => {
+                            playerWindow.webContents.send('play-video', video, appSettings.get('player'))
+                        }, 200)
+                    }
+                    playerWindow.focus()
+                    break
+
             }
+
         })
         .catch(err => {
             console.log('[watch-replay] getVideoInfo Error:', err)
