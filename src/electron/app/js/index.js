@@ -971,7 +971,7 @@ function getUsersReplays() {
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
                     // **OLD** $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!`).fadeIn(400)
-                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has either removed all of their replays or currently has them hidden.`).show()
+                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has no replays right now.`).show()
                     $('footer h1').html(`No replays available.`)
                     hideProgressBar()
                 }
@@ -1008,7 +1008,7 @@ function getUsersReplays() {
                     $('footer h1').html($('#list tbody tr').length + ' visible of ' + currentUser.counts.replays + ' total replays loaded.')
                 }
                 if (d === 0) {
-                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has either removed all of their replays or currently has them hidden.`).show()
+                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has no replays right now.`).show()
                     $('footer h1').html(`No replays available.`)
                 }
 
