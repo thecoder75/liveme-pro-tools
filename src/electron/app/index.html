@@ -367,14 +367,18 @@
                             <input type="checkbox" id="player-hide-fullscreen-btn" onchange="saveSettings()"><label for="player-hide-fullscreen-btn">Hide fullscreen button</label><br>
                         </div>
                     </li>
+
+                    <!--
                     <li style="padding-bottom: 5px;">
                         <h4 style="font-size: 1.1em;"><input type="radio" name="vPlayerSelection" value="1"> MPV Video Player</h4>
                         <div style="padding: 4px 4px 4px 32px;">
                             Allow LiveMe Pro Tools to start and control the MPV player, fixes some replays not playing.
                         </div>
                     </li>
+                    -->
+
                     <li style="padding-bottom: 20px;">
-                        <h4 style="font-size: 1.1em;"><input type="radio" name="vPlayerSelection" value="2"> Launch an external player</h4>
+                        <h4 style="font-size: 1.1em;"><input type="radio" name="vPlayerSelection" value="99"> Launch an external player</h4>
                         <div style="padding: 4px 4px 4px 32px;">
                             Specify command and options for external player:<br>
                             <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
