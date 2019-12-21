@@ -338,6 +338,7 @@
 
                 </ul>
             </div>
+
             <div class="section">
                 <ul>
                     <li style="padding-bottom: 5px;">
@@ -351,29 +352,48 @@
                     </li>
                 </ul>
             </div>
+
             <div class="section">
                 <ul>
                     <li style="padding-bottom: 5px;">
-                        <h4 class="titleColor">Internal Video Player</h4>
+                        <h4 class="titleColor">Video Player Settings</h4>
+                    </li>
+                    <li style="padding: 20px 0;">
+                        <h4 style="font-size: 1.1em;">Player Selection:
+                            <div class="select" style="margin-left: 32px; vertical-align: middle; height: 26px; border: solid 1px rgb(80,80,80);">
+                                <select id="playerSelection" onBlur="saveSettings()" style="width: 200px;">
+                                    <option value="0" selected>Internal Video Player</option>
+                                    <option value="99">External Video Player</option>
+                                </select>
+                            </div>
+                        </h4>
                     </li>
                     <li style="padding-bottom: 20px;">
-                        The options below are only valid for the internal player.<br><br>
-                        <input type="checkbox" id="player-auto-resize" onchange="saveSettings()">
-                        <label for="player-auto-resize">Auto-resize the player's window to match the video's dimensions (after rotation).</label><br>
-                        <input type="checkbox" id="player-hide-restart-btn" onchange="saveSettings()">
-                        <label for="player-hide-restart-btn">Hide restart button.</label><br>
-                        <input type="checkbox" id="player-hide-settings-btn" onchange="saveSettings()">
-                        <label for="player-hide-settings-btn">Hide settings button.</label><br>
-                        <input type="checkbox" id="player-hide-fullscreen-btn" onchange="saveSettings()">
-                        <label for="player-hide-fullscreen-btn">Hide fullscreen button.</label><br>
+                        <h4 style="font-size: 1.1em;">Internal Video Player Options</h4>
+                        <div style="padding: 4px 4px 4px 32px;">
+                            <input type="checkbox" id="player-auto-resize" onchange="saveSettings()"><label for="player-auto-resize">Auto-resize player on rotation</label><br>
+                            <input type="checkbox" id="player-hide-restart-btn" onchange="saveSettings()"><label for="player-hide-restart-btn">Hide restart button</label><br>
+                            <input type="checkbox" id="player-hide-settings-btn" onchange="saveSettings()"><label for="player-hide-settings-btn">Hide settings button</label><br>
+                            <input type="checkbox" id="player-hide-fullscreen-btn" onchange="saveSettings()"><label for="player-hide-fullscreen-btn">Hide fullscreen button</label><br>
+                        </div>
                     </li>
+
+                    <!--
                     <li style="padding-bottom: 5px;">
-                        <h4 class="titleColor">External Video Player</h4>
+                        <h4 style="font-size: 1.1em;">MPV Video Player Options</h4>
+                        <div style="padding: 4px 4px 4px 32px;">
+                            Allow LiveMe Pro Tools to start and control the MPV player, fixes some replays not playing.
+                        </div>
                     </li>
+                    -->
+
                     <li style="padding-bottom: 20px;">
-                        Internal player is used by default unless you specify one in the field below.<br>
-                        <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
-                        <small>You <b>MUST</b> also add <i>%url%</i> to the command to denote where to place the URL to the replay. (Ex: mpv %url%)</small>
+                        <h4 style="font-size: 1.1em;">External Player Options</h4>
+                        <div style="padding: 4px 4px 4px 32px;">
+                            Specify command and options for external player:<br>
+                            <input type="text" id="playerpath" placeholder="Full path to a player" style="width: 100%;" onBlur="saveSettings()"><br>
+                            <small>You <b>MUST</b> also add <i>%url%</i> to the command to denote where to place the URL to the replay. (Ex: mpv %url%)</small>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -516,6 +536,7 @@
                             <input type="checkbox" onChange="saveSettings()" id="enableShowFans"> Show new fans during scan.<br>
                             <input type="checkbox" onChange="saveSettings()" id="enableShowFollowings"> Show new followings during scan.<br>
                             <br>
+                            <input type="checkbox" onChange="saveSettings()" id="viewmode-searching"> Hide search results with no replays.<br>
                             <input type="checkbox" onChange="saveSettings()" id="viewmode-followings"> Hide followings with no replays.<br>
                             <input type="checkbox" onchange="saveSettings()" id="viewmode-followers"> Hide followers with no replays.<br>
                             <br>

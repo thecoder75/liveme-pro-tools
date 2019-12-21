@@ -644,7 +644,7 @@ function checkForUpdatesOfLiveMeProTools() {
 
             const ub = md.render(data.body);
             const rd = (new Date(data.published_at)).toLocaleDateString()
-            const rv = parseFloat(data.name)
+            const rv = parseFloat(data.name).toFixed(3)
 
             if (data.prerelease !== true) {
 
@@ -971,7 +971,7 @@ function getUsersReplays() {
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
                     // **OLD** $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!`).fadeIn(400)
-                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has either removed all of their replays or currently has them hidden.`).show()
+                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has no replays right now.`).show()
                     $('footer h1').html(`No replays available.`)
                     hideProgressBar()
                 }
@@ -1008,7 +1008,7 @@ function getUsersReplays() {
                     $('footer h1').html($('#list tbody tr').length + ' visible of ' + currentUser.counts.replays + ' total replays loaded.')
                 }
                 if (d === 0) {
-                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has either removed all of their replays or currently has them hidden.`).show()
+                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has no replays right now.`).show()
                     $('footer h1').html(`No replays available.`)
                 }
 
@@ -1167,24 +1167,52 @@ function performUsernameSearch() {
                     </tr>
                 `)
 
+                $('#user-'+results[i].user_id).hide()
+
                 LiveMe.getUserInfo(results[i].user_id)
                     .then(user => {
                         if (user === undefined) return
                         if (user === null) return
 
-                        $('#user-' + user.user_info.uid + ' td.details a.replays').html(`${user.count_info.video_count} Replays`)
-                        $('#user-' + user.user_info.uid + ' td.details a.followings').html(`Following ${user.count_info.following_count}`)
-                        $('#user-' + user.user_info.uid + ' td.details a.followers').html(`${user.count_info.follower_count} Fans`)
+                        let isBlocked = false
+                        let blockedCountries = appSettings.get('general.blockedCountries') || []
+                        for (let j = 0; j < blockedCountries.length; j++) {
+                            if (user.user_info.countryCode == blockedCountries[j]) {
+                                isBlocked = true
+                                break
+                            }
+                        }
+                        if ( (appSettings.get('general.hide_zeroreplay_searching') !== false) && (user.count_info.video_count < 1) ) {
+                            isBlocked = true
+                        }
 
-                        $('#user-' + user.user_info.uid + ' td.details h5.userid').html(`ID: <span>${user.user_info.uid}<a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.uid}')"><svg viewBox="0 0 20 20"><path d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411"></path></svg></a></span>`)
-                        $('#user-' + user.user_info.uid + ' td.details h5.shortid').html(`Short ID: <span>${user.user_info.short_id}<a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.short_id}')"><svg viewBox="0 0 20 20"><path d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411"></path></svg></a></span>`)
+                        if (!isBlocked) {
+                            $('#user-' + user.user_info.uid + ' td.details a.replays').html(`${user.count_info.video_count} Replays`)
+                            $('#user-' + user.user_info.uid + ' td.details a.followings').html(`Following ${user.count_info.following_count}`)
+                            $('#user-' + user.user_info.uid + ' td.details a.followers').html(`${user.count_info.follower_count} Fans`)
 
-                        $('#user-' + user.user_info.uid + ' td.details h5.level').html(`Level: <span>${user.user_info.level}</span>`)
-                        $('#user-' + user.user_info.uid + ' td.details h5.country').html(`${user.user_info.countryCode}`)
+                            $('#user-' + user.user_info.uid + ' td.details h5.userid').html(`ID: <span>${user.user_info.uid}<a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.uid}')"><svg viewBox="0 0 20 20"><path d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411"></path></svg></a></span>`)
+                            $('#user-' + user.user_info.uid + ' td.details h5.shortid').html(`Short ID: <span>${user.user_info.short_id}<a class="button icon-only" title="Copy to Clipboard" onClick="copyToClipboard('${user.user_info.short_id}')"><svg viewBox="0 0 20 20"><path d="M4.317,16.411c-1.423-1.423-1.423-3.737,0-5.16l8.075-7.984c0.994-0.996,2.613-0.996,3.611,0.001C17,4.264,17,5.884,16.004,6.88l-8.075,7.984c-0.568,0.568-1.493,0.569-2.063-0.001c-0.569-0.569-0.569-1.495,0-2.064L9.93,8.828c0.145-0.141,0.376-0.139,0.517,0.005c0.141,0.144,0.139,0.375-0.006,0.516l-4.062,3.968c-0.282,0.282-0.282,0.745,0.003,1.03c0.285,0.284,0.747,0.284,1.032,0l8.074-7.985c0.711-0.71,0.711-1.868-0.002-2.579c-0.711-0.712-1.867-0.712-2.58,0l-8.074,7.984c-1.137,1.137-1.137,2.988,0.001,4.127c1.14,1.14,2.989,1.14,4.129,0l6.989-6.896c0.143-0.142,0.375-0.14,0.516,0.003c0.143,0.143,0.141,0.374-0.002,0.516l-6.988,6.895C8.054,17.836,5.743,17.836,4.317,16.411"></path></svg></a></span>`)
+
+                            $('#user-' + user.user_info.uid + ' td.details h5.level').html(`Level: <span>${user.user_info.level}</span>`)
+                            $('#user-' + user.user_info.uid + ' td.details h5.country').html(`${user.user_info.countryCode}`)
+                            $('#user-'+user.user_info.uid).show()
+                        } else {
+                            $('#user-'+user.user_info.uid).remove()
+                        }
                     })
 
-                $('footer h1').html($('#list tbody tr').length + ' accounts found so far, scroll down to load more.')
             }
+
+            if ((results.length === MAX_PER_PAGE) && ($('#list tbody').length < 40)) {
+                currentPage++
+                setTimeout( () => {
+                    performUsernameSearch()
+                }, 250)
+            } else {
+                $('footer h1').html(' ')
+            }
+
 
             if (results.length === 0 && currentPage === 1) {
                 $('#status').html('No users were found searching for ' + $('#search-query').val()).show()
@@ -1260,8 +1288,8 @@ function _performHashtagSearch() {
                         <td width="70" align="right">${results[i].playnumber}</td>
                         <td width="70" align="right">${results[i].likenum}</td>
                         <td width="70" align="right">${results[i].sharenum}</td>
-                  <td width="70" align="right">${results[i].sharenum}</td>
-                  <td width="100" style="padding: 0 16px; text-align: right;">
+                        <td width="70" align="right">${results[i].sharenum}</td>
+                        <td width="100" style="padding: 0 16px; text-align: right;">
                             ${inQueue}
                         </td>
                     </tr>
@@ -1291,7 +1319,7 @@ function initSettingsPanel() {
     $('#player-hide-restart-btn').prop('checked', appSettings.get('player.hide_restart_button'))
     $('#player-hide-settings-btn').prop('checked', appSettings.get('player.hide_settings_button'))
     $('#player-hide-fullscreen-btn').prop('checked', appSettings.get('player.hide_fullscreen_button'))
-    $('#playerpath').val(appSettings.get('general.playerpath'))
+    $('#playerpath').val(appSettings.get('player.path'))
 
     $('#cleanup-duration').val(appSettings.get('history.viewed_maxage'))
 
@@ -1308,6 +1336,9 @@ function initSettingsPanel() {
     $('#downloads-parallel').val(appSettings.get('downloads.parallel') || 3)
 
     $('#chat-history').prop('checked', appSettings.get('downloads.saveMessageHistory'))
+
+    const playerSelection = appSettings.get('player.pick') || 0
+    $('#playerSelection').val(playerSelection ? playerSelection : 0)
 
     const ffmpegQuality = appSettings.get('downloads.ffmpegquality') || false
     if ((ffmpegQuality > 5) && (ffmpegQuality < 10)) ffmpegQuality = 1
@@ -1341,6 +1372,7 @@ function initSettingsPanel() {
     $('#hide-many-fans').prop('checked', hideHighFanCount)
     $('#hide-many-fans-count').val(appSettings.get('general.hide_high_fan_count_value') || 5000)
 
+
     let blockedCountries = appSettings.get('general.blockedCountries') || []
     $('#countryCode').empty()
     for (let i = 0; i < cclist.length; i++) {
@@ -1353,6 +1385,11 @@ function initSettingsPanel() {
         }
         $('#countryCode').append(`<option value="${cclist[i][1]}" ${isblocked}>${cclist[i][0]}</option>`)
     }
+
+    // This is added to help ensure the settings file gets refreshed/updated
+    setTimeout(() => {
+        saveSettings()
+    }, 1000)
 
 }
 
@@ -1383,6 +1420,7 @@ function saveSettings() {
 
     appSettings.set('general.hide_zeroreplay_fans', (!!$('#viewmode-followers').is(':checked')))
     appSettings.set('general.hide_zeroreplay_followings', (!!$('#viewmode-followings').is(':checked')))
+    appSettings.set('general.hide_zeroreplay_searching', (!!$('#viewmode-searching').is(':checked')))
 
     appSettings.set('general.hide_high_fan_count', (!!$('#hide-many-fans').is(':checked')))
     appSettings.set('general.hide_high_fan_count_value', parseInt($('#hide-many-fans-count').val()))
@@ -1391,7 +1429,8 @@ function saveSettings() {
     appSettings.set('player.hide_restart_button', $('#player-hide-restart-btn').is(':checked'))
     appSettings.set('player.hide_settings_button', $('#player-hide-settings-btn').is(':checked'))
     appSettings.set('player.hide_fullscreen_button', $('#player-hide-fullscreen-btn').is(':checked'))
-    appSettings.set('general.playerpath', $('#playerpath').val())
+    appSettings.set('player.pick', $('#playerSelection').val())
+    appSettings.set('player.path', $('#playerpath').val())
 
     appSettings.set('history.viewed_maxage', $('#cleanup-duration').val())
 
@@ -1415,14 +1454,15 @@ function saveSettings() {
     appSettings.set('general.enableShowFollowings', (!!$('#enableShowFollowings').is(':checked')))
 
     ipcRenderer.send('downloads-parallel', appSettings.get('downloads.parallel'))
+
 }
 
 function resetSettings() {
     appSettings.set('general', {
         fresh_install: true,
-        playerpath: '',
         hide_zeroreplay_fans: false,
         hide_zeroreplay_followings: true,
+        hide_zeroreplay_searching: true,
         homeHideNewFans: false,
         homeHideNewFollowers: false
     })
@@ -1443,6 +1483,16 @@ function resetSettings() {
         mainWindow: [1024, 600],
         playerWindow: [370, 680],
         bookmarksWindow: [400, 720]
+    })
+    appSettings.set('player', {
+        volume: 1,
+        muted: false,
+        path: '',
+        pick: 0,
+        resize_on_rotate: false,
+        hide_restart_button: false,
+        hide_settings_button: false,
+        hide_fullscreen_button: false
     })
 
     DataManager.wipeAllData()
