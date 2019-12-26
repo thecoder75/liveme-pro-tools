@@ -66,7 +66,7 @@ function redrawList() {
     max = list.length
     shown = 0
     timeSpan = $('#bookmark-timespan').val() * 86400
-    if (timeSpan < 86400) timeSpan = (365 * 86400) * 50    // Show active in the last 50 years (ALL OF THEM!)
+    if (timeSpan < 86400) timeSpan = (365 * 86400) * 250    // Show active in the last 250 years (ALL OF THEM!)
 
     $('#bookmark-list').html('')
     drawEntry()
