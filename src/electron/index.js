@@ -674,8 +674,8 @@ ipcMain.on('watch-replay', (event, arg) => {
         .then(video => {
 
             console.log('Player Selection: ' + appSettings.get('player.pick'))
-            switch(appSettings.get('player.selection') || 0) {
-                case 99:    // External Player
+            switch(appSettings.get('player.pick') || 0) {
+                case '99':    // External Player
                     let playerPath = appSettings.get('player.path') || ' '
                     exec(playerPath.replace('%url%', LiveMe.pickProperVideoSource(video)))
                     break
