@@ -30,7 +30,6 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 - See and navigate user's followers and followings
 - Watch and download replays
 - Allows downloading of replays using internal downloader or FFMPEG
-- Supports [LAMD](https://github.com/thecoder75/lamd)
 - FFMPEG Hardware-Accelerated video transcoding supported on Linux only!  
   - Fully supports VAAPI on AMD and Intel cards for now.
 
@@ -80,7 +79,7 @@ If you find any bugs or would like to help add features or additional functions,
 * [Tashiketh](https://notabug.org/Tashiketh)
 * [monstergarden](https://github.org/monstergarden)
 * [mustang-sally](https://github.com/mustang-sally)
-* [marcell](https://github.com/bem13)
+* [bem13](https://github.com/bem13)
 
 ### License
 This project is now licensed under the [GNU AGPLv3](LICENSE) License.
