@@ -971,7 +971,7 @@ function getUsersReplays() {
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
                     // **OLD** $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!`).fadeIn(400)
-                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has no replays right now.`).show()
+                    $('#replay-result-alert').html(`<span>No Replays Available!</span> The server returned nothing!`).show()
                     $('footer h1').html(`No replays available.`)
                     hideProgressBar()
                 }
