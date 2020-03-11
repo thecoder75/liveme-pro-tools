@@ -322,7 +322,7 @@ function showMainMenu() {
                     },
                     {
                         label: 'The Coders Toolbox Community on Gitter Chat',
-                        click: () => shell.openExternal('https://gitter.im/thecoderstoolbox/community')
+                        click: () => shell.openExternal('https://gitter.im/thecoderstoolbox')
                     }
                 ]
             },
