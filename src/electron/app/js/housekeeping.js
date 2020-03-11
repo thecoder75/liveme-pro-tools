@@ -104,7 +104,7 @@ function scannedBookmarksBA() {
     for(let i = 0; i < list.length; i++) {
         LiveMe.getUserInfo(list[i].uid).then(user => {
             if (user.user_info.status == 4) {
-                pList.push(user.user_info.uid)
+                pList.push(user.user_info)
 
                 $('#results').append(`
                     <div class="entry" onClick="showUser('${user.user_info.uid}')">
