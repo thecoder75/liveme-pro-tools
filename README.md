@@ -12,7 +12,10 @@
 ### END OF DEVELOPMENT
 
 ```
-I will no longer be maintaining the LiveMe Pro Tools starting March 11, 2020 due to availability to continue this project.  What started as a small challenge to do better has grown massive in 2 years.  I see the results of so many who have used it all over the web, even in discussions where users help each other.  It's been fun and I've enjoyed working with so many people around the world.
+I will no longer be maintaining the LiveMe Pro Tools starting March 11, 2020 due to availability to
+continue this project.  What started as a small challenge to do better has grown massive in 2 years.
+I see the results of so many who have used it all over the web, even in discussions where users help
+each other.  It's been fun and I've enjoyed working with so many people around the world.
 
 Have a good one everyone!
 
