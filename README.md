@@ -3,23 +3,36 @@
 [![Current Release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
 [![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
 [![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/commits/master)
-[![Active Issues](https://img.shields.io/github/issues/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/issues)
 [![Gitter](https://badges.gitter.im/thecoderstoolbox/liveme-pro-tools.svg)](https://gitter.im/thecoderstoolbox/liveme-pro-tools?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
 * * *
 
-### IT'S NOT DEAD YET!
-***So I miss-spoke awhile back as lately I've found a few wins on LiveMe that have escaped the censors.  So the project is back active but with limited work being done and releases not happening as fast as they use to.***
+### END OF DEVELOPMENT
+
+```
+I will no longer be maintaining the LiveMe Pro Tools starting March 11, 2020 due to availability to continue this project.  What started as a small challenge to do better has grown massive in 2 years.  I see the results of so many who have used it all over the web, even in discussions where users help each other.  It's been fun and I've enjoyed working with so many people around the world.
+
+Have a good one everyone!
+
+TheCoder
+```
+
+* * *
+
+### Donations
+We appreciate those who wish to donate, but this project was meant to be done and given out for free!  If someone asks for money for it or its development, please give them hell for those who did this for no monetary compensation!
 
 * * *
 
 ### Getting Support or Assistance
 
-For general bugs or feature requests, chat on [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools).  I will try and answer issues and questions as I have time now.
+The [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools) group is still open for people to discuss usage and such.
 
-***FYI: I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME SENDING THEM!***
+**Please note that the LiveMe platform itself is riddled with bugs and errors and this project has demonstrated those errors on many occasions so be prepared for no answers if you have issues.**
+
+***I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME SENDING THEM!***
 
 * * *
 
@@ -58,7 +71,7 @@ You are more than welcome to download the source and build your own 32-bit versi
 ### FFMPEG No Longer Required?
 You can choose to use a basic built-in concat system now to join the chunks downloaded without needing to have FFMPEG installed on your computer.  Or for better support, you can still use FFMPEG settings.
 
-If you wish to transcode the downloads, then you will need to have FFMPEG installed.
+If you wish to transcode the downloads, then you will need to have FFMPEG installed on your computer.
 
 * * *
 
@@ -83,7 +96,3 @@ If you find any bugs or would like to help add features or additional functions,
 
 ### License
 This project is now licensed under the [GNU AGPLv3](LICENSE) License.
-
-### Donations
-**Please help keep this project alive!**
-We appreciate those who wish to donate, but at this time we're not requiring or accepting them.  In the future, who knows.
