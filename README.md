@@ -17,6 +17,10 @@ continue this project.  What started as a small challenge to do better has grown
 I see the results of so many who have used it all over the web, even in discussions where users help
 each other.  It's been fun and I've enjoyed working with so many people around the world.
 
+I will keep this repo alive and allow new contributors to become part to help continue this project
+if they want to help keep the tools going forever.  Just email me or leave a private message for me
+on the Gitter chat room.
+
 Have a good one everyone!
 
 TheCoder
