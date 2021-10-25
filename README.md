@@ -3,7 +3,6 @@
 [![Current Release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
 [![Current Release Date](https://img.shields.io/github/release-date/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
 [![Last Commit Date](https://img.shields.io/github/last-commit/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/commits/master)
-[![Gitter](https://badges.gitter.im/thecoderstoolbox/liveme-pro-tools.svg)](https://gitter.im/thecoderstoolbox/liveme-pro-tools?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 **A big thank you to all those who are now contributing to help make this tool even better!**
 
