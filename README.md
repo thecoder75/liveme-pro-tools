@@ -9,19 +9,12 @@
 
 * * *
 
-### END OF DEVELOPMENT
+### Resurrection Notice
 
 ```
-I will no longer be maintaining the LiveMe Pro Tools starting March 11, 2020 due to availability to
-continue this project.  What started as a small challenge to do better has grown massive in 2 years.
-I see the results of so many who have used it all over the web, even in discussions where users help
-each other.  It's been fun and I've enjoyed working with so many people around the world.
+I am back from the dark corners of the internet to bring forth updates and improvements to an old project.  
 
-I will keep this repo alive and allow new contributors to become part to help continue this project
-if they want to help keep the tools going forever.  Just email me or leave a private message for me
-on the Gitter chat room.
-
-Have a good one everyone!
+Please limit all inquries at this time and DO NOT EMAIL ME for usage support!
 
 TheCoder
 ```
@@ -29,13 +22,13 @@ TheCoder
 * * *
 
 ### Donations
-We appreciate those who wish to donate, but this project was meant to be done and given out for free!  If someone asks for money for it or its development, please give them hell for those who did this for no monetary compensation!
+If enough people want to start donating to this project, I'll look into setting up to receive them.
 
 * * *
 
 ### Getting Support or Assistance
 
-The [Gitter](https://gitter.im/thecoderstoolbox/liveme-pro-tools) group is still open for people to discuss usage and such.
+We now have a new forum set up [here](https://livemeprotools.freeflarum.com) where things can be discussed.
 
 **Please note that the LiveMe platform itself is riddled with bugs and errors and this project has demonstrated those errors on many occasions so be prepared for no answers if you have issues.**
 
