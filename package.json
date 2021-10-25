@@ -1,12 +1,12 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.366.20200311",
+    "version": "1.500.20211025",
     "description": "Tools for Live.me video network",
     "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/thecoder1975/liveme-pro-tools"
+        "url": "https://github.com/thecoder75/liveme-pro-tools"
     },
     "scripts": {
         "start": "cross-env NODE_ENV=development electron ./src/electron/index.js --enable-logging",
