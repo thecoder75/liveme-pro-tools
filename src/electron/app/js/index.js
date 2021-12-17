@@ -969,8 +969,6 @@ function getUsersReplays() {
     LiveMe.getUserReplays(currentUser.uid, currentPage, MAX_PER_PAGE)
         .then(replays => {
 
-            console.log(replays)
-
             if ((typeof replays === 'undefined') || (replays == null)) {
                 if (currentPage === 1) {
                     // **OLD** $('#replay-result-alert').html(`<span>Uh Oh!</span> This user\'s account has been terminated by the look of things!`).fadeIn(400)

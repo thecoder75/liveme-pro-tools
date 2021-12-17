@@ -19,7 +19,6 @@ ipcRenderer.on('play-video', (event, info, options) => {
     let properSource = info.source
     videoInfo = info
     playerOptions = options
-    console.log(properSource)
 
     if (!video.src) {
         // Initialize player and setup shortcuts
@@ -52,13 +51,12 @@ ipcRenderer.on('play-video', (event, info, options) => {
     })
     hlsPlayer.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
         plyr.play()
-        console.log('Hls.Events.MANIFEST_PARSED', data)
     })
     hlsPlayer.on(Hls.Events.MEDIA_DETACHED, (event, data) => {
-        console.log('Hls.Events.MEDIA_DETACHED', data)
+
     })
     hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
-        console.log('Hls.Events.ERROR', data)
+
     })
     hlsPlayer.loadSource(properSource)
     hlsPlayer.attachMedia(video)
