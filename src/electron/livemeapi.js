@@ -106,7 +106,7 @@ class LiveMe {
             },
             body: `--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="cmversion"\r\n\r\n38551987\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="code"\r\n\r\n\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="name"\r\n\r\n${this.email}\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="extra"\r\n\r\nuserinfo\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="password"\r\n\r\n${this.password}\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f`,
             transform:  (rawBody) => {
-                if (typeof rawBody === 'string') 
+                if (typeof rawBody === 'string')
                 {
 
                     let body = {}
@@ -345,7 +345,7 @@ class LiveMe {
                 properSource = (videoInfo.videosource && preferLiveFlv) ? videoInfo.videosource : videoInfo.hlsvideosource
                 break
             default:
-                properSource = videoInfo.videosource ? videoInfo.videosource : videoInfo.hlsvideosource
+                properSource = videoInfo.source ? videoInfo.source : (videoInfo.videosource ? videoInfo.videosource : videoInfo.hlsvideosource)
                 break
         }
         return properSource
