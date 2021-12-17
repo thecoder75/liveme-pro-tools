@@ -670,72 +670,64 @@ const dlQueue = async.queue((task, done) => {
 ipcMain.on('watch-replay', (event, arg) => {
     DataManager.addWatched(arg.videoid)
 
-    LiveMe.getVideoInfo(arg.videoid)
-        .then(video => {
 
-            console.log('Player Selection: ' + appSettings.get('player.pick'))
-            switch(appSettings.get('player.pick') || 0) {
-                case '99':    // External Player
-                    let playerPath = appSettings.get('player.path') || ' '
-                    exec(playerPath.replace('%url%', LiveMe.pickProperVideoSource(video)))
-                    break
+    switch(appSettings.get('player.pick') || 0) {
+        case '99':    // External Player
+            let playerPath = appSettings.get('player.path') || ' '
+            exec(playerPath.replace('%url%', arg.source))
+            break
 
 
-                default:    // Default to internal player
-                    // Open internal player
-                    if (playerWindow == null) {
-                        let winposition = appSettings.get('position.playerWindow') ? appSettings.get('position.playerWindow') : [-1, -1]
-                        let winsize = appSettings.get('size.playerWindow') ? appSettings.get('size.playerWindow') : [360, 640]
+        default:    // Default to internal player
+            // Open internal player
+            if (playerWindow == null) {
+                let winposition = appSettings.get('position.playerWindow') ? appSettings.get('position.playerWindow') : [-1, -1]
+                let winsize = appSettings.get('size.playerWindow') ? appSettings.get('size.playerWindow') : [360, 640]
 
-                        playerWindow = new BrowserWindow({
-                            icon: path.join(__dirname, 'appicon.png'),
-                            width: winsize[0],
-                            height: winsize[1],
-                            x: winposition[0] !== -1 ? winposition[0] : null,
-                            y: winposition[1] !== -1 ? winposition[1] : null,
-                            minWidth: 360,
-                            minHeight: 360,
-                            darkTheme: true,
-                            autoHideMenuBar: false,
-                            disableAutoHideCursor: true,
-                            titleBarStyle: 'default',
-                            maximizable: false,
-                            frame: false,
-                            backgroundColor: '#000000',
-                            webPreferences: {
-                                webSecurity: false,
-                                textAreasAreResizable: false,
-                                plugins: true
-                            }
-                        })
-                        playerWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
-                        playerWindow.on('close', () => {
-                            appSettings.set('position.playerWindow', playerWindow.getPosition())
-                            appSettings.set('size.playerWindow', playerWindow.getSize())
-
-                            playerWindow.webContents.session.clearCache(() => { })
-                            playerWindow = null
-                        })
-                        playerWindow.loadURL(`file://${__dirname}/app/player.html`)
-                        playerWindow.webContents.once('dom-ready', () => {
-                            playerWindow.webContents.send('play-video', video, appSettings.get('player'))
-                        })
-                    } else {
-                        playerWindow.webContents.session.clearCache(() => { })
-                        // Need to allow time for the cache to get cleared before starting the next video
-                        setTimeout(() => {
-                            playerWindow.webContents.send('play-video', video, appSettings.get('player'))
-                        }, 200)
+                playerWindow = new BrowserWindow({
+                    icon: path.join(__dirname, 'appicon.png'),
+                    width: winsize[0],
+                    height: winsize[1],
+                    x: winposition[0] !== -1 ? winposition[0] : null,
+                    y: winposition[1] !== -1 ? winposition[1] : null,
+                    minWidth: 360,
+                    minHeight: 360,
+                    darkTheme: true,
+                    autoHideMenuBar: false,
+                    disableAutoHideCursor: true,
+                    titleBarStyle: 'default',
+                    maximizable: false,
+                    frame: false,
+                    backgroundColor: '#000000',
+                    webPreferences: {
+                        webSecurity: false,
+                        textAreasAreResizable: false,
+                        plugins: true
                     }
-                    playerWindow.focus()
-                    break
+                })
+                playerWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+                playerWindow.on('close', () => {
+                    appSettings.set('position.playerWindow', playerWindow.getPosition())
+                    appSettings.set('size.playerWindow', playerWindow.getSize())
 
+                    playerWindow.webContents.session.clearCache(() => { })
+                    playerWindow = null
+                })
+                playerWindow.loadURL(`file://${__dirname}/app/player.html`)
+                playerWindow.webContents.once('dom-ready', () => {
+                    playerWindow.webContents.send('play-video', arg, appSettings.get('player'))
+                })
+            } else {
+                playerWindow.webContents.session.clearCache(() => { })
+                // Need to allow time for the cache to get cleared before starting the next video
+                setTimeout(() => {
+                    playerWindow.webContents.send('play-video', arg, appSettings.get('player'))
+                }, 200)
             }
+            playerWindow.focus()
+            break
+    }
 
-        })
-        .catch(err => {
-            console.log('[watch-replay] getVideoInfo Error:', err)
-        })
 })
 
 ipcMain.on('save-player-options', (event, options) => {
