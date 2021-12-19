@@ -372,13 +372,12 @@ const dlQueue = async.queue((task, done) => {
             filename: filename
         })
 
-
         // If no M3U8 URLs are returned from getVideoInfo then we use the original source path that was discovered during fetching of the replays.
         let properSource = video.hlsvideosource ? video.hlsvideosource : (video.videosource ? video.videosource : task.source)
         //let properSource = LiveMe.pickProperVideoSource(video)
 
         if (properSource === '') {
-            let err = "No replay URL could be found."
+            let err = "No replay URL could be discovered."
 
             fs.writeFileSync(`${path}/${filename}-error.log`, err)
             return done({
@@ -542,6 +541,7 @@ const dlQueue = async.queue((task, done) => {
                             // Events
                         stream.on('finish', () => {
                             downloadedChunks += 1
+                            if (mainWindow.webContents === null) return;
                             mainWindow.webContents.send('download-progress', {
                                 videoid: task.videoid,
                                 state: `Downloading stream chunks.. (${downloadedChunks}/${tsList.length})`,
