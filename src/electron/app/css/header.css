@@ -16,6 +16,8 @@ header {
 }
 header.small { height: 24px; line-height: 24px; padding: 0 24px; }
 
+header.transparent { background-color: rgba(0,0,0,0.1) !important; }
+
 header a, header input[type=input], header input[type=text], header button, header select { -webkit-app-region: no-drag; }
 
 header div.group {
