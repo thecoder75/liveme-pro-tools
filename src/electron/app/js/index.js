@@ -276,29 +276,6 @@ function setupIPCListeners() {
 function showMainMenu() {
     const MainAppMenu = remote.Menu.buildFromTemplate(
         [
-            /*
-            {
-                label: 'Import',
-                submenu: [
-                    {
-                        label: 'ReplayID List to Download',
-                        click: () => importReplayIDList()
-                    },
-                    {
-                        label: 'UserID List to Favorites',
-                        click: () => importUserIDList()
-                    }
-                ]
-            },
-            {
-                label: 'Export',
-                submenu: [
-                    {
-                        label: 'Favorites List',
-                        click: () => ExportFavorites()
-                    }
-                ]
-            }, */
             {
                 label: 'Backup/Restore',
                 submenu: [{
@@ -933,14 +910,6 @@ function performUserLookup(uid) {
             }
 
             allReplays = []
-            /*
-            let accstatsUI = document.getElementById("variance")
-            accstatsUI.style.opacity = 0.5
-            accstatsUI.innerHTML = `
-            <abbr title="Variance">
-                <span>Var:</span><b> - </b>
-            </abbr>`
-            */
 
             if (user.user_info.status == 5) {
                 getUsersReplays()
@@ -950,11 +919,11 @@ function performUserLookup(uid) {
                 $('footer h1').html(`Account suspended.`)
                 hideProgressBar()
             }
-        }) /*
+        })
         .catch(() => {
           $('#status').html('Error fetching data, resubmit search query again.')
           $('footer h1').html(`Data error, resubmit search query again.`)
-      }) */
+      })
 }
 
 function getUsersReplays() {
@@ -1009,7 +978,7 @@ function getUsersReplays() {
                     $('footer h1').html($('#list tbody tr').length + ' visible of ' + currentUser.counts.replays + ' total replays loaded.')
                 }
                 if (d === 0) {
-                    $('#replay-result-alert').html(`<span>No Replays Available!</span> Look\'s like this user has no public replays right now.`).show()
+                    $('#replay-result-alert').html(`<span>No Replays Available!</span> The server returned nothing!`).show()
                     $('footer h1').html(`No replays available.`)
                 }
 
