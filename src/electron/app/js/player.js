@@ -20,48 +20,55 @@ ipcRenderer.on('play-video', (event, info, options) => {
     videoInfo = info
     playerOptions = options
 
-    if (!video.src) {
-        // Initialize player and setup shortcuts
-        setupPlyr()
-        setupShortcuts()
-    } else {
-        hlsPlayer.destroy()
-    }
+    LiveMe.getVideoInfo(info.videoid).then(vdata => {
 
-    if (!properSource) {
+        if (!video.src) {
+            // Initialize player and setup shortcuts
+            setupPlyr()
+            setupShortcuts()
+        } else {
+            hlsPlayer.destroy()
+        }
 
-        $('.plyr').hide()
-        $('.player-msg').html('<h4>Video not found or load error!</h4>' +
-                                '<br><br>' +
-                                'Try again later, maybe?')
-        $('.mid-container').show()
+        if (!properSource) {
 
-        return
-    }
-    $('.plyr').show()
-    $('.mid-container').hide()
+            $('.plyr').hide()
+            $('.player-msg').html('<h4>Video not found or load error!</h4>' +
+                                    '<br><br>' +
+                                    'Try again later, maybe?')
+            $('.mid-container').show()
 
-    // Set the player poster using user's cover picture
-    plyr.poster = videoInfo.videocapture
+        } else {
+
+            $('.plyr').show()
+            $('.mid-container').hide()
+            plyr.poster = vdata.videocapture
+
+            console.log(vdata)
+
+            document.title = videoInfo.vid
+            title.textContent = videoInfo.vid
 
 
-    hlsPlayer = new Hls({
-        // Warning: Can be quite noisy
-        // debug: isDev
+            hlsPlayer = new Hls({
+                // Warning: Can be quite noisy
+                // debug: isDev
+            })
+            hlsPlayer.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+                plyr.play()
+            })
+            hlsPlayer.on(Hls.Events.MEDIA_DETACHED, (event, data) => {
+
+            })
+            hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
+
+            })
+            hlsPlayer.loadSource(properSource)
+            hlsPlayer.attachMedia(video)
+            // Re-enable seek bar
+            $('.plyr__progress input[type=range]').attr('disabled', false)
+        }
     })
-    hlsPlayer.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-        plyr.play()
-    })
-    hlsPlayer.on(Hls.Events.MEDIA_DETACHED, (event, data) => {
-
-    })
-    hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
-
-    })
-    hlsPlayer.loadSource(properSource)
-    hlsPlayer.attachMedia(video)
-    // Re-enable seek bar
-    $('.plyr__progress input[type=range]').attr('disabled', false)
 
 })
 
@@ -84,7 +91,7 @@ function setupPlyr() {
     // https://github.com/sampotts/plyr/tree/v3.5.3#options
     plyr = new Plyr(video, {
         // Warning: Too noisy
-        // debug: isDev,
+        debug: false,
         iconUrl: 'images/plyr.svg',
         blankVideo: 'images/blank.mp4',
         settings: [
@@ -115,8 +122,7 @@ function setupPlyr() {
         // Lose focus of the volume slider
         $('input[data-plyr="volume"]').blur()
     })
-    // Display player controls whenever the user is seeking the video, so that
-    // they can see the video timestamps (Plyr does not do that by default)
+
     plyr.on('seeking', () => {
         isSeeking = true
         plyr.config.hideControls = false
@@ -129,10 +135,8 @@ function setupPlyr() {
     })
 
 
-    // Check each half second if user has manually seeked the video, then
-    // hides the player controls after 2 to 2.5 seconds
     setInterval(() => {
-        if (isSeeking && (Date.now() - lastSeek) >= 2000) {
+        if (isSeeking && (Date.now() - lastSeek) >= 1500) {
             plyr.config.hideControls = true
             //plyr.toggleControls(false)
             isSeeking = false
@@ -144,9 +148,7 @@ function setupPlyr() {
 
 function setupShortcuts() {
     document.addEventListener('keydown', event => {
-        // Make sure we don't create conflicts with other shortcuts using the
-        // same keys, but with different modifiers, e.g. pressing "Ctrl+A" or
-        // "Alt+A" should not trigger our "A" shortcut
+
         switch (event.code) {
             case 'Comma':
                 if (!event.altKey && !event.ctrlKey) {
@@ -177,9 +179,6 @@ function setupShortcuts() {
                 if (event.altKey && !event.ctrlKey) {
                     videoRotate('left')
                 }
-                break
-            case 'KeyC':
-                toggleChat()
                 break
         }
     })
