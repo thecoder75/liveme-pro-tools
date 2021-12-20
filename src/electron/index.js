@@ -1,7 +1,7 @@
 /**
  * LiveMe Pro Tools
  */
-
+require('@electron/remote/main').initialize()
 const appName = 'LiveMe Pro Tools'
 
 const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron')
@@ -57,12 +57,15 @@ function createWindow() {
         show: false,
         backgroundColor: '#000000',
         webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true, 
             webSecurity: true,
             textAreasAreResizable: false,
             plugins: true
         }
     })
-
+    require("@electron/remote/main").enable(mainWindow.webContents)
     /**
      * Configure our window contents and callbacks
      */
@@ -302,8 +305,13 @@ ipcMain.on('open-home-window', (event, arg) => {
         maximizable: false,
         closable: true,
         frame: false,
-        show: false
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,             
+        }  
     })
+    require("@electron/remote/main").enable(homeWindow.webContents)
     homeWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
     homeWindow.on('ready-to-show', () => {
@@ -705,9 +713,12 @@ ipcMain.on('watch-replay', (event, arg) => {
                             webPreferences: {
                                 webSecurity: false,
                                 textAreasAreResizable: false,
-                                plugins: true
+                                plugins: true,
+                                nodeIntegration: true,
+                                contextIsolation: false,  
                             }
                         })
+                        require("@electron/remote/main").enable(playerWindow.webContents)
                         playerWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
                         playerWindow.on('close', () => {
                             appSettings.set('position.playerWindow', playerWindow.getPosition())
@@ -769,8 +780,14 @@ ipcMain.on('open-followings-window', (event, arg) => {
         maximizable: false,
         closable: true,
         frame: false,
-        show: false
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,             
+            enableRemoteModule: true 
+        }  
     })
+    require("@electron/remote/main").enable(win.webContents) 
     win.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
     win.on('ready-to-show', () => {
@@ -803,8 +820,14 @@ ipcMain.on('open-followers-window', (event, arg) => {
         maximizable: false,
         closable: true,
         frame: false,
-        show: false
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,             
+            enableRemoteModule: true 
+        }       
     })
+    require("@electron/remote/main").enable(win.webContents) 
     win.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
     win.on('ready-to-show', () => {
@@ -833,8 +856,13 @@ ipcMain.on('read-comments', (event, arg) => {
         maximizable: false,
         closable: true,
         frame: false,
-        show: false
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,             
+        }  
     })
+    require("@electron/remote/main").enable(win.webContents) 
     win.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
     win.on('ready-to-show', () => {
@@ -870,9 +898,14 @@ ipcMain.on('open-bookmarks', (event, arg) => {
             maximizable: false,
             frame: false,
             show: false,
-            backgroundColor: '#000000'
+            backgroundColor: '#000000',
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,             
+                enableRemoteModule: true 
+            }
         })
-
+        require("@electron/remote/main").enable(bookmarksWindow.webContents) 
         bookmarksWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
         bookmarksWindow.on('close', () => {
@@ -915,9 +948,14 @@ ipcMain.on('open-follows', (event, arg) => {
             maximizable: false,
             frame: false,
             show: false,
-            backgroundColor: '#000000'
+            backgroundColor: '#000000',
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,             
+                enableRemoteModule: true 
+            }
         })
-
+        require("@electron/remote/main").enable(followsWindow.webContents) 
         followsWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
         followsWindow.on('close', () => {
@@ -956,9 +994,14 @@ ipcMain.on('open-housekeeping', (event, arg) => {
             maximizable: false,
             frame: false,
             show: false,
-            backgroundColor: '#000000'
+            backgroundColor: '#000000',
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,             
+        }  
         })
 
+        require("@electron/remote/main").enable(housekeepingWindow.webContents) 
         housekeepingWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
         housekeepingWindow.on('close', () => {

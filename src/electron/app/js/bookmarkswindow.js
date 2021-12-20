@@ -1,4 +1,6 @@
-const { ipcRenderer, remote, clipboard } = require('electron')
+const { ipcRenderer, clipboard } = require('electron')
+
+const remote = require('@electron/remote')
 const LiveMe = remote.getGlobal('LiveMe')
 const appSettings = require('electron-settings')
 const prettydate = require('pretty-date')

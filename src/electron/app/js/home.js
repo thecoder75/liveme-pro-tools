@@ -1,4 +1,5 @@
-const { electron, BrowserWindow, remote, ipcRenderer } = require('electron')
+const { electron, BrowserWindow, ipcRenderer } = require('electron')
+const remote = require('@electron/remote')
 const appSettings = remote.require('electron-settings')
 const LiveMe = remote.getGlobal('LiveMe')
 const DataManager = remote.getGlobal('DataManager')

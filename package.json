@@ -18,10 +18,11 @@
     "author": "TheCoder75",
     "license": "AGPL-3.0-only",
     "dependencies": {
+        "@electron/remote": "^2.0.1",
         "async": "^2.6.0",
         "concat-files": "^0.1.1",
         "electron-is-dev": "^0.3.0",
-        "electron-settings": "^3.1.4",
+        "electron-settings": "3.2.0", 
         "fluent-ffmpeg": "^2.1.2",
         "format-duration": "^1.0.0",
         "isbinaryfile": "^4.0.0",
@@ -37,7 +38,7 @@
     },
     "devDependencies": {
         "cross-env": "^5.2.0",
-        "electron": "^3.1.1",
+        "electron": "^16.0.4",
         "electron-builder": "^20.39.0",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
