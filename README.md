@@ -21,7 +21,7 @@
 
 ## GitHub Issues
 
-*Please use the [Issues Section](/issues) for bug reporting only.  For general discussion, including support and usage questions, please use our [FreeFlarum Forum](https://livemeprotools.freeflarum.com).
+*Please use the [Issues Section](https://github.com/thecoder75/liveme-pro-tools/issues) for bug reporting only.  For general discussion, including support and usage questions, please use our [FreeFlarum Forum](https://livemeprotools.freeflarum.com).
 
 ***I DO NOT RESPOND TO EMAILS ASKING FOR ASSISTANCE OR ANYTHING ELSE RELATED TO THIS OR ANY OTHER OF MY PROJECTS, SO DON'T WASTE YOUR TIME OR MINE SENDING THEM!***
 
@@ -44,7 +44,7 @@ Its an [Electron](https://electronjs.org) based application for Live.me Social V
 
 ## Prebuilt Releases (64-bit only!)
 
-To download the latest prebuilt versions, [click here](/releases/latest).
+To download the latest prebuilt versions, [click here](https://github.com/thecoder75/liveme-pro-tools/releases/latest).
 
 **Current Supported Platforms (64-bit only):**
 - Ubuntu-based Linux and Debian Distributions (64-bit)
