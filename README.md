@@ -21,11 +21,9 @@
 
 * * *
 
-## Contributors - Branch Name Changed and Other News
+# v2.x Series
 
-The default branch has been changed from **master** to **release-1.x**.  
-
-Work will begin shortly on the new/updated version which will include a full UI/window flow change and more!  Stay tuned for news on this!
+This version is going to feature a whole new workflow and UI for the app.  This will allow better support for future versions of Electron and more.
 
 * * *
 
@@ -43,12 +41,9 @@ If enough people want to start donating to this project, I'll look into setting 
 ## What Is LiveMe Pro Tools?
 Its an [Electron](https://electronjs.org) based application for Live.me Social Video network for:
 - Search and browse user accounts
-- View public replays for user accounts
+- View list of public replays for user accounts
+- Watch public replays with option to download using the built-in chunk downloader
 - See and navigate user's followers and followings
-- Watch and download replays
-- Allows downloading of replays using internal downloader or FFMPEG
-- FFMPEG Hardware-Accelerated video transcoding supported on Linux only!  
-  - Fully supports VAAPI on AMD and Intel cards for now.
 
 * * *
 
@@ -67,10 +62,9 @@ We only build 64-bit releases as pretty much all computers now run 64-bit OSes.
 
 If you need a 32-bit version, you will have to build it yourself.  Unfortunately, we do not offer any support for 32-bit versions.
 
-## FFMPEG No Longer Required?
-You can choose to use a basic built-in concat system now to join the chunks downloaded without needing to have FFMPEG installed on your computer.  Or for better support, you can still use FFMPEG settings.
+## FFMPEG support removed
 
-If you wish to transcode the downloads, then you will need to have FFMPEG installed on your computer.
+Due to code changes in v2.x, support for using FFMPEG for downloading or transcoding has been removed.
 
 * * *
 
