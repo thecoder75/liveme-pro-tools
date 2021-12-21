@@ -1,6 +1,6 @@
 # LiveMe Pro Tools
 
-![LiveMe Pro Tools](https://github.com/thecoder75/liveme-pro-tools/blob/master/banners/github-banner.png?raw=true)
+![LiveMe Pro Tools](https://github.com/thecoder75/liveme-pro-tools/blob/master/banners/github-banner.svg?raw=true)
 
 [![GNU AGPLv3](https://img.shields.io/github/license/thecoder75/liveme-pro-tools.svg)](LICENSE)
 [![Current Release](https://img.shields.io/github/release/thecoder75/liveme-pro-tools.svg)](https://github.com/thecoder75/liveme-pro-tools/releases/latest)
