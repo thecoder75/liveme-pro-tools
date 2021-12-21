@@ -23,7 +23,7 @@
         "async": "^2.6.0",
         "concat-files": "^0.1.1",
         "electron-is-dev": "^0.3.0",
-        "electron-settings": "3.2.0", 
+        "electron-settings": "3.2.0",
         "fluent-ffmpeg": "^2.1.2",
         "format-duration": "^1.0.0",
         "isbinaryfile": "^4.0.0",
@@ -86,13 +86,13 @@
         "win": {
             "target": [
                 {
-                    "target": "zip",
+                    "target": "msi",
                     "arch": [
                         "x64"
                     ]
                 }
             ],
-            "icon": "src/electron/build/appicon.ico",
+            "icon": "src/electron/build/1024x1024.png",
             "publish": null
         },
         "mac": {
@@ -106,8 +106,9 @@
                     ]
                 }
             ],
+            "type": "distribution",
             "identity": null,
-            "icon": "src/electron/build/appicon.icns",
+            "icon": "src/electron/build/1024x1024.png",
             "publish": null
         }
     }
