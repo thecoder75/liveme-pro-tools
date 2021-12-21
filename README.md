@@ -19,6 +19,16 @@
 * [bem13](https://github.com/bem13)
 * [ncarpenter](https://github.com/ncarpenter)
 
+* * *
+
+## Contributors - Branch Name Changed and Other News
+
+The default branch has been changed from **master** to **release-1.x**.  
+
+Work will begin shortly on the new/updated version which will include a full UI/window flow change and more!  Stay tuned for news on this!
+
+* * *
+
 ## GitHub Issues
 
 *Please use the [Issues Section](https://github.com/thecoder75/liveme-pro-tools/issues) for bug reporting only.  For general discussion, including support and usage questions, please use our [FreeFlarum Forum](https://livemeprotools.freeflarum.com).
