@@ -92,6 +92,7 @@ If you find any bugs or would like to help add features or additional functions,
 * [monstergarden](https://github.org/monstergarden)
 * [mustang-sally](https://github.com/mustang-sally)
 * [bem13](https://github.com/bem13)
+* [ncarpenter](https://github.com/ncarpenter)
 
 ### License
 This project is now licensed under the [GNU AGPLv3](LICENSE) License.
