@@ -106,7 +106,7 @@ class LiveMe {
             },
             body: `--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="cmversion"\r\n\r\n38551987\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="code"\r\n\r\n\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="name"\r\n\r\n${this.email}\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="extra"\r\n\r\nuserinfo\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\nContent-Disposition: form-data; name="password"\r\n\r\n${this.password}\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f`,
             transform:  (rawBody) => {
-                if (typeof rawBody === 'string') 
+                if (typeof rawBody === 'string')
                 {
 
                     let body = {}
@@ -318,34 +318,28 @@ class LiveMe {
         return endedAt * 1000
     }
 
+
+
+
     // Helper function intended to choose the correct video source.
     //
     // @returns string: M3U8 URL of the replay/live video OR
     //                  an empty string if the replay is being generated/was deleted
     //
+    //  -------------- DEPRECIATED BY THECODER ON 12-15-2021 ---------------------
+    // This function is no longer viable, replays now return empty source and
+    // hlsvideosource when directly queried even when the URL can be obtained
+    // other ways.
     pickProperVideoSource(videoInfo, preferLiveFlv) {
         let properSource
 
-        // We should use `hlsvideosource` if it's a live video (except for the
-        // internal video player).
-        // We should use `videosource` if it's a replay.
-        //
-        // This ensures we're always getting the URL of a M3U8 file and never
-        // of a FLV stream.
-        //
-        // However, `videosource` will be empty if the replay is 30+ days older.
-        // That's because replays older than 30 days are marked as "Expired"
-        // in the official app and can't be watched (through the app).
-        //
-        // Since we're not the official app, we can ignore that, because the
-        // replay URL will still be available through `hlsvideosource`.
         switch (+videoInfo.status) {
             case 0:
                 // User is live
                 properSource = (videoInfo.videosource && preferLiveFlv) ? videoInfo.videosource : videoInfo.hlsvideosource
                 break
             default:
-                properSource = videoInfo.videosource ? videoInfo.videosource : videoInfo.hlsvideosource
+                properSource = videoInfo.source ? videoInfo.source : (videoInfo.videosource ? videoInfo.videosource : videoInfo.hlsvideosource)
                 break
         }
         return properSource

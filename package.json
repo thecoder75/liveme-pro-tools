@@ -1,6 +1,6 @@
 {
     "name": "liveme-pro-tools",
-    "version": "1.500.20211025",
+    "version": "1.508.20211220",
     "description": "Tools for Live.me video network",
     "homepage": "https://github.com/thecoder75/liveme-pro-tools",
     "main": "src/electron/index.js",
@@ -18,6 +18,7 @@
     "author": "TheCoder75",
     "license": "AGPL-3.0-only",
     "dependencies": {
+
         "@electron/remote": "^2.0.1",
         "async": "^2.6.0",
         "concat-files": "^0.1.1",

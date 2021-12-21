@@ -11,83 +11,64 @@ var hlsPlayer, flvPlayer, videoInfo, playerOptions, currentStream, title,
 title = $('#title')[0]
 video = $('#video')[0]
 
-flvjs.LoggingControl.enableDebug = isDev
 
 // --- Only functions and IPC listeners below ---
 
 // This listener will initialize everything (if necessary)
 ipcRenderer.on('play-video', (event, info, options) => {
     // Store some information in globals
+    let properSource = info.source
     videoInfo = info
     playerOptions = options
 
-    document.title = videoInfo.vid
-    title.textContent = videoInfo.vid
+    LiveMe.getVideoInfo(info.videoid).then(vdata => {
 
-    if (!video.src) {
-        // Initialize player and setup shortcuts
-        setupPlyr()
-        setupShortcuts()
-    } else {
-        // Destroy current player
-        switch (currentStream) {
-            case 'hls':
-                hlsPlayer.destroy()
-                break
-            case 'flv':
-                flvPlayer.pause()
-                flvPlayer.unload()
-                flvPlayer.detachMediaElement()
-                flvPlayer.destroy()
-                break
-            default:
-                break
+        if (!video.src) {
+            // Initialize player and setup shortcuts
+            setupPlyr()
+            setupShortcuts()
+        } else {
+            hlsPlayer.destroy()
         }
-    }
-    let properSource = LiveMe.pickProperVideoSource(videoInfo, true)
 
-    if (!properSource) {
-        let endedAt = new Date(LiveMe.getVideoEndDate(videoInfo))
+        if (!properSource) {
 
-        $('.plyr').hide()
-        $('.player-msg').html('<h3>Video not found!</h3>' +
-                                '<br><br>' +
-                                `This live stream ended <strong>${prettydate.format(endedAt)}</strong>.<br>` +
-                                'The replay might still being generated or was deleted.' +
-                                '<br><br>' +
-                                'Try again later, maybe?')
-        $('.mid-container').show()
+            $('.plyr').hide()
+            $('.player-msg').html('<h4>Video not found or load error!</h4>' +
+                                    '<br><br>' +
+                                    'Try again later, maybe?')
+            $('.mid-container').show()
 
-        return
-    }
-    $('.plyr').show()
-    $('.mid-container').hide()
+        } else {
 
-    // Set the player poster using user's cover picture
-    plyr.poster = videoInfo.videocapture
+            $('.plyr').show()
+            $('.mid-container').hide()
+            plyr.poster = vdata.videocapture
 
-    // If it's a live stream, we use the FLV source, because playback is
-    // much smoother than HLS
-    if (properSource.endsWith('.flv')) {
-        currentStream = 'flv'
-        setupFlv(properSource)
-        flvPlayer.attachMediaElement(video)
-        flvPlayer.load()
-        // Hack to disable plyr's seek bar instead of completely hiding it
-        $('.plyr__progress input[type=range]').attr('disabled', true)
-    } else {
-        currentStream = 'hls'
-        setupHls()
-        hlsPlayer.loadSource(properSource)
-        hlsPlayer.attachMedia(video)
-        // Re-enable seek bar
-        $('.plyr__progress input[type=range]').attr('disabled', false)
-    }
+            console.log(vdata)
 
-    setImmediate(() => {
-        $('.message').hide()
-        messageHistory = []
-        preloadChatHistory()
+            document.title = videoInfo.vid
+            title.textContent = videoInfo.vid
+
+
+            hlsPlayer = new Hls({
+                // Warning: Can be quite noisy
+                // debug: isDev
+            })
+            hlsPlayer.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+                plyr.play()
+            })
+            hlsPlayer.on(Hls.Events.MEDIA_DETACHED, (event, data) => {
+
+            })
+            hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
+
+            })
+            hlsPlayer.loadSource(properSource)
+            hlsPlayer.attachMedia(video)
+            // Re-enable seek bar
+            $('.plyr__progress input[type=range]').attr('disabled', false)
+        }
     })
 
 })
@@ -111,7 +92,7 @@ function setupPlyr() {
     // https://github.com/sampotts/plyr/tree/v3.5.3#options
     plyr = new Plyr(video, {
         // Warning: Too noisy
-        // debug: isDev,
+        debug: false,
         iconUrl: 'images/plyr.svg',
         blankVideo: 'images/blank.mp4',
         settings: [
@@ -142,8 +123,7 @@ function setupPlyr() {
         // Lose focus of the volume slider
         $('input[data-plyr="volume"]').blur()
     })
-    // Display player controls whenever the user is seeking the video, so that
-    // they can see the video timestamps (Plyr does not do that by default)
+
     plyr.on('seeking', () => {
         isSeeking = true
         plyr.config.hideControls = false
@@ -155,100 +135,21 @@ function setupPlyr() {
         $('input[data-plyr="seek"]').blur()
     })
 
-    plyr.on('timeupdate', () => {
 
-        if (playerOptions.chatEnabled == false) return
-
-        let t = formatDuration(plyr.currentTime * 1000)
-        let tt = Math.floor(plyr.currentTime)
-
-        if (messageHistory[t] != null) {
-            var h = ''
-
-            switch (messageHistory[t].type) {
-                case 0: // regular chat message
-                    h = `
-                    <div class="message message-${tt}">
-                        <h2>${messageHistory[t].user}</h2>
-                        <h1>${messageHistory[t].text}</h1>
-                    </div>
-                    `
-                    break
-
-                case 100: // Praise
-                    h = `
-                    <div class="message message-${tt} praise">
-                        <h1>${messageHistory[t].text}</h1>
-                    </div>
-                    `
-                    break
-
-            }
-            $('#chathistory').append(h) //.scrollTo($('#chathistory').innerHeight() - 1)
-
-            setTimeout(() => {
-                $(`.message-${tt}`).animate({
-                    opacity: 0
-                }, 800)
-            }, 6000)
-            setTimeout(() => {
-                $(`.message-${tt}`).hide()
-            }, 7000)
-
-            messageHistory[t] = null
-        }
-
-    })
-
-    // Check each half second if user has manually seeked the video, then
-    // hides the player controls after 2 to 2.5 seconds
     setInterval(() => {
-        if (isSeeking && (Date.now() - lastSeek) >= 2000) {
+        if (isSeeking && (Date.now() - lastSeek) >= 1500) {
             plyr.config.hideControls = true
-            plyr.toggleControls(false)
+            //plyr.toggleControls(false)
             isSeeking = false
         }
 
     }, 500)
 }
 
-function setupHls() {
-    hlsPlayer = new Hls({
-        // Warning: Can be quite noisy
-        // debug: isDev
-    })
-    hlsPlayer.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
-        plyr.play()
-        console.log('Hls.Events.MANIFEST_PARSED', data)
-    })
-    hlsPlayer.on(Hls.Events.MEDIA_DETACHED, (event, data) => {
-        console.log('Hls.Events.MEDIA_DETACHED', data)
-    })
-    hlsPlayer.on(Hls.Events.ERROR, (event, data) => {
-        console.log('Hls.Events.ERROR', data)
-    })
-}
-
-function setupFlv(source) {
-    flvPlayer = flvjs.createPlayer({
-        type: 'flv',
-        isLive: true,
-        url: source
-    })
-    flvPlayer.on(flvjs.Events.METADATA_ARRIVED, (data) => {
-        plyr.play()
-        console.log('flvjs.Events.METADATA_ARRIVED', data)
-    })
-    flvPlayer.on(flvjs.Events.ERROR, (data) => {
-        console.log('flvjs.Events.ERROR', data)
-    })
-}
 
 function setupShortcuts() {
     document.addEventListener('keydown', event => {
-        // Make sure we don't create conflicts with other shortcuts using the
-        // same keys, but with different modifiers, e.g. pressing "Ctrl+A" or
-        // "Alt+A" should not trigger our "A" shortcut
+
         switch (event.code) {
             case 'Comma':
                 if (!event.altKey && !event.ctrlKey) {
@@ -279,9 +180,6 @@ function setupShortcuts() {
                 if (event.altKey && !event.ctrlKey) {
                     videoRotate('left')
                 }
-                break
-            case 'KeyC':
-                toggleChat()
                 break
         }
     })
@@ -346,86 +244,6 @@ function videoRotate(direction) {
 
 function closeWindow() {
     window.close()
-}
-
-function showUser() {
-    ipcRenderer.send('show-user', {
-        userid: videoInfo.userid
-    })
-}
-
-function downloadReplay() {
-    ipcRenderer.send('download-replay', {
-        videoid: videoInfo.vid
-    })
-}
-
-function toggleChat() {
-    playerOptions.chatEnabled = !playerOptions.chatEnabled
-
-    ipcRenderer.send('save-player-options', playerOptions)
-
-    var tt = Math.round(Math.random() * 1000),
-        h = `
-    <div class="message message-${tt}">
-        <h1>Replay chat message ` + (playerOptions.chatEnabled ? 'enabled' : 'disabled') + `
-    </div>
-    `
-    $('#chathistory').append(h)
-
-    setTimeout(() => {
-        $(`.message-${tt}`).animate({
-            opacity: 0
-        }, 800)
-    }, 2000)
-    setTimeout(() => {
-        $(`.message-${tt}`).hide()
-    }, 3000)
-}
-
-function preloadChatHistory() {
-    LiveMe.getVideoInfo(videoInfo.vid).then(video => {
-
-        LiveMe.getChatHistoryForVideo(video.msgfile)
-        .then(raw => {
-            let t = raw.split('\n')
-
-            for (let i = 0; i < t.length - 1; i++) {
-                try {
-                    let j = JSON.parse(t[i])
-                    let timeStamp = formatDuration(parseInt(j.timestamp) - (video.vtime * 1000))
-
-                    // console.log(j.objectName)
-
-                    if (j.objectName == 'app:joinchatroommsgcontent') {
-                        // console.log(JSON.stringify(j.content, null, 2))
-                    } else if (j.objectName == 'app:leavechatroommsgcontent') {
-                        // console.log(JSON.stringify(j.content, null, 2))
-                    } else if (j.objectName == 'app:starmsgcontent') {
-                        // console.log(JSON.stringify(j.content, null, 2))
-                    } else if (j.objectName == 'app:normallvmsgcontent') {
-                        // console.log(JSON.stringify(j.content, null, 2))
-                    } else if (j.objectName == 'app:praisemsgcontent') {
-                        messageHistory[timeStamp] = {
-                            user: j.content.name,
-                            text: 'Praised by ' + j.content.name,
-                            type: 100
-                        }
-                    } else if (j.objectName === 'RC:TxtMsg') {
-                        messageHistory[timeStamp] = {
-                            user: j.content.user.name,
-                            text: j.content.content,
-                            type: 0
-                        }
-                    }
-                } catch (err) {
-                    // Caught
-                    console.log(err)
-                }
-            }
-
-        })
-    })
 }
 
 function formatDuration(i) {

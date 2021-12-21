@@ -323,7 +323,7 @@ ipcMain.on('open-home-window', (event, arg) => {
 ipcMain.on('download-replay', (event, arg) => {
         DataManager.addToQueueList(arg.videoid)
         mainWindow.webContents.send('download-add', { vid: arg.videoid} )
-        dlQueue.push(arg.videoid, err => {
+        dlQueue.push(arg, err => {
             if (err) {
                 mainWindow.webContents.send('download-error', err)
             } else {
@@ -347,8 +347,9 @@ ipcMain.on('download-cancel', (event, arg) => {
 const dlQueue = async.queue((task, done) => {
     // Set custom FFMPEG path if defined
     if (appSettings.get('downloads.ffmpeg')) ffmpeg.setFfmpegPath(appSettings.get('downloads.ffmpeg'))
+
         // Get video info
-    LiveMe.getVideoInfo(task).then(video => {
+    LiveMe.getVideoInfo(task.videoid).then(video => {
         const path = appSettings.get('downloads.path')
         const dt = new Date(video.vtime * 1000)
         const mm = dt.getMonth() + 1
@@ -375,18 +376,20 @@ const dlQueue = async.queue((task, done) => {
         video._filename = filename
 
         mainWindow.webContents.send('download-start', {
-            videoid: task,
+            videoid: task.videoid,
             filename: filename
         })
 
-        let properSource = LiveMe.pickProperVideoSource(video)
+        // If no M3U8 URLs are returned from getVideoInfo then we use the original source path that was discovered during fetching of the replays.
+        let properSource = video.hlsvideosource ? video.hlsvideosource : (video.videosource ? video.videosource : task.source)
+        //let properSource = LiveMe.pickProperVideoSource(video)
 
         if (properSource === '') {
-            let err = "Replay might still being generated or was deleted. Refresh the user's page and try again."
+            let err = "No replay URL could be discovered."
 
             fs.writeFileSync(`${path}/${filename}-error.log`, err)
             return done({
-                videoid: task,
+                videoid: task.videoid,
                 error: err
             })
         }
@@ -500,7 +503,7 @@ const dlQueue = async.queue((task, done) => {
                 request(properSource, (err, res, body) => {
                     if (err || !body) {
                         fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))
-                        return done({ videoid: task, error: err || 'Failed to fetch m3u8 file.' })
+                        return done({ videoid: task.videoid, error: err || 'Failed to fetch m3u8 file.' })
                     }
                     // Separate ts names from m3u8
                     let concatList = ''
@@ -538,7 +541,7 @@ const dlQueue = async.queue((task, done) => {
                         const stream = request(`${properSource.split('/').slice(0, -1).join('/')}/${file.url}`)
                             .on('error', err => {
                                 fs.writeFileSync(`${path}/${file.name}-error.log`, JSON.stringify(err, null, 2))
-                                return done({ videoid: task, error: err })
+                                return done({ videoid: task.videoid, error: err })
                             })
                             .pipe(
                                 fs.createWriteStream(file.path)
@@ -546,8 +549,9 @@ const dlQueue = async.queue((task, done) => {
                             // Events
                         stream.on('finish', () => {
                             downloadedChunks += 1
+                            if (mainWindow.webContents === null) return;
                             mainWindow.webContents.send('download-progress', {
-                                videoid: task,
+                                videoid: task.videoid,
                                 state: `Downloading stream chunks.. (${downloadedChunks}/${tsList.length})`,
                                 percent: Math.round((downloadedChunks / tsList.length) * 100)
                             })
@@ -571,7 +575,7 @@ const dlQueue = async.queue((task, done) => {
                             })
 
                             mainWindow.webContents.send('download-progress', {
-                                videoid: task,
+                                videoid: task.videoid,
                                 state: `Combining chunks, please wait...`,
                                 percent: 0
                             })
@@ -579,12 +583,12 @@ const dlQueue = async.queue((task, done) => {
                             concat(cList, `${path}/${filename}.ts`, (err) => {
                                 if (err) {
                                     mainWindow.webContents.send('download-progress', {
-                                        videoid: task,
+                                        videoid: task.videoid,
                                         state: `Error combining chunks`,
                                         percent: 100
                                     })
                                     fs.writeFileSync(`${path}/${filename}-error.log`, err)
-                                    return done({ videoid: task, error: err })
+                                    return done({ videoid: task.videoid, error: err })
                                 }
                             })
 
@@ -593,7 +597,7 @@ const dlQueue = async.queue((task, done) => {
                             ffmpeg()
                                 .on('start', c => {
                                     mainWindow.webContents.send('download-progress', {
-                                        videoid: task,
+                                        videoid: task.videoid,
                                         state: `Converting to MP4 file, please wait..`,
                                         percent: 0
                                     })
@@ -603,7 +607,7 @@ const dlQueue = async.queue((task, done) => {
                                     let p = progress.percent
                                     if (p > 100) p = 100
                                     mainWindow.webContents.send('download-progress', {
-                                        videoid: task,
+                                        videoid: task.videoid,
                                         state: `Combining and converting to MP4 file, please wait...`,
                                         percent: p
                                     })
@@ -617,7 +621,7 @@ const dlQueue = async.queue((task, done) => {
                                 })
                                 .on('error', (err) => {
                                     fs.writeFileSync(`${path}/${filename}-error.log`, err)
-                                    return done({ videoid: task, error: err })
+                                    return done({ videoid: task.videoid, error: err })
                                 })
                                 .input(cfile.replace(/\\/g, '/'))
                                 .inputFormat('concat')
@@ -641,7 +645,7 @@ const dlQueue = async.queue((task, done) => {
                     .outputOptions(ffmpegOpts)
                     .output(process.platform == 'win32' ? outFile.replace(/\\/g, '/') : outFile)
                     .on('end', function(stdout, stderr) {
-                        DataManager.addDownloaded(video.vid)
+                        DataManager.addDownloaded(video.videoid)
                         return done()
                     })
                     .on('progress', function(progress) {
@@ -650,20 +654,20 @@ const dlQueue = async.queue((task, done) => {
                             progress.percent = ((progress.targetSize * 1000) / +video.videosize) * 100
                         }
                         mainWindow.webContents.send('download-progress', {
-                            videoid: task,
+                            videoid: task.videoid,
                             state: `Downloading (${Math.round(progress.percent)}%)`,
                             percent: progress.percent
                         })
                     })
                     .on('start', function(c) {
                         mainWindow.webContents.send('download-start', {
-                            videoid: task,
+                            videoid: task.videoid,
                             filename: filename
                         })
                     })
                     .on('error', function(err, stdout, stderr) {
                         fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify([err, stdout, stderr], null, 2))
-                        return done({ videoid: task, error: err })
+                        return done({ videoid: task.vivideoidd, error: err })
                     })
                     .run()
                 break
@@ -678,75 +682,64 @@ const dlQueue = async.queue((task, done) => {
 ipcMain.on('watch-replay', (event, arg) => {
     DataManager.addWatched(arg.videoid)
 
-    LiveMe.getVideoInfo(arg.videoid)
-        .then(video => {
 
-            console.log('Player Selection: ' + appSettings.get('player.pick'))
-            switch(appSettings.get('player.pick') || 0) {
-                case '99':    // External Player
-                    let playerPath = appSettings.get('player.path') || ' '
-                    exec(playerPath.replace('%url%', LiveMe.pickProperVideoSource(video)))
-                    break
+    switch(appSettings.get('player.pick') || 0) {
+        case '99':    // External Player
+            let playerPath = appSettings.get('player.path') || ' '
+            exec(playerPath.replace('%url%', arg.source))
+            break
 
+        default:    // Default to internal player
+            // Open internal player
+            if (playerWindow == null) {
+                let winposition = appSettings.get('position.playerWindow') ? appSettings.get('position.playerWindow') : [-1, -1]
+                let winsize = appSettings.get('size.playerWindow') ? appSettings.get('size.playerWindow') : [360, 640]
 
-                default:    // Default to internal player
-                    // Open internal player
-                    if (playerWindow == null) {
-                        let winposition = appSettings.get('position.playerWindow') ? appSettings.get('position.playerWindow') : [-1, -1]
-                        let winsize = appSettings.get('size.playerWindow') ? appSettings.get('size.playerWindow') : [360, 640]
-
-                        playerWindow = new BrowserWindow({
-                            icon: path.join(__dirname, 'appicon.png'),
-                            width: winsize[0],
-                            height: winsize[1],
-                            x: winposition[0] !== -1 ? winposition[0] : null,
-                            y: winposition[1] !== -1 ? winposition[1] : null,
-                            minWidth: 360,
-                            minHeight: 360,
-                            darkTheme: true,
-                            autoHideMenuBar: false,
-                            disableAutoHideCursor: true,
-                            titleBarStyle: 'default',
-                            maximizable: false,
-                            frame: false,
-                            backgroundColor: '#000000',
-                            webPreferences: {
-                                webSecurity: false,
-                                textAreasAreResizable: false,
-                                plugins: true,
-                                nodeIntegration: true,
-                                contextIsolation: false,  
-                            }
-                        })
-                        require("@electron/remote/main").enable(playerWindow.webContents)
-                        playerWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
-                        playerWindow.on('close', () => {
-                            appSettings.set('position.playerWindow', playerWindow.getPosition())
-                            appSettings.set('size.playerWindow', playerWindow.getSize())
-
-                            playerWindow.webContents.session.clearCache(() => { })
-                            playerWindow = null
-                        })
-                        playerWindow.loadURL(`file://${__dirname}/app/player.html`)
-                        playerWindow.webContents.once('dom-ready', () => {
-                            playerWindow.webContents.send('play-video', video, appSettings.get('player'))
-                        })
-                    } else {
-                        playerWindow.webContents.session.clearCache(() => { })
-                        // Need to allow time for the cache to get cleared before starting the next video
-                        setTimeout(() => {
-                            playerWindow.webContents.send('play-video', video, appSettings.get('player'))
-                        }, 200)
+                playerWindow = new BrowserWindow({
+                    icon: path.join(__dirname, 'appicon.png'),
+                    width: winsize[0],
+                    height: winsize[1],
+                    x: winposition[0] !== -1 ? winposition[0] : null,
+                    y: winposition[1] !== -1 ? winposition[1] : null,
+                    minWidth: 360,
+                    minHeight: 360,
+                    darkTheme: true,
+                    autoHideMenuBar: false,
+                    disableAutoHideCursor: true,
+                    titleBarStyle: 'default',
+                    maximizable: false,
+                    frame: false,
+                    backgroundColor: '#000000',
+                    webPreferences: {
+                        webSecurity: false,
+                        textAreasAreResizable: false,
+                        plugins: true
                     }
-                    playerWindow.focus()
-                    break
+                })
+                require("@electron/remote/main").enable(playerWindow.webContents)
+                playerWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+                playerWindow.on('close', () => {
+                    appSettings.set('position.playerWindow', playerWindow.getPosition())
+                    appSettings.set('size.playerWindow', playerWindow.getSize())
 
+                    playerWindow.webContents.session.clearCache(() => { })
+                    playerWindow = null
+                })
+                playerWindow.loadURL(`file://${__dirname}/app/player.html`)
+                playerWindow.webContents.once('dom-ready', () => {
+                    playerWindow.webContents.send('play-video', arg, appSettings.get('player'))
+                })
+            } else {
+                playerWindow.webContents.session.clearCache(() => { })
+                // Need to allow time for the cache to get cleared before starting the next video
+                setTimeout(() => {
+                    playerWindow.webContents.send('play-video', arg, appSettings.get('player'))
+                }, 200)
             }
+            playerWindow.focus()
+            break
+    }
 
-        })
-        .catch(err => {
-            console.log('[watch-replay] getVideoInfo Error:', err)
-        })
 })
 
 ipcMain.on('save-player-options', (event, options) => {
