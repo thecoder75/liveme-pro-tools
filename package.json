@@ -10,35 +10,37 @@
     },
     "scripts": {
         "start": "cross-env NODE_ENV=development electron ./src/electron/index.js --enable-logging",
-        "release": "build -w && build -l && build -m",
-        "release-win": "build -w",
-        "release-linux": "build -l",
-        "release-mac": "build -m"
+        "release": "electron-builder -w && electron-builder -l && electron-builder -m",
+        "release-win": "electron-builder -w",
+        "release-linux": " electron-builder -l",
+        "release-mac": " electron-builder -m"
     },
     "author": "TheCoder75",
     "license": "AGPL-3.0-only",
     "dependencies": {
-        "async": "*",
-        "concat-files": "*",
-        "electron-is-dev": "*",
-        "electron-settings": "^3.1.4",
-        "fluent-ffmpeg": "*",
-        "format-duration": "*",
-        "isbinaryfile": "*",
-        "node-fetch": "*",
-        "node-mpv": "*",
-        "pretty-date": "*",
-        "ps-node": "*",
-        "remarkable": "*",
-        "request": "*",
-        "request-promise-native": "*",
-        "shelljs": "*",
-        "tar-fs": "*"
+
+        "@electron/remote": "^2.0.1",
+        "async": "^2.6.0",
+        "concat-files": "^0.1.1",
+        "electron-is-dev": "^0.3.0",
+        "electron-settings": "3.2.0", 
+        "fluent-ffmpeg": "^2.1.2",
+        "format-duration": "^1.0.0",
+        "isbinaryfile": "^4.0.0",
+        "node-fetch": "^2.3.0",
+        "node-mpv": "^1.4.3",
+        "pretty-date": "^0.2.0",
+        "ps-node": "^0.1.6",
+        "remarkable": "^1.7.1",
+        "request": "^2.83.0",
+        "request-promise-native": "^1.0.5",
+        "shelljs": "^0.8.2",
+        "tar-fs": "^1.16.2"
     },
     "devDependencies": {
         "cross-env": "^5.2.0",
-        "electron": "3.1.13",
-        "electron-builder": "*",
+        "electron": "^16.0.4",
+        "electron-builder": "^22.14.5",
         "eslint": "^4.19.1",
         "eslint-config-standard": "^11.0.0",
         "eslint-plugin-import": "^2.11.0",
@@ -100,7 +102,7 @@
                 {
                     "target": "zip",
                     "arch": [
-                        "x64"
+                        "universal"
                     ]
                 }
             ],

@@ -1,10 +1,11 @@
 /* global $ */
 
-const { ipcRenderer, remote, clipboard } = require('electron')
+const { ipcRenderer, clipboard } = require('electron')
+const remote = require('@electron/remote')
 const LiveMe = remote.getGlobal('LiveMe')
 const appSettings = require('electron-settings')
 const DataManager = remote.getGlobal('DataManager')
-
+const path = require('path')
 
 let winType = 0
 let userid = ''
@@ -16,10 +17,12 @@ let threads = 0
 let scrollBusy = false
 let filters = { countryCode: '', seen: true, active: false }
 let MAX_PAGE_SIZE = 50
-let loadAllResults = appSettings.get('general.loadAllResults') || false
-let blockedCountries = appSettings.get('general.blockedCountries') || []
 const countryCodes  = require("./js/countryCodes.js")
 const cclist = countryCodes.cclist
+
+appSettings.setPath(path.join(remote.app.getPath("userData"), "Settings"));
+let loadAllResults = appSettings.get('general.loadAllResults') || false
+let blockedCountries = appSettings.get('general.blockedCountries') || []
 
 $(function () {
     let u = window.location.href

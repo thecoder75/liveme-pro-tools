@@ -1,7 +1,8 @@
-const { ipcRenderer, remote } = require('electron'),
-    LiveMe = remote.getGlobal('LiveMe')
-    isDev = require('electron-is-dev')
-    prettydate = require('pretty-date')
+const { ipcRenderer } = require('electron')
+const remote = require('@electron/remote')
+const LiveMe = remote.getGlobal('LiveMe')
+const isDev = require('electron-is-dev')
+const prettydate = require('pretty-date')
 
 // Globals
 var hlsPlayer, flvPlayer, videoInfo, playerOptions, currentStream, title,

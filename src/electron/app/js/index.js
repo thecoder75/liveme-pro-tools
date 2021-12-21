@@ -1,7 +1,8 @@
 /* global $ */
 const MAX_PER_PAGE = 10
 
-const { electron, BrowserWindow, remote, ipcRenderer, shell, dialog, clipboard } = require('electron')
+const { ipcRenderer, shell, clipboard } = require('electron')
+const remote = require('@electron/remote')
 const fs = require('fs')
 const path = require('path')
 const appSettings = remote.require('electron-settings')
@@ -625,7 +626,7 @@ function checkForUpdatesOfLiveMeProTools() {
 
             if (data.prerelease !== true) {
 
-                if (rv != parseFloat(window.require('electron').remote.app.getVersion())) {
+                if (rv != parseFloat(window.require('@electron/remote').app.getVersion())) {
 
                     $('.panel.update').html(`
                     <div class="section">
