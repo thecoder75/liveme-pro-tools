@@ -713,7 +713,9 @@ ipcMain.on('watch-replay', (event, arg) => {
                     webPreferences: {
                         webSecurity: false,
                         textAreasAreResizable: false,
-                        plugins: true
+                        plugins: true,
+                        nodeIntegration: true,
+                        contextIsolation: false, 
                     }
                 })
                 require("@electron/remote/main").enable(playerWindow.webContents)
