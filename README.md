@@ -56,6 +56,10 @@ To download the latest prebuilt versions, [click here](https://github.com/thecod
 - macOS v10.11 or higher (64-bit only!)
 - Windows 7 or higher (64-bit!)
 
+## Security Policy
+
+Regarding found security issues and how we will handle them, please see the [Security Policy](SECURITY.md).
+
 ## 32-bit versions???
 
 We only build 64-bit releases as pretty much all computers now run 64-bit OSes.  
