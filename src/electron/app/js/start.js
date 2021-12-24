@@ -7,12 +7,16 @@ Description: Handle startup of the app and the first window code to allow select
 
 const { ipcRenderer, shell, clipboard } = require('electron')
 
-function showDownloads() { ipcRenderer.send('show-download-window') }
-function showOptions() { ipcRenderer.send('show-options-window') }
+function showDownloadsWindow() { ipcRenderer.send('show-download-window') }
+function showOptionsWindow() { ipcRenderer.send('show-options-window') }
 
 function setupIPCListeners() {
     ipcRenderer.on('render-user-list', (event, arg) => {
-        renderResults(arg)
+        renderUserList(arg)
+    })
+
+    ipcRenderer.on('render-hash-list', (event, arg) => {
+        renderHashList(arg)
     })
 
 
@@ -33,8 +37,8 @@ function resetSearch() {
 }
 
 function executeSearch() {
-    $('#stype').attr('disabled','disabled');
-    $('#sdata').attr('disabled','disabled');
+    $('#search-type').attr({'disabled': 'disabled'});
+    $('#search-data').attr({'disabled': 'disabled'});
 
     $('#results-list').html('')
     $('#results-list').data('list').items = []
@@ -44,17 +48,35 @@ function executeSearch() {
             ipcRenderer.send('search-username', { q: $('#search-query').val(), p: 1 })
             break
 
+        case 'byuid':
+            ipcRenderer.send('search-userid', { q: $('#search-query').val() })
+            break
+
+        case 'byvid':
+            ipcRenderer.send('search-videoid', { q: $('#search-query').val() })
+            break
+
+
+
     }
 
 }
 
-function renderResults(e) {
+function showProfile(userid) {
+    ipcRenderer.send('show-user-profile', {
+        userid: userid
+    })
+}
 
-    $('#search-busy .cell-12').html('&nbsp;')
-    $('#search-busy').hide()
-    $('#search-form').show()
+
+
+
+function renderUserList(e) {
+
+    $('#search-type').removeAttr('disabled');
+    $('#search-data').removeAttr('disabled');
+
     $('#search-results').show()
-    $('h2.title').html('Results')
 
     for (var i = 0; i < e.list.length; i++) {
         $('#results-list').data('list').items.push(
@@ -62,7 +84,7 @@ function renderResults(e) {
             <li style="display: inline-block; width: 180px; margin: 8px" class="account">
                 <figure class="">
                     <div class="img-container thumbnail">
-                        <img class="face" src="${e.list[i].face}" alt="${e.list[i].nickname}" onError="$(this).attr('src','images/nouser.png')">
+                        <img class="face" src="${e.list[i].face}" alt="${e.list[i].nickname}" onError="$(this).attr('src','images/nouser.png')" onClick="showProfile('${e.list[i].user_id}')">
                     </div>
                     <figcaption class="nickname">${e.list[i].nickname}</figcaption>
                     <figcaption class="text-italic text-small">
@@ -113,10 +135,6 @@ function renderResults(e) {
 $(function() {
     setupIPCListeners();
     $('#main-title').html('Search')
-
-
-    setTimeout(function(){
-        $('#main-title').focus()
-    }, 250)
+    $('#search-query').focus()
 
 })

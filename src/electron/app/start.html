@@ -16,9 +16,6 @@
             body {
                 -webkit-user-select: none;
             }
-            .window-caption {
-                -webkit-app-region: drag;
-            }
 
             img.face {
                 height: 128px;
@@ -32,10 +29,18 @@
                 display: none;
                 position: absolute;
                 top: 128px;
-                bottom: 0;
-                left: 0;
-                right: 0
+                bottom: 0px;
+                left: 0px;
+                right: 0px
             }
+
+            figcaption {
+                white-space: nowrap;
+                overflow: hidden;
+                max-width: 128px;
+            }
+
+            li.account img { cursor: pointer; }
 
         </style>
 
@@ -47,18 +52,17 @@
                 <h3 class="title pl-4 pt-4 text-light">Search</h3>
             </div>
             <div class="cell-6 pr-4 mt-2" style="text-align: right;">
-                <button class="button flat-button"><span class="icon mif-download"></span><span class="caption">Downloads</span></button>
-                <button class="button flat-button"><span class="icon mif-cog"></span><span class="caption">Options</span></button>
+                <button class="button flat-button" onClick="showDownloadsWindow()"><span class="icon mif-download"></span><span class="caption">Downloads</span></button>
+                <button class="button flat-button" onClick="showOptionsWindow()"><span class="icon mif-cog"></span><span class="caption">Options</span></button>
             </div>
         </div>
 
         <div class="pl-8 pr-8" id="search-form">
             <div class="row">
                 <select class="cell-3" data-role="select" id="search-type">
-                    <option value="byuid">Where User ID like</option>
                     <option value="byname" selected>Where Username like</option>
+                    <option value="byuid">Where User ID like</option>
                     <option value="byvid">Where Video ID like</option>
-                    <option value="byhash">Where Hashtag like</option>
                 </select>
                 <input type="text" data-role="input" class="cell-8" data-prepend="<span class='mif-search'></span>" id="search-query">
                 <input type="submit" class="button" value="Search" class="cell-1" onClick="executeSearch()">
