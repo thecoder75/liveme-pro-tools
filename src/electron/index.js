@@ -1,8 +1,9 @@
 /**
  * LiveMe Pro Tools
  */
-require('@electron/remote/main').initialize()
+
 const appName = 'LiveMe Pro Tools'
+
 
 const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron')
 const { exec } = require('child_process')
@@ -11,11 +12,12 @@ const fs = require('fs')
 const path = require('path')
 const request = require('request')
 const tarfs = require('tar-fs')
+
 const DataManager = new(require('./datamanager').DataManager)()
 const LivemeAPI = require('./livemeapi')
 const LiveMe = new LivemeAPI({})
+
 const isDev = require('electron-is-dev')
-const ffmpeg = require('fluent-ffmpeg')
 const async = require('async')
 const concat = require('concat-files')
 
@@ -23,106 +25,93 @@ const concat = require('concat-files')
 // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
-let mainWindow = null
-let playerWindow = null
-let bookmarksWindow = null
-let followsWindow = null
-let chatWindow = null
-let wizardWindow = null
+// New window layout
+let splashWindow = null
 let homeWindow = null
-let housekeepingWindow = null
+let accountView = []
+let followWindow = null
+let bookmarkWindow = null
+let settingsWindow = null
+
 let menu = null
 let appSettings = require('electron-settings')
 
 function createWindow() {
-    /**
-     * Create our window definitions
-     */
-    let winsize = appSettings.get('size.mainWindow')
-
-    mainWindow = new BrowserWindow({
-        icon: path.join(__dirname, 'appicon.png'),
-        width: winsize[0],
-        height: winsize[1],
-        minWidth: 1024,
-        maxWidth: 1024,
-        minHeight: 480,
-        maxHeight: 1200,
+    splashWindow = new BrowserWindow({
+        icon: path.join(__dirname, '/build/48x48.png'),
+        width: 400,
+        height: 220,
         autoHideMenuBar: true,
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
+        resizable: false,
         fullscreen: false,
         maximizable: false,
         frame: false,
         show: false,
-        backgroundColor: '#000000',
+        backgroundColor: '#ffffff',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false,
-            enableRemoteModule: true, 
+            enableRemoteModule: true,
             webSecurity: true,
             textAreasAreResizable: false,
             plugins: true
         }
     })
-    require("@electron/remote/main").enable(mainWindow.webContents)
-    /**
-     * Configure our window contents and callbacks
-     */
-    mainWindow.loadURL(`file://${__dirname}/app/index.html`)
-    mainWindow
-        .on('open', () => {})
+
+
+    homeWindow = new BrowserWindow({
+        icon: path.join(__dirname, '/build/48x48.png'),
+        width: 1480,
+        height: 760,
+        autoHideMenuBar: true,
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        resizable: false,
+        fullscreen: false,
+        maximizable: false,
+        frame: true,
+        show: false,
+        backgroundColor: '#ffffff',
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            webSecurity: true,
+            textAreasAreResizable: false,
+            plugins: true
+        }
+    })
+
+
+    splashWindow.loadURL(`file://${__dirname}/app/splash.html`)
+    splashWindow.on('ready-to-show', () => {
+            splashWindow.show()
+        })
         .on('close', (event) => {
-            let toDownload = dlQueue.running() + dlQueue.length()
-            let userChoice = 0
-
-            if (toDownload > 0) {
-                userChoice = dialog.showMessageBox(mainWindow, {
-                    type: 'question',
-                    title: 'Download is in progress',
-                    message: `You still have ${toDownload} ` +
-                             (toDownload > 1 ? 'videos' : 'video') +
-                             ' to download.\n\n' +
-                             'Exit anyway?',
-                    buttons: ['Yes', 'No'],
-                    cancelId: 1,
-                    defaultId: 1,
-                })
-            }
-            if (userChoice === 1) {
-                event.preventDefault()
-                return false
-            }
-            appSettings.set('position.mainWindow', mainWindow.getPosition())
-            appSettings.set('size.mainWindow', mainWindow.getSize())
-
-            DataManager.saveToDisk()
-
-            if (playerWindow != null) {
-                playerWindow.close()
-            }
-            if (bookmarksWindow != null) {
-                bookmarksWindow.close()
-            }
-            if (chatWindow != null) {
-                chatWindow.close()
-            }
-
-            mainWindow.webContents.session.clearCache(() => {
+            splashWindow.webContents.session.clearCache(() => {
                 // Purge the cache to help avoid eating up space on the drive
             })
-
-            mainWindow = null
-
-            setTimeout(() => {
-                app.quit()
-            }, 250)
+            splashWindow = null
         })
 
-    /**
-     * Build our application menus using the templates provided
-     * further down.
-     */
+
+    homeWindow.loadURL(`file://${__dirname}/app/start.html`)
+    homeWindow.on('ready-to-show', () => {
+            setTimeout(function(){
+                homeWindow.show()
+                if (splashWindow) splashWindow.close()
+            }, 1500)
+        })
+        .on('close', (event) => {
+            homeWindow.webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            })
+            homeWindow = null
+            app.quit()
+        })
+
     menu = Menu.buildFromTemplate(getMenuTemplate())
     Menu.setApplicationMenu(menu)
 
@@ -130,100 +119,9 @@ function createWindow() {
     global.LiveMe = LiveMe
     global.DataManager = DataManager
 
-    DataManager.loadFromDisk()
-
-    setTimeout(() => {
-        const dt = new Date()
-        let ma = appSettings.get('history.viewed_maxage')
-        let od = Math.floor((dt.getTime() - (ma * 86400000)) / 1000)
-        DataManager.unviewProfiles(od, false)
-
-    }, 250)
-
-    let pos = appSettings.get('position.mainWindow') ? appSettings.get('position.mainWindow') : [0, 0]
-    mainWindow.setPosition(pos[0], pos[1], false)
-    mainWindow.show()
-
 }
 
 app.on('ready', () => {
-    let isFreshInstall = typeof appSettings.get('general.fresh_install') === 'undefined' ? true : false
-
-    if (appSettings.get('downloads.template')) {
-        appSettings.set('general.fresh_install', false);
-        isFreshInstall = false;
-    }
-
-    if (isFreshInstall) {
-        appSettings.set('general', {
-            fresh_install: false,
-            playerpath: '',
-            hide_zeroreplay_fans: false,
-            hide_zeroreplay_followings: false,
-            hide_zeroreplay_searching: false,
-            enableHomeScan: false
-        })
-        appSettings.set('position', {
-            mainWindow: [-1, -1],
-            playerWindow: [-1, -1],
-            bookmarksWindow: [-1, -1],
-            fansWindow: [-1, -1],
-            followingsWindow: [-1, -1]
-        })
-        appSettings.set('size', {
-            mainWindow: [1024, 600],
-            playerWindow: [360, 640],
-            bookmarksWindow: [400, 720]
-        })
-        appSettings.set('downloads', {
-            path: path.join(app.getPath('home'), 'Downloads'),
-            template: '%%replayid%%',
-            chunkthreads: 1,
-            chunks: 1,
-            ffmpegquality: 1,
-            parallel: 3
-        })
-        appSettings.set('player', {
-            volume: 1,
-            muted: false,
-            path: '',
-            pick: 0,
-            resize_on_rotate: false,
-            hide_restart_button: false,
-            hide_settings_button: false,
-            hide_fullscreen_button: false
-        })
-    }
-
-    if (!appSettings.get('history.viewed_maxage')) {
-        appSettings.set('history', {
-            viewed_maxage: 1
-        })
-    }
-
-    if (!appSettings.get('lamd.concurrent')) {
-        appSettings.set('lamd', {
-            cycletime: 60,
-            concurrent: 3
-        })
-    }
-
-    if (!appSettings.get('player')) {
-        appSettings.set('player', {
-            volume: 1,
-            muted: false
-        })
-    }
-
-    let test = appSettings.get('position')
-    if (typeof test.mainWindow[1] === 'undefined') {
-        appSettings.set('position', {
-            mainWindow: [-1, -1],
-            playerWindow: [-1, -1],
-            bookmarksWindow: [-1, -1]
-        })
-    }
-    dlQueue.concurrency = +appSettings.get('downloads.parallel') || 3
 
     createWindow()
 })
@@ -238,53 +136,117 @@ app.on('activate', () => {
     }
 })
 
+
+
+
+ipcMain.on('show-profile', (event, arg) => {
+
+    accountView[arg.uid] = new BrowserWindow({
+        width: 1600,
+        minWidth: 1200,
+        maxWidth: 2000,
+        height: 900,
+        minHeight: 900,
+        maxHeight: 2000,
+        resizable: true,
+        autoHideMenuBar: true,
+        skipTaskbar: false,
+        backgroundColor: '#ffffff',
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        fullscreen: false,
+        maximizable: false,
+        closable: true,
+        frame: true,
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            plugins: true,
+            nodeIntegration: true,
+            webSecurity: false
+        }
+    })
+
+    accountView[arg.uid].setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+
+    accountView[arg.uid].on('ready-to-show', () => {
+
+        if (appSettings.get('auth.email') && appSettings.get('auth.password')) {
+            LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
+        }
+
+        LiveMe.getUserInfo(uid)
+            .then(user => {
+                let bookmark = DataManager.getSingleBookmark(user.user_info.uid)
+
+                if (bookmark !== false) {
+                    bookmark.last_viewed = Math.floor(new Date().getTime() / 1000)
+                    DataManager.updateBookmark(bookmark)
+                }
+                DataManager.addViewed(user.user_info.uid)
+            })
+
+        accountView[arg.uid].send('render-profile', {
+            user: user,
+            isbookmarked: bookmark !== false,
+            isfollowed: DataManager.isFollowed(user.user_info) !== false
+        })
+
+        accountView[arg.uid].show()
+    }).loadURL(`file://${__dirname}/app/accountview.html`)
+
+
+})
+
+ipcMain.on('search-username', (event, arg) => {
+
+    if (appSettings.get('auth.email') && appSettings.get('auth.password')) {
+        LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
+    }
+
+    let list = new Array()
+    let i = 0
+
+    LiveMe.performSearch(arg.q, arg.p, 10, 1)
+        .then(results => {
+
+            for (i = 0; i < results.length; i++) {
+
+                entry = {
+                    user_id: results[i].user_id,
+                    face: results[i].face ? results[i].face : 'images/nouser.png',
+                    nickname: results[i].nickname,
+                    countryCode: results[i].countryCode,
+                    level: results[i].level,
+                    sex: results[i].sex == 0 ? 'male' : (results[i].sex > 0 ? 'female' : ''),
+                    bookmarked: DataManager.isBookmarked(results[i].user_id),
+                    viewed: DataManager.wasProfileViewed(results[i].user_id)
+                }
+                list.push(entry)
+            }
+            homeWindow.webContents.send('render-user-list', {
+                page: arg.p,
+                query: arg.q,
+                hasmore: results.length >= 10,
+                list: list
+            })
+        })
+})
+
+
+
+
+
+
+
+
+
+
+
 /**
  * IPC Event Handlers
- */
-ipcMain.on('import-queue', (event, arg) => {})
-
-ipcMain.on('import-users', (event, arg) => {})
-ipcMain.on('export-users', (event, arg) => {})
-
-ipcMain.on('downloads-parallel', (event, arg) => {
-    dlQueue.concurrency = arg
-})
-
-/*
-    Redirects to Follows Window
-*/
-ipcMain.on('follows-add', (event, arg) => {
-    if (followsWindow !== null) {
-        followsWindow.send('add-entry', arg )
-    }
-})
-ipcMain.on('follows-remove', (event, arg) => {
-    if (followsWindow !== null) {
-        followsWindow.send('remove-entry', arg )
-    }
-})
-
-
-/*
-    Redirects to Bookmarks Window
-*/
-ipcMain.on('bookmarks-add', (event, arg) => {
-    if (bookmarksWindow !== null) {
-        bookmarksWindow.send('add-entry', arg )
-    }
-})
-ipcMain.on('bookmarks-remove', (event, arg) => {
-    if (bookmarksWindow !== null) {
-        bookmarksWindow.send('remove-entry', arg )
-    }
-})
-
-
-
-
-
-
-
+ *
 ipcMain.on('open-home-window', (event, arg) => {
 
     var homeWindow = new BrowserWindow({
@@ -308,8 +270,8 @@ ipcMain.on('open-home-window', (event, arg) => {
         show: false,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false,             
-        }  
+            contextIsolation: false,
+        }
     })
     require("@electron/remote/main").enable(homeWindow.webContents)
     homeWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
@@ -331,9 +293,7 @@ ipcMain.on('download-replay', (event, arg) => {
             }
         })
     })
-    /**
-     * Cannot cancel active download, only remove queued entries.
-     */
+
 ipcMain.on('download-cancel', (event, arg) => {
         dlQueue.remove(function(task) {
             if (task.data === arg.videoid) {
@@ -498,187 +458,109 @@ const dlQueue = async.queue((task, done) => {
             })
         }
 
-        switch (appSettings.get('downloads.method')) {
-            case 'chunk':
-                request(properSource, (err, res, body) => {
-                    if (err || !body) {
-                        fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))
-                        return done({ videoid: task.videoid, error: err || 'Failed to fetch m3u8 file.' })
-                    }
-                    // Separate ts names from m3u8
-                    let concatList = ''
-                    const tsList = []
-                    body.split('\n').forEach(line => {
-                            if (line.indexOf('.ts') !== -1) {
-                                let tsName = video.vid + '_' + line.split('?')[0].replace(/\//g, '_')
-                                let tsPath = `${path}/lmpt_temp/${tsName}`
+        request(properSource, (err, res, body) => {
+            if (err || !body) {
+                fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify(err, null, 2))
+                return done({ videoid: task.videoid, error: err || 'Failed to fetch m3u8 file.' })
+            }
+            // Separate ts names from m3u8
+            let concatList = ''
+            const tsList = []
+            body.split('\n').forEach(line => {
+                    if (line.indexOf('.ts') !== -1) {
+                        let tsName = video.vid + '_' + line.split('?')[0].replace(/\//g, '_')
+                        let tsPath = `${path}/lmpt_temp/${tsName}`
 
-                                if (process.platform == 'win32') {
-                                    tsPath = tsPath.replace(/\\/g, '/');
-                                }
-
-                                // Check if TS has already been added to array
-                                if (concatList.indexOf(tsPath) === -1) {
-                                    // We'll use this later to merge downloaded chunks
-                                    concatList += 'file ' + tsName + '\n'
-
-                                    // Push data to list
-                                    tsList.push({ name: tsName, path: tsPath, url: line.split('?')[0] })
-                                }
-                            }
-                        })
-                    if (!fs.existsSync(`${path}/lmpt_temp`)) {
-                        // create temporary dir for ts files
-                        fs.mkdirSync(`${path}/lmpt_temp`)
-                    }
-                    fs.writeFileSync(`${path}/lmpt_temp/${video.vid}.txt`, concatList)
-
-                    // Download chunks
-                    let downloadedChunks = 0
-
-                    async.eachLimit(tsList, 2, (file, next) => {
-
-                        const stream = request(`${properSource.split('/').slice(0, -1).join('/')}/${file.url}`)
-                            .on('error', err => {
-                                fs.writeFileSync(`${path}/${file.name}-error.log`, JSON.stringify(err, null, 2))
-                                return done({ videoid: task.videoid, error: err })
-                            })
-                            .pipe(
-                                fs.createWriteStream(file.path)
-                            )
-                            // Events
-                        stream.on('finish', () => {
-                            downloadedChunks += 1
-                            if (mainWindow.webContents === null) return;
-                            mainWindow.webContents.send('download-progress', {
-                                videoid: task.videoid,
-                                state: `Downloading stream chunks.. (${downloadedChunks}/${tsList.length})`,
-                                percent: Math.round((downloadedChunks / tsList.length) * 100)
-                            })
-                            next()
-                        })
-
-                    }, () => {
-                        // Chunks downloaded
-                        let cfile = path + '/lmpt_temp/' + video.vid + '.txt'
-
-                        if (parseInt(appSettings.get('downloads.ffmpegquality')) == 0) {
-                            // Just combined the chunks into a single TS file
-                            let concatFile = fs.readFileSync(cfile, 'utf-8')
-                            let cList = []
-
-                            concatFile.split('\n').forEach(line => {
-                                let l = line.split(' ')
-
-                                if (l.length > 1)
-                                    cList.push(`${path}/lmpt_temp/${l[1]}`)
-                            })
-
-                            mainWindow.webContents.send('download-progress', {
-                                videoid: task.videoid,
-                                state: `Combining chunks, please wait...`,
-                                percent: 0
-                            })
-
-                            concat(cList, `${path}/${filename}.ts`, (err) => {
-                                if (err) {
-                                    mainWindow.webContents.send('download-progress', {
-                                        videoid: task.videoid,
-                                        state: `Error combining chunks`,
-                                        percent: 100
-                                    })
-                                    fs.writeFileSync(`${path}/${filename}-error.log`, err)
-                                    return done({ videoid: task.videoid, error: err })
-                                }
-                            })
-
-                            return done()
-                        } else {
-                            ffmpeg()
-                                .on('start', c => {
-                                    mainWindow.webContents.send('download-progress', {
-                                        videoid: task.videoid,
-                                        state: `Converting to MP4 file, please wait..`,
-                                        percent: 0
-                                    })
-                                })
-                                .on('progress', function(progress) {
-                                    // FFMPEG doesn't always have this >.<
-                                    let p = progress.percent
-                                    if (p > 100) p = 100
-                                    mainWindow.webContents.send('download-progress', {
-                                        videoid: task.videoid,
-                                        state: `Combining and converting to MP4 file, please wait...`,
-                                        percent: p
-                                    })
-                                })
-                                .on('end', (stdout, stderr) => {
-                                    DataManager.addDownloaded(video.vid)
-                                    if (appSettings.get('downloads.deltmp')) {
-                                        tsList.forEach(file => fs.unlinkSync(file.path))
-                                    }
-                                    return done()
-                                })
-                                .on('error', (err) => {
-                                    fs.writeFileSync(`${path}/${filename}-error.log`, err)
-                                    return done({ videoid: task.videoid, error: err })
-                                })
-                                .input(cfile.replace(/\\/g, '/'))
-                                .inputFormat('concat')
-                                .output(`${path}/${filename}.mp4`)
-                                .inputOptions([
-                                    '-safe 0',
-                                    '-f concat'
-                                ])
-                                .outputOptions(ffmpegOpts)
-                                .run()
+                        if (process.platform == 'win32') {
+                            tsPath = tsPath.replace(/\\/g, '/');
                         }
 
-                    })
+                        // Check if TS has already been added to array
+                        if (concatList.indexOf(tsPath) === -1) {
+                            // We'll use this later to merge downloaded chunks
+                            concatList += 'file ' + tsName + '\n'
 
+                            // Push data to list
+                            tsList.push({ name: tsName, path: tsPath, url: line.split('?')[0] })
+                        }
+                    }
                 })
-                break
-            case 'ffmpeg':
-                let outFile = path + '/' + filename + '.mp4'
+            if (!fs.existsSync(`${path}/lmpt_temp`)) {
+                // create temporary dir for ts files
+                fs.mkdirSync(`${path}/lmpt_temp`)
+            }
+            fs.writeFileSync(`${path}/lmpt_temp/${video.vid}.txt`, concatList)
 
-                ffmpeg(properSource)
-                    .outputOptions(ffmpegOpts)
-                    .output(process.platform == 'win32' ? outFile.replace(/\\/g, '/') : outFile)
-                    .on('end', function(stdout, stderr) {
-                        DataManager.addDownloaded(video.videoid)
-                        return done()
+            // Download chunks
+            let downloadedChunks = 0
+
+            async.eachLimit(tsList, 2, (file, next) => {
+
+                const stream = request(`${properSource.split('/').slice(0, -1).join('/')}/${file.url}`)
+                    .on('error', err => {
+                        fs.writeFileSync(`${path}/${file.name}-error.log`, JSON.stringify(err, null, 2))
+                        return done({ videoid: task.videoid, error: err })
                     })
-                    .on('progress', function(progress) {
-                        // FFMPEG doesn't always have this >.<
-                        if (!progress.percent) {
-                            progress.percent = ((progress.targetSize * 1000) / +video.videosize) * 100
-                        }
+                    .pipe(
+                        fs.createWriteStream(file.path)
+                    )
+                    // Events
+                stream.on('finish', () => {
+                    downloadedChunks += 1
+                    if (mainWindow.webContents === null) return;
+                    mainWindow.webContents.send('download-progress', {
+                        videoid: task.videoid,
+                        state: `Downloading stream chunks.. (${downloadedChunks}/${tsList.length})`,
+                        percent: Math.round((downloadedChunks / tsList.length) * 100)
+                    })
+                    next()
+                })
+
+            }, () => {
+                // Chunks downloaded
+                let cfile = path + '/lmpt_temp/' + video.vid + '.txt'
+
+                // Just combined the chunks into a single TS file
+                let concatFile = fs.readFileSync(cfile, 'utf-8')
+                let cList = []
+
+                concatFile.split('\n').forEach(line => {
+                    let l = line.split(' ')
+
+                    if (l.length > 1)
+                        cList.push(`${path}/lmpt_temp/${l[1]}`)
+                })
+
+                mainWindow.webContents.send('download-progress', {
+                    videoid: task.videoid,
+                    state: `Combining chunks, please wait...`,
+                    percent: 0
+                })
+
+                concat(cList, `${path}/${filename}.ts`, (err) => {
+                    if (err) {
                         mainWindow.webContents.send('download-progress', {
                             videoid: task.videoid,
-                            state: `Downloading (${Math.round(progress.percent)}%)`,
-                            percent: progress.percent
+                            state: `Error combining chunks`,
+                            percent: 100
                         })
-                    })
-                    .on('start', function(c) {
-                        mainWindow.webContents.send('download-start', {
-                            videoid: task.videoid,
-                            filename: filename
-                        })
-                    })
-                    .on('error', function(err, stdout, stderr) {
-                        fs.writeFileSync(`${path}/${filename}-error.log`, JSON.stringify([err, stdout, stderr], null, 2))
-                        return done({ videoid: task.vivideoidd, error: err })
-                    })
-                    .run()
-                break
-        }
+                        fs.writeFileSync(`${path}/${filename}-error.log`, err)
+                        return done({ videoid: task.videoid, error: err })
+                    }
+                })
+
+                return done()
+
+            })
+
+        })
     })
 })
 
 
 /**
  * Watch a Replay - Use either internal player or external depending on settings
- */
+ *
 ipcMain.on('watch-replay', (event, arg) => {
     DataManager.addWatched(arg.videoid)
 
@@ -749,7 +631,9 @@ ipcMain.on('save-player-options', (event, options) => {
 ipcMain.on('show-user', (event, arg) => {
     mainWindow.webContents.send('show-user', { userid: arg.userid })
 })
+*/
 
+/*
 ipcMain.on('open-followings-window', (event, arg) => {
     let winposition = appSettings.get('position.followingsWindow') ? appSettings.get('position.followingsWindow') : [-1, -1]
 
@@ -776,11 +660,11 @@ ipcMain.on('open-followings-window', (event, arg) => {
         show: false,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false,             
-            enableRemoteModule: true 
-        }  
+            contextIsolation: false,
+            enableRemoteModule: true
+        }
     })
-    require("@electron/remote/main").enable(win.webContents) 
+    require("@electron/remote/main").enable(win.webContents)
     win.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
     win.on('ready-to-show', () => {
@@ -816,11 +700,11 @@ ipcMain.on('open-followers-window', (event, arg) => {
         show: false,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false,             
-            enableRemoteModule: true 
-        }       
+            contextIsolation: false,
+            enableRemoteModule: true
+        }
     })
-    require("@electron/remote/main").enable(win.webContents) 
+    require("@electron/remote/main").enable(win.webContents)
     win.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
     win.on('ready-to-show', () => {
@@ -852,10 +736,10 @@ ipcMain.on('read-comments', (event, arg) => {
         show: false,
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false,             
-        }  
+            contextIsolation: false,
+        }
     })
-    require("@electron/remote/main").enable(win.webContents) 
+    require("@electron/remote/main").enable(win.webContents)
     win.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
     win.on('ready-to-show', () => {
@@ -894,11 +778,11 @@ ipcMain.on('open-bookmarks', (event, arg) => {
             backgroundColor: '#000000',
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,             
-                enableRemoteModule: true 
+                contextIsolation: false,
+                enableRemoteModule: true
             }
         })
-        require("@electron/remote/main").enable(bookmarksWindow.webContents) 
+        require("@electron/remote/main").enable(bookmarksWindow.webContents)
         bookmarksWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
         bookmarksWindow.on('close', () => {
@@ -944,11 +828,11 @@ ipcMain.on('open-follows', (event, arg) => {
             backgroundColor: '#000000',
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,             
-                enableRemoteModule: true 
+                contextIsolation: false,
+                enableRemoteModule: true
             }
         })
-        require("@electron/remote/main").enable(followsWindow.webContents) 
+        require("@electron/remote/main").enable(followsWindow.webContents)
         followsWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
         followsWindow.on('close', () => {
@@ -990,11 +874,11 @@ ipcMain.on('open-housekeeping', (event, arg) => {
             backgroundColor: '#000000',
             webPreferences: {
                 nodeIntegration: true,
-                contextIsolation: false,             
-        }  
+                contextIsolation: false,
+        }
         })
 
-        require("@electron/remote/main").enable(housekeepingWindow.webContents) 
+        require("@electron/remote/main").enable(housekeepingWindow.webContents)
         housekeepingWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
 
         housekeepingWindow.on('close', () => {
@@ -1010,7 +894,9 @@ ipcMain.on('open-housekeeping', (event, arg) => {
         housekeepingWindow.show()
     }).loadURL(`file://${__dirname}/app/housekeeping.html`)
 })
+*/
 
+/*
 ipcMain.on('restore-backup', (event, arg) => {
     dialog.showOpenDialog({
             properties: [
@@ -1049,6 +935,7 @@ ipcMain.on('create-backup', (event, arg) => {
         }
     ).pipe(fs.createWriteStream(backupFile))
 })
+*/
 
 function getMenuTemplate() {
     let template = [{
@@ -1089,10 +976,6 @@ function getMenuTemplate() {
         }
     ]
 
-    /**
-     * This is here in case macOS version gets added back end after all the bugs/issues are figured out.
-     * Requires a contributor running macOS now.
-     */
     if (process.platform === 'darwin') {
         template.unshift({
             label: appName,
