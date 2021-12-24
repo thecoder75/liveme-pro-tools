@@ -5,7 +5,7 @@
 const appName = 'LiveMe Pro Tools'
 
 
-const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, shell, dialog, screen } = require('electron')
 const { exec } = require('child_process')
 const os = require('os')
 const fs = require('fs')
@@ -24,6 +24,8 @@ const concat = require('concat-files')
 // This is required to re-enable autoplay. See:
 // https://developers.google.com/web/updates/2017/09/autoplay-policy-changes
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+//app.commandLine.appendSwitch('high-dpi-support', 0)
+//app.commandLine.appendSwitch('force-device-scale-factor', 2)
 
 // New window layout
 let splashWindow = null
@@ -37,6 +39,11 @@ let menu = null
 let appSettings = require('electron-settings')
 
 function createWindow() {
+
+    // console.log(JSON.stringify(screen.getPrimaryDisplay(), false, 2))
+
+    let scaleFactor = 1
+
     splashWindow = new BrowserWindow({
         icon: path.join(__dirname, '/build/48x48.png'),
         width: 400,
@@ -56,14 +63,15 @@ function createWindow() {
             enableRemoteModule: true,
             webSecurity: true,
             textAreasAreResizable: false,
-            plugins: true
+            plugins: true,
+            zoomFactor: 2.0
         }
     })
 
 
     homeWindow = new BrowserWindow({
         icon: path.join(__dirname, '/build/48x48.png'),
-        width: 1480,
+        width: 1440,
         height: 760,
         autoHideMenuBar: true,
         disableAutoHideCursor: true,
@@ -80,13 +88,15 @@ function createWindow() {
             enableRemoteModule: true,
             webSecurity: true,
             textAreasAreResizable: false,
-            plugins: true
+            plugins: true,
+            zoomFactor: 2.0
         }
     })
 
 
     splashWindow.loadURL(`file://${__dirname}/app/splash.html`)
     splashWindow.on('ready-to-show', () => {
+            splashWindow.webContents.setZoomFactor(scaleFactor)
             splashWindow.show()
         })
         .on('close', (event) => {
@@ -100,8 +110,10 @@ function createWindow() {
     homeWindow.loadURL(`file://${__dirname}/app/start.html`)
     homeWindow.on('ready-to-show', () => {
             setTimeout(function(){
+                homeWindow.webContents.setZoomFactor(scaleFactor)
                 homeWindow.show()
                 if (splashWindow) splashWindow.close()
+
             }, 1500)
         })
         .on('close', (event) => {
@@ -122,7 +134,6 @@ function createWindow() {
 }
 
 app.on('ready', () => {
-
     createWindow()
 })
 
@@ -139,64 +150,52 @@ app.on('activate', () => {
 
 
 
-ipcMain.on('show-profile', (event, arg) => {
 
-    accountView[arg.uid] = new BrowserWindow({
-        width: 1600,
-        minWidth: 1200,
-        maxWidth: 2000,
-        height: 900,
-        minHeight: 900,
-        maxHeight: 2000,
-        resizable: true,
-        autoHideMenuBar: true,
-        skipTaskbar: false,
-        backgroundColor: '#ffffff',
-        disableAutoHideCursor: true,
-        titleBarStyle: 'default',
-        fullscreen: false,
-        maximizable: false,
-        closable: true,
-        frame: true,
-        show: false,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-            plugins: true,
-            nodeIntegration: true,
-            webSecurity: false
-        }
-    })
 
-    accountView[arg.uid].setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+ipcMain.on('show-user-profile', (event, arg) => {
+    OpenAccountProfile(arg.userid)
+})
 
-    accountView[arg.uid].on('ready-to-show', () => {
+ipcMain.on('fetch-user-profile', (event, arg) => {
 
-        if (appSettings.get('auth.email') && appSettings.get('auth.password')) {
-            LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
-        }
+    LiveMe.getUserInfo(arg.userid)
+        .then(user => {
+            if ((user === null) || (user === undefined)) return
 
-        LiveMe.getUserInfo(uid)
-            .then(user => {
-                let bookmark = DataManager.getSingleBookmark(user.user_info.uid)
 
-                if (bookmark !== false) {
-                    bookmark.last_viewed = Math.floor(new Date().getTime() / 1000)
-                    DataManager.updateBookmark(bookmark)
-                }
-                DataManager.addViewed(user.user_info.uid)
+            let bookmark = DataManager.getSingleBookmark(user.user_info.uid)
+            user.isbookmarked = bookmark ? true : false
+
+            if (bookmark !== false) {
+                bookmark.last_viewed = Math.floor(new Date().getTime() / 1000)
+                DataManager.updateBookmark(bookmark)
+            }
+            DataManager.addViewed(user.user_info.uid)
+
+            currentUser = {
+                user_id: user.user_info.uid,
+                short_id: parseInt(user.user_info.short_id),
+                signature: user.user_info.usign,
+                sex: user.user_info.sex < 0 ? '' : (user.user_info.sex === 0 ? 'female' : 'male'),
+                face: user.user_info.face,
+                nickname: user.user_info.uname,
+                counts: {
+                    changed: false,
+                    replays: parseInt(user.count_info.video_count),
+                    friends: parseInt(user.count_info.friends_count),
+                    followers: parseInt(user.count_info.follower_count),
+                    followings: parseInt(user.count_info.following_count)
+                },
+                last_viewed: parseInt(Math.floor((new Date()).getTime() / 1000)),
+                newest_replay: 0,
+                locked: false,
+                status: user.user_info.status
+            }
+
+            accountView[user_id].webContents.send('render-user-details', {
+                user: currentUser
             })
-
-        accountView[arg.uid].send('render-profile', {
-            user: user,
-            isbookmarked: bookmark !== false,
-            isfollowed: DataManager.isFollowed(user.user_info) !== false
         })
-
-        accountView[arg.uid].show()
-    }).loadURL(`file://${__dirname}/app/accountview.html`)
-
-
 })
 
 ipcMain.on('search-username', (event, arg) => {
@@ -233,6 +232,122 @@ ipcMain.on('search-username', (event, arg) => {
             })
         })
 })
+
+ipcMain.on('search-userid', (event, arg) => {
+
+    LiveMe.getUserInfo(uid)
+        .then(user => {
+            if ((user === undefined) || (user === null)) {
+                dialog.showMessageBox({
+                    type: 'error',
+                    title: 'Search Error',
+                    message: 'The account was not found.'
+                })
+            } else {
+                OpenAccountProfile(user.user_info.uid)
+            }
+        })
+
+})
+
+ipcMain.on('search-videoid', (event, arg) => {
+    LiveMe.getVideoInfo(q)
+        .then(video => {
+            if (video.videosource === '') {
+                let endedAt = new Date(LiveMe.getVideoEndDate(video))
+
+                $('#status').html('<h3>Video not found!</h3>' +
+                                  '<br><br>' +
+                                  `The live stream you're searching for ended <strong>${prettydate.format(endedAt)}</strong>.<br>` +
+                                  'The replay might still being generated or was deleted.' +
+                                  '<br><br>' +
+                                  'Try again later, maybe?')
+                $('overlay').hide()
+                $('main').hide()
+            } else {
+                _addReplayEntry(video, true)
+                performUserLookup(video.userid)
+            }
+        }).catch(reason => {
+            $('#status').html(`Something went wrong: ${reason}`)
+            $('overlay').hide()
+            $('main').hide()
+        })
+
+})
+
+
+
+
+
+
+
+
+
+function OpenAccountProfile(user_id) {
+
+    accountView[user_id] = new BrowserWindow({
+        width: 1600,
+        minWidth: 1200,
+        maxWidth: 2000,
+        height: 900,
+        minHeight: 900,
+        maxHeight: 2000,
+        resizable: true,
+        autoHideMenuBar: true,
+        skipTaskbar: false,
+        backgroundColor: '#ffffff',
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        fullscreen: false,
+        maximizable: false,
+        closable: true,
+        frame: true,
+        show: false,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            plugins: true,
+            nodeIntegration: true,
+            webSecurity: false,
+            zoomFactor: screen.getPrimaryDisplay().scaleFactor
+        }
+    })
+
+    accountView[user_id].setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
+    accountView[user_id].loadURL(`file://${__dirname}/app/accountview.html`)
+
+    accountView[user_id].on('ready-to-show', () => {
+            accountView[user_id].show()
+        })
+        .on('close', (event) => {
+            accountView[user_id].webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            })
+            accountView[user_id] = null
+        })
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
