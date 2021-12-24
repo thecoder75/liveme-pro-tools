@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+    <head>
+        <script>
+            if (typeof module === 'object') {
+                window.module = module;
+                module = undefined;
+            }
+        </script>
+
+        <link rel="stylesheet" type="text/css" href="css/external/metro-all.min.css" />
+
+        <title>LiveMe Pro Tools</title>
+
+        <style>
+            body {
+                -webkit-user-select: none;
+            }
+            .window-caption {
+                -webkit-app-region: drag;
+            }
+
+            img.face {
+                height: 128px;
+                width: 128px;
+                margin: 0 auto;
+            }
+
+            #search-results {
+                overflow-y: auto;
+                height: auto;
+                display: none;
+                position: absolute;
+                top: 128px;
+                bottom: 0;
+                left: 0;
+                right: 0
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+        <div class="row">
+            <div class="cell-6">
+                <h3 class="title pl-4 pt-4 text-light">Search</h3>
+            </div>
+            <div class="cell-6 pr-4 mt-2" style="text-align: right;">
+                <button class="button flat-button"><span class="icon mif-download"></span><span class="caption">Downloads</span></button>
+                <button class="button flat-button"><span class="icon mif-cog"></span><span class="caption">Options</span></button>
+            </div>
+        </div>
+
+        <div class="pl-8 pr-8" id="search-form">
+            <div class="row">
+                <select class="cell-3" data-role="select" id="search-type">
+                    <option value="byuid">Where User ID like</option>
+                    <option value="byname" selected>Where Username like</option>
+                    <option value="byvid">Where Video ID like</option>
+                    <option value="byhash">Where Hashtag like</option>
+                </select>
+                <input type="text" data-role="input" class="cell-8" data-prepend="<span class='mif-search'></span>" id="search-query">
+                <input type="submit" class="button" value="Search" class="cell-1" onClick="executeSearch()">
+            </div>
+        </div>
+
+        <div class="pl-8 pr-8 border" id="search-results" style="">
+            <ul id="results-list"
+                data-role="list"
+                data-cls-list="unstyled-list row flex-justy-center"
+                data-mute-list="false"
+                data-list-info-title="Showing $1 to $2 of $3 accounts found."
+                data-show-pagination="true"
+                data-items="14"
+                data-show-list-info="true">
+            </ul>
+        </div>
+
+
+        <script type="text/javascript" src="js/external/metro.min.js"></script>
+        <script type="text/javascript" src="js/start.js"></script>
+
+    </body>
+</html>
