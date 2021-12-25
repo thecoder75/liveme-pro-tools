@@ -18,17 +18,13 @@
     "author": "TheCoder75",
     "license": "AGPL-3.0-only",
     "dependencies": {
-
-        "@electron/remote": "^2.0.1",
         "async": "^2.6.0",
         "concat-files": "^0.1.1",
         "electron-is-dev": "^0.3.0",
         "electron-settings": "3.2.0",
-        "fluent-ffmpeg": "^2.1.2",
         "format-duration": "^1.0.0",
         "isbinaryfile": "^4.0.0",
         "node-fetch": "^2.3.0",
-        "node-mpv": "^1.4.3",
         "pretty-date": "^0.2.0",
         "ps-node": "^0.1.6",
         "remarkable": "^1.7.1",
