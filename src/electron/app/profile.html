@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+    <head>
+        <script>
+            if (typeof module === 'object') {
+                window.module = module;
+                module = undefined;
+            }
+        </script>
+
+        <link rel="stylesheet" type="text/css" href="css/external/metro-all.min.css" />
+
+        <title>Account View</title>
+
+        <style>
+            body {
+                -webkit-user-select: none;
+            }
+
+            #replay-list {
+                position: absolute;
+                top: 160px;
+                bottom: 24px;
+
+                background-color: #aaa;
+            }
+
+            div.list-bottom {
+                position: fixed;
+                bottom: 0;
+            }
+        </style>
+
+    </head>
+    <body>
+
+        <div id="user-header" class="row" style="height: 160px;">
+            <div class="cell-12">
+
+                <img id="user_face" class="float-left m-2 mr-4 ml-4" style="width: 128px; height: 128px; border-radius: 64px">
+
+                <div class="row">
+                    <div class="cell-12">
+                        <div class="row"><h3 class="text-light">Sample Profile</h3> </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell-8">
+                        <div class="row">
+                            <div class="cell-12">
+                                <h5 class="text-light" title="" style="white-space: nowrap; overflow: hidden;"></h5>
+                            </div>
+                        </div>
+                        <div class="row fg-gray">
+                            <div class="cell-4">
+                                ID: <span id="user_id"></span>
+                            </div>
+                            <div class="cell-4">
+                                Short ID: <span id="short_id"></span>
+                            </div>
+                            <div class="cell-2">
+                                Level: <span id="user_level"></span>
+                            </div>
+                            <div class="cell-2">
+                                Country: <span id="user_country"></span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="cell-4 text-right">
+                        <button class="shortcut outline secondary">
+                            <span class="badge" id="fan_count">0</span>
+                            <span class="caption">Fans</span>
+                            <span class="mif-users icon"></span>
+                        </button>
+
+                        <button class="shortcut outline secondary">
+                            <span class="badge" id="following_count">0</span>
+                            <span class="caption">Following</span>
+                            <span class="mif-users icon"></span>
+                        </button>
+
+                        <button class="shortcut outline secondary">
+                            <span class="caption">Favorite</span>
+                            <span id="favorite_icon" class="mif-favorite fg-gray icon"></span>
+                        </button>
+
+                        <button class="shortcut outline secondary">
+                            <span class="caption">Watching</span>
+                            <span id="watching_icon" class="mif-star-empty icon"></span>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row" style="position: absolute; top: 160px; bottom: 0; left: 0; right: 0">
+
+            <div class="cell-9">
+                <ul id="replay-list"
+                    data-role="list"
+                    data-cls-list="unstyled-list row flex-justy-center"
+                    data-mute-list="false"
+                    data-list-info-title="Showing $1 to $2 of $3 replays found."
+                    data-show-list-info="true">
+                </ul>
+            </div>
+            <div class="cell-3 bg-black" style="position: absolute; bottom: 0; right: 0; width: 360px; height: 640px;">
+                &nbsp;
+            </div>
+
+        </div>
+
+        <script type="text/javascript" src="js/external/metro.min.js"></script>
+        <script type="text/javascript" src="js/profile.js"></script>
+
+    </body>
+</html>
