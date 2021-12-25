@@ -36,13 +36,12 @@ let bookmarkWindow = null
 let settingsWindow = null
 
 let menu = null
-let appSettings = require('electron-settings')
+let appSettingsRaw = require('electron-settings')
+let appSettings = null
 
 function createWindow() {
 
     // console.log(JSON.stringify(screen.getPrimaryDisplay(), false, 2))
-
-    let scaleFactor = 1
 
     splashWindow = new BrowserWindow({
         icon: path.join(__dirname, '/build/48x48.png'),
@@ -71,8 +70,8 @@ function createWindow() {
 
     homeWindow = new BrowserWindow({
         icon: path.join(__dirname, '/build/48x48.png'),
-        width: 1440,
-        height: 760,
+        width: 1500,
+        height: 780,
         autoHideMenuBar: true,
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
@@ -96,7 +95,7 @@ function createWindow() {
 
     splashWindow.loadURL(`file://${__dirname}/app/splash.html`)
     splashWindow.on('ready-to-show', () => {
-            splashWindow.webContents.setZoomFactor(scaleFactor)
+            splashWindow.webContents.setZoomFactor(1)
             splashWindow.show()
         })
         .on('close', (event) => {
@@ -110,13 +109,14 @@ function createWindow() {
     homeWindow.loadURL(`file://${__dirname}/app/start.html`)
     homeWindow.on('ready-to-show', () => {
             setTimeout(function(){
-                homeWindow.webContents.setZoomFactor(scaleFactor)
+                homeWindow.webContents.setZoomFactor(1)
                 homeWindow.show()
                 if (splashWindow) splashWindow.close()
 
             }, 1500)
         })
         .on('close', (event) => {
+
             homeWindow.webContents.session.clearCache(() => {
                 // Purge the cache to help avoid eating up space on the drive
             })
@@ -127,9 +127,12 @@ function createWindow() {
     menu = Menu.buildFromTemplate(getMenuTemplate())
     Menu.setApplicationMenu(menu)
 
-    global.isDev = isDev
-    global.LiveMe = LiveMe
-    global.DataManager = DataManager
+    if (!appSettings) { initAppSettings() }
+
+    setTimeout(function() {
+        LiveMe.setAuthDetails(appSettings.auth.email.trim(), appSettings.auth.password.trim())
+    }, 1000)
+
 
 }
 
@@ -151,6 +154,40 @@ app.on('activate', () => {
 
 
 
+ipcMain.on('get-app-settings', (event, arg) => {
+
+    if (!appSettings) { initAppSettings() }
+    event.returnValue = appSettings
+
+    return appSettings
+
+})
+
+function initAppSettings() {
+
+    appSettings = {
+        speed: 'slow',
+        limits: {
+            search: 40,
+            replays: -1,
+            fans: -1,
+            followers: -1,
+            downloads: 3
+        },
+        auth: {
+            email: appSettingsRaw.get('auth.email').trim(),
+            password: appSettingsRaw.get('auth.password').trim()
+        },
+        downloads: {
+            use_filter: false,
+            filter: ''
+        }
+    }
+
+}
+
+
+
 
 ipcMain.on('show-user-profile', (event, arg) => {
     OpenAccountProfile(arg.userid)
@@ -161,7 +198,6 @@ ipcMain.on('fetch-user-profile', (event, arg) => {
     LiveMe.getUserInfo(arg.userid)
         .then(user => {
             if ((user === null) || (user === undefined)) return
-
 
             let bookmark = DataManager.getSingleBookmark(user.user_info.uid)
             user.isbookmarked = bookmark ? true : false
@@ -177,8 +213,11 @@ ipcMain.on('fetch-user-profile', (event, arg) => {
                 short_id: parseInt(user.user_info.short_id),
                 signature: user.user_info.usign,
                 sex: user.user_info.sex < 0 ? '' : (user.user_info.sex === 0 ? 'female' : 'male'),
-                face: user.user_info.face,
+                face: user.user_info.face ? user.user_info.face : 'images/nouser.png',
                 nickname: user.user_info.uname,
+                level: user.user_info.level,
+                country: user.user_info.countryCode,
+                bookmarked: user.isbookmarked,
                 counts: {
                     changed: false,
                     replays: parseInt(user.count_info.video_count),
@@ -192,17 +231,61 @@ ipcMain.on('fetch-user-profile', (event, arg) => {
                 status: user.user_info.status
             }
 
-            accountView[user_id].webContents.send('render-user-details', {
+            user: currentUser
+            accountView[currentUser.user_id].webContents.send('render-user-details', {
                 user: currentUser
             })
         })
 })
 
-ipcMain.on('search-username', (event, arg) => {
+ipcMain.on('fetch-user-replays', (event, arg) => {
 
-    if (appSettings.get('auth.email') && appSettings.get('auth.password')) {
-        LiveMe.setAuthDetails(appSettings.get('auth.email').trim(), appSettings.get('auth.password').trim())
-    }
+    LiveMe.getUserReplays(arg.u, arg.p, 10)
+        .then(replays => {
+
+            if ((typeof replays === 'undefined') || (replays == null)) {
+                accountView[arg.u].webContents.send('render-replay-list', {
+                    hasMore: false,
+                    user_id: arg.u,
+                    page: arg.p,
+                    list: null,
+                    status: 'no-replays'
+                });
+
+                return
+            }
+
+            console.log('Got ' + replays.length + ' for ' + arg.u)
+
+            accountView[arg.u].webContents.send('render-replay-list', {
+                hasMore: replays.length === 10,
+                user_id: arg.u,
+                page: arg.p,
+                list: replays,
+                status: 'add-replays'
+            });
+
+        }).catch(error => {
+            // Unhandled error
+
+            let details = console.log(JSON.stringify(error.response.body, false, 2))
+
+        })
+
+})
+
+ipcMain.on('fetch-replay-details', (event, arg) => {
+
+})
+
+
+
+
+
+
+
+
+ipcMain.on('search-username', (event, arg) => {
 
     let list = new Array()
     let i = 0
@@ -287,13 +370,9 @@ ipcMain.on('search-videoid', (event, arg) => {
 function OpenAccountProfile(user_id) {
 
     accountView[user_id] = new BrowserWindow({
-        width: 1600,
-        minWidth: 1200,
-        maxWidth: 2000,
-        height: 900,
-        minHeight: 900,
-        maxHeight: 2000,
-        resizable: true,
+        width: 1440,
+        height: 840,
+        resizable: false,
         autoHideMenuBar: true,
         skipTaskbar: false,
         backgroundColor: '#ffffff',
@@ -309,15 +388,15 @@ function OpenAccountProfile(user_id) {
             contextIsolation: false,
             plugins: true,
             nodeIntegration: true,
-            webSecurity: false,
-            zoomFactor: screen.getPrimaryDisplay().scaleFactor
+            webSecurity: false
         }
     })
 
     accountView[user_id].setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
-    accountView[user_id].loadURL(`file://${__dirname}/app/accountview.html`)
+    accountView[user_id].loadURL(`file://${__dirname}/app/profile.html?uid=${user_id}`)
 
     accountView[user_id].on('ready-to-show', () => {
+            accountView[user_id].webContents.setZoomFactor(1)
             accountView[user_id].show()
         })
         .on('close', (event) => {
