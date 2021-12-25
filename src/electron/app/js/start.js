@@ -6,6 +6,7 @@ Description: Handle startup of the app and the first window code to allow select
 */
 
 const { ipcRenderer, shell, clipboard } = require('electron')
+let appSettings = null;
 
 function showDownloadsWindow() { ipcRenderer.send('show-download-window') }
 function showOptionsWindow() { ipcRenderer.send('show-options-window') }
@@ -82,10 +83,8 @@ function renderUserList(e) {
         $('#results-list').data('list').items.push(
 `
             <li style="display: inline-block; width: 180px; margin: 8px" class="account">
-                <figure class="">
-                    <div class="img-container thumbnail">
-                        <img class="face" src="${e.list[i].face}" alt="${e.list[i].nickname}" onError="$(this).attr('src','images/nouser.png')" onClick="showProfile('${e.list[i].user_id}')">
-                    </div>
+                <figure class="mt-4">
+                    <img class="face" src="${e.list[i].face}" alt="${e.list[i].nickname}" onError="$(this).attr('src','images/nouser.png')" onClick="showProfile('${e.list[i].user_id}')">
                     <figcaption class="nickname">${e.list[i].nickname}</figcaption>
                     <figcaption class="text-italic text-small">
                         ID: ${e.list[i].user_id}
@@ -122,11 +121,11 @@ function renderUserList(e) {
 
     $('#results-list').data('list').draw()
 
-    if ((e.hasmore) && (e.page < 2)) {
+    if ((e.hasmore) && (e.page < (appSettings.limits.search / 20))) {
         setTimeout(function(){
             e.page++
             ipcRenderer.send('search-username', { q: e.query, p: e.page })
-        }, 500)
+        }, (appSettings.speed == 'fast' ? 25 : 500))
     }
 
 }
@@ -136,5 +135,7 @@ $(function() {
     setupIPCListeners();
     $('#main-title').html('Search')
     $('#search-query').focus()
+
+    appSettings = ipcRenderer.sendSync('get-app-settings')
 
 })
