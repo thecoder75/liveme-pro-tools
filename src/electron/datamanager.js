@@ -61,7 +61,7 @@ function handleConfigFileError(error, filePath) {
 
         switch(btn1) {
             case 0:
-                shell.openExternal('https://gitter.im/thecoderstoolbox/liveme-pro-tools')
+                shell.openExternal('https://livemeprotools.freeflarum.com/')
                 break
             case 1:
                 btn2 = dialog.showMessageBox({
