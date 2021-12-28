@@ -30,8 +30,13 @@ function setupIPCListeners() {
 }
 
 function sendDownloadRequest(video_id) {
-
-
+    ipcRenderer.send('download-replay', { 
+        videoid: video_id,
+        vtime: replays[video_id].vtime,
+        title: replays[video_id].title,
+        length: replays[video_id].length,
+        source: replays[video_id].hlsvideosource ? replays[video_id].hlsvideosource : replays[video_id].videosource
+    })
 }
 
 function watchReplay(video_id) {
