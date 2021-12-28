@@ -253,22 +253,19 @@ ipcMain.on('fetch-user-replays', (event, arg) => {
                 });
 
                 return
+            } else {
+                accountView[arg.u].webContents.send('render-replay-list', {
+                    hasMore: replays.length === 10,
+                    user_id: arg.u,
+                    page: arg.p,
+                    list: replays,
+                    status: 'add-replays'
+                });
             }
-
-            console.log('Got ' + replays.length + ' for ' + arg.u)
-
-            accountView[arg.u].webContents.send('render-replay-list', {
-                hasMore: replays.length === 10,
-                user_id: arg.u,
-                page: arg.p,
-                list: replays,
-                status: 'add-replays'
-            });
-
         }).catch(error => {
             // Unhandled error
 
-            let details = console.log(JSON.stringify(error.response.body, false, 2))
+            console.log(JSON.stringify(error.response.body, false, 2))
 
         })
 
@@ -318,7 +315,7 @@ ipcMain.on('search-username', (event, arg) => {
 
 ipcMain.on('search-userid', (event, arg) => {
 
-    LiveMe.getUserInfo(uid)
+    LiveMe.getUserInfo(arg.u)
         .then(user => {
             if ((user === undefined) || (user === null)) {
                 dialog.showMessageBox({
@@ -370,7 +367,7 @@ ipcMain.on('search-videoid', (event, arg) => {
 function OpenAccountProfile(user_id) {
 
     accountView[user_id] = new BrowserWindow({
-        width: 1440,
+        width: 1600,
         height: 840,
         resizable: false,
         autoHideMenuBar: true,
