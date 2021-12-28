@@ -1,6 +1,9 @@
-/**
- * LiveMe Pro Tools
- */
+/*
+
+Filename: index.js
+Description: Manage all windows used by the app, IPC handlers and LiveME API calls and data exchanges
+
+*/
 
 const appName = 'LiveMe Pro Tools'
 
@@ -29,11 +32,13 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 // New window layout
 let splashWindow = null
-let homeWindow = null
 let accountView = []
-let followWindow = null
+
+let downloadsWindow = null
+let optionsWindow = null
+
+let watchingWindow = null
 let bookmarkWindow = null
-let settingsWindow = null
 
 let menu = null
 let appSettingsRaw = require('electron-settings')
@@ -46,7 +51,7 @@ function createWindow() {
     splashWindow = new BrowserWindow({
         icon: path.join(__dirname, '/build/48x48.png'),
         width: 400,
-        height: 220,
+        height: 240,
         autoHideMenuBar: true,
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
@@ -55,6 +60,7 @@ function createWindow() {
         maximizable: false,
         frame: false,
         show: false,
+        alwaysOnTop: true,
         backgroundColor: '#ffffff',
         webPreferences: {
             nodeIntegration: true,
@@ -62,8 +68,7 @@ function createWindow() {
             enableRemoteModule: true,
             webSecurity: true,
             textAreasAreResizable: false,
-            plugins: true,
-            zoomFactor: 2.0
+            plugins: true
         }
     })
 
@@ -87,16 +92,69 @@ function createWindow() {
             enableRemoteModule: true,
             webSecurity: true,
             textAreasAreResizable: false,
-            plugins: true,
-            zoomFactor: 2.0
+            plugins: true
+        }
+    })
+
+    downloadsWindow = new BrowserWindow({
+        icon: path.join(__dirname, '/build/48x48.png'),
+        width: 400,
+        minWidth: 400,
+        maxWidth: 400,
+        height: 600,
+        minHeight: 480,
+        autoHideMenuBar: true,
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        resizable: true,
+        fullscreen: false,
+        maximizable: false,
+        frame: true,
+        show: false,
+        backgroundColor: '#ffffff',
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            webSecurity: true,
+            textAreasAreResizable: false,
+            plugins: true
+        }
+    })
+
+    aboutWindow = new BrowserWindow({
+        icon: path.join(__dirname, '/build/48x48.png'),
+        width: 400,
+        height: 780,
+        autoHideMenuBar: true,
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        resizable: false,
+        fullscreen: false,
+        maximizable: false,
+        frame: true,
+        show: false,
+        backgroundColor: '#ffffff',
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            webSecurity: true,
+            textAreasAreResizable: false,
+            plugins: true
         }
     })
 
 
-    splashWindow.loadURL(`file://${__dirname}/app/splash.html`)
+    splashWindow.loadURL(`file://${__dirname}/app/splash.html?v=${app.getVersion()}`)
     splashWindow.on('ready-to-show', () => {
             splashWindow.webContents.setZoomFactor(1)
             splashWindow.show()
+        })
+        .on('show', (event) => {
+            setTimeout(function(){
+                splashWindow.hide()
+            }, 2500)
         })
         .on('close', (event) => {
             splashWindow.webContents.session.clearCache(() => {
@@ -105,14 +163,11 @@ function createWindow() {
             splashWindow = null
         })
 
-
     homeWindow.loadURL(`file://${__dirname}/app/start.html`)
     homeWindow.on('ready-to-show', () => {
             setTimeout(function(){
                 homeWindow.webContents.setZoomFactor(1)
                 homeWindow.show()
-                if (splashWindow) splashWindow.close()
-
             }, 1500)
         })
         .on('close', (event) => {
@@ -124,13 +179,39 @@ function createWindow() {
             app.quit()
         })
 
+    downloadsWindow.loadURL(`file://${__dirname}/app/downloads.html`)
+    downloadsWindow.on('ready-to-show', () => {
+            downloadsWindow.webContents.setZoomFactor(1)
+        })
+        .on('close', (event) => {
+            downloadsWindow.webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            })
+            downloadsWindow = null
+        })
+
+
+    aboutWindow.loadURL(`file://${__dirname}/app/about.html`)
+    aboutWindow.on('ready-to-show', () => {
+            aboutWindow.webContents.setZoomFactor(1)
+        })
+        .on('close', (event) => {
+            aboutWindow.webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            })
+            aboutWindow = null
+        })
+
+
+
     menu = Menu.buildFromTemplate(getMenuTemplate())
     Menu.setApplicationMenu(menu)
 
     if (!appSettings) { initAppSettings() }
 
     setTimeout(function() {
-        LiveMe.setAuthDetails(appSettings.auth.email.trim(), appSettings.auth.password.trim())
+        if (appSettings.auth.email != null)
+            LiveMe.setAuthDetails(appSettings.auth.email.trim(), appSettings.auth.password.trim())
     }, 1000)
 
 
@@ -153,38 +234,115 @@ app.on('activate', () => {
 
 
 
+function initAppSettings() {
 
-ipcMain.on('get-app-settings', (event, arg) => {
+    let filename = path.join(app.getPath('appData'), app.getName(), 'settings-v2.json')
 
-    if (!appSettings) { initAppSettings() }
-    event.returnValue = appSettings
+    if (fs.existsSync(filename)) {
+        fs.readFile(filename, 'utf8', function(err, data) {
+            if (err) {
 
-    return appSettings
+            } else {
+                appSettings = JSON.parse(data)
+            }
+        })
+    } else {
+        appSettings = {
+            speed: 'slow',
+            limits: {
+                search: 40,
+                replays: 20,
+                fans: 20,
+                followers: 20,
+                downloads: 1
+            },
+            auth: {
+                email: null,
+                password: null
+            },
+            downloads: {
+                pattern: false
+
+            }
+        }
+    }
+}
+
+
+
+
+
+ipcMain.on('show-about-window', (event, arg) => {
+    if (!aboutWindow.isVisible())
+        aboutWindow.show()
+})
+
+
+
+
+ipcMain.on('show-options-window', (event, arg) => {
+
+    optionsWindow = new BrowserWindow({
+        icon: path.join(__dirname, '/build/48x48.png'),
+        width: 400,
+        height: 780,
+        autoHideMenuBar: true,
+        disableAutoHideCursor: true,
+        titleBarStyle: 'default',
+        resizable: false,
+        fullscreen: false,
+        maximizable: false,
+        frame: true,
+        show: false,
+        backgroundColor: '#ffffff',
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            webSecurity: true,
+            textAreasAreResizable: false,
+            plugins: true
+        }
+    })
+    optionsWindow.loadURL(`file://${__dirname}/app/options.html`)
+    optionsWindow.on('ready-to-show', () => {
+            optionsWindow.webContents.setZoomFactor(1)
+            optionsWindow.webContents.send('settings-form-refresh', appSettings)
+            optionsWindow.show()
+        })
+        .on('close', (event) => {
+
+            // Write Options to File
+            fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'settings-v2.json'), JSON.stringify(appSettings), () => {})
+
+            optionsWindow.webContents.session.clearCache(() => {
+                // Purge the cache to help avoid eating up space on the drive
+            })
+            optionsWindow = null
+        })
+
+})
+ipcMain.on('update-settings', (event, arg) => {
+    appSettings = arg
+
+    if (appSettings.auth.email != null)
+        LiveMe.setAuthDetails(appSettings.auth.email.trim(), appSettings.auth.password.trim())
 
 })
 
-function initAppSettings() {
+ipcMain.on('fetch-settings', (event, arg) => {
 
-    appSettings = {
-        speed: 'slow',
-        limits: {
-            search: 40,
-            replays: -1,
-            fans: -1,
-            followers: -1,
-            downloads: 3
-        },
-        auth: {
-            email: appSettingsRaw.get('auth.email').trim(),
-            password: appSettingsRaw.get('auth.password').trim()
-        },
-        downloads: {
-            use_filter: false,
-            filter: ''
-        }
-    }
+    optionsWindow.webContents.send('settings-form-refresh', appSettings)
 
-}
+})
+
+ipcMain.on('fetch-settings-sync', (event, arg) => {
+
+    if (!appSettings) { initAppSettings() }
+    event.returnValue = appSettings
+    return appSettings
+
+})
 
 
 
@@ -271,9 +429,45 @@ ipcMain.on('fetch-user-replays', (event, arg) => {
 
 })
 
-ipcMain.on('fetch-replay-details', (event, arg) => {
+
+
+
+ipcMain.on('show-download-window', (event, arg) => {
+    if (!downloadsWindow.isVisible())
+        downloadsWindow.show()
+})
+
+ipcMain.on('download-replay', (event, arg) => {
+
+    if (!downloadsWindow.isVisible()) downloadsWindow.show()
+
+    let filename = arg.vid
+
+
+
+
+    downloadWindow.webContents.send('add-download', {
+        id: arg.video_id,
+        filename: filename,
+        title: arg.title
+    })
+
+    dlQueue.push(arg, err => {
+        if (err) {
+            downloadWindow.webContents.send('download-error', {
+                id: arg.video_id,
+                error: err
+            })
+        } else {
+            downloadWindow.webContents.send('download-error', {
+                id: arg.video_id
+            })
+
+        }
+    })
 
 })
+
 
 
 
@@ -333,25 +527,18 @@ ipcMain.on('search-userid', (event, arg) => {
 ipcMain.on('search-videoid', (event, arg) => {
     LiveMe.getVideoInfo(q)
         .then(video => {
-            if (video.videosource === '') {
+            if ((video.videosource === '') || (video.hlsvideosource === '')) {
                 let endedAt = new Date(LiveMe.getVideoEndDate(video))
-
-                $('#status').html('<h3>Video not found!</h3>' +
-                                  '<br><br>' +
-                                  `The live stream you're searching for ended <strong>${prettydate.format(endedAt)}</strong>.<br>` +
-                                  'The replay might still being generated or was deleted.' +
-                                  '<br><br>' +
-                                  'Try again later, maybe?')
-                $('overlay').hide()
-                $('main').hide()
+                dialog.showMessageBox({
+                    type: 'error',
+                    title: 'Video Lookup Error',
+                    message: 'The video has expired or been deleted.'
+                })
             } else {
-                _addReplayEntry(video, true)
-                performUserLookup(video.userid)
+                OpenAccountProfile(video.userid)
             }
         }).catch(reason => {
-            $('#status').html(`Something went wrong: ${reason}`)
-            $('overlay').hide()
-            $('main').hide()
+
         })
 
 })
@@ -438,39 +625,7 @@ function OpenAccountProfile(user_id) {
 /**
  * IPC Event Handlers
  *
-ipcMain.on('open-home-window', (event, arg) => {
 
-    var homeWindow = new BrowserWindow({
-        icon: path.join(__dirname, 'appicon.png'),
-        width: 400,
-        minWidth: 400,
-        maxWidth: 400,
-        height: 720,
-        minHeight: 480,
-        resizable: true,
-        darkTheme: false,
-        autoHideMenuBar: true,
-        skipTaskbar: false,
-        backgroundColor: '#000000',
-        disableAutoHideCursor: true,
-        titleBarStyle: 'default',
-        fullscreen: false,
-        maximizable: false,
-        closable: true,
-        frame: false,
-        show: false,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false,
-        }
-    })
-    require("@electron/remote/main").enable(homeWindow.webContents)
-    homeWindow.setMenu(Menu.buildFromTemplate(getMiniMenuTemplate()))
-
-    homeWindow.on('ready-to-show', () => {
-        homeWindow.show()
-    }).loadURL(`file://${__dirname}/app/home.html`)
-})
 
 
 ipcMain.on('download-replay', (event, arg) => {
