@@ -10,6 +10,7 @@ let appSettings = null;
 
 function showDownloadsWindow() { ipcRenderer.send('show-download-window') }
 function showOptionsWindow() { ipcRenderer.send('show-options-window') }
+function showAboutWindow() { ipcRenderer.send('show-about-window') }
 
 function setupIPCListeners() {
     ipcRenderer.on('render-user-list', (event, arg) => {
@@ -136,6 +137,6 @@ $(function() {
     $('#main-title').html('Search')
     $('#search-query').focus()
 
-    appSettings = ipcRenderer.sendSync('get-app-settings')
+    appSettings = ipcRenderer.sendSync('fetch-settings-sync')
 
 })
