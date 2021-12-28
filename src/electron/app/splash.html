@@ -1,18 +1,29 @@
 <!doctype html>
 <html>
     <head>
+        <script>
+            if (typeof module === 'object') {
+                window.module = module;
+                module = undefined;
+            }
+        </script>
         <link rel="stylesheet" type="text/css" href="css/external/metro-all.min.css" />
+        <style>
+            img { margin:0; }
+            h4 { margin: 16px 0; padding: 0 }
+            h6 { margin: 0; padding: 0 }
+        </style>
     </head>
     <body>
 
         <div class="window-content p-12 text-center" style="padding-bottom: 0;">
 
             <img src="../build/appicon.svg" style="width: 64px;">
-            <h4>LiveMe Pro Tools</h4>
-
+            <h4 style"mb-8 p-0">LiveMe Pro Tools</h4>
+            <h6 style"m-0 p-0 text-muted"></h6>
         </div>
 
         <script type="text/javascript" src="js/external/metro.min.js"></script>
-
+        <script type="text/javascript" src="js/splash.js"></script>
     </body>
 </html>
