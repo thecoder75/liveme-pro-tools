@@ -30,7 +30,7 @@ function setupIPCListeners() {
 }
 
 function sendDownloadRequest(video_id) {
-    ipcRenderer.send('download-replay', { 
+    ipcRenderer.send('download-replay', {
         videoid: video_id,
         vtime: replays[video_id].vtime,
         title: replays[video_id].title,
@@ -78,7 +78,7 @@ function renderReplays(e) {
 
         $('#replay-list ').data('table').addItem([
             `<img src="${e.list[i].videocapture}" style="width: 64px; height: 64px; border-radius: 32px">`,
-            '<span class="title-'+e.list[i].vid+'">'+e.list[i].title+'</span><br><small class="fg-gray">Published on ' + rds + '</small>',
+            '<span class="title-'+e.list[i].vid+'">'+e.list[i].title+'</span><br><small class="text-muted">Published on ' + rds + '</small>',
             formatDuration(e.list[i].videolength * 1000),
             e.list[i].watchnumber,
             e.list[i].likenum,
