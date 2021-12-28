@@ -9,12 +9,10 @@ const { ipcRenderer, shell, clipboard } = require('electron')
 let page = 0
 let user_id = null
 let appSettings = null
+let hlsPlayer = null
 
-function downloadReplay() { ipcRenderer.send('show-download-window') }
-function watchReplay() {
+let replays = new Array()
 
-
-}
 
 function setupIPCListeners() {
     ipcRenderer.on('render-user-details', (event, arg) => {
@@ -22,13 +20,32 @@ function setupIPCListeners() {
     })
 
     ipcRenderer.on('render-replay-list', (event, arg) => {
-        console.log('Got request to render replay list')
         renderReplays(arg)
     })
 
     ipcRenderer.on('reset-search', (event, arg) => {
         resetSearch()
     })
+
+}
+
+function sendDownloadRequest(video_id) {
+
+
+}
+
+function watchReplay(video_id) {
+    let url = replays[video_id].hlsvideosource ? replays[video_id].hlsvideosource : replays[video_id].videosource
+
+    if(Hls.isSupported()) {
+        var video = document.getElementById('videoplayer');
+        var hlsPlayer = new Hls();
+        hlsPlayer.loadSource(url);
+        hlsPlayer.attachMedia(video);
+        hlsPlayer.on(Hls.Events.MANIFEST_PARSED,function() {
+            video.play();
+        });
+    }
 
 }
 
@@ -48,66 +65,47 @@ function renderUserDetails(arg) {
 
 function renderReplays(e) {
 
-        for (var i = 0; i < e.list.length; i++) {
-            /*
-            $('#replay-list').data('list').items.push(
-    `
-                <li style="display: inline-block; width: 180px; margin: 8px" class="account">
-                    <figure class="mt-4">
-                        <img class="face" src="${e.list[i].face}" alt="${e.list[i].nickname}" onError="$(this).attr('src','images/nouser.png')" onClick="showProfile('${e.list[i].user_id}')">
-                        <figcaption class="nickname">${e.list[i].nickname}</figcaption>
-                        <figcaption class="text-italic text-small">
-                            ID: ${e.list[i].user_id}
-                        </figcaption>
-                        <figcaption class="row">
-                            <div class="cell-7 text-small">
-                                Level: <span class="text-bold level">${e.list[i].level}</span>
-                            </div>
-                            <div class="cell-2 text-small text-center">
-                                <span class="icon mif-${e.list[i].sex}"></span>
-                            </div>
-                            <div class="cell-3 text-small text-center">
-                                ${e.list[i].countryCode}
-                            </div>
-                        </figcaption>
-                        <!--
-                        <figcaption class="text-bold row">
-                            <div class="cell-4 text-center">
-                                <button class="button" onClick="">Replays</button>
-                            </div>
-                            <div class="cell-4 text-center">
-                                <button class="button" onClick="">Fans</button>
-                            </div>
-                            <div class="cell-4 text-center">
-                                <button class="button" onClick="">Followings</button>
-                            </div>
-                        </figcaption>
-                        -->
-                    </figure>
-                </li>
-            )
-    `
-            */
-                console.log(e.list[i])
+    for (var i = 0; i < e.list.length; i++) {
+        let rdt = new Date(e.list[i].vtime * 1000)
+        let rds = (rdt.getMonth() + 1) + '-' + rdt.getDate() + '-' + rdt.getFullYear() + ' at ' + (rdt.getHours() < 10 ? '0' : '') + rdt.getHours() + ':' + (rdt.getMinutes() < 10 ? '0' : '') + rdt.getMinutes()
+
+        replays[e.list[i].vid] = e.list[i]
+
+        $('#replay-list ').data('table').addItem([
+            `<img src="${e.list[i].videocapture}" style="width: 64px; height: 64px; border-radius: 32px">`,
+            '<span class="title-'+e.list[i].vid+'">'+e.list[i].title+'</span><br><small class="fg-gray">Published on ' + rds + '</small>',
+            formatDuration(e.list[i].videolength * 1000),
+            e.list[i].watchnumber,
+            e.list[i].likenum,
+            e.list[i].sharenum,
+            `<button class="button button-small" title="Download Replay" onClick="sendDownloadRequest('${e.list[i].vid}')"><span class="mif-download"></span></button> <button class="button button-small" title="Watch Replay" onClick="watchReplay('${e.list[i].vid}')"><span class="mif-play"></span></button>`
+        ])
+    }
+
+    if ((e.hasmore) && (e.page < (appSettings.limits.search / 20))) {
+        setTimeout(function(){
+            e.page++
+            ipcRenderer.send('fetch-user-replays', { u: user_id, p: e.page })
+        }, (appSettings.speed == 'fast' ? 100 : 1000))
+    }
+
+}
 
 
-            }
+function formatDuration(i) {
+    var sec = Math.floor((i / 1000) % 60),
+        min = Math.floor((i / 1000) / 60) % 60,
+        hour = Math.floor((i / 1000) / 3600)
 
-        if (e.list.length > 0)
-            $('#results-list').data('list').draw()
-
-        if ((e.hasmore) && (e.page < (appSettings.limits.search / 20))) {
-            setTimeout(function(){
-                e.page++
-                ipcRenderer.send('fetch-user-replays', { u: user_id, p: e.page })
-            }, (appSettings.speed == 'fast' ? 25 : 500))
-        }
-
+    return  ((hour < 10 ? '0' : '') + hour + ':' +
+            (min < 10 ? '0' : '') + min + ':' +
+            (sec < 10 ? '0' : '') + sec)
 }
 
 
 $(function() {
     setupIPCListeners();
+
     const u1=window.location.href.split('?')[1]
     user_id = u1.split('=')[1]
 
@@ -116,5 +114,9 @@ $(function() {
     ipcRenderer.send('fetch-user-profile', { userid: user_id })
     ipcRenderer.send('fetch-user-replays', { u: user_id, p: 1 })
 
+    setTimeout(function(){
+        // Override video width
+        $('.video-player').outerHeight(640)
+    }, 50)
 
 })

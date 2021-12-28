@@ -8,6 +8,7 @@
             }
         </script>
 
+        <link rel="stylesheet" href="css/external/plyr.css">
         <link rel="stylesheet" type="text/css" href="css/external/metro-all.min.css" />
 
         <title>Account View</title>
@@ -17,7 +18,7 @@
                 -webkit-user-select: none;
             }
 
-            #replay-list {
+            #replay-list2 {
                 position: absolute;
                 top: 160px;
                 bottom: 24px;
@@ -25,9 +26,10 @@
                 background-color: #aaa;
             }
 
-            div.list-bottom {
+            div.table-bottom {
                 position: fixed;
                 bottom: 0;
+                left: 24px;
             }
         </style>
 
@@ -98,24 +100,55 @@
 
         </div>
 
-        <div class="row" style="position: absolute; top: 160px; bottom: 0; left: 0; right: 0">
+        <div style="position: absolute; top: 160px; bottom: 0; left: 8px; right: 8px">
 
-            <div class="cell-9">
-                <ul id="replay-list"
-                    data-role="list"
-                    data-cls-list="unstyled-list row flex-justy-center"
-                    data-mute-list="false"
-                    data-list-info-title="Showing $1 to $2 of $3 replays found."
-                    data-show-list-info="true">
-                </ul>
+            <div style="display: block; float: right; width: 360px; height: 640px; margin-top: 10px; background-color: black;">
+                <video
+                    id="videoplayer"
+                    data-role="video-player"
+                    data-show-full="false"
+                    data-show-mute="false"
+                    data-controls-hide="1000"
+                    data-autoplay="true"
+                    data-volume="0.8"
+                    data-aspect-ratio="none"
+                    height="640"
+                    ></video>
+
             </div>
-            <div class="cell-3 bg-black" style="position: absolute; bottom: 0; right: 0; width: 360px; height: 640px;">
-                &nbsp;
+            <div style="display: block; width: 1200px;">
+                <table id="replay-list"
+                    class="table"
+                    data-show-activity="true"
+                    data-role="table"
+                    data-rows="6"
+                    data-rownum="false"
+                    data-show-search="false"
+                    data-show-rows-steps="false"
+                    data-pagination-short-mode="true"
+                    data-table-info-title="Display from $1 to $2 of $3 replays"
+                >
+                    <thead>
+                        <tr>
+                            <th data-size="100" data-sortable="false" data-sort-dir="asc">&nbsp;</th>
+                            <th data-size="500" data-sortable="false" data-sort-dir="asc">Title</th>
+                            <th data-size="75" data-sortable="false" data-format="int">Length</th>
+                            <th data-size="75" data-sortable="false" data-format="int">Views</th>
+                            <th data-size="75" data-sortable="false" data-format="int">Likes</th>
+                            <th data-size="50" data-sortable="false" data-format="int">Shares</th>
+                            <th data-size="100" data-sortable="false">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
             </div>
 
         </div>
 
         <script type="text/javascript" src="js/external/metro.min.js"></script>
+        <script src="js/external/hls.light.min.js"></script>
         <script type="text/javascript" src="js/profile.js"></script>
 
     </body>
