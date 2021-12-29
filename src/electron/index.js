@@ -239,33 +239,42 @@ function initAppSettings() {
     let filename = path.join(app.getPath('appData'), app.getName(), 'settings-v2.json')
 
     if (fs.existsSync(filename)) {
-        fs.readFile(filename, 'utf8', function(err, data) {
+        fs.readFileSync(filename, 'utf8', function(err, data) {
             if (err) {
 
             } else {
                 appSettings = JSON.parse(data)
             }
         })
-    } else {
+    }
+
+    if (!appSettings.auth) {
         appSettings = {
-            speed: 'slow',
-            limits: {
-                search: 40,
-                replays: 20,
-                fans: 20,
-                followers: 20,
-                downloads: 1
+            startup: {
+                checkForUpdates: false,
+                checkForNews: false
+            },
+            apiTweaks: {
+                speed: 'slow',
+                searchlimit: 40,
+                replaylimit: 10,
+                listlimit: 20
+            },
+            history: {
+                profileviewed: false,
+                replayviewed: false
             },
             auth: {
                 email: null,
                 password: null
             },
             downloads: {
-                pattern: false
-
+                pattern: false,
+                concurrent: 1
             }
         }
     }
+
 }
 
 
@@ -284,8 +293,8 @@ ipcMain.on('show-options-window', (event, arg) => {
 
     optionsWindow = new BrowserWindow({
         icon: path.join(__dirname, '/build/48x48.png'),
-        width: 400,
-        height: 780,
+        width: 600,
+        height: 800,
         autoHideMenuBar: true,
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
@@ -313,7 +322,9 @@ ipcMain.on('show-options-window', (event, arg) => {
         .on('close', (event) => {
 
             // Write Options to File
-            fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'settings-v2.json'), JSON.stringify(appSettings), () => {})
+            fs.writeFile(path.join(app.getPath('appData'), app.getName(), 'settings-v2.json'), JSON.stringify(appSettings, false, 2), () => {
+
+            })
 
             optionsWindow.webContents.session.clearCache(() => {
                 // Purge the cache to help avoid eating up space on the drive
