@@ -23,7 +23,17 @@
 
 # v2.x Series
 
-This version is going to feature a whole new workflow and UI for the app.  This will allow better support for future versions of Electron and more.
+**A lot of changes have happened to the code!**
+
+Here's a list of some of the changes:
+- Removed all dependencies on FFMPEG
+- Switched to Metro4 UI code to clean up UI and more
+- Cleaned up a lot of code
+  - Several packages have been removed cause of this
+- Support individual windows for each account now
+- Added some tweak options
+
+***This code is still very early alpha stage, things are hard-coded right now while developing.  It is no where near ready for any kind of use!***
 
 * * *
 
