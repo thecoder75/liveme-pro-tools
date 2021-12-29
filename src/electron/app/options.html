@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+    <head>
+        <script>
+            if (typeof module === 'object') {
+                window.module = module;
+                module = undefined;
+            }
+        </script>
+
+        <link rel="stylesheet" type="text/css" href="css/external/metro-all.min.css" />
+
+        <title>Options</title>
+
+        <style>
+            body {
+                -webkit-user-select: none;
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+        <div class="p-4">
+            <h3 class="text-light text-muted">Startup</h3>
+            <div class="form-group pl-4">
+                <input id="check-for-updates" type="checkbox" data-role="checkbox" data-caption="Check for updates when started."><br>
+                <input id="check-for-news" type="checkbox" data-role="checkbox" data-caption="Show latest news when started.">
+                <br>
+            </div>
+
+            <h3 class="text-light text-muted mt-8">LiveMe Authentication</h3>
+            <div class="form-group pl-4">
+                <input id="auth-username" class="mb-2" type="text" data-role="input" data-label="Username/Email">
+                <input id="auth-password" type="password" data-role="input" data-label="Password">
+            </div>
+
+            <h3 class="text-light text-muted mt-8">Downloads</h3>
+            <div class="form-group pl-4">
+                <input id="download-pattern" class="mb-2" type="text" data-role="input" data-label="Filename Pattern">
+                <div class="text-small pl-8 pt-0 pb-8">
+                    <div class="row">
+                        <div class="cell-4 p-0">%%broadcaster%%</div>
+                        <div class="cell-8 p-0">Broadcaster's Nickname</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%longid%%</div>
+                        <div class="cell-8 p-0">Broadcaster's Long ID Number</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replayid%%</div>
+                        <div class="cell-8 p-0">ID of replay</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replayviews%%</div>
+                        <div class="cell-8 p-0">Number of Views</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replaylikes%%</div>
+                        <div class="cell-8 p-0">Number of Likes</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replayshares%%</div>
+                        <div class="cell-8 p-0">Number of Shares</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replaytitle%%</div>
+                        <div class="cell-8 p-0">Title of Replay</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replayduration%%</div>
+                        <div class="cell-8 p-0">Duration of Replay</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replaydatepacked%%</div>
+                        <div class="cell-8 p-0">Date the replay was originally recorded in YYYYMMDD</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replaydateus%%</div>
+                        <div class="cell-8 p-0">Date the replay was originally recorded in MM-DD-YYYY</div>
+                    </div>
+                    <div class="row">
+                        <div class="cell-4 p-0">%%replaydateeu%%</div>
+                        <div class="cell-8 p-0">Date the replay was originally recorded in DD-MM-YYYY</div>
+                    </div>
+
+
+                </div>
+            </div>
+            <input id="download-concurrent" class="mb-2" type="text" data-role="spinner" data-min-value="1" data-max-value="5" data-label="Concurrent Downloads" value="1">
+
+
+            <h3 class="text-light text-muted mt-8">API Tweaks</h3>
+            <div class="text-small">Please note that enabling the fast API calls or increasing the limiters below could cause your account to be blocked by LiveMe servers.</div>
+            <div class="form-group pl-4 mt-4">
+                <input id="fast-api" type="checkbox" data-role="checkbox" data-caption="Enable fast API calls.">
+                <h5 class="m-0 p-0 mt-4 text-light">Results Limits</h5>
+                <div class="row">
+                    <div class="cell-4 p-4"><input id="search-limit" class="mb-2" type="text" data-role="spinner" data-min-value="40" data-step="20" data-max-value="400" data-label="Seach" value="20"></div>
+                    <div class="cell-4 p-4"><input id="replay-limit" class="mb-2" type="text" data-role="spinner" data-min-value="10" data-step="10" data-max-value="100" data-label="Replays" value="20"></div>
+                    <div class="cell-4 p-4"><input id="list-limit" class="mb-2" type="text" data-role="spinner" data-min-value="50" data-step="50" data-max-value="5000" data-label="Fans/Follows" value="100"></div>
+                </div>
+            </div>
+
+            <h3 class="text-light text-muted mt-8">History</h3>
+            <div class="form-group pl-4 mt-4">
+                <input id="history-accounts" type="checkbox" data-role="checkbox" data-caption="Enable account profiles viewed tracking.">
+                <input id="history-replays" type="checkbox" data-role="checkbox" data-caption="Enable watch replays tracking.">
+            </div>
+
+
+            <div class="form-group pl-8 mt-16 mb-8 text-right">
+                <button class="button primary" onClick="">Save Settings</button>
+            </div>
+
+        </div>
+
+
+
+
+        <script type="text/javascript" src="js/external/metro.min.js"></script>
+        <script type="text/javascript" src="js/start.js"></script>
+
+    </body>
+</html>
