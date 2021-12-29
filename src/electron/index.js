@@ -41,7 +41,6 @@ let watchingWindow = null
 let bookmarkWindow = null
 
 let menu = null
-let appSettingsRaw = require('electron-settings')
 let appSettings = null
 
 function createWindow() {
@@ -124,8 +123,8 @@ function createWindow() {
 
     aboutWindow = new BrowserWindow({
         icon: path.join(__dirname, '/build/48x48.png'),
-        width: 400,
-        height: 780,
+        width: 1000,
+        height: 500,
         autoHideMenuBar: true,
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
@@ -191,7 +190,7 @@ function createWindow() {
         })
 
 
-    aboutWindow.loadURL(`file://${__dirname}/app/about.html`)
+    aboutWindow.loadURL(`file://${__dirname}/app/about.html?v=${app.getVersion()}`)
     aboutWindow.on('ready-to-show', () => {
             aboutWindow.webContents.setZoomFactor(1)
         })
@@ -210,7 +209,7 @@ function createWindow() {
     if (!appSettings) { initAppSettings() }
 
     setTimeout(function() {
-        if (appSettings.auth.email != null)
+        if (appSettings)
             LiveMe.setAuthDetails(appSettings.auth.email.trim(), appSettings.auth.password.trim())
     }, 1000)
 
@@ -246,35 +245,34 @@ function initAppSettings() {
                 appSettings = JSON.parse(data)
             }
         })
-    }
-
-    if (!appSettings.auth) {
-        appSettings = {
-            startup: {
-                checkForUpdates: false,
-                checkForNews: false
-            },
-            apiTweaks: {
-                speed: 'slow',
-                searchlimit: 40,
-                replaylimit: 10,
-                listlimit: 20
-            },
-            history: {
-                profileviewed: false,
-                replayviewed: false
-            },
-            auth: {
-                email: null,
-                password: null
-            },
-            downloads: {
-                pattern: false,
-                concurrent: 1
+    } else {
+        if (!appSettings) {
+            appSettings = {
+                startup: {
+                    checkForUpdates: false,
+                    checkForNews: false
+                },
+                apiTweaks: {
+                    speed: 'slow',
+                    searchlimit: 40,
+                    replaylimit: 10,
+                    listlimit: 20
+                },
+                history: {
+                    profileviewed: false,
+                    replayviewed: false
+                },
+                auth: {
+                    email: null,
+                    password: null
+                },
+                downloads: {
+                    pattern: false,
+                    concurrent: 1
+                }
             }
         }
     }
-
 }
 
 
@@ -338,6 +336,9 @@ ipcMain.on('update-settings', (event, arg) => {
 
     if (appSettings.auth.email != null)
         LiveMe.setAuthDetails(appSettings.auth.email.trim(), appSettings.auth.password.trim())
+
+    if (optionsWindow)
+        optionsWindow.close()
 
 })
 
