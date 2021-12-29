@@ -25,7 +25,9 @@
 
 The default branch has been changed from **master** to **release-1.x**.  
 
-Work will begin shortly on the new/updated version which will include a full UI/window flow change and more!  Stay tuned for news on this!
+Work has begun on the **release-2.x** branch.  Most of the code is being rewritten to support IPC calls and smoother methods for data transfer.  I've also switched to using Metro4 UI along with removal of several old libraries.  I've also removed several dependencies on modules thanks to better code writing as well as using different methods for handling local data storage.
+
+*Please see the **release-2.x** branch for more details.*
 
 * * *
 
