@@ -25,21 +25,33 @@
         <div class="p-4">
             <h3 class="text-light text-muted">Startup</h3>
             <div class="form-group pl-4">
-                <input id="check-for-updates" type="checkbox" data-role="checkbox" data-caption="Check for updates when started."><br>
-                <input id="check-for-news" type="checkbox" data-role="checkbox" data-caption="Show latest news when started.">
+                <input id="check-for-updates" type="checkbox" data-role="checkbox" data-caption="Check for updates when started." data-style="2"><br>
+                <input id="check-for-news" type="checkbox" data-role="checkbox" data-caption="Show latest news when started." data-style="2">
                 <br>
             </div>
 
-            <h3 class="text-light text-muted mt-8">LiveMe Authentication</h3>
+            <h3 class="text-light text-muted mt-16">LiveMe Authentication</h3>
             <div class="form-group pl-4">
-                <input id="auth-username" class="mb-2" type="text" data-role="input" data-label="Username/Email">
-                <input id="auth-password" type="password" data-role="input" data-label="Password">
+                <div class="row">
+                    <div class="cell-8">
+                        <input id="auth-username" class="mb-2" type="text" data-role="input" data-label="Username/Email">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell-8 m-0">
+                        <input id="auth-password" type="password" data-role="input" data-label="Password">
+                    </div>
+                </div>
             </div>
 
-            <h3 class="text-light text-muted mt-8">Downloads</h3>
+            <h3 class="text-light text-muted mt-16">Downloads</h3>
             <div class="form-group pl-4">
                 <input id="download-pattern" class="mb-2" type="text" data-role="input" data-label="Filename Pattern">
                 <div class="text-small pl-8 pt-0 pb-8">
+                    <div class="row">
+                        <div class="cell-4 p-0">If left empty, the default will be used.</div>
+                        <div class="cell-8 p-0">Broadcaster's Nickname</div>
+                    </div>
                     <div class="row">
                         <div class="cell-4 p-0">%%broadcaster%%</div>
                         <div class="cell-8 p-0">Broadcaster's Nickname</div>
@@ -50,7 +62,7 @@
                     </div>
                     <div class="row">
                         <div class="cell-4 p-0">%%replayid%%</div>
-                        <div class="cell-8 p-0">ID of replay</div>
+                        <div class="cell-8 p-0">ID of replay (Default)</div>
                     </div>
                     <div class="row">
                         <div class="cell-4 p-0">%%replayviews%%</div>
@@ -88,13 +100,18 @@
 
                 </div>
             </div>
-            <input id="download-concurrent" class="mb-2" type="text" data-role="spinner" data-min-value="1" data-max-value="5" data-label="Concurrent Downloads" value="1">
+            <div class="form-group pl-4">
+                <div class="row">
+                    <div class="cell-6">
+                        <input id="download-concurrent" class="mb-2" type="text" data-role="spinner" data-min-value="1" data-max-value="5" data-label="Concurrent Downloads" value="1">
+                    </dvi>
+                </div>
+            </div>
 
-
-            <h3 class="text-light text-muted mt-8">API Tweaks</h3>
+            <h3 class="text-light text-muted mt-16">API Tweaks</h3>
             <div class="text-small">Please note that enabling the fast API calls or increasing the limiters below could cause your account to be blocked by LiveMe servers.</div>
             <div class="form-group pl-4 mt-4">
-                <input id="fast-api" type="checkbox" data-role="checkbox" data-caption="Enable fast API calls.">
+                <input id="fast-api" type="checkbox" data-role="checkbox" data-caption="Enable fast API calls." data-style="2">
                 <h5 class="m-0 p-0 mt-4 text-light">Results Limits</h5>
                 <div class="row">
                     <div class="cell-4 p-4"><input id="search-limit" class="mb-2" type="text" data-role="spinner" data-min-value="40" data-step="20" data-max-value="400" data-label="Seach" value="20"></div>
@@ -103,15 +120,15 @@
                 </div>
             </div>
 
-            <h3 class="text-light text-muted mt-8">History</h3>
+            <h3 class="text-light text-muted mt-16">History</h3>
             <div class="form-group pl-4 mt-4">
-                <input id="history-accounts" type="checkbox" data-role="checkbox" data-caption="Enable account profiles viewed tracking.">
-                <input id="history-replays" type="checkbox" data-role="checkbox" data-caption="Enable watch replays tracking.">
+                <input id="history-accounts" type="checkbox" data-role="checkbox" data-caption="Enable account profiles viewed tracking." data-style="2"><br>
+                <input id="history-replays" type="checkbox" data-role="checkbox" data-caption="Enable watch replays tracking." data-style="2">
             </div>
 
 
             <div class="form-group pl-8 mt-16 mb-8 text-right">
-                <button class="button primary" onClick="">Save Settings</button>
+                <button class="button primary" onClick="saveSettings()">Save Settings</button>
             </div>
 
         </div>
@@ -120,7 +137,7 @@
 
 
         <script type="text/javascript" src="js/external/metro.min.js"></script>
-        <script type="text/javascript" src="js/start.js"></script>
+        <script type="text/javascript" src="js/options.js"></script>
 
     </body>
 </html>
