@@ -97,15 +97,15 @@ function createWindow() {
 
     downloadsWindow = new BrowserWindow({
         icon: path.join(__dirname, '/build/48x48.png'),
-        width: 400,
-        minWidth: 400,
-        maxWidth: 400,
+        width: 480,
+        minWidth: 480,
+        maxWidth: 480,
         height: 600,
-        minHeight: 480,
+        minHeight: 600,
         autoHideMenuBar: true,
         disableAutoHideCursor: true,
         titleBarStyle: 'default',
-        resizable: true,
+        resizable: false,
         fullscreen: false,
         maximizable: false,
         frame: true,
@@ -167,7 +167,7 @@ function createWindow() {
             setTimeout(function(){
                 homeWindow.webContents.setZoomFactor(1)
                 homeWindow.show()
-            }, 1500)
+            }, 2000)
         })
         .on('close', (event) => {
 
@@ -209,8 +209,14 @@ function createWindow() {
     if (!appSettings) { initAppSettings() }
 
     setTimeout(function() {
-        if (appSettings)
+        if (appSettings) {
             LiveMe.setAuthDetails(appSettings.auth.email.trim(), appSettings.auth.password.trim())
+
+            if (appSettings.startup.checkForUpdates) checkForUpdates()
+            if (appSettings.startup.checkForNews) checkForNews()
+
+        }
+
     }, 1000)
 
 
@@ -274,6 +280,16 @@ function initAppSettings() {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -616,6 +632,14 @@ function OpenAccountProfile(user_id) {
 
 
 
+
+function checkForUpdates() {
+
+}
+
+function checkForNews() {
+    
+}
 
 
 
